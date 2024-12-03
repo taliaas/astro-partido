@@ -49,7 +49,6 @@ const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, href: '#', active: true },
     { name: 'Actas', icon: FileText, href: '#', active: false },
     { name: 'Cierre de Funcionamiento', icon: FileCheck, href: '#', active: false },
-    { name: 'Estado de Funcionamiento', icon: Activity, href: 'estadofunc', active: false },
-    { name: 'Configuraciones', icon: Settings, href: '#', active: false },
+    { name: 'Estado de Funcionamiento', icon: Activity, href: 'estadofunc', active: false }
 ]
 </script>
