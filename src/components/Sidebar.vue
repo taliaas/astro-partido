@@ -46,9 +46,9 @@ const toggleSidebar = () => {
 }
 
 const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, href: '#', active: true },
-    { name: 'Actas', icon: FileText, href: '#', active: false },
-    { name: 'Cierre de Funcionamiento', icon: FileCheck, href: '#', active: false },
+    { name: 'Dashboard', icon: LayoutDashboard, href: 'index', active: true },
+    { name: 'Actas', icon: FileText, href: 'actas', active: false },
+    { name: 'Cierre de Funcionamiento', icon: FileCheck, href: 'cierrefunc', active: false },
     { name: 'Estado de Funcionamiento', icon: Activity, href: 'estadofunc', active: false }
 ]
 </script>

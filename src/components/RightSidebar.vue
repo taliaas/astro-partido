@@ -7,8 +7,8 @@
                 <div class="flex justify-center">
                     <img src="/src/img/pcc-1020x642.jpg" alt="Logo PCC" class="h-15" />
                 </div>
-                <div class="flex justify-center gap-4">
-                    <img src="/src/img/download.jpeg" alt="Logo CUJAE" class="h-10" />
+                <div class="flex justify-center gap-2">
+                    <img src="/src/img/logo.jpg" alt="Logo CUJAE" class="h-12" />
                 </div>
             </div>
         </div>
