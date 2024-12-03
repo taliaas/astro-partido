@@ -2,7 +2,7 @@
     <div class="flex">
         <!-- Sidebar -->
         <div :class="[
-            'fixed top-0 left-0 bg-gray-800 text-white h-full w-64 p-4',
+            'fixed top-0 left-0 bg-blue-600 text-white h-full w-64 p-4',
             { hidden: !isOpen }
         ]">
             <div class="flex items-center justify-between">
@@ -11,15 +11,15 @@
                     ☰
                 </Button>
             </div>
-            <nav class="mt-4">
-                <ul>
-                    <li v-for="item in menuItems" :key="item.text" class="my-2">
-                        <a :href="item.link"
-                            class="block px-4 py-2 rounded hover:bg-gray-200 hover:text-black transition-colors duration-300">
-                            {{ item.text }}
-                        </a>
-                    </li>
-                </ul>
+            <nav :class="{ 'hidden': !sidebarOpen, 'block': sidebarOpen }" class="lg:block mt-8">
+                <div class="px-4 space-y-2">
+                    <a v-for="item in menuItems" :key="item.name" :href="item.href"
+                        class="flex items-center space-x-2 p-2 rounded-lg hover:text-gray transition-colors"
+                        :class="{ 'bg-blue-500': item.active, 'hover:bg-blue-500': !item.active, }">
+                        <component :is="item.icon" class="w-5 h-5" />
+                        <span>{{ item.name }}</span>
+                    </a>
+                </div>
             </nav>
         </div>
 
@@ -33,19 +33,22 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { Activity, FileCheck, FileText, LayoutDashboard, Settings } from 'lucide-vue-next';
 import { ref } from "vue";
 
 const isOpen = ref(true);
 
-// Lista de elementos del menú
-const menuItems = ref([
-    { text: "Dashboard", link: "dashboard" },
-    { text: "Actas", link: "actas" },
-    { text: "Cierre del funcionamiento", link: "cierrefunc" },
-    { text: "Estado del funcionamiento", link: "estadofunc" },
-]);
+const sidebarOpen = ref(false)
 
 const toggleSidebar = () => {
-    isOpen.value = !isOpen.value;
-};
+  sidebarOpen.value = !sidebarOpen.value
+}
+
+const menuItems = [
+  { name: 'Dashboard', icon: LayoutDashboard, href: '#', active: true },
+  { name: 'Actas', icon: FileText, href: '#', active: false },
+  { name: 'Cierre de Funcionamiento', icon: FileCheck, href: '#', active: false },
+  { name: 'Estado de Funcionamiento', icon: Activity, href: 'estadofunc', active: false },
+  { name: 'Configuraciones', icon: Settings, href: '#', active: false },
+]
 </script>
