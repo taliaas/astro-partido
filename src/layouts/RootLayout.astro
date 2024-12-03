@@ -3,6 +3,7 @@ import Sidebar from "@/components/Sidebar.vue";
 import "../globals.css";
 import Dashboard from "@/components/Dashboard.vue";
 import RightSidebar from "@/components/RightSidebar.vue";
+import Header from "@/components/Header.vue";
 ---
 
 <!doctype html>
@@ -15,12 +16,22 @@ import RightSidebar from "@/components/RightSidebar.vue";
     <title>Partido de la CUJAE</title>
   </head>
   <body>
-    <div class="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      <main>
-        <Dashboard />
-      </main>
-      <RightSidebar />
+    <div class="min-h-screen bg-gray-50">
+      <!-- Header -->
+      <Header />
+
+      <div class="flex">
+        <!-- Left Sidebar -->
+        <Sidebar />
+
+        <!-- Main Content -->
+        <main class="flex-1">
+          <Dashboard />
+        </main>
+
+        <!-- Right Sidebar -->
+        <RightSidebar />
+      </div>
     </div>
   </body>
 </html>

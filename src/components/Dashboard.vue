@@ -1,36 +1,6 @@
 <template>
     <div class="min-h-screen w-full bg-gray-50">
-        <header class="bg-white shadow-sm p-4 sticky top-0 z-10">
-            <div class="lg:pl-64">
-                <!-- Top Navigation -->
-                <div class="sticky top-0 z-40 bg-white border-b">
-                    <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-                        <Button @click="toggleSidebar" class="lg:hidden text-gray-500 hover:text-gray-600">
-                            <Menu class="h-6 w-6" />
-                        </Button>
 
-                        <div class="flex flex-1 items-center justify-between">
-                            <h1 class="text-2xl font-semibold text-gray-900">
-                                Bienvenida, Secretaria
-                            </h1>
-
-                            <div class="flex items-center gap-4">
-                                <div class="relative">
-                                    <input type="text" placeholder="Buscar documentos..."
-                                        class="w-full rounded-full border-0 pl-11 pr-4 py-2 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500 text-sm" />
-                                    <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                </div>
-
-                                <Button class="relative rounded-full p-2 hover:bg-gray-100">
-                                    <Bell class="h-6 w-6 text-gray-500" />
-                                    <span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
         <main class="p-4 sm:p-6 lg:p-8">
             <div class="space-y-6">
                 <!-- Stats -->
@@ -92,7 +62,7 @@
                         Agregar acta
                     </Button>
                     <Button variant="outline"
-                        class="inline-flex h-12 items-center justify-center gap-2 rounded bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                        class="inline-flex h-12 items-center justify-center gap-2 rounded bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:border-stone-500 hover:border-2 hover:text-stone-700">
                         <Upload class="h-5 w-5" />
                         Cargar acta
                     </Button>
@@ -145,7 +115,7 @@
                     <!-- Calendar -->
                     <div class="lg:col-span-1">
                         <div class="rounded-xl bg-white p-6 shadow-sm flex flex-col items-center">
-                            <Calendar v-model="value"/>
+                            <Calendar v-model="value" />
                         </div>
                     </div>
                 </div>
@@ -156,7 +126,7 @@
 
 <script setup lang="ts">
 
-import { Bell, FileText, PlusCircle, Upload, Clock, Files, CheckCircle, MoreVertical } from "lucide-vue-next";
+import { Bell, FileText, PlusCircle, Upload, Clock, Files, CheckCircle, MoreVertical, Globe, User, LogOut } from "lucide-vue-next";
 import { Button } from '@/components/ui/button'
 import Calendar from "./ui/calendar/Calendar.vue";
 import { type DateValue, getLocalTimeZone, today } from '@internationalized/date'
