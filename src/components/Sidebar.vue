@@ -6,7 +6,8 @@
             { hidden: !isOpen }
         ]">
             <div class="flex items-center justify-between">
-                <h1 class="text-lg font-bold">Logo</h1>
+                <FileBox class="w-8 h-8 text-blue-400" />
+                <h1 class="text-lg font-bold">Nombre</h1>
                 <Button variant="ghost" @click="toggleSidebar">
                     ☰
                 </Button>
@@ -33,7 +34,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { Activity, FileCheck, FileText, LayoutDashboard, Settings } from 'lucide-vue-next';
+import { Activity, FileCheck, FileText, LayoutDashboard, Settings, FileBox } from 'lucide-vue-next';
 import { ref } from "vue";
 
 const isOpen = ref(true);
@@ -41,14 +42,14 @@ const isOpen = ref(true);
 const sidebarOpen = ref(false)
 
 const toggleSidebar = () => {
-  sidebarOpen.value = !sidebarOpen.value
+    sidebarOpen.value = !sidebarOpen.value
 }
 
 const menuItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, href: '#', active: true },
-  { name: 'Actas', icon: FileText, href: '#', active: false },
-  { name: 'Cierre de Funcionamiento', icon: FileCheck, href: '#', active: false },
-  { name: 'Estado de Funcionamiento', icon: Activity, href: 'estadofunc', active: false },
-  { name: 'Configuraciones', icon: Settings, href: '#', active: false },
+    { name: 'Dashboard', icon: LayoutDashboard, href: '#', active: true },
+    { name: 'Actas', icon: FileText, href: '#', active: false },
+    { name: 'Cierre de Funcionamiento', icon: FileCheck, href: '#', active: false },
+    { name: 'Estado de Funcionamiento', icon: Activity, href: 'estadofunc', active: false },
+    { name: 'Configuraciones', icon: Settings, href: '#', active: false },
 ]
 </script>

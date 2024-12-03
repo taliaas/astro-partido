@@ -5,11 +5,10 @@
             <h3 class="text-sm font-medium text-gray-500">Instituciones</h3>
             <div class="space-y-4">
                 <div class="flex justify-center">
-                    <img src="/" alt="Logo Principal" class="h-15" />
+                    <img src="/src/img/pcc-1020x642.jpg" alt="Logo PCC" class="h-15" />
                 </div>
                 <div class="flex justify-center gap-4">
-                    <img src="/placeholder.svg?height=40&width=40" alt="Logo Secundario 1" class="h-10" />
-                    <img src="/placeholder.svg?height=40&width=40" alt="Logo Secundario 2" class="h-10" />
+                    <img src="/src/img/download.jpeg" alt="Logo CUJAE" class="h-10" />
                 </div>
             </div>
         </div>
@@ -38,29 +37,6 @@
                     <BookOpen class="h-5 w-5 mb-1" />
                     Manual
                 </button>
-            </div>
-        </div>
-
-        <!-- System Status -->
-        <div class="mb-8">
-            <h3 class="mb-4 text-sm font-medium text-gray-500">Estado del Sistema</h3>
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-600">Almacenamiento</span>
-                    <div class="flex items-center">
-                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div class="h-full bg-blue-500" style="width: 65%"></div>
-                        </div>
-                        <span class="ml-2 text-sm text-gray-500">65%</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-600">Rendimiento</span>
-                    <div class="flex items-center gap-1 text-green-500">
-                        <ActivitySquare class="h-4 w-4" />
-                        <span class="text-sm">Óptimo</span>
-                    </div>
-                </div>
             </div>
         </div>
 
