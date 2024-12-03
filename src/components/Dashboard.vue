@@ -54,24 +54,10 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="grid gap-4 sm:grid-cols-2">
-                    <Button
-                        class="inline-flex h-12 items-center justify-center gap-2 rounded bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        <PlusCircle class="h-5 w-5" />
-                        Agregar acta
-                    </Button>
-                    <Button variant="outline"
-                        class="inline-flex h-12 items-center justify-center gap-2 rounded bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:border-stone-500 hover:border-2 hover:text-stone-700">
-                        <Upload class="h-5 w-5" />
-                        Cargar acta
-                    </Button>
-                </div>
-
                 <!-- Content Grid -->
-                <div class="grid gap-6 lg:grid-cols-3">
+                <div class=" grid gap-6 lg:grid-cols-3">
                     <!-- Recent Documents -->
-                    <div class="lg:col-span-1">
+                    <div class="mt-10 lg:col-span-1">
                         <div class="rounded-xl bg-white p-6 shadow-sm">
                             <h2 class="text-lg font-semibold text-gray-900">Documentos Recientes</h2>
                             <div class="mt-6 space-y-4">
@@ -93,7 +79,7 @@
                     </div>
 
                     <!-- Tasks -->
-                    <div class="lg:col-span-1">
+                    <div class="mt-10 lg:col-span-1">
                         <div class="rounded-xl bg-white p-6 shadow-sm">
                             <h2 class="text-lg font-semibold text-gray-900">Tareas Pendientes</h2>
                             <div class="mt-6 space-y-4">
@@ -113,7 +99,7 @@
                     </div>
 
                     <!-- Calendar -->
-                    <div class="lg:col-span-1">
+                    <div class="mt-10 lg:col-span-1">
                         <div class="rounded-xl bg-white p-6 shadow-sm flex flex-col items-center">
                             <Calendar v-model="value" />
                         </div>

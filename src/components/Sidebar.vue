@@ -16,7 +16,7 @@
                 <div class="px-4 space-y-2">
                     <a v-for="item in menuItems" :key="item.name" :href="item.href"
                         class="flex items-center space-x-2 p-2 rounded-lg hover:text-gray transition-colors"
-                        :class="{ 'bg-blue-500': item.active, 'hover:bg-blue-500': !item.active, }">
+                        :class="{ 'bg-blue-600': item.active, 'hover:bg-blue-500': !item.active, }">
                         <component :is="item.icon" class="w-5 h-5" />
                         <span>{{ item.name }}</span>
                     </a>
