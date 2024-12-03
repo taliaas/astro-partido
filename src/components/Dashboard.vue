@@ -11,7 +11,7 @@
 
                         <div class="flex flex-1 items-center justify-between">
                             <h1 class="text-2xl font-semibold text-gray-900">
-                                Bienvenido, Usuario
+                                Bienvenida, Secretaria
                             </h1>
 
                             <div class="flex items-center gap-4">
@@ -106,17 +106,17 @@
                             <h2 class="text-lg font-semibold text-gray-900">Documentos Recientes</h2>
                             <div class="mt-6 space-y-4">
                                 <div v-for="doc in recentDocuments" :key="doc.id"
-                                    class="group flex items-center gap-4 rounded-lg p-3 hover:bg-gray-50">
-                                    <div class="rounded-lg bg-blue-100 p-2">
+                                    class="group flex items-center gap-4 rounded p-3 hover:bg-gray-50">
+                                    <div class="rounded bg-blue-100 p-2">
                                         <FileText class="h-5 w-5 text-blue-600" />
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900">{{ doc.name }}</p>
                                         <p class="text-sm text-gray-500">{{ doc.date }}</p>
                                     </div>
-                                    <button class="opacity-0 group-hover:opacity-100 transition">
-                                        <MoreVertical class="h-5 w-5 text-gray-400" />
-                                    </button>
+                                    <Button variant="ghost" class="opacity-0 group-hover:opacity-100 transition">
+                                        <MoreVertical class="h-5 w-5 text-gray-600" />
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
 
 <script setup lang="ts">
 
-import { Bell, FileText, PlusCircle, Upload, Clock, Files, CheckCircle } from "lucide-vue-next";
+import { Bell, FileText, PlusCircle, Upload, Clock, Files, CheckCircle, MoreVertical } from "lucide-vue-next";
 import { Button } from '@/components/ui/button'
 import Calendar from "./ui/calendar/Calendar.vue";
 import { type DateValue, getLocalTimeZone, today } from '@internationalized/date'
