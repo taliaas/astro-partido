@@ -1,5 +1,8 @@
+
+<script setup lang="ts">
+import { Button } from '@/components/ui/button'
+</script>
+
 <template>
-    <div>
-        <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
-    </div>
+    <Button>Button</Button>
 </template>
