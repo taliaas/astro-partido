@@ -11,14 +11,15 @@
                 <p class="mt-1 text-sm text-gray-500">Gestiona y visualiza todas las actas del sistema</p>
               </div>
               <div class="flex gap-3">
-                <button class="inline-flex items-center px-4 py-2 border border-gray-200 rounded shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                  <UploadIcon class="h-4 w-4 mr-2" />
-                  Cargar Acta
-                </button>
-                <button class="inline-flex items-center px-4 py-2 border border-gray-200 rounded shadow-sm text-sm font-medium text-gray-700 bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                
+                <Button class="inline-flex items-center px-4 py-2 border border-gray-200 rounded shadow-sm text-sm font-medium text-gray-700 bg-primary-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                   <PlusIcon class="h-4 w-4 mr-2" />
                   Nueva Acta
-                </button>
+                </Button>
+                <Button class="inline-flex items-center px-4 py-2 border border-gray-200 rounded shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                  <UploadIcon class="h-4 w-4 mr-2" />
+                  Cargar Acta
+                </Button>
               </div>
             </div>
   
@@ -38,9 +39,9 @@
                 class="px-4 py-2 border border-gray-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="">Todos los núcleos</option>
-                <option value="innovacion">Innovación</option>
-                <option value="desarrollo">Desarrollo</option>
-                <option value="gestion">Gestión</option>
+                <option value="innovacion">Informática</option>
+                <option value="desarrollo">Industrial</option>
+                <option value="gestion">Mecánica</option>
               </select>
               <select
                 v-model="selectedMonth"
@@ -111,6 +112,7 @@
   <script setup>
   import { ref, computed } from 'vue'
   import { SearchIcon, PlusIcon, UploadIcon, MoreVerticalIcon } from 'lucide-vue-next'
+import Button from './ui/button/Button.vue';
   
   const searchQuery = ref('')
   const selectedDepartment = ref('')
@@ -120,7 +122,7 @@
     {
       id: 1,
       titulo: 'Acta Reunión Enero',
-      nucleo: 'Desarrollo',
+      nucleo: 'Mecánica',
       fecha: '2024-01-14',
       creador: 'Juan',
       estado: 'Aprobada'
@@ -128,7 +130,7 @@
     {
       id: 2,
       titulo: 'Acta Planificación Q1',
-      nucleo: 'Gestión',
+      nucleo: 'Industrial',
       fecha: '2024-01-09',
       creador: 'Pedro',
       estado: 'Pendiente'
@@ -136,7 +138,7 @@
     {
       id: 3,
       titulo: 'Acta Revisión Proyectos',
-      nucleo: 'Innovación',
+      nucleo: 'Informática',
       fecha: '2024-01-04',
       creador: 'Teresa',
       estado: 'Rechazada'
