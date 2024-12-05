@@ -3,7 +3,7 @@
     <div class="m-6 flex items-center gap-4">
         <div class="flex-1 relative">
             <SearchIcon class="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input type="text" placeholder="Buscar actas..."
+            <input type="text" placeholder="Buscar actas por tema o indicador..."
                 class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 v-model="search">
         </div>

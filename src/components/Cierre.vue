@@ -117,7 +117,6 @@
 import { ref } from 'vue'
 import Search from './Search.vue';
 
-const search = ref(null)
 const actas = ref([
   {
     id: 1,
@@ -134,3 +133,34 @@ const actas = ref([
   }
 ])
 </script>
+
+<style>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #f3f4f6; /* Fondo más claro para la cabecera */
+}
+
+thead th {
+  text-align: left;
+  padding: 12px;
+  font-weight: bold;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9fafb; /* Fondo alternado */
+}
+
+td {
+  text-align: center; /* Centrar contenido numérico */
+  padding: 10px;
+}
+
+</style>
