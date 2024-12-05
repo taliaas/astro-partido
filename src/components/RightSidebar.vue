@@ -5,10 +5,10 @@
             <h3 class="text-sm font-medium text-gray-500">Instituciones</h3>
             <div class="space-y-4">
                 <div class="flex justify-center">
-                    <img src="/src/img/pcc-1020x642.jpg" alt="Logo PCC" class="h-15" />
+                    <img src="/logo-pcc" alt="Logo PCC" class="h-15" />
                 </div>
                 <div class="flex justify-center gap-2">
-                    <img src="/src/img/logo.jpg" alt="Logo CUJAE" class="h-12" />
+                    <img src="/logo.jpg" alt="Logo CUJAE" class="h-12" />
                 </div>
             </div>
         </div>
