@@ -4,6 +4,7 @@ import "../globals.css";
 import Dashboard from "@/components/Dashboard.vue";
 import RightSidebar from "@/components/RightSidebar.vue";
 import Header from "@/components/Header.vue";
+import { ClientRouter } from "astro:transitions";
 ---
 
 <!doctype html>
@@ -14,6 +15,7 @@ import Header from "@/components/Header.vue";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>Partido de la CUJAE</title>
+    <ClientRouter />
   </head>
   <body>
     <div class="min-h-screen bg-gray-50">
