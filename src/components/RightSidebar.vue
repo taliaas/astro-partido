@@ -5,7 +5,7 @@
             <h3 class="text-sm font-medium text-gray-500">Instituciones</h3>
             <div class="space-y-4">
                 <div class="flex justify-center">
-                    <img src="/logo-pcc" alt="Logo PCC" class="h-15" />
+                    <img src="/logo-pcc.jpg" alt="Logo PCC" class="h-15" />
                 </div>
                 <div class="flex justify-center gap-2">
                     <img src="/logo.jpg" alt="Logo CUJAE" class="h-12" />
