@@ -43,7 +43,6 @@
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Núcleo</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Fecha</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Estado</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Progreso</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Acciones</th>
                             </tr>
                         </thead>
@@ -63,28 +62,21 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div class="bg-blue-600 h-2.5 rounded-full"
-                                            :style="{ width: `${acta.progreso}%` }">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="relative" @click="toggleDropdown(acta.id)">
-                                        <button class="p-1 hover:bg-gray-100 rounded-full">
+                                        <Button variant="ghost" class="p-1 hover:bg-gray-100 rounded-full">
                                             <MoreVerticalIcon class="w-5 h-5 text-gray-500" />
-                                        </button>
+                                        </Button>
 
                                         <!-- Dropdown Menu -->
                                         <div v-if="activeDropdown === acta.id"
-                                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
+                                            class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg z-10 border">
                                             <div class="py-1">
-                                                <button v-for="(action, index) in actions" :key="index"
+                                                <Button v-for="(action, index) in actions" :key="index"
                                                     @click="handleAction(action.action, acta)"
                                                     class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                                                     <component :is="action.icon" class="w-4 h-4 mr-2" />
                                                     {{ action.label }}
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
