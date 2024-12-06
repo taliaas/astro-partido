@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DownloadIcon } from 'lucide-vue-next';
 import Button from './ui/button/Button.vue';
+import Grafico from './Grafico.vue';
 </script>
 
 <template>
@@ -11,8 +12,8 @@ import Button from './ui/button/Button.vue';
                 <!-- Header Section -->
                 <div class="p-6 border-b border-gray-100">
                     <div>
-                        <h1 class="text-2xl font-semibold text-gray-900">Estado del Funcionamiento PCC CUJAE</h1>
-                        <h2 class="text-2xl font-semibold text-gray-400">Cómite UJC CUJAE</h2>
+                        <h1 class="text-3xl font-semibold text-gray-900">Estado del Funcionamiento PCC CUJAE</h1>
+                        <h2 class="text-xl m-6 font-semibold text-gray-600">Cómite UJC CUJAE</h2>
                     </div>
 
                     <div class="flex items-center justify-end">
@@ -23,9 +24,9 @@ import Button from './ui/button/Button.vue';
                     </div>
                 </div>
 
-                <!--Table-->
+                <!--Grafico-->
                 <div>
-                    
+                    <Grafico />
                 </div>
             </div>
         </div>

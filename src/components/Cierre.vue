@@ -7,7 +7,7 @@
         <div class="p-6 border-b border-gray-100">
           <div class="mb-8">
             <h1 class="text-3xl font-semibold text-gray-900">Cierre del Funcionamiento PCC CUJAE</h1>
-            <h2 class="text-xl m-6 text-gray-600">Cómite del PCC CUJAE</h2>
+            <h2 class="text-xl m-6 font-semibold text-gray-600">Cómite del PCC CUJAE</h2>
           </div>
 
           <!-- Cómputo -->
