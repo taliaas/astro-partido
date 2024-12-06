@@ -17,7 +17,7 @@
                 INDICADORES</p>
               <div class="flex items-center gap-2">
                 <span class="text-sm font-medium">Mes:</span>
-                <span class="text-sm font-bold text-primary">Marzo</span>
+                <span class="text-sm font-bold text-primary">{{ mes }}</span>
               </div>
             </div>
             <Search />
@@ -133,6 +133,7 @@ const actas = ref([
     ujc: 0
   }
 ])
+const mes = ref('Marzo')
 </script>
 
 <style>
