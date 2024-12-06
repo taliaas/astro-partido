@@ -9,7 +9,7 @@
 
             <!-- Form with animated transitions -->
             <form @submit.prevent="actualizarGrafico"
-                class="mb-8 grid grid-cols-1 md:grid-cols-4 gap-6 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl">
+                class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl">
                 <!-- Indicadores Select -->
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1">
@@ -38,25 +38,29 @@
                     </select>
                 </div>
 
-                <!-- Período Select -->
-                <div class="space-y-2 w-1/2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        Período
-                    </label>
-                    <select v-model="periodoSeleccionado"
-                        class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="semestre">Semestre 1</option>
-                        <option value="semestral">Semestre 2</option>
-                        <option value="anual">Anual</option>
-                    </select>
+
+                <div class="flex justify-between">
+                    <!-- Período Select -->
+                    <div class="space-y-2 w-1/2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Período
+                        </label>
+                        <select v-model="periodoSeleccionado"
+                            class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="semestre">Semestre 1</option>
+                            <option value="semestral">Semestre 2</option>
+                            <option value="anual">Anual</option>
+                        </select>
+                    </div>
+                    <!-- Exportar -->
+                    <div class="flex mt-8 ">
+                        <Button class="rounded border border-gray-200 hover:bg-gray-50 h-12">
+                            <DownloadIcon class="h-4 w-4 mr-2" />
+                            Exportar
+                        </Button>
+                    </div>
                 </div>
 
-                <div class="flex items-center ">
-                    <Button class="rounded border border-gray-200 hover:bg-gray-50 ">
-                        <DownloadIcon class="h-4 w-4 mr-2" />
-                        Exportar
-                    </Button>
-                </div>
             </form>
 
             <!-- Chart Container with animation -->
