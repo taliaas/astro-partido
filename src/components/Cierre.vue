@@ -5,19 +5,20 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <!-- Header Section -->
         <div class="p-6 border-b border-gray-100">
-          <div class="flex items-center">
-            <h1 class="text-2xl font-semibold text-gray-900">Cierre del Funcionamiento PCC CUJAE</h1>
+          <div class="mb-8">
+            <h1 class="text-3xl font-semibold text-gray-900">Cierre del Funcionamiento PCC CUJAE</h1>
+            <h2 class="text-xl m-6 text-gray-600">Cómite del PCC CUJAE</h2>
           </div>
-          
+
           <!-- Cómputo -->
           <div>
-            <div class="flex items-center justify-between">
-              <h2 class="text-xl ml-2 font-semibold text-gray-900">Cómite del PCC CUJAE</h2>
-              <h3>Mes: Marzo</h3>
-            </div>
-            <div class="m-2">
-              <h3>CÓMPUTO PARA EL CONTROL DE LAS ACTAS DE LA REUNIONES ORDINARIAS YSUS INDICADORES</h3>
-              <p class="mt-1 text-sm text-gray-500">De los temas debatidos en la Reunión Ordinaria clasificados en:</p>
+            <div class="flex justify-between items-center mt-4 m-6">
+              <p class="text-sm text-gray-600">CÓMPUTO PARA EL CONTROL DE LAS ACTAS DE LA REUNIONES ORDINARIAS Y SUS
+                INDICADORES</p>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-medium">Mes:</span>
+                <span class="text-sm font-bold text-primary">Marzo</span>
+              </div>
             </div>
             <Search />
             <!-- Table -->
@@ -141,7 +142,8 @@ table {
 }
 
 thead {
-  background-color: #f3f4f6; /* Fondo más claro para la cabecera */
+  background-color: #f3f4f6;
+  /* Fondo más claro para la cabecera */
 }
 
 thead th {
@@ -155,12 +157,13 @@ tbody tr {
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f9fafb; /* Fondo alternado */
+  background-color: #f9fafb;
+  /* Fondo alternado */
 }
 
 td {
-  text-align: center; /* Centrar contenido numérico */
+  text-align: center;
+  /* Centrar contenido numérico */
   padding: 10px;
 }
-
 </style>
