@@ -4,12 +4,12 @@
             <!-- Header with subtle animation -->
             <div class="mb-8 text-center transform transition-all duration-500 hover:scale-102">
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Estado del Funcionamiento PCC CUJAE</h1>
-                <p class="text-gray-600">Cómite UJC CUJAE</p>
+                <p class="text-xl font-semibold text-gray-600">Cómite UJC CUJAE</p>
             </div>
 
             <!-- Form with animated transitions -->
             <form @submit.prevent="actualizarGrafico"
-                class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white rounded-xl shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl">
+                class="mb-8 grid grid-cols-1 md:grid-cols-4 gap-6 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl">
                 <!-- Indicadores Select -->
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1">
@@ -17,7 +17,7 @@
                     </label>
                     <div class="relative">
                         <select v-model="indicadoresSeleccionados" multiple
-                            class="w-full p-3 border border-gray-200 rounded-lg shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option v-for="indicador in indicadores" :key="indicador" :value="indicador" class="py-2">
                                 {{ indicador }}
                             </option>
@@ -31,7 +31,7 @@
                         Núcleo
                     </label>
                     <select v-model="nucleoSeleccionado"
-                        class="w-full p-3 border border-gray-200 rounded-lg shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
                             {{ nucleo }}
                         </option>
@@ -39,16 +39,23 @@
                 </div>
 
                 <!-- Período Select -->
-                <div class="space-y-2">
+                <div class="space-y-2 w-1/2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1">
                         Período
                     </label>
                     <select v-model="periodoSeleccionado"
-                        class="w-full p-3 border border-gray-200 rounded-lg shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="semestre">Semestre 1</option>
                         <option value="semestral">Semestre 2</option>
                         <option value="anual">Anual</option>
                     </select>
+                </div>
+
+                <div class="flex items-center ">
+                    <Button class="rounded border border-gray-200 hover:bg-gray-50 ">
+                        <DownloadIcon class="h-4 w-4 mr-2" />
+                        Exportar
+                    </Button>
                 </div>
             </form>
 
@@ -70,6 +77,8 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import Chart from 'chart.js/auto';
+import Button from './ui/button/Button.vue';
+import { DownloadIcon } from 'lucide-vue-next';
 
 // Datos de ejemplo (reemplazar con datos reales)
 const indicadores = ['Indicador A', 'Indicador B', 'Indicador C', 'Indicador D'];
