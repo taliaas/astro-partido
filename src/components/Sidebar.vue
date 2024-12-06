@@ -1,54 +1,76 @@
-<template>
-    <div class="flex">
-        <!-- Sidebar -->
-        <div :class="[
-            'fixed top-0 left-0 bg-blue-600 text-white h-full w-64 p-4',
-            { hidden: !isOpen }
-        ]">
-            <div class="flex items-center justify-between">
-                <FileBox class="w-8 h-8 text-blue-400" />
-                <h1 class="text-lg font-bold">Nombre</h1>
-                <Button variant="ghost" @click="toggleSidebar">
-                    ☰
-                </Button>
-            </div>
-            <nav :class="{ 'hidden': !sidebarOpen, 'block': sidebarOpen }" class="lg:block mt-8">
-                <div class="px-4 space-y-2">
-                    <a v-for="item in menuItems" :key="item.name" :href="item.href"
-                        class="flex items-center space-x-2 p-2 rounded-lg hover:text-gray transition-colors"
-                        :class="{ 'bg-blue-600': item.active, 'hover:bg-blue-500': !item.active, }">
-                        <component :is="item.icon" class="w-5 h-5" />
-                        <span>{{ item.name }}</span>
-                    </a>
-                </div>
-            </nav>
-        </div>
 
-        <!-- Main Content -->
-        <div class="flex-1 ml-64">
-            <slot />
+<template>
+  <div class="flex h-screen bg-gray-100">
+    <!-- Sidebar for desktop -->
+    <aside
+      :class="[
+        'fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out bg-blue-600 text-white lg:translate-x-0',
+        { '-translate-x-full': !isOpen }
+      ]"
+    >
+      <div class="flex items-center justify-between p-4">
+        <div class="flex items-center space-x-2">
+          <FileBox class="w-8 h-8 text-blue-300" />
+          <h1 class="text-xl font-bold">Nombre</h1>
         </div>
-    </div>
+        <Button variant="ghost" size="icon" @click="toggleSidebar" class="lg:hidden">
+          <X v-if="isOpen" class="h-6 w-6" />
+          <Menu v-else class="h-6 w-6" />
+        </Button>
+      </div>
+      <nav class="mt-8 px-4">
+        <ul class="space-y-2">
+          <li v-for="item in menuItems" :key="item.name">
+            <a
+              :href="item.href"
+              class="flex items-center space-x-2 p-2 rounded-lg transition-colors"
+              :class="{
+                'bg-blue-700 text-white': item.active,
+                'hover:bg-blue-500 hover:text-white': !item.active,
+              }"
+            >
+              <component :is="item.icon" class="w-5 h-5" />
+              <span>{{ item.name }}</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+<!-- Main content -->
+<div class="flex-1 lg:ml-64">
+      <!-- Top bar for mobile -->
+      <header class="bg-white shadow-md p-4 flex items-center justify-between lg:hidden">
+        <Button variant="ghost" size="icon" @click="toggleSidebar">
+          <Menu class="h-6 w-6" />
+        </Button>
+        <h1 class="text-xl font-bold">Nombre</h1>
+        <div class="w-6"></div> <!-- Spacer for alignment -->
+</header>
+
+<!-- Page content -->
+<main class="p-6">
+        <slot />
+      </main>
+</div>
+</div>
 </template>
 
-
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Activity, FileCheck, FileText, LayoutDashboard, Settings, FileBox } from 'lucide-vue-next';
 import { ref } from "vue";
+import { Button } from '@/components/ui/button'
+import { Activity, FileCheck, FileText, LayoutDashboard, FileBox, Menu, X } from 'lucide-vue-next';
 
-const isOpen = ref(true);
-
-const sidebarOpen = ref(false)
+const isOpen = ref(false);
 
 const toggleSidebar = () => {
-    sidebarOpen.value = !sidebarOpen.value
-}
+  isOpen.value = !isOpen.value;
+};
 
 const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, href: '/', active: true },
-    { name: 'Actas', icon: FileText, href: 'actas', active: false },
-    { name: 'Cierre de Funcionamiento', icon: FileCheck, href: 'cierrefunc', active: false },
-    { name: 'Estado de Funcionamiento', icon: Activity, href: 'estadofunc', active: false }
-]
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/', active: true },
+  { name: 'Actas', icon: FileText, href: '/actas', active: false },
+  { name: 'Cierre de Funcionamiento', icon: FileCheck, href: '/cierrefunc', active: false },
+  { name: 'Estado de Funcionamiento', icon: Activity, href: '/estadofunc', active: false }
+];
 </script>

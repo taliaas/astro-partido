@@ -17,7 +17,7 @@
                 INDICADORES</p>
               <div class="flex items-center gap-2">
                 <span class="text-sm font-medium">Mes:</span>
-                <span class="text-sm font-bold text-primary">{{ mes }}</span>
+                <span class="text-sm font-bold text-primary">{{ mes }}</span> <!--poner un select para el mes -->
               </div>
             </div>
             <Search />
