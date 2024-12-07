@@ -59,38 +59,39 @@
     />
   </div>
 
-  <!-- 3. Asistencia -->
+  <!-- 3. Asistencia 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="w-1/2">
       <label for="total" class="block text-md font-medium text-gray-700"
-        >Número total de miembros</label
+        >Total de miembros</label
       >
       <Input
         type="number"
         id="total"
         v-model="formData.totalMiembros"
         required
-        @input="calcularPorcentaje"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
       />
     </div>
     <div class="w-1/2">
       <label for="asistentes" class="block text-md font-medium text-gray-700"
-        >Número de asistentes</label
+        >Presentes</label
       >
       <Input
         type="number"
         id="asistentes"
         v-model="formData.asistentes"
         required
-        @input="calcularPorcentaje"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
       />
     </div>
   </div>
-
+-->
   <!-- 4. Relación de Asistencia -->
   <div class="overflow-x-auto">
+    <label for="secretario" class="block m-3 text-md font-medium text-gray-700"
+      >Relación de Militantes del Núcleo</label
+    >
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
@@ -120,7 +121,6 @@
       </tbody>
     </table>
   </div>
-  
 </template>
 
 <script setup>
@@ -136,9 +136,8 @@ const formData = reactive({
   lugar: "",
   area: "",
   secretario: "",
-  totalMiembros: 0,
-  asistentes: 0,
-  porcentajeAsistencia: "0%",
+  totalMiembros: 20,
+  asistentes: 20,
   ordenDelDia: "",
   acuerdos: "",
 });
@@ -149,6 +148,4 @@ const asistentes = reactive([
   { nombre: "Carlos Rodríguez", estado: "presente" },
   // Añade más asistentes según sea necesario
 ]);
-
 </script>
-
