@@ -11,7 +11,7 @@
               <p class="mt-1 text-sm text-gray-500">Gestiona y visualiza todas las actas del sistema</p>
             </div>
             <div class="flex gap-3">
-              <Button @click="openPage"
+              <Button @click="openNuevaActa"
                 class="inline-flex items-center px-4 py-2 border border-gray-200 rounded shadow-sm text-sm font-medium text-gray-700 bg-primary-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                 <PlusIcon class="h-4 w-4 mr-2" />
                 Nueva Acta
@@ -113,6 +113,7 @@
 import { ref, computed } from 'vue'
 import { SearchIcon, PlusIcon, UploadIcon, MoreVerticalIcon } from 'lucide-vue-next'
 import Button from './ui/button/Button.vue';
+//import { useRouter } from 'vue-router';
 
 const searchQuery = ref('')
 const selectedDepartment = ref('')
@@ -154,6 +155,11 @@ const filteredActas = computed(() => {
   })
 })
 
+//const router = useRouter();
+
+function openNuevaActa() {
+  //router.push('/addRO');
+}
 function openPage() {
   window.location.href = '/addRO';
 }
