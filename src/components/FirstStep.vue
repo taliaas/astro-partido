@@ -121,7 +121,7 @@
     </table>
   </div>
 
-  <!-- 5. Orden del Día y Acuerdos -->
+  <!-- 5. Orden del Día-->
 
   <div>
     <label for="orden" class="block text-md font-medium text-gray-700"
@@ -135,16 +135,7 @@
       class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring focus:ring-blue-200"
     ></Textarea>
   </div>
-  <div>
-    <label for="acuerdos" class="block text-md font-medium text-gray-700">Acuerdos</label>
-    <Textarea
-      id="acuerdos"
-      v-model="formData.acuerdos"
-      rows="4"
-      required
-      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring focus:ring-blue-200"
-    ></textarea>
-  </div>
+  
 </template>
 
 <script setup>
@@ -174,29 +165,5 @@ const asistentes = reactive([
   // Añade más asistentes según sea necesario
 ]);
 
-const calcularPorcentaje = () => {
-  if (formData.totalMiembros > 0 && formData.asistentes > 0) {
-    const porcentaje = (formData.asistentes / formData.totalMiembros) * 100;
-    formData.porcentajeAsistencia = porcentaje.toFixed(2) + "%";
-  } else {
-    formData.porcentajeAsistencia = "0%";
-  }
-};
-
-const nextStep = () => {
-  if (currentStep.value < 5) currentStep.value++;
-};
-
-const prevStep = () => {
-  if (currentStep.value > 1) currentStep.value--;
-};
-
-const submitForm = () => {
-  // Aquí puedes manejar el envío del formulario
-  console.log("Formulario enviado:", formData);
-  console.log("Asistencia:", asistentes);
-  // Implementa la lógica de envío del formulario aquí
-};
 </script>
 
-1
