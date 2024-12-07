@@ -120,21 +120,6 @@
       </tbody>
     </table>
   </div>
-
-  <!-- 5. Orden del Día-->
-
-  <div>
-    <label for="orden" class="block text-md font-medium text-gray-700"
-      >Orden del Día</label
-    >
-    <Textarea
-      id="orden"
-      v-model="formData.ordenDelDia"
-      rows="4"
-      required
-      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring focus:ring-blue-200"
-    ></Textarea>
-  </div>
   
 </template>
 

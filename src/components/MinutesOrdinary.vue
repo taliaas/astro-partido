@@ -37,6 +37,10 @@
           <section v-show="currentStep === 2" class="space-y-4">
             <SecondStep />
           </section>
+          <!--  Información 3 -->
+          <section v-show="currentStep === 3" class="space-y-4">
+            <ThirdStep />
+          </section>
 
           <!-- Botones de navegación -->
           <div class="flex justify-between mt-8">
@@ -48,7 +52,7 @@
               Anterior
             </button>
             <button
-              v-if="currentStep < 5"
+              v-if="currentStep < 3"
               @click="nextStep"
               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
@@ -72,6 +76,7 @@
 import { ref, reactive } from "vue";
 import FirstStep from "src/components/FirstStep.vue";
 import SecondStep from "src/components/SecondStep.vue";
+import ThirdStep from "src/components/ThirdStep.vue"
 
 const currentStep = ref(1);
 const formData = reactive({
