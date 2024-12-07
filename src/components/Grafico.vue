@@ -54,7 +54,7 @@
                     </div>
                     <!-- Exportar -->
                     <div class="flex mt-8 ">
-                        <Button class="rounded border border-gray-200 hover:bg-gray-50 h-12">
+                        <Button class="rounded border bg-gray-200 border-gray-200 hover:bg-gray-50 h-12">
                             <DownloadIcon class="h-4 w-4 mr-2" />
                             Exportar
                         </Button>
