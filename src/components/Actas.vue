@@ -113,7 +113,6 @@
 import { ref, computed } from 'vue'
 import { SearchIcon, PlusIcon, UploadIcon, MoreVerticalIcon } from 'lucide-vue-next'
 import Button from './ui/button/Button.vue';
-//import { useRouter } from 'vue-router';
 
 const searchQuery = ref('')
 const selectedDepartment = ref('')
