@@ -6,7 +6,7 @@
                 <!-- Welcome Message -->
                 <div class="flex-1 text-center">
                     <h1 class="text-lg font-semibold text-gray-900">
-                        Partido de la CUJAE
+                        PCC CUJAE
                     </h1>
                 </div>
 
