@@ -73,15 +73,10 @@ import Textarea from "./ui/textarea/Textarea.vue";
 import Input from "./ui/input/Input.vue";
 
 const formData = reactive({
-  fecha: "",
-  hora: "",
-  lugar: "",
-  area: "",
-  secretario: "",
-  totalMiembros: 0,
-  asistentes: 0,
-  porcentajeAsistencia: "0%",
-  ordenDelDia: "",
-  acuerdos: "",
+  proximaReunion: "",
+  preparacionReunion: "",
+  circuloEstudios: "",
+  observaciones: "",
+  firmaSecretario: "",
 });
 </script>

@@ -18,6 +18,7 @@
       id="acuerdos"
       v-model="formData.acuerdos"
       rows="4"
+      placeholder="Número - Descripción - Responsable - Fecha de cumplimiento"
       required
       class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring focus:ring-blue-200"
     ></Textarea>
@@ -32,6 +33,7 @@
         id="salidas"
         v-model="formData.salidasExtranjero"
         rows="4"
+        required
         placeholder="Nombre - Motivo - Destino - Fechas - Estado"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
       ></Textarea>
@@ -46,15 +48,8 @@ import Textarea from "./ui/textarea/Textarea.vue";
 import Input from "./ui/input/Input.vue";
 
 const formData = reactive({
-  fecha: "",
-  hora: "",
-  lugar: "",
-  area: "",
-  secretario: "",
-  totalMiembros: 0,
-  asistentes: 0,
-  porcentajeAsistencia: "0%",
   ordenDelDia: "",
   acuerdos: "",
+  salidasExtranjero: ""
 });
 </script>
