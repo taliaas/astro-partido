@@ -1,11 +1,12 @@
 <template>
-    <form @submit.prevent="submitForm" class="space-y-8 max-w-2xl mx-auto p-6">
-      <h1 class="text-3xl font-bold mb-8 text-center">Formulario de Reunión</h1>
+    <div class="min-h-screen bg-gray-50">
+    <form @submit.prevent="submitForm" class="space-y-8 max-w-7xl mx-auto p-6">
+      <h1 class="text-3xl font-bold mb-8 text-center">Reunión Ordinaria</h1>
   
       <!-- 1. Información General -->
       <section class="space-y-4">
         <h2 class="text-2xl font-bold">1. Información General</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="space-y-2">
             <label for="fecha" class="block text-sm font-medium text-gray-700">
               Fecha de la reunión<span class="text-red-500">*</span>
@@ -265,6 +266,7 @@
         Enviar Formulario
       </button>
     </form>
+</div>
   </template>
   
   <script setup>
