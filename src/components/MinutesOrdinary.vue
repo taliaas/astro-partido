@@ -4,11 +4,11 @@
   <h1 class="text-3xl font-bold text-gray-800 mb-2">Reunión Ordinaria</h1>
   </div>
   
-    <div class="max-w-6xl mx-auto bg-white rounded shadow-xl overflow-hidden">
+    <div class="max-w-7xl mx-auto bg-white rounded shadow-xl overflow-hidden">
       <div class="p-8">
         <!-- Indicador de Progreso -->
         <div class="mb-8">
-          <div class="flex justify-between">
+          <div class="flex items-center justify-center">
             <div v-for="step in 5" :key="step" class="flex items-center">
               <div :class="`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
                 step <= currentStep ? 'bg-green-500' : 'bg-gray-300'
@@ -32,21 +32,21 @@
             <button 
               @click="prevStep" 
               :disabled="currentStep === 1"
-              class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50"
+              class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50"
             >
               Anterior
             </button>
             <button 
               v-if="currentStep < 5"
               @click="nextStep"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
               Siguiente
             </button>
             <button 
               v-else
               type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+              class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
             >
               Enviar Formulario
             </button>
