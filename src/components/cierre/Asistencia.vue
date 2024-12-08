@@ -12,19 +12,19 @@
     <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <div class="bg-blue-600 rounded shadow-lg p-6 text-white">
+        <div class="bg-white rounded shadow-xl p-6 border-t-4 border-blue-600">
           <h3 class="text-lg font-semibold mb-2">Total Militantes</h3>
           <p class="text-3xl font-bold">277</p>
         </div>
-        <div class="bg-green-600 rounded shadow-lg p-6 text-white">
+        <div class="bg-white rounded shadow-lg p-6 border-t-4 border-green-600">
           <h3 class="text-lg font-semibold mb-2">Asistencia</h3>
           <p class="text-3xl font-bold">14.80%</p>
         </div>
-        <div class="bg-red-600 rounded shadow-lg p-6 text-white">
+        <div class="bg-white rounded shadow-lg p-6 border-t-4 border-red-600">
           <h3 class="text-lg font-semibold mb-2">Ausencias</h3>
           <p class="text-3xl font-bold">18</p>
         </div>
-        <div class="bg-yellow-300 rounded shadow-lg p-6">
+        <div class="bg-white rounded shadow-lg p-6 border-t-4 border-yellow-400">
           <h3 class="text-lg font-semibold mb-2 text-gray-900">Núcleos Activos</h3>
           <p class="text-3xl font-bold text-gray-900">15</p>
         </div>
@@ -140,12 +140,21 @@
         </div>
 
         <!-- Notes Section -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-          <h3 class="text-lg font-semibold mb-4 text-gray-900">Notas y Observaciones</h3>
-          <div class="space-y-2">
-            <div v-for="(note, index) in notes" :key="index" class="flex items-start">
-              <div class="flex-shrink-0 h-2 w-2 mt-2 rounded-full bg-blue-600"></div>
-              <p class="ml-3 text-sm text-gray-600">{{ note }}</p>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Notas y Observaciones</h3>
+          <div class="space-y-4">
+            <div
+              v-for="(note, index) in notes"
+              :key="index"
+              class="p-4 rounded-lg"
+              :class="note.bgColor"
+            >
+              <p class="text-sm text-gray-800">{{ note.texto }}</p>
+              <div class="mt-2 flex items-center text-xs text-gray-600">
+                <span class="font-medium">{{ note.nucleo }}</span>
+                <span class="mx-2">•</span>
+                <span>{{ note.fecha }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -158,9 +167,33 @@
 import { ref } from "vue";
 
 const tableData = ref([
-  { nucleo: "Arquitectura", fecha: "-", entrega:"-", total: 12, asistencia: 0, ausentes: 12, porcentaje: 0 },
-  { nucleo: "Automática", fecha: "7-mar",entrega:"8-marz", total: 16, asistencia: 10,ausentes: 6, porcentaje: 62.5 },
-  { nucleo: "CIPEL", fecha: "-",entrega:"-", total: 16, asistencia: 0,ausentes: 16, porcentaje: 0 },
+  {
+    nucleo: "Arquitectura",
+    fecha: "-",
+    entrega: "-",
+    total: 12,
+    asistencia: 0,
+    ausentes: 12,
+    porcentaje: 0,
+  },
+  {
+    nucleo: "Automática",
+    fecha: "7-mar",
+    entrega: "8-marz",
+    total: 16,
+    asistencia: 10,
+    ausentes: 6,
+    porcentaje: 62.5,
+  },
+  {
+    nucleo: "CIPEL",
+    fecha: "-",
+    entrega: "-",
+    total: 16,
+    asistencia: 0,
+    ausentes: 16,
+    porcentaje: 0,
+  },
   // Add more rows as needed
 ]);
 
@@ -171,8 +204,23 @@ const absenceReasons = ref([
 ]);
 
 const notes = ref([
-  "Hay 3 procesos de desactivación en curso, 1 en el extranjero en beca doctoral",
-  "1 con Parkinson enfermo, imposible de asistir. (El Núcleo acordó su flexibilización)",
-  "**Revisar trámite de traslado de Modesto",
+    {
+    texto: 'Hay 3 procesos de desactivación en curso, 1 en el extranjero en beca doctoral.',
+    nucleo: 'Automática',
+    fecha: 'Mar 24',
+    bgColor: 'bg-blue-50'
+  },
+{
+    texto: '1 con Parkinson enfermo, imposible de asistir. (El Núcleo acordó su flexibilización.',
+    nucleo: 'CIME',
+    fecha: 'Mar 24',
+    bgColor: 'bg-yellow-50'
+  },
+{
+    texto: 'Revisar trámite de traslado de Modesto.',
+    nucleo: 'VRIPG',
+    fecha: 'Mar 24',
+    bgColor: 'bg-green-50'
+  },
 ]);
 </script>
