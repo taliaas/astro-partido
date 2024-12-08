@@ -180,7 +180,7 @@
               <td class="p-4 align-middle">
                 <select
                   v-model="item.status"
-                  class="w-full bg-transparent focus:outline-none border rounded-md"
+                  class="w-full bg-transparent focus:outline-none rounded"
                 >
                   <option value="pendiente">Pendiente</option>
                   <option value="aprobado">Aprobado</option>

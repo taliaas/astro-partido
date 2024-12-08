@@ -111,7 +111,7 @@
         <tr v-for="(asistente, index) in asistentes" :key="index">
           <td class="px-6 py-4 whitespace-nowrap">{{ asistente.nombre }}</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <select v-model="asistente.estado" class="mt-1 w-1/2 rounded">
+            <select v-model="asistente.estado" class="mt-1 w-2/3 rounded">
               <option value="presente">Presente</option>
               <option value="virtual">Virtual</option>
               <option value="ausente">Ausente</option>

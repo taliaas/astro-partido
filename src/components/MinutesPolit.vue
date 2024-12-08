@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
     <div class="mb-8 text-center transform transition-all duration-500 hover:scale-102">
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">Acta Ordinaria</h1>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Acta de Círculo Político </h1>
     </div>
 
     <div class="max-w-7xl mx-auto bg-white rounded shadow-xl overflow-hidden">
@@ -9,7 +9,7 @@
         <!-- Indicador de Progreso -->
         <div class="mb-8">
           <div class="flex items-center justify-center">
-            <div v-for="step in 3" :key="step" class="flex items-center">
+            <div v-for="step in 2" :key="step" class="flex items-center">
               <div
                 :class="`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
                   step <= currentStep ? 'bg-green-500' : 'bg-gray-300'
@@ -18,7 +18,7 @@
                 {{ step }}
               </div>
               <div
-                v-if="step < 3"
+                v-if="step < 2"
                 :class="`h-1 w-full ${
                   step < currentStep ? 'bg-green-500' : 'bg-gray-300'
                 }`"
@@ -28,19 +28,8 @@
         </div>
 
         <form @submit.prevent="submitForm" class="space-y-6">
-          <!--  Información 1 -->
-          <section v-show="currentStep === 1" class="space-y-4">
-            <FirstStep />
-          </section>
-
-          <!--  Información 2 -->
-          <section v-show="currentStep === 2" class="space-y-4">
-            <SecondStep />
-          </section>
-          <!--  Información 3 -->
-          <section v-show="currentStep === 3" class="space-y-4">
-            <ThirdStep />
-          </section>
+          <!--  Información -->
+          
 
           <!-- Botones de navegación -->
           <div class="flex justify-between mt-8">
@@ -52,7 +41,7 @@
               Anterior
             </button>
             <button
-              v-if="currentStep < 3"
+              v-if="currentStep < 2"
               @click="nextStep"
               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >

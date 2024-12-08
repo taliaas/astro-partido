@@ -7,13 +7,13 @@
         <div class="p-6 border-b border-gray-100">
           <div class="flex items-center justify-between">
             <div>
-              <h1 class="text-2xl font-semibold text-gray-900">Listado de Actas</h1>
+              <h1 class="text-2xl font-semibold text-gray-900">Listado de Actas Ordinarias</h1>
               <p class="mt-1 text-sm text-gray-500">Gestiona y visualiza todas las actas del sistema</p>
             </div>
             <div class="flex gap-3">
               <div class="flex gap-3">
                 <a href="/addRO"
-                  class="inline-flex items-center px-4 py-2 border border-gray-200 rounded shadow-sm text-sm font-medium text-gray-700 bg-primary-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                  class="inline-flex items-center px-4 py-2 border border-gray-200 rounded shadow-sm text-sm font-medium text-gray-700 bg-primary-600 hover:bg-gray-50">
                   <PlusIcon class="h-4 w-4 mr-2" />
                   Nueva Acta
                 </a>
