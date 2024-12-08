@@ -1,36 +1,16 @@
 <template>
-  <!-- Summary Cards -->
-  <div class="">
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-      <div class="bg-white rounded shadow-xl p-6 border-t-4 border-blue-600">
-        <h3 class="text-lg font-semibold mb-2">Total Militantes</h3>
-        <p class="text-3xl font-bold">277</p>
-      </div>
-      <div class="bg-white rounded shadow-lg p-6 border-t-4 border-green-600">
-        <h3 class="text-lg font-semibold mb-2">Asistencia</h3>
-        <p class="text-3xl font-bold">14.80%</p>
-      </div>
-      <div class="bg-white rounded shadow-lg p-6 border-t-4 border-red-600">
-        <h3 class="text-lg font-semibold mb-2">Ausencias</h3>
-        <p class="text-3xl font-bold">18</p>
-      </div>
-      <div class="bg-white rounded shadow-lg p-6 border-t-4 border-yellow-400">
-        <h3 class="text-lg font-semibold mb-2 text-gray-900">Núcleos Activos</h3>
-        <p class="text-3xl font-bold text-gray-900">15</p>
-      </div>
-    </div>
-  </div>
-
   <!-- Data Table -->
   <div class="bg-white rounded shadow-lg overflow-hidden">
-    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-gray-200">
       <select
         v-model="nucleoSeleccionado"
-        class="p-3 font-semibold text-gray-900 border-none rounded shadow-sm transition-all duration-300 focus:border-transparent"
+        class="p-3 font-semibold text-gray-900 border-none rounded"
       >
-        <option value="ind">Núcleos Independientes</option>
-        <option value="semestral">Semestre 2</option>
-        <option value="anual">Anual</option>
+        <option value="ind">Independientes</option>
+        <option value="semestral">Mecánica</option>
+        <option value="anual">ICB</option>
+        <option value="anual">Civil</option>
+        <option value="anual">Mixtos</option>
       </select>
     </div>
     <div class="overflow-x-auto">
@@ -69,9 +49,7 @@
             </th>
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              despliegue
-            </th>
+            ></th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -93,6 +71,11 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {{ row.porcentaje }}%
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button class="text-gray-400 hover:text-gray-500">
+                <MoreVerticalIcon class="h-5 w-5" />
+              </button>
             </td>
           </tr>
         </tbody>
@@ -125,6 +108,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import { MoreVerticalIcon } from "lucide-vue-next";
 
 const tableData = ref([
   {

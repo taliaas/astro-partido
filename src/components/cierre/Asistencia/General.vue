@@ -1,69 +1,58 @@
 <template>
-  <!-- Data Table -->
-  <div class="bg-white rounded shadow-lg overflow-hidden">
-    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-      <h2 class="text-xl font-semibold text-gray-900">Total CUJAE</h2>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Militantes INFOEST
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Militantes por Acta
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Asistencia
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Diferencia
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Porciento %
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="(row, index) in tableData" :key="index" class="hover:bg-gray-50">
-            
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ row.mil_infoest }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ row.mil_acta }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ row.asistencia }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ row.diferencia }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ row.porcentaje }}%
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Summary Cards -->
+  <div class="w-full">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 mb-8">
+      <div class="bg-white rounded shadow-lg p-6 border-t-4 border-gray-800">
+        <h3 class="text-lg font-semibold mb-2 text-gray-900">Núcleos Activos</h3>
+        <p class="text-3xl font-bold text-gray-900">15</p>
+      </div>
+      <div class="bg-white rounded shadow-xl p-6 border-t-4 border-blue-600">
+        <h3 class="text-lg font-semibold mb-2">Total Militantes </h3>
+        <p class="text-3xl font-bold">277</p>
+      </div>
+      <div class="bg-white rounded shadow-lg p-6 border-t-4 border-green-600">
+        <h3 class="text-lg font-semibold mb-2">Asistencia</h3>
+        <p class="text-3xl font-bold">148</p>
+      </div>
+      <div class="bg-white rounded shadow-lg p-6 border-t-4 border-red-600">
+        <h3 class="text-lg font-semibold mb-2">Ausencias</h3>
+        <p class="text-3xl font-bold">18</p>
+      </div>
+      <div class="bg-white rounded shadow-lg p-6 border-t-4 border-yellow-400">
+        <h3 class="text-lg font-semibold mb-2 text-gray-900">Porciento%</h3>
+        <p class="text-3xl font-bold text-gray-900">19</p>
+      </div>
+      
     </div>
   </div>
 
+
   <!-- Absence Reasons -->
   <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-1">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h3 class="text-lg font-semibold mb-4 text-gray-900">Análisis de Injustificados</h3>
+      <div class="space-y-4">
+        <div
+          v-for="(reason, index) in absenceReasons"
+          :key="index"
+          class="flex items-center"
+        >
+          <div class="w-3/4 bg-gray-200 rounded-full h-2.5">
+            <div
+              :class="reason.color"
+              class="h-2.5 rounded-full"
+              :style="{ width: reason.percentage + '%' }"
+            ></div>
+          </div>
+          <span class="ml-4 min-w-[100px] text-md font-medium text-gray-600">
+            {{ reason.label }}: {{ reason.count }}
+          </span>
+        </div>
+      </div>
+    </div>
     <!-- Notes Section -->
     <div class="bg-white rounded shadow-lg p-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Notas y Observaciones</h3>
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Análisis de Injustificados</h3>
       <div class="space-y-4">
         <div
           v-for="(note, index) in notes"
@@ -98,8 +87,16 @@ const tableData = ref([
 
 const absenceReasons = ref([
   { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },
-  { label: "Trabajo", count: 3, percentage: 15, color: "bg-blue-600" },
+  { label: "Exterior", count: 0, percentage: 1, color: "bg-blue-600" },
+  { label: "Trabajo", count: 3, percentage: 15, color: "bg-gray-600" },
+  { label: "F/P", count: 6, percentage: 30, color: "bg-yellow-400" },
   { label: "Vacaciones", count: 2, percentage: 10, color: "bg-green-600" },
+  { label: "L/M", count: 0, percentage: 1, color: "bg-pink-600" },
+  { label: "P/P", count: 0, percentage: 1, color: "bg-purple-600" },
+  { label: "P/F", count: 0, percentage: 1, color: "bg-orange-600" },
+  { label: "Mov", count: 0, percentage: 1, color: "bg-blue-300" },
+  { label: "Inj", count: 0, percentage: 1, color: "bg-violet-800" },
+  { label: "Otros", count: 0, percentage: 1, color: "bg-red-400" },
 ]);
 
 const notes = ref([

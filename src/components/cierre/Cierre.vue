@@ -4,6 +4,7 @@
     <header class="bg-white shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-bold text-gray-900">COMITÉ DEL PCC CUJAE</h1>
+        <h2 class="text-2xl font-semibold text-gray-600">Cómputo</h2>
         <div class="flex items-center gap-2">
           <span class="text-sm text-gray-500 font-medium">{{ mes }}</span>
           <span class="text-sm text-gray-500 font-medium">{{ anno }}</span>
