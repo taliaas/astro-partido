@@ -98,16 +98,6 @@
               </table>
             </div>
           </div>
-
-          <!-- Asistencia -->
-          <div>
-
-          </div>
-
-          <!-- ParteMunicipio -->
-          <div>
-
-          </div>
         </div>
       </div>
     </div>
@@ -116,7 +106,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import Search from './Search.vue';
+import Search from 'src/components/Search.vue';
 
 const actas = ref([
   {

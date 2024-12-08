@@ -114,7 +114,7 @@
 
 import { Bell, FileText, PlusCircle, Upload, Clock, Files, CheckCircle, MoreVertical, Globe, User, LogOut } from "lucide-vue-next";
 import { Button } from '@/components/ui/button'
-import Calendar from "./ui/calendar/Calendar.vue";
+import Calendar from "src/components/ui/calendar/Calendar.vue";
 import { type DateValue, getLocalTimeZone, today } from '@internationalized/date'
 import { type Ref, ref } from 'vue'
 
