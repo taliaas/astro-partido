@@ -30,7 +30,7 @@
   <!-- Absence Reasons -->
   <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-1">
     <div class="bg-white rounded-lg shadow-lg p-6">
-      <h3 class="text-lg font-semibold mb-4 text-gray-900">Análisis de Injustificados</h3>
+      <h3 class="text-lg font-semibold mb-4 text-gray-900">Causas de  las Ausencias</h3>
       <div class="space-y-4">
         <div
           v-for="(reason, index) in absenceReasons"
@@ -86,11 +86,11 @@ const tableData = ref([
 ]);
 
 const absenceReasons = ref([
-  { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },
-  { label: "Exterior", count: 0, percentage: 1, color: "bg-blue-600" },
-  { label: "Trabajo", count: 3, percentage: 15, color: "bg-gray-600" },
-  { label: "F/P", count: 6, percentage: 30, color: "bg-yellow-400" },
-  { label: "Vacaciones", count: 2, percentage: 10, color: "bg-green-600" },
+  { label: "Enfermedad", count: 6, percentage: 33, color: "bg-red-600" },
+  { label: "Exterior", count: 7, percentage: 38, color: "bg-blue-600" },
+  { label: "Trabajo", count: 3, percentage: 16, color: "bg-gray-600" },
+  { label: "F/P", count: 6, percentage: 33, color: "bg-yellow-400" },
+  { label: "Vacaciones", count: 2, percentage: 11, color: "bg-green-600" },
   { label: "L/M", count: 0, percentage: 1, color: "bg-pink-600" },
   { label: "P/P", count: 0, percentage: 1, color: "bg-purple-600" },
   { label: "P/F", count: 0, percentage: 1, color: "bg-orange-600" },

@@ -1,7 +1,9 @@
 <template>
   <!-- Data Table -->
   <div class="bg-white rounded shadow-lg overflow-hidden">
-    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-gray-200">
+    
+    <div class="flex px-4 py-5 sm:px-6 bg-gray-50 border-gray-200">
+    <h2 class="p-3 font-semibold text-gray-900 ">Núcleos</h2>
       <select
         v-model="nucleoSeleccionado"
         class="p-3 font-semibold text-gray-900 border-none rounded"
@@ -20,7 +22,7 @@
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Núcleos
+              Áreas
             </th>
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -35,17 +37,28 @@
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
+              Militantes INFOEST
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Militantes por Acta
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Diferencia
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Asistencia
             </th>
+
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Ausentes
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Porciento %
+              Porciento 
             </th>
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -64,11 +77,18 @@
               {{ row.entrega }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ row.asistencia }}
+              {{ row.mil_infoest }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ row.ausentes }}
+              {{ row.mil_acta }}
             </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ row.diferencia }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ row.asistencia }}
+            </td>
+
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {{ row.porcentaje }}%
             </td>
@@ -115,9 +135,11 @@ const tableData = ref([
     nucleo: "Arquitectura",
     fecha: "-",
     entrega: "-",
+    mil_infoest: 11,
+    mil_acta: 11,
     total: 12,
     asistencia: 0,
-    ausentes: 12,
+    diferencia: 12,
     porcentaje: 0,
   },
   {
@@ -126,7 +148,7 @@ const tableData = ref([
     entrega: "8-marz",
     total: 16,
     asistencia: 10,
-    ausentes: 6,
+    diferencia: 6,
     porcentaje: 62.5,
   },
   {
@@ -135,7 +157,7 @@ const tableData = ref([
     entrega: "-",
     total: 16,
     asistencia: 0,
-    ausentes: 16,
+    diferencia: 16,
     porcentaje: 0,
   },
 ]);

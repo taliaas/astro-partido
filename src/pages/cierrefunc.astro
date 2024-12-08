@@ -1,8 +1,13 @@
 ---
-import BalanceCierre from "@/components/cierre/Cierre.vue";
 import RootLayout from "../layouts/RootLayout.astro";
+import Computo from "@/components/cierre/Computo.vue";
+import Asistencia from "@/components/cierre/Asistencia.vue";
+import Parte from "@/components/cierre/Parte.vue";
 ---
 
-<RootLayout >
-    <BalanceCierre client:load />
+<RootLayout>
+    <Computo client:load />
+    <Parte client:load />
+    
+    <Asistencia client:load />
 </RootLayout>
