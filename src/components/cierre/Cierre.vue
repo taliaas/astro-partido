@@ -4,7 +4,10 @@
     <header class="bg-white shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-bold text-gray-900">COMITÉ DEL PCC CUJAE</h1>
-        <p class="text-sm text-gray-500">Marzo 2024</p>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-500 font-medium">{{ mes }}</span>
+          <span class="text-sm text-gray-500 font-medium">{{ anno }}</span>
+        </div>
       </div>
     </header>
 
@@ -17,11 +20,6 @@
             CÓMPUTO PARA EL CONTROL DE LAS ACTAS DE LA REUNIONES ORDINARIAS Y SUS
             INDICADORES
           </p>
-          <div class="flex items-center gap-2">
-            <span class="text-sm font-medium">Mes:</span>
-            <span class="text-sm font-bold text-primary">{{ mes }}</span>
-            <!--poner un select para el mes -->
-          </div>
         </div>
         <Search />
         <!-- Table -->
@@ -157,6 +155,7 @@ const actas = ref([
   },
 ]);
 const mes = ref("Marzo");
+const anno = ref(2024);
 </script>
 
 <style>

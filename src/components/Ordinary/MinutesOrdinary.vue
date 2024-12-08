@@ -74,9 +74,9 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-import FirstStep from "src/components/FirstStep.vue";
-import SecondStep from "src/components/SecondStep.vue";
-import ThirdStep from "src/components/ThirdStep.vue"
+import FirstStep from "src/components/Ordinary/FirstStep.vue";
+import SecondStep from "src/components/Ordinary/SecondStep.vue";
+import ThirdStep from "src/components/Ordinary/ThirdStep.vue"
 
 const currentStep = ref(1);
 const formData = reactive({
