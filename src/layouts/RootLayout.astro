@@ -20,11 +20,11 @@ import { ClientRouter } from "astro:transitions";
   <body>
     <div class="min-h-screen bg-gray-50">
       <!-- Header -->
-      <Header />
+      <Header client:load />
 
       <div class="flex">
         <!-- Left Sidebar -->
-        <Sidebar />
+        <Sidebar client:load />
 
         <!-- Main Content -->
         <main class="flex-1">
@@ -32,7 +32,7 @@ import { ClientRouter } from "astro:transitions";
         </main>
 
         <!-- Right Sidebar -->
-        <RightSidebar />
+        <RightSidebar client:load />
       </div>
     </div>
   </body>
