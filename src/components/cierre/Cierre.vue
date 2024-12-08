@@ -1,117 +1,150 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <!-- Header Section -->
-        <div class="p-6 border-b border-gray-100">
-          <div class="mb-8">
-            <h1 class="text-3xl font-semibold text-gray-900">Cierre del Funcionamiento PCC CUJAE</h1>
-            <h2 class="text-xl m-6 font-semibold text-gray-600">Cómite del PCC CUJAE</h2>
-          </div>
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+        <h1 class="text-2xl font-bold text-gray-900">COMITÉ DEL PCC CUJAE</h1>
+        <p class="text-sm text-gray-500">Marzo 2024</p>
+      </div>
+    </header>
 
-          <!-- Cómputo -->
-          <div>
-            <div class="flex justify-between items-center mt-4 m-6">
-              <p class="text-sm text-gray-600">CÓMPUTO PARA EL CONTROL DE LAS ACTAS DE LA REUNIONES ORDINARIAS Y SUS
-                INDICADORES</p>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-medium">Mes:</span>
-                <span class="text-sm font-bold text-primary">{{ mes }}</span> <!--poner un select para el mes -->
-              </div>
-            </div>
-            <Search />
-            <!-- Table -->
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Núcleos</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Puntos del Orden del Día</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total de acuerdos </th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Particip. Org Sup</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Invitados</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Rendición</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Análisis de Objs</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Política de cuadros</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Atención FEU</th>
-                    <th scope="col"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Atención UJC</th>
-                    <th scope="col" class="relative px-6 py-3">
-                      <span class="sr-only">Acciones</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="acta in actas" :key="acta.id" class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm font-medium text-gray-900">{{ acta.nucleo }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.puntos }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.acuerdos }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.particip }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.invitados }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.rendicion }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.obj }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.cuadros }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.feu }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">{{ acta.ujc }}</div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl bg-white mx-auto mt-5 px-3 py-8 sm:px-6 lg:px-8">
+      <!-- Cómputo -->
+      <div>
+        <div class="flex justify-between items-center mt-4 m-6">
+          <p class="text-sm text-gray-600">
+            CÓMPUTO PARA EL CONTROL DE LAS ACTAS DE LA REUNIONES ORDINARIAS Y SUS
+            INDICADORES
+          </p>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-medium">Mes:</span>
+            <span class="text-sm font-bold text-primary">{{ mes }}</span>
+            <!--poner un select para el mes -->
           </div>
         </div>
+        <Search />
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Núcleos
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Puntos del Orden del Día
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Total de acuerdos
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Particip. Org Sup
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Invitados
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Rendición
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Análisis de Objs
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Política de cuadros
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Atención FEU
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Atención UJC
+                </th>
+                <th scope="col" class="relative px-6 py-3">
+                  <span class="sr-only">Acciones</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="acta in actas" :key="acta.id" class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ acta.nucleo }}
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.puntos }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.acuerdos }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.particip }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.invitados }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.rendicion }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.obj }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.cuadros }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.feu }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ acta.ujc }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import Search from 'src/components/Search.vue';
+import { ref } from "vue";
+import Search from "src/components/Search.vue";
 
 const actas = ref([
   {
     id: 1,
-    nucleo: 'Industrial',
+    nucleo: "Industrial",
     puntos: 8,
     acuerdos: 7,
     particip: 13,
@@ -120,10 +153,10 @@ const actas = ref([
     invitados: 3,
     cuadros: 1,
     feu: 1,
-    ujc: 0
-  }
-])
-const mes = ref('Marzo')
+    ujc: 0,
+  },
+]);
+const mes = ref("Marzo");
 </script>
 
 <style>

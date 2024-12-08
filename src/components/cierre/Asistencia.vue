@@ -97,15 +97,7 @@
                   {{ row.ausentes }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <div class="flex items-center">
-                    <div class="w-16 bg-gray-200 rounded-full h-2.5 mr-2">
-                      <div
-                        class="bg-blue-600 h-2.5 rounded-full"
-                        :style="{ width: row.porcentaje + '%' }"
-                      ></div>
-                    </div>
-                    {{ row.porcentaje }}%
-                  </div>
+                  {{ row.porcentaje }}%
                 </td>
               </tr>
             </tbody>
@@ -204,23 +196,25 @@ const absenceReasons = ref([
 ]);
 
 const notes = ref([
-    {
-    texto: 'Hay 3 procesos de desactivación en curso, 1 en el extranjero en beca doctoral.',
-    nucleo: 'Automática',
-    fecha: 'Mar 24',
-    bgColor: 'bg-blue-50'
+  {
+    texto:
+      "Hay 3 procesos de desactivación en curso, 1 en el extranjero en beca doctoral.",
+    nucleo: "Automática",
+    fecha: "Mar 24",
+    bgColor: "bg-blue-50",
   },
-{
-    texto: '1 con Parkinson enfermo, imposible de asistir. (El Núcleo acordó su flexibilización.',
-    nucleo: 'CIME',
-    fecha: 'Mar 24',
-    bgColor: 'bg-yellow-50'
+  {
+    texto:
+      "1 con Parkinson enfermo, imposible de asistir. (El Núcleo acordó su flexibilización.",
+    nucleo: "CIME",
+    fecha: "Mar 24",
+    bgColor: "bg-yellow-50",
   },
-{
-    texto: 'Revisar trámite de traslado de Modesto.',
-    nucleo: 'VRIPG',
-    fecha: 'Mar 24',
-    bgColor: 'bg-green-50'
+  {
+    texto: "Revisar trámite de traslado de Modesto.",
+    nucleo: "VRIPG",
+    fecha: "Mar 24",
+    bgColor: "bg-green-50",
   },
 ]);
 </script>
