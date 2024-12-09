@@ -1,74 +1,96 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label for="nucleo" class="block text-md font-medium text-gray-700">Núcleo</label>
+      <select
+        v-model="selectedNucleo"
+        class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+      >
+        <option value="indep">Independiente</option>
+        <option value="mec">Mecánica</option>
+        <option value="icb">ICB</option>
+        <option value="civ">Civil</option>
+        <option value="mix">Mixtos</option>
+      </select>
+    </div>
+    <!-- Seleccionar el area -->
+    <div>
+      <label for="area" class="block text-md font-medium text-gray-700">Área</label>
+      <select
+        v-model="selectedArea"
+        class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+      >
+        <option value="inf">Informática</option>
+        <option value="indust">Industrial</option>
+        <option value="mecan">Mecánica</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div class="w-3/4">
-      <label for="fecha" class="block text-md font-medium text-gray-700">Fecha de la reunión</label>
-      <Input type="date" id="fecha" v-model="formData.fecha" required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
+      <label for="fecha" class="block text-md font-medium text-gray-700"
+        >Fecha de la reunión</label
+      >
+      <Input
+        type="date"
+        id="fecha"
+        v-model="formData.fecha"
+        required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+      />
     </div>
     <div class="w-3/4">
       <label for="hora" class="block text-md font-medium text-gray-700">Hora</label>
-      <Input type="time" id="hora" v-model="formData.hora" required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
+      <Input
+        type="time"
+        id="hora"
+        v-model="formData.hora"
+        required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+      />
     </div>
     <div class="w-3/4">
       <label for="lugar" class="block text-md font-medium text-gray-700">Lugar</label>
-      <Input type="text" id="lugar" v-model="formData.lugar" required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
-    </div>
-    <div class="w-3/4">
-      <!-- Seleccionar el area -->
-      <label for="area" class="block text-md font-medium text-gray-700">Área</label>
-      <Input type="text" id="area" v-model="formData.area" required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
+      <Input
+        type="text"
+        id="lugar"
+        v-model="formData.lugar"
+        required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+      />
     </div>
   </div>
 
   <!-- 2. Presidencia -->
   <div>
-    <label for="secretario" class="block text-md font-medium text-gray-700">Nombre del Secretario General</label>
-    <Input type="text" id="secretario" v-model="formData.secretario" required
-      class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
+    <label for="secretario" class="block text-md font-medium text-gray-700"
+      >Nombre del Secretario General</label
+    >
+    <Input
+      type="text"
+      id="secretario"
+      v-model="formData.secretario"
+      required
+      class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
   </div>
 
-  <!-- 3. Asistencia 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="w-1/2">
-      <label for="total" class="block text-md font-medium text-gray-700"
-        >Total de miembros</label
-      >
-      <Input
-        type="number"
-        id="total"
-        v-model="formData.totalMiembros"
-        required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
-    </div>
-    <div class="w-1/2">
-      <label for="asistentes" class="block text-md font-medium text-gray-700"
-        >Presentes</label
-      >
-      <Input
-        type="number"
-        id="asistentes"
-        v-model="formData.asistentes"
-        required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
-    </div>
-  </div>
--->
   <!-- 4. Relación de Asistencia -->
   <div class="overflow-x-auto">
-    <label for="secretario" class="block m-3 text-md font-medium text-gray-700">Relación de Militantes del
-      Núcleo</label>
+    <label for="secretario" class="block m-3 text-md font-medium text-gray-700"
+      >Relación de Militantes del Núcleo</label
+    >
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
             Nombre Completo
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
             Estado
           </th>
         </tr>
@@ -90,14 +112,18 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { reactive } from "vue";
 import Input from "../ui/input/Input.vue";
 
-// const currentStep = ref(1);
+const selectedNucleo = ref("indep");
+const selectedArea = ref("inf");
+
 const formData = reactive({
   fecha: "",
   hora: "",
   lugar: "",
+  nucleo: "",
   area: "",
   secretario: "",
   totalMiembros: 20,
@@ -110,6 +136,5 @@ const asistentes = reactive([
   { nombre: "Juan Pérez", estado: "presente" },
   { nombre: "María García", estado: "presente" },
   { nombre: "Carlos Rodríguez", estado: "presente" },
-  // Añade más asistentes según sea necesario
 ]);
 </script>

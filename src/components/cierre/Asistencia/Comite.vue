@@ -65,12 +65,12 @@
   <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-1">
     <div class="bg-white rounded shadow-lg p-6">
       <h3 class="text-lg font-semibold mb-4 text-gray-900">Causas de las Ausencias</h3>
-      <div class="w-3/4 space-y-4 p-3">
+      <div class="w-full space-y-4 p-3">
         <div v-for="(reason, index) in absenceReasons" :key="index" class="flex items-center">
-          <div class="w-full bg-gray-200 rounded-full h-2.5">
+          <div class="w-3/4 bg-gray-200 rounded-full h-2.5">
             <div :class="reason.color" class="h-2.5 rounded-full" :style="{ width: reason.percentage + '%' }"></div>
           </div>
-          <span class="ml-4 min-w-[100px] text-sm text-gray-600">
+          <span class="ml-4 min-w-[100px] text-md font-medium text-gray-600">
             {{ reason.label }}: {{ reason.count }}
           </span>
         </div>
@@ -110,15 +110,15 @@ const tableData = ref([
 
 const absenceReasons = ref([
   { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },
-  { label: "Exterior", count: 3, percentage: 1, color: "bg-blue-600" },
+  { label: "Extranjero", count: 3, percentage: 1, color: "bg-blue-600" },
   { label: "Trabajo", count: 3, percentage: 15, color: "bg-gray-600" },
-  { label: "F/P", count: 6, percentage: 30, color: "bg-yellow-400" },
+  { label: "Fuera de Provincia", count: 6, percentage: 30, color: "bg-yellow-400" },
   { label: "Vacaciones", count: 2, percentage: 10, color: "bg-green-600" },
-  { label: "L/M", count: 2, percentage: 1, color: "bg-pink-600" },
-  { label: "P/P", count: 3, percentage: 1, color: "bg-purple-600" },
-  { label: "P/F", count: 2, percentage: 1, color: "bg-orange-600" },
-  { label: "Mov", count: 2, percentage: 1, color: "bg-blue-300" },
-  { label: "Inj", count: 3, percentage: 1, color: "bg-violet-800" },
+  { label: "Lic. de Maternidad", count: 2, percentage: 1, color: "bg-pink-600" },
+  { label: "Problemas Personales", count: 3, percentage: 1, color: "bg-purple-600" },
+  { label: "Problemas Familiares", count: 2, percentage: 1, color: "bg-orange-600" },
+  { label: "Movilizado", count: 2, percentage: 1, color: "bg-blue-300" },
+  { label: "Injustificado", count: 3, percentage: 1, color: "bg-violet-800" },
   { label: "Otros", count: 2, percentage: 1, color: "bg-red-400" },
 ]);
 

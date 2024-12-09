@@ -91,10 +91,26 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {{ row.porcentaje }}%
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button class="text-gray-400 hover:text-gray-500">
-                <MoreVerticalIcon class="h-5 w-5" />
-              </button>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-md font-medium">
+              <DropdownMenu class="bg-white p-2 rounded-lg shadow-md">
+                <DropdownMenuTrigger as-child>
+                  <Button variant="ghost" class="w-8 h-8 p-0">
+                    <MoreVerticalIcon class="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem @click="">
+                    <Eye class="w-4 h-4" />
+                    <span>Detalles</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Star class="w-4 h-4" /> <span>Destacar</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                  <Copy class="w-4 h-4" /> <span>Copiar</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </td>
           </tr>
         </tbody>
@@ -127,7 +143,16 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import { MoreVerticalIcon } from "lucide-vue-next";
+import { MoreVerticalIcon, Eye, Star, Copy } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const nucleoSeleccionado = ref("ind");
 const tableData = ref([
