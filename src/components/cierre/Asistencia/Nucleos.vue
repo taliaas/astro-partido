@@ -1,9 +1,8 @@
 <template>
   <!-- Data Table -->
   <div class="bg-white rounded shadow-lg overflow-hidden">
-    
     <div class="flex px-4 py-5 sm:px-6 bg-gray-50 border-gray-200">
-    <h2 class="p-3 font-semibold text-gray-900 ">Núcleos</h2>
+      <h2 class="p-3 font-semibold text-gray-900">Núcleos</h2>
       <select
         v-model="nucleoSeleccionado"
         class="p-3 font-semibold text-gray-900 border-none rounded"
@@ -24,10 +23,14 @@
             >
               Áreas
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Fecha de Reunión
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Fecha de Entrega
             </th>
             <th
@@ -54,9 +57,11 @@
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Porciento 
+              Porciento
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            ></th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -103,7 +108,12 @@
     <div class="bg-white rounded shadow-lg p-6">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Notas y Observaciones</h3>
       <div class="space-y-4">
-        <div v-for="(note, index) in notes" :key="index" class="p-4 rounded-lg" :class="note.bgColor">
+        <div
+          v-for="(note, index) in notes"
+          :key="index"
+          class="p-4 rounded-lg"
+          :class="note.bgColor"
+        >
           <p class="text-sm text-gray-800">{{ note.texto }}</p>
           <div class="mt-2 flex items-center text-xs text-gray-600">
             <span class="font-medium">{{ note.nucleo }}</span>
@@ -116,9 +126,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from "vue"
+import { ref } from "vue";
 import { MoreVerticalIcon } from "lucide-vue-next";
 
+const nucleoSeleccionado = ref("ind");
 const tableData = ref([
   {
     nucleo: "Arquitectura",
@@ -150,8 +161,6 @@ const tableData = ref([
     porcentaje: 0,
   },
 ]);
-
-const nucleoSeleccionado = ref("ind");
 
 const absenceReasons = ref([
   { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },
