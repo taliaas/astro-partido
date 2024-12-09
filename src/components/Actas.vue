@@ -200,15 +200,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-defineProps<{
-  payment: {
-    id: string;
-  };
-}>();
-
-function copy(id: string) {
-  navigator.clipboard.writeText(id);
-}
 const searchQuery = ref("");
 const selectedDepartment = ref("");
 const selectedMonth = ref("");
@@ -254,11 +245,6 @@ const filteredActas = computed(() => {
   });
 });
 
-//const router = useRouter();
-
-function openNuevaActa() {
-  //router.push('/addRO');
-}
 function openPage() {
   window.location.href = "/addRO";
 }
