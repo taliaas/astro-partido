@@ -13,121 +13,129 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl bg-white mx-auto mt-5 px-3 py-8 sm:px-6 lg:px-8">
+    <main
+      class="max-w-7xl rounded bg-white shadow-lg mx-auto mt-5 px-3 py-8 sm:px-6 lg:px-8"
+    >
       <!-- Cómputo -->
       <div>
         <div class="flex justify-between items-center mt-4 m-6">
-          <p class="text-sm text-gray-600">
+          <p class="text-md text-gray-600">
             CÓMPUTO PARA EL CONTROL DE LAS ACTAS DE LA REUNIONES ORDINARIAS Y SUS
             INDICADORES
           </p>
         </div>
-        <Search />
-        <!-- Table -->
+
+        <div class="border-b border-gray-200 p-6">
+          <!-- Search and Filter Section -->
+          <div class="mt-4 flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
+            <div class="flex-1">
+              <label for="search" class="mb-1 block text-sm font-medium text-gray-700"
+                >Buscar</label
+              >
+              <div class="flex-1 relative">
+                <SearchIcon
+                  class="h-5 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
+                />
+                <input
+                  id="search"
+                  v-model="searchQuery"
+                  placeholder="Buscar ..."
+                  class="w-full rounded pl-10 pr-4 py-2 border shadow-sm border-gray-300 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+            <div class="flex-1 ">
+              <label
+                for="nucleo-filter"
+                class="mb-1 block text-sm font-medium text-gray-700"
+                >Filtrar por Área</label
+              >
+              <select
+                id="nucleo-filter"
+                v-model="selectedNucleos" multiple
+                class="w-1/2 rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option v-for="nucleo in allNucleos" :key="nucleo.id" :value="nucleo.id">
+                  {{ nucleo.name }}
+                </option>
+              </select>
+              <Filter
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400 pointer-events-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Section -->
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
+            <!-- Table Headers -->
             <thead class="bg-gray-50">
               <tr>
                 <th
                   scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  class="sticky left-0 z-10 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
                 >
                   Núcleos
                 </th>
                 <th
+                  v-for="indicator in indicators"
+                  :key="indicator.id"
                   scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
                 >
-                  Puntos del Orden del Día
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Total de acuerdos
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Particip. Org Sup
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Invitados
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Rendición
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Análisis de Objs
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Política de cuadros
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Atención FEU
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Atención UJC
-                </th>
-                <th scope="col" class="relative px-6 py-3">
-                  <span class="sr-only">Acciones</span>
+                  {{ indicator.name }}
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="acta in actas" :key="acta.id" class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">
-                    {{ acta.nucleo }}
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.puntos }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.acuerdos }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.particip }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.invitados }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.rendicion }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.obj }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.cuadros }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.feu }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.ujc }}</div>
-                </td>
-              </tr>
+
+            <!-- Table Body -->
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <template v-for="(area, areaIndex) in filteredAreas" :key="area.id">
+                <!-- Area Group -->
+                <tr v-if="area.nucleos.length > 0" class="bg-gray-50">
+                  <td
+                    colspan="100%"
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
+                  >
+                    {{ area.name }}
+                  </td>
+                </tr>
+                <!-- Nucleos within Area -->
+                <tr
+                  v-for="nucleo in area.nucleos"
+                  :key="nucleo.id"
+                  :class="{ 'bg-green-50': nucleo.highlighted }"
+                >
+                  <td
+                    class="sticky left-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-sm font-medium text-gray-900"
+                  >
+                    {{ nucleo.name }}
+                  </td>
+                  <td
+                    v-for="indicator in indicators"
+                    :key="indicator.id"
+                    class="whitespace-nowrap px-6 py-4 text-sm text-gray-500"
+                  >
+                    {{ nucleo.values[indicator.id] || "-" }}
+                  </td>
+                </tr>
+                <!-- Subtotal for Area -->
+                <tr v-if="area.showSubtotal" class="bg-gray-100">
+                  <td
+                    class="sticky left-0 z-10 bg-gray-100 px-6 py-4 text-sm font-semibold text-gray-900"
+                  >
+                    Subtotal {{ area.name }}
+                  </td>
+                  <td
+                    v-for="indicator in indicators"
+                    :key="indicator.id"
+                    class="px-6 py-4 text-sm font-semibold text-gray-900"
+                  >
+                    {{ calculateSubtotal(area, indicator.id) }}
+                  </td>
+                </tr>
+              </template>
             </tbody>
           </table>
         </div>
@@ -137,57 +145,122 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import Search from "src/components/Search.vue";
+import { ref, computed } from "vue";
+import { Filter, SearchIcon } from "lucide-vue-next";
 
-const actas = ref([
-  {
-    id: 1,
-    nucleo: "Industrial",
-    puntos: 8,
-    acuerdos: 7,
-    particip: 13,
-    rendicion: null,
-    obj: null,
-    invitados: 3,
-    cuadros: 1,
-    feu: 1,
-    ujc: 0,
-  },
-]);
 const mes = ref("Marzo");
 const anno = ref(2024);
+
+const indicators = ref([
+  { id: "puntosOrdenDia", name: "Puntos Orden Día" },
+  { id: "totalAcuerdos", name: "Total Acuerdos" },
+  { id: "participacionSup", name: "Particip. Sup" },
+  { id: "invitadosUJC", name: "Invitados UJC" },
+  { id: "rendicionCuentas", name: "Rendición Cuentas" },
+]);
+
+const areas = ref([
+  {
+    id: 1,
+    name: "Independientes",
+    showSubtotal: true,
+    nucleos: [
+      {
+        id: 1,
+        name: "Arquitectura",
+        highlighted: false,
+        values: {
+          puntosOrdenDia: 8,
+          totalAcuerdos: 4,
+          participacionSup: 1,
+          invitadosUJC: 0,
+          rendicionCuentas: 1,
+        },
+      },
+      {
+        id: 2,
+        name: "Automática",
+        highlighted: false,
+        values: {
+          puntosOrdenDia: 6,
+          totalAcuerdos: 5,
+          participacionSup: 1,
+          invitadosUJC: 1,
+          rendicionCuentas: 0,
+        },
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Mecánica",
+    showSubtotal: true,
+    nucleos: [
+      {
+        id: 3,
+        name: "CP Mecánica",
+        highlighted: false,
+        values: {
+          puntosOrdenDia: 7,
+          totalAcuerdos: 3,
+          participacionSup: 2,
+          invitadosUJC: 1,
+          rendicionCuentas: 1,
+        },
+      },
+    ],
+  },
+]);
+
+const searchQuery = ref("");
+const selectedNucleos = ref([]);
+
+const allNucleos = computed(() => {
+  return areas.value.flatMap((area) => area.nucleos);
+});
+
+const filteredAreas = computed(() => {
+  return areas.value
+    .map((area) => {
+      const filteredNucleos = area.nucleos.filter((nucleo) => {
+        const matchesSearch = nucleo.name
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase());
+        const matchesFilter =
+          selectedNucleos.value.length === 0 || selectedNucleos.value.includes(nucleo.id);
+        return matchesSearch && matchesFilter;
+      });
+      return {
+        ...area,
+        nucleos: filteredNucleos,
+      };
+    })
+    .filter((area) => area.nucleos.length > 0);
+});
+
+const calculateSubtotal = (area, indicatorId) => {
+  return area.nucleos.reduce((sum, nucleo) => {
+    return sum + (nucleo.values[indicatorId] || 0);
+  }, 0);
+};
 </script>
 
 <style>
-table {
-  width: 100%;
-  border-collapse: collapse;
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
 }
 
-thead {
-  background-color: #f3f4f6;
-  /* Fondo más claro para la cabecera */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
 }
 
-thead th {
-  text-align: left;
-  padding: 12px;
-  font-weight: bold;
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-tbody tr {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #f9fafb;
-  /* Fondo alternado */
-}
-
-td {
-  text-align: center;
-  /* Centrar contenido numérico */
-  padding: 10px;
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 4px;
 }
 </style>
