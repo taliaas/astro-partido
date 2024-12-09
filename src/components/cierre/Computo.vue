@@ -25,7 +25,7 @@
           </p>
         </div>
 
-        <div class="border-b border-gray-200 p-6">
+        <div class="border-b border-gray-200 p-2">
           <!-- Search and Filter Section -->
           <div class="mt-4 flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
             <div class="flex-1">
@@ -48,7 +48,7 @@
               <label
                 for="nucleo-filter"
                 class="mb-1 block text-sm font-medium text-gray-700"
-                >Filtrar por Área</label
+                >Filtrar por Núcleo</label
               >
               <select
                 id="nucleo-filter"
@@ -70,11 +70,11 @@
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <!-- Table Headers -->
-            <thead class="bg-gray-50">
+            <thead class="bg-gray-100">
               <tr>
                 <th
                   scope="col"
-                  class="sticky left-0 z-10 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
+                  class="sticky left-0 z-10 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900"
                 >
                   Núcleos
                 </th>
@@ -93,7 +93,7 @@
             <tbody class="divide-y divide-gray-200 bg-white">
               <template v-for="(area, areaIndex) in filteredAreas" :key="area.id">
                 <!-- Area Group -->
-                <tr v-if="area.nucleos.length > 0" class="bg-gray-50">
+                <tr v-if="area.nucleos.length > 0" class="bg-blue-50">
                   <td
                     colspan="100%"
                     class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
