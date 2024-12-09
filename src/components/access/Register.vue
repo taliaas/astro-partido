@@ -110,10 +110,10 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive } from "vue";
-import Button from "./ui/button/Button.vue";
-import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-vue-next";
+<script setup lang="ts">
+import { Loader2Icon } from "lucide-vue-next";
+import { reactive, ref } from "vue";
+import { Button } from "../ui/button";
 
 const isLoading = ref(false);
 const showPassword = ref(false);

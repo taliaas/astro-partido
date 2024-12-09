@@ -111,7 +111,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { SearchIcon, PlusIcon, UploadIcon, MoreVerticalIcon } from 'lucide-vue-next'
 import Button from './ui/button/Button.vue';

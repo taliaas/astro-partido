@@ -8,40 +8,26 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Fecha de Reunión
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Fecha de Entrega
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Militantes INFOEST
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Militantes por Acta
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Diferencia
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Asistencia
             </th>
 
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Porciento %
             </th>
           </tr>
@@ -80,17 +66,9 @@
     <div class="bg-white rounded shadow-lg p-6">
       <h3 class="text-lg font-semibold mb-4 text-gray-900">Causas de las Ausencias</h3>
       <div class="w-3/4 space-y-4 p-3">
-        <div
-          v-for="(reason, index) in absenceReasons"
-          :key="index"
-          class="flex items-center"
-        >
+        <div v-for="(reason, index) in absenceReasons" :key="index" class="flex items-center">
           <div class="w-full bg-gray-200 rounded-full h-2.5">
-            <div
-              :class="reason.color"
-              class="h-2.5 rounded-full"
-              :style="{ width: reason.percentage + '%' }"
-            ></div>
+            <div :class="reason.color" class="h-2.5 rounded-full" :style="{ width: reason.percentage + '%' }"></div>
           </div>
           <span class="ml-4 min-w-[100px] text-sm text-gray-600">
             {{ reason.label }}: {{ reason.count }}
@@ -102,12 +80,7 @@
     <div class="bg-white rounded shadow-lg p-6">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Análisis de Injustificados</h3>
       <div class="space-y-4">
-        <div
-          v-for="(note, index) in notes"
-          :key="index"
-          class="p-4 rounded-lg"
-          :class="note.bgColor"
-        >
+        <div v-for="(note, index) in notes" :key="index" class="p-4 rounded-lg" :class="note.bgColor">
           <p class="text-sm text-gray-800">{{ note.texto }}</p>
           <div class="mt-2 flex items-center text-xs text-gray-600">
             <span class="font-medium">{{ note.nucleo }}</span>
@@ -119,7 +92,7 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 
 const tableData = ref([

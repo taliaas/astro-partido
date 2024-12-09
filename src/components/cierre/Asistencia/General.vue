@@ -32,17 +32,9 @@
     <div class="bg-white rounded-lg shadow-lg p-6">
       <h3 class="text-lg font-semibold mb-4 text-gray-900">Causas de  las Ausencias</h3>
       <div class="space-y-4">
-        <div
-          v-for="(reason, index) in absenceReasons"
-          :key="index"
-          class="flex items-center"
-        >
+        <div v-for="(reason, index) in absenceReasons" :key="index" class="flex items-center">
           <div class="w-3/4 bg-gray-200 rounded-full h-2.5">
-            <div
-              :class="reason.color"
-              class="h-2.5 rounded-full"
-              :style="{ width: reason.percentage + '%' }"
-            ></div>
+            <div :class="reason.color" class="h-2.5 rounded-full" :style="{ width: reason.percentage + '%' }"></div>
           </div>
           <span class="ml-4 min-w-[100px] text-md font-medium text-gray-600">
             {{ reason.label }}: {{ reason.count }}
@@ -54,12 +46,7 @@
     <div class="bg-white rounded shadow-lg p-6">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Análisis de Injustificados</h3>
       <div class="space-y-4">
-        <div
-          v-for="(note, index) in notes"
-          :key="index"
-          class="p-4 rounded-lg"
-          :class="note.bgColor"
-        >
+        <div v-for="(note, index) in notes" :key="index" class="p-4 rounded-lg" :class="note.bgColor">
           <p class="text-sm text-gray-800">{{ note.texto }}</p>
           <div class="mt-2 flex items-center text-xs text-gray-600">
             <span class="font-medium">{{ note.nucleo }}</span>
@@ -71,7 +58,7 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 
 const tableData = ref([

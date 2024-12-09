@@ -24,14 +24,10 @@
             >
               Áreas
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Fecha de Reunión
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Fecha de Entrega
             </th>
             <th
@@ -60,9 +56,7 @@
             >
               Porciento 
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            ></th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -109,12 +103,7 @@
     <div class="bg-white rounded shadow-lg p-6">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Notas y Observaciones</h3>
       <div class="space-y-4">
-        <div
-          v-for="(note, index) in notes"
-          :key="index"
-          class="p-4 rounded-lg"
-          :class="note.bgColor"
-        >
+        <div v-for="(note, index) in notes" :key="index" class="p-4 rounded-lg" :class="note.bgColor">
           <p class="text-sm text-gray-800">{{ note.texto }}</p>
           <div class="mt-2 flex items-center text-xs text-gray-600">
             <span class="font-medium">{{ note.nucleo }}</span>
@@ -126,8 +115,7 @@
     </div>
   </div>
 </template>
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
 import { MoreVerticalIcon } from "lucide-vue-next";
 
 const tableData = ref([

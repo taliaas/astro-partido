@@ -18,12 +18,12 @@
             <h3 class="mb-4 text-sm font-medium text-gray-500">Acceso Rápido</h3>
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                <a href="/addRO"
-                  class="flex flex-col items-center p-3 text-sm text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100"> 
-                  <FileText class="h-5 w-5 mb-1" />
-                   Plantillas
-                </a>
-              </div>
+                    <a href="/addRO"
+                        class="flex flex-col items-center p-3 text-sm text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100">
+                        <FileText class="h-5 w-5 mb-1" />
+                        Plantillas
+                    </a>
+                </div>
                 <button
                     class="flex flex-col items-center p-3 text-sm text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100">
                     <Users class="h-5 w-5 mb-1" />
@@ -60,17 +60,16 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
-    FileText,
-    Users,
-    HelpCircle,
     BookOpen,
-    ActivitySquare,
-    Upload,
+    Download,
     Edit,
-    Download
-} from 'lucide-vue-next'
+    FileText,
+    HelpCircle,
+    Upload,
+    Users
+} from 'lucide-vue-next';
 
 const recentActivity = [
     {

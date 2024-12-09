@@ -13,21 +13,13 @@
           <label for="email" class="block text-sm font-medium text-gray-700">
             Correo electrónico
           </label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            required
+          <input id="email" v-model="email" type="email" required
             class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="nombre@cujae.edu.cu"
-          />
+            placeholder="nombre@cujae.edu.cu" />
         </div>
 
-        <button
-          type="submit"
-          :disabled="isLoading"
-          class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="submit" :disabled="isLoading"
+          class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isLoading ? "Enviando..." : "Enviar instrucciones" }}
         </button>
 
@@ -38,18 +30,15 @@
         </div>
       </form>
 
-      <div
-        v-if="message"
-        class="mt-4 p-4 rounded-md"
-        :class="[success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700']"
-      >
+      <div v-if="message" class="mt-4 p-4 rounded-md"
+        :class="[success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700']">
         {{ message }}
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 
 const email = ref("");

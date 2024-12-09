@@ -87,10 +87,10 @@
     </header>
 </template>
 
-<script setup>
-import { Bell, Search, Globe, User, LogOut, ChevronDown } from 'lucide-vue-next'
+<script setup lang="ts">
+import { Bell, ChevronDown, Globe, LogOut, Search, User } from 'lucide-vue-next';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 </script>
 
 <style scoped>

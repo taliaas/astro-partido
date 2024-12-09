@@ -3,13 +3,9 @@
     <div class="flex justify-between">
       <h3 class="text-lg font-medium">Orden del Día</h3>
       <div>
-        <Button
-          @click="addAgendaItem"
-          class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
-        >
-          <PlusIcon
-            class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
-          />
+        <Button @click="addAgendaItem"
+          class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
+          <PlusIcon class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90" />
           Agregar punto
         </Button>
       </div>
@@ -27,18 +23,12 @@
           <tr v-for="(item, index) in agendaItems" :key="index" class="border-b">
             <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
             <td class="p-4 align-middle">
-              <input
-                type="text"
-                v-model="item.description"
-                class="w-full bg-transparent focus:outline-none"
-                :placeholder="'Descripción del punto ' + (index + 1)"
-              />
+              <input type="text" v-model="item.description" class="w-full bg-transparent focus:outline-none"
+                :placeholder="'Descripción del punto ' + (index + 1)" />
             </td>
             <td class="p-4 align-middle">
-              <button
-                @click="removeAgendaItem(index)"
-                class="text-destructive hover:text-destructive/90 transition-colors duration-200"
-              >
+              <button @click="removeAgendaItem(index)"
+                class="text-destructive hover:text-destructive/90 transition-colors duration-200">
                 <TrashIcon class="h-4 w-4" />
               </button>
             </td>
@@ -52,13 +42,9 @@
       <div class="flex justify-between">
         <h3 class="text-lg font-medium">Acuerdos</h3>
         <div class="flex justify-end">
-          <Button
-            @click="addAgreement"
-            class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
-          >
-            <PlusIcon
-              class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
-            />
+          <Button @click="addAgreement"
+            class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
+            <PlusIcon class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90" />
             Agregar acuerdo
           </Button>
         </div>
@@ -81,33 +67,19 @@
             <tr v-for="(item, index) in agreements" :key="index" class="border-b">
               <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
               <td class="p-4 align-middle">
-                <input
-                  type="text"
-                  v-model="item.description"
-                  class="w-full bg-transparent focus:outline-none"
-                  placeholder="Descripción"
-                />
+                <input type="text" v-model="item.description" class="w-full bg-transparent focus:outline-none"
+                  placeholder="Descripción" />
               </td>
               <td class="p-4 align-middle">
-                <input
-                  type="text"
-                  v-model="item.responsible"
-                  class="w-full bg-transparent focus:outline-none"
-                  placeholder="Responsable"
-                />
+                <input type="text" v-model="item.responsible" class="w-full bg-transparent focus:outline-none"
+                  placeholder="Responsable" />
               </td>
               <td class="p-4 align-middle">
-                <Input
-                  type="date"
-                  v-model="item.date"
-                  class="w-1/2 border-none rounded bg-transparent focus:outline-none"
-                />
+                <Input type="date" v-model="item.date"
+                  class="w-1/2 border-none rounded bg-transparent focus:outline-none" />
               </td>
               <td class="p-4 align-middle">
-                <button
-                  @click="removeAgreement(index)"
-                  class="text-destructive hover:text-destructive/90"
-                >
+                <button @click="removeAgreement(index)" class="text-destructive hover:text-destructive/90">
                   <TrashIcon class="h-4 w-4" />
                 </button>
               </td>
@@ -121,13 +93,9 @@
     <div class="space-y-4">
       <div class="flex justify-between">
         <h3 class="text-lg font-medium">Salidas al Extranjero</h3>
-        <Button
-          @click="addTravel"
-          class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
-        >
-          <PlusIcon
-            class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
-          />
+        <Button @click="addTravel"
+          class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
+          <PlusIcon class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90" />
           Agregar salida
         </Button>
       </div>
@@ -146,52 +114,30 @@
           <tbody>
             <tr v-for="(item, index) in travels" :key="index" class="border-b">
               <td class="p-4 align-middle">
-                <input
-                  type="text"
-                  v-model="item.name"
-                  class="w-full bg-transparent focus:outline-none"
-                  placeholder="Nombre"
-                />
+                <input type="text" v-model="item.name" class="w-full bg-transparent focus:outline-none"
+                  placeholder="Nombre" />
               </td>
               <td class="p-4 align-middle">
-                <input
-                  type="text"
-                  v-model="item.reason"
-                  class="w-full bg-transparent focus:outline-none"
-                  placeholder="Motivo"
-                />
+                <input type="text" v-model="item.reason" class="w-full bg-transparent focus:outline-none"
+                  placeholder="Motivo" />
               </td>
               <td class="p-4 align-middle">
-                <input
-                  type="text"
-                  v-model="item.destination"
-                  class="w-full bg-transparent focus:outline-none"
-                  placeholder="Destino"
-                />
+                <input type="text" v-model="item.destination" class="w-full bg-transparent focus:outline-none"
+                  placeholder="Destino" />
               </td>
               <td class="p-4 align-middle">
-                <input
-                  type="text"
-                  v-model="item.dates"
-                  class="w-full bg-transparent focus:outline-none"
-                  placeholder="Fechas"
-                />
+                <input type="text" v-model="item.dates" class="w-full bg-transparent focus:outline-none"
+                  placeholder="Fechas" />
               </td>
               <td class="p-4 align-middle">
-                <select
-                  v-model="item.status"
-                  class="w-full bg-transparent focus:outline-none rounded"
-                >
+                <select v-model="item.status" class="w-full bg-transparent focus:outline-none rounded">
                   <option value="pendiente">Pendiente</option>
                   <option value="aprobado">Aprobado</option>
                   <option value="rechazado">Rechazado</option>
                 </select>
               </td>
               <td class="p-4 align-middle">
-                <button
-                  @click="removeTravel(index)"
-                  class="text-destructive hover:text-destructive/90"
-                >
+                <button @click="removeTravel(index)" class="text-destructive hover:text-destructive/90">
                   <TrashIcon class="h-4 w-4" />
                 </button>
               </td>
@@ -203,14 +149,12 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive } from "vue";
-import FirstStep from "src/components/FirstStep.vue";
-import Textarea from "./ui/textarea/Textarea.vue";
-import Input from "./ui/input/Input.vue";
-import Button from "./ui/button/Button.vue";
+<script setup lang="ts">
+import { reactive, ref } from "vue";
 
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const agendaItems = ref([{ description: "" }]);
 

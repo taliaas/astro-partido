@@ -112,11 +112,11 @@
 
 <script setup lang="ts">
 
-import { Bell, FileText, PlusCircle, Upload, Clock, Files, CheckCircle, MoreVertical, Globe, User, LogOut } from "lucide-vue-next";
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
+import { type DateValue, getLocalTimeZone, today } from '@internationalized/date';
+import { CheckCircle, Clock, Files, FileText, MoreVertical } from "lucide-vue-next";
 import Calendar from "src/components/ui/calendar/Calendar.vue";
-import { type DateValue, getLocalTimeZone, today } from '@internationalized/date'
-import { type Ref, ref } from 'vue'
+import { type Ref, ref } from 'vue';
 
 const value = ref(today(getLocalTimeZone())) as Ref<DateValue>
 const sidebarOpen = ref(true)
