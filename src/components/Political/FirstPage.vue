@@ -247,7 +247,7 @@ import {
   ArrowRightIcon,
 } from "lucide-vue-next";
 import { FileTextIcon, TrashIcon, ArrowLeftIcon, CheckIcon } from "lucide-vue-next";
-import Input from "../ui/Input/Input.vue";
+import Input from "../ui/input/Input.vue";
 import Textarea from "../ui/textarea/Textarea.vue";
 
 const selectedNucleo = ref("indep");
