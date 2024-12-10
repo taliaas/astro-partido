@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="w-3/4 space-y-2">
         <label for="proxima" class="block text-md font-medium text-gray-700">
-          Próxima reunión ordinaria
+          Próxima reunión 
         </label>
         <Input type="date" id="proxima" v-model="formData.proximaReunion"
           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
@@ -18,7 +18,7 @@
       </div>
       <div class="w-3/4 space-y-2">
         <label for="circulo" class="block text-md font-medium text-gray-700">
-          Próximo círculo de estudios
+          Próximo círculo de estudios políticos
         </label>
         <Input type="date" id="circulo" v-model="formData.circuloEstudios"
           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
@@ -35,13 +35,7 @@
       <Textarea id="observaciones" v-model="formData.observaciones" rows="4"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></Textarea>
     </div>
-    <div class="w-3/4 space-y-2">
-      <label for="firma" class="block text-md font-medium text-gray-700">
-        Nombre del secretario para la firma<span class="text-red-500">*</span>
-      </label>
-      <Input type="text" id="firma" v-model="formData.firmaSecretario" required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-    </div>
+    
   </section>
 </template>
 
@@ -55,6 +49,5 @@ const formData = reactive({
   preparacionReunion: "",
   circuloEstudios: "",
   observaciones: "",
-  firmaSecretario: "",
 });
 </script>
