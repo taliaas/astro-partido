@@ -52,11 +52,7 @@
               class="px-4 py-2 border border-gray-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="">Todos los Núcleos</option>
-              <option
-                v-for="acta in actas"
-                :key="acta.id"
-                :value="acta.nucleo"
-              >
+              <option v-for="acta in actas" :key="acta.id" :value="acta.nucleo">
                 {{ acta.nucleo }}
               </option>
             </select>
@@ -249,8 +245,7 @@ const filteredActas = computed(() => {
     const matchesSearch = acta.titulo
       .toLowerCase()
       .includes(searchQuery.value.toLowerCase());
-    const matchesNucleo =
-      !selectedNucleo.value || acta.nucleo === selectedNucleo.value;
+    const matchesNucleo = !selectedNucleo.value || acta.nucleo === selectedNucleo.value;
     const matchesMonth =
       !selectedMonth.value ||
       new Date(acta.fecha).getMonth() + 1 === parseInt(selectedMonth.value);
