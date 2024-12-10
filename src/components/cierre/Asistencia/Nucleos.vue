@@ -107,7 +107,7 @@
                     <Star class="w-4 h-4" /> <span>Destacar</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                  <Copy class="w-4 h-4" /> <span>Copiar</span>
+                    <Copy class="w-4 h-4" /> <span>Copiar</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

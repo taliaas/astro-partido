@@ -109,7 +109,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import Chart from "chart.js/auto";
 import Button from "./ui/button/Button.vue";
