@@ -1,6 +1,7 @@
 export default class CoreService {
   async createCore(coreData: { name: string }, areaData: any[]) {
-    console.log(areaData,coreData)
+    const areaDatas = JSON.stringify(areaData)
+    console.log(JSON.stringify(areaDatas))
     try {
       const response = await fetch(`http://localhost:3000/core`, {
         method: 'POST',

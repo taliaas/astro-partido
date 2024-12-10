@@ -10,17 +10,27 @@
       </div>
 
       <!-- Form with animated transitions -->
-      <form @submit.prevent="actualizarGrafico"
-        class="mb-8 grid grid-cols-1 md:grid-cols-5 gap-6 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl">
+      <form
+        @submit.prevent="actualizarGrafico"
+        class="mb-8 grid grid-cols-1 md:grid-cols-5 gap-6 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl"
+      >
         <!-- Indicadores Select -->
         <div class="space-y-2">
           <label class="block text-sm font-semibold text-gray-700 mb-1">
             Indicadores
           </label>
           <div class="relative">
-            <select v-model="indicadoresSeleccionados" multiple
-              class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-              <option v-for="indicador in indicadores" :key="indicador" :value="indicador" class="py-2">
+            <select
+              v-model="indicadoresSeleccionados"
+              multiple
+              class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option
+                v-for="indicador in indicadores"
+                :key="indicador"
+                :value="indicador"
+                class="py-2"
+              >
                 {{ indicador }}
               </option>
             </select>
@@ -30,8 +40,10 @@
         <!-- Núcleo Select -->
         <div class="space-y-2">
           <label class="block text-sm font-semibold text-gray-700 mb-1"> Núcleo </label>
-          <select v-model="nucleoSeleccionado"
-            class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <select
+            v-model="nucleoSeleccionado"
+            class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
             <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
               {{ nucleo }}
             </option>
@@ -44,20 +56,22 @@
             <label class="block text-sm font-semibold text-gray-700 mb-1">
               Período
             </label>
-            <select v-model="periodoSeleccionado"
-              class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <select
+              v-model="periodoSeleccionado"
+              class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
               <option value="semestre">Semestre 1</option>
               <option value="semestral">Semestre 2</option>
               <option value="anual">Anual</option>
+              <option value="ultimos">Últimos años</option>
             </select>
           </div>
         </div>
 
-
         <div class="w-3/4">
           <NumberField id="age" :default-value="2024" :min="2000" :max="2024">
             <Label for="year">Año</Label>
-            <NumberFieldContent class="mt-3 mr-3 ">
+            <NumberFieldContent class="mt-3 mr-3">
               <NumberFieldDecrement />
               <NumberFieldInput class="border-gray-200 h-12" />
               <NumberFieldIncrement />
@@ -67,7 +81,9 @@
 
         <!-- Exportar -->
         <div class="flex mt-8">
-          <Button class="rounded border bg-gray-200 border-gray-200 hover:bg-gray-50 h-12">
+          <Button
+            class="rounded border bg-gray-200 border-gray-200 hover:bg-gray-50 h-12"
+          >
             <DownloadIcon class="h-4 w-4 mr-2" />
             Exportar
           </Button>
@@ -75,11 +91,17 @@
       </form>
 
       <!-- Chart Container with animation -->
-      <transition enter-active-class="transition-all duration-700 ease-out"
-        enter-from-class="opacity-0 transform translate-y-4" enter-to-class="opacity-100 transform translate-y-0"
-        leave-active-class="transition-all duration-300 ease-in" leave-from-class="opacity-100 transform translate-y-0"
-        leave-to-class="opacity-0 transform translate-y-4">
-        <div class="bg-white rounded-xl shadow-lg p-6 transition-all duration-500 hover:shadow-xl">
+      <transition
+        enter-active-class="transition-all duration-700 ease-out"
+        enter-from-class="opacity-0 transform translate-y-4"
+        enter-to-class="opacity-100 transform translate-y-0"
+        leave-active-class="transition-all duration-300 ease-in"
+        leave-from-class="opacity-100 transform translate-y-0"
+        leave-to-class="opacity-0 transform translate-y-4"
+      >
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 transition-all duration-500 hover:shadow-xl"
+        >
           <canvas ref="chartCanvas" class="transition-all duration-500"></canvas>
         </div>
       </transition>
@@ -87,7 +109,7 @@
   </div>
 </template>
 
-<script setup >
+<script setup>
 import { ref, onMounted, watch } from "vue";
 import Chart from "chart.js/auto";
 import Button from "./ui/button/Button.vue";
@@ -103,7 +125,12 @@ import {
 } from "@/components/ui/number-field";
 
 // Datos de ejemplo (reemplazar con datos reales)
-const indicadores = ["Indicador A", "Indicador B", "Indicador C", "Indicador D"];
+const indicadores = [
+  "Ptos del Orden del Día",
+  "Total de acuerdos",
+  "Indicador C",
+  "Indicador D",
+];
 const nucleos = ["Núcleo 1", "Núcleo 2", "Núcleo 3"];
 
 const indicadoresSeleccionados = ref([]);
@@ -114,8 +141,8 @@ let chart = null;
 
 // Colores modernos con gradientes
 const colores = {
-  "Indicador A": "rgb(255, 99, 132)",
-  "Indicador B": "rgb(54, 162, 235)",
+  "Ptos del Orden del Día": "rgb(255, 99, 132)",
+  "Total de acuerdos": "rgb(54, 162, 235)",
   "Indicador C": "rgb(75, 192, 192)",
   "Indicador D": "rgb(255, 205, 86)",
 };
@@ -124,8 +151,8 @@ const datosEjemplo = {
   semestre: {
     labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
     datasets: {
-      "Indicador A": [65, 59, 45, 89, 98, 43, 78],
-      "Indicador B": [28, 48, 28, 48, 40, 19],
+      "Ptos del Orden del Día": [65, 59, 45, 89, 98, 43, 78],
+      "Total de acuerdos": [28, 48, 28, 48, 40, 19],
       "Indicador C": [40, 19, 28, 48, 40, 19],
       "Indicador D": [96, 27, 28, 48, 40, 19],
     },
@@ -133,17 +160,39 @@ const datosEjemplo = {
   semestral: {
     labels: ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
     datasets: {
-      "Indicador A": [65, 59],
-      "Indicador B": [28, 48],
+      "Ptos del Orden del Día": [65, 59],
+      "Total de acuerdos": [28, 48, 40, 19, 28, 48, 40],
       "Indicador C": [40, 19],
       "Indicador D": [96, 27],
     },
   },
   anual: {
-    labels: ["2020", "2021", "2022", "2023"],
+    labels: [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ],
     datasets: {
-      "Indicador A": [65, 59, 80, 81],
-      "Indicador B": [28, 48, 40, 19],
+      "Ptos del Orden del Día": [65, 59, 80, 81],
+      "Total de acuerdos": [28, 48, 28, 48, 40, 19, 28, 48, 40, 19, 28, 48, 40],
+      "Indicador C": [40, 19, 86, 27],
+      "Indicador D": [96, 27, 90, 50],
+    },
+  },
+  ultimos: {
+    labels: [2020, 2021, 2022, 2023, 2024],
+    datasets: {
+      "Ptos del Orden del Día": [65, 59, 80, 81, 90],
+      "Total de acuerdos": [28, 48, 28, 48, 40],
       "Indicador C": [40, 19, 86, 27],
       "Indicador D": [96, 27, 90, 50],
     },

@@ -18,7 +18,7 @@
         <TransitionGroup name="list" tag="ul" class="space-y-4">
           <li
             v-for="(area, index) in areas"
-            :key="area.id"
+            :key="index"
             class="flex items-center space-x-2"
           >
             <Input
@@ -74,13 +74,12 @@ import CoreService from "src/services/CoreService.ts";
 import { TrashIcon } from "lucide-vue-next";
 
 interface Area {
-  id: number;
   name: string;
 }
-const areas = ref<Area[]>([{ id: 1, name: "" }]);
+const areas = ref<Area[]>([{ name: "" }]);
 
 const addArea = () => {
-  areas.value.push({ id: Date.now(), name: "" });
+  areas.value.push({ name: "" });
 };
 
 const removeArea = (index: number) => {
