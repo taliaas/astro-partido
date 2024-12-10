@@ -47,13 +47,18 @@
               />
             </div>
             <select
-              v-model="selectedDepartment"
+              id="nucleo-filter"
+              v-model="selectedNucleo"
               class="px-4 py-2 border border-gray-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
-              <option value="">Todos los núcleos</option>
-              <option value="innovacion">Informática</option>
-              <option value="desarrollo">Industrial</option>
-              <option value="gestion">Mecánica</option>
+              <option value="">Todos los Núcleos</option>
+              <option
+                v-for="acta in actas"
+                :key="acta.id"
+                :value="acta.nucleo"
+              >
+                {{ acta.nucleo }}
+              </option>
             </select>
             <select
               v-model="selectedMonth"
@@ -116,7 +121,7 @@
                   <div class="text-sm text-gray-500">{{ acta.nucleo }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ formatDate(acta.fecha) }}</div>
+                  <div class="text-sm text-gray-500">{{ acta.fecha }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm text-gray-500">{{ acta.creador }}</div>
@@ -201,7 +206,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const searchQuery = ref("");
-const selectedDepartment = ref("");
+const selectedNucleo = ref("");
 const selectedMonth = ref("");
 
 const actas = ref([
@@ -210,6 +215,14 @@ const actas = ref([
     titulo: "Acta Reunión Enero",
     nucleo: "Mecánica",
     fecha: "2024-01-14",
+    creador: "Juan",
+    estado: "Aprobada",
+  },
+  {
+    id: 1,
+    titulo: "Acta Reunión Ordinaria",
+    nucleo: "Mecánica",
+    fecha: "2024-03-17",
     creador: "Juan",
     estado: "Aprobada",
   },
@@ -236,12 +249,12 @@ const filteredActas = computed(() => {
     const matchesSearch = acta.titulo
       .toLowerCase()
       .includes(searchQuery.value.toLowerCase());
-    const matchesDepartment =
-      !selectedDepartment.value || acta.nucleo.toLowerCase() === selectedDepartment.value;
+    const matchesNucleo =
+      !selectedNucleo.value || acta.nucleo === selectedNucleo.value;
     const matchesMonth =
       !selectedMonth.value ||
       new Date(acta.fecha).getMonth() + 1 === parseInt(selectedMonth.value);
-    return matchesSearch && matchesDepartment && matchesMonth;
+    return matchesSearch && matchesNucleo && matchesMonth;
   });
 });
 
