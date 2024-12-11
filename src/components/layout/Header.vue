@@ -93,7 +93,7 @@
                 aria-labelledby="options-menu"
               >
                 <a
-                  href="#"
+                  href="/perfil"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >Mi Perfil</a
                 >
@@ -104,7 +104,6 @@
                 >
                 <Separator class="bg-gray-200" />
                 <a
-                  href="#"
                   class="block px-4 py-2 text-sm text-red-600 hover:text-red-800"
                   @click="handleLogout"
                 >
@@ -114,6 +113,38 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div
+        v-if="showSesionModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      >
+        <div class="bg-white rounded p-6 w-full max-w-md">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Cerrar Sesión</h3>
+          <form @submit.prevent="handleSesion" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Está seguro que desea cerrar sesión?</label
+              >
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button
+                type="submit"
+                class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              
+                <a
+                  href="/login"
+                  class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+                  @click="handleLogout"
+                >
+                  OK
+                </a>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -126,12 +157,17 @@ import { Separator } from "src/components/ui/separator";
 import { Bell, ChevronDown, Globe, LogOut, Search, User } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 
+const showSesionModal = ref(false);
 const showProfileMenu = ref(false);
 const currentLang = ref("ES");
 const showLanguageMenu = ref(false);
 
 const handleLogout = () => {
-  console.log("Cerrando sesión...");
+  showSesionModal.value = true;
+};
+
+const handleSesion = () => {
+  showSesionModal.value = false;
 };
 const toggleLanguageMenu = () => {
   showLanguageMenu.value = !showLanguageMenu.value;

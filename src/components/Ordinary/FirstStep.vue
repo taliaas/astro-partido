@@ -28,7 +28,7 @@
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div class="w-3/4">
-      <label for="fecha" class="block text-md font-medium text-gray-700"
+       <label for="fecha" class="block text-md font-medium text-gray-700"
         >Fecha de la reunión</label
       >
       <Input
@@ -50,7 +50,7 @@
       />
     </div>
     <div class="w-3/4">
-      <label for="lugar" class="block text-md font-medium text-gray-700">Lugar</label>
+       <label for="lugar" class="block text-md font-medium text-gray-700">Lugar</label>
       <Input
         type="text"
         id="lugar"
@@ -63,7 +63,7 @@
 
   <!-- 2. Presidencia -->
   <div>
-    <label for="secretario" class="block text-md font-medium text-gray-700"
+     <label for="secretario" class="block text-md font-medium text-gray-700"
       >Nombre del Secretario General</label
     >
     <Input
@@ -77,7 +77,7 @@
 
   <!-- 4. Relación de Asistencia -->
   <div class="overflow-x-auto">
-    <label for="secretario" class="block m-3 text-md font-medium text-gray-700"
+     <label for="secretario" class="block m-3 text-md font-medium text-gray-700"
       >Relación de Militantes del Núcleo</label
     >
     <table class="min-w-full divide-y divide-gray-200">
@@ -93,16 +93,39 @@
           >
             Estado
           </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Causa
+          </th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr v-for="(asistente, index) in asistentes" :key="index">
           <td class="px-6 py-4 whitespace-nowrap">{{ asistente.nombre }}</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <select v-model="asistente.estado" class="mt-1 w-2/3 rounded">
+            <select
+              v-model="asistente.estado"
+              class="px-4 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
               <option value="presente">Presente</option>
               <option value="virtual">Virtual</option>
               <option value="ausente">Ausente</option>
+            </select>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <select
+              v-model="asistente.selectedCausa"
+              class="px-4 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option
+                v-for="causa in absenceReasons"
+                :key="causa.id"
+                :value="causa.label"
+                class="rounded"
+              >
+                {{ causa.label }}
+              </option>
             </select>
           </td>
         </tr>
@@ -118,6 +141,7 @@ import Input from "../ui/input/Input.vue";
 
 const selectedNucleo = ref("indep");
 const selectedArea = ref("inf");
+const selectedCausa = ref("");
 
 const formData = reactive({
   fecha: "",
@@ -133,8 +157,21 @@ const formData = reactive({
 });
 
 const asistentes = reactive([
-  { nombre: "Juan Pérez", estado: "presente" },
-  { nombre: "María García", estado: "presente" },
-  { nombre: "Carlos Rodríguez", estado: "presente" },
+  { nombre: "Juan Pérez", estado: "presente", selectedCausa: "" },
+  { nombre: "María García", estado: "presente", selectedCausa: "" },
+  { nombre: "Carlos Rodríguez", estado: "presente", selectedCausa: "" },
+]);
+const absenceReasons = ref([
+  { id: 2, label: "Enfermedad" },
+  { id: 3, label: "Extranjero" },
+  { id: 4, label: "Trabajo" },
+  { id: 5, label: "Fuera de Provincia" },
+  { id: 6, label: "Vacaciones" },
+  { id: 7, label: "Lic. de Maternidad" },
+  { id: 8, label: "Problemas Personales" },
+  { id: 9, label: "Problemas Familiares" },
+  { id: 10, label: "Movilizado" },
+  { id: 11, label: "Injustificado" },
+  { id: 12, label: "Otros" },
 ]);
 </script>
