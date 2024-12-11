@@ -1,0 +1,27 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "../globals.css";
+import AuthHeader from "@/components/AuthHeader.vue";
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Partido de la CUJAE</title>
+        <ClientRouter />
+    </head>
+    <body>
+        <div class="min-h-screen bg-gray-50">
+            <!-- Header -->
+            <AuthHeader />
+            <!-- Main Content -->
+            <main class="flex-1">
+                <slot />
+            </main>
+        </div>
+    </body>
+</html>
