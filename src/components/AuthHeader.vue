@@ -41,7 +41,9 @@
           </div>
         </div>
         <div>
-          <a class="block px-4 py-2 text-md text-gray-700 hover:text-blue-600">Registrar</a>
+          <a href="/register" class="text-md font-medium text-blue-600 hover:text-blue-600"
+            >Registrar</a
+          >
         </div>
       </div>
     </div>
