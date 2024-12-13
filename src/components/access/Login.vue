@@ -47,32 +47,60 @@
           </div>
 
           <div class="text-sm">
-            <a href="/password" class="font-medium text-md text-blue-600 hover:text-blue-500">
+            <a
+              href="/password"
+              class="font-medium text-md text-blue-600 hover:text-blue-500"
+            >
               ¿Olvidaste tu contraseña?
             </a>
           </div>
         </div>
 
         <div>
-          <a href="/"
+          <button
+            type="submit"
             class="group relative text-lg w-full flex justify-center py-2 px-4 border border-transparent font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
           >
             Iniciar sesión
-          </a>
+          </button>
         </div>
       </form>
+      <div
+        v-if="showSuccessMessage"
+        class="mt-4 p-4 bg-green-100 text-green-700 rounded-md"
+      >
+        {{ mensaje }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import AuthService from "src/services/AuthService.ts";
 
 const email = ref("");
 const password = ref("");
+const showSuccessMessage = ref(false);
+const mensaje = "";
 
 const handleSubmit = () => {
-  // Aquí iría la lógica de autenticación
-  console.log("Login attempt", { email: email.value, password: password.value });
+  const user = { email: email.value, password: password.value };
+  const auth = new AuthService();
+
+  try {
+    const response = auth.login(user);
+    // entrar al home
+
+  } catch (error) {
+    showSuccessMessage.value = true;
+    mensaje = error;
+    console.log("Error", error);
+  } finally {
+    setTimeout(() => {
+      showSuccessMessage.value = false;
+    }, 3000);
+    
+  }
 };
 </script>

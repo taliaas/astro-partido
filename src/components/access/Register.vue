@@ -114,6 +114,7 @@
 import { Loader2Icon } from "lucide-vue-next";
 import { reactive, ref } from "vue";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const isLoading = ref(false);
 const showPassword = ref(false);

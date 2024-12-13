@@ -9,7 +9,7 @@
           <UserIcon class="h-12 w-12 text-gray-300" />
         </div>
         <div>
-          <h1 class="text-3xl font-bold">{{ user.firstName }} {{ user.lastName }}</h1>
+          <h1 class="text-3xl font-bold">{{ user.name }}</h1>
           <div class="flex items-center gap-2 mt-2 text-gray-300">
             <ShieldCheckIcon class="h-4 w-4" />
             <span>{{ user.role || "Administrador" }}</span>
@@ -29,17 +29,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Nombre</label>
                 <Input
-                  v-model="formData.firstName"
-                  type="text"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-
-              <!-- Last Name -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Apellidos</label>
-                <Input
-                  v-model="formData.lastName"
+                  v-model="formData.name"
                   type="text"
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -55,7 +45,7 @@
                 />
               </div>
 
-              <!-- Phone -->
+              <!-- Nucleo -->
               <div>
                 <label class="block text-sm font-medium text-gray-700">Núcleo</label>
                 <Input
@@ -161,13 +151,28 @@
 import { ref, reactive } from "vue";
 import { UserIcon, LockIcon, SaveIcon, ShieldCheckIcon } from "lucide-vue-next";
 import Input from "../ui/input/Input.vue";
+import AuthService from "src/services/AuthService.ts";
+import UserService from "src/services/UserService.ts";
 
 const showPasswordModal = ref(false);
 
-// Mock user data
+const openChangePasswordModal = () => {
+  showPasswordModal.value = true;
+};
+
+const userData = (email) => {
+  const service = new UserService();
+  try {
+    const user = service.getUserByEmail(email);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//GetUser
 const user = reactive({
-  firstName: "Juan",
-  lastName: "Montes",
+  id: 1,
+  name: "Juan",
   email: "juan.montes@cujae.edu.cu",
   nucleo: "Independientes",
   role: "Administrador",
@@ -175,10 +180,8 @@ const user = reactive({
 
 // Form data
 const formData = reactive({
-  firstName: user.firstName,
-  lastName: user.lastName,
+  name: user.firstName,
   email: user.email,
-  nucleo: user.nucleo,
 });
 
 // Password form
@@ -188,27 +191,38 @@ const passwordForm = reactive({
   confirm: "",
 });
 
-// Handlers
 const handleSubmit = () => {
   // Update user data
-  Object.assign(user, formData);
-  alert("Profile updated successfully!");
+  const service = new UserService();
+  try {
+    const response = service.updateUser(id, formData);
+    alert("Profile updated successfully!");
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const handlePasswordChange = () => {
   if (passwordForm.new !== passwordForm.confirm) {
-    alert("New passwords do not match!");
+    alert("La nueva contraseña no coincide");
     return;
   }
   // Handle password change logic here
-  alert("Password updated successfully!");
-  showPasswordModal.value = false;
-  passwordForm.current = "";
-  passwordForm.new = "";
-  passwordForm.confirm = "";
-};
-
-const openChangePasswordModal = () => {
-  showPasswordModal.value = true;
+  const service = new AuthService();
+  const id = user.id;
+  try {
+    const response = service.updatePassword(
+      id,
+      passwordForm.new,
+      passwordForm.confirm
+    );
+    alert("Password updated successfully!");
+    showPasswordModal.value = false;
+    passwordForm.current = "";
+    passwordForm.new = "";
+    passwordForm.confirm = "";
+  } catch (error) {
+    alert("Error");
+  }
 };
 </script>

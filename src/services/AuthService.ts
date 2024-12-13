@@ -61,14 +61,14 @@ export default class AuthService {
         }
     }
 
-    async updatePassword(id: number, passwordData: { prev_pw: string, new_pw: string }) {
+    async updatePassword(id: number, prev_pw: string, new_pw: string ) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/user/${id}/change-password`, {
+            const response = await fetch(`http://https://part-back.onrender.com/auth/${id}/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(passwordData),
+                body: JSON.stringify({prev_pw,new_pw}),
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

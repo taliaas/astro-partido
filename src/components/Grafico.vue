@@ -114,7 +114,6 @@ import { ref, onMounted, watch } from "vue";
 import Chart from "chart.js/auto";
 import Button from "./ui/button/Button.vue";
 import { DownloadIcon } from "lucide-vue-next";
-import GraficoService from "src/services/GraficoService.ts";
 import { Label } from "@/components/ui/label";
 import {
   NumberField,
@@ -198,22 +197,7 @@ const datosEjemplo = {
     },
   },
 };
-async function loadGraph() {
-  const temp = new GraphService();
-  try {
-    const graph = await temp.getGraphValues(
-      nucleoSeleccionado,
-      indicadoresSeleccionados,
-      2024
-    );
-    if (graph === undefined) {
-      showNotif("No se han obtenido datos para estos indicadores");
-    }
-    return graph;
-  } catch (error) {
-    showNotif("Error al cargar los datos del gráfico", error);
-  }
-}
+
 const actualizarGrafico = () => {
   if (chart) {
     chart.destroy();

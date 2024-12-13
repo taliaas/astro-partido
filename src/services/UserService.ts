@@ -34,6 +34,24 @@ export default class UserService {
     }
   }
 
+  async getUserByEmail(email: string) {
+    try {
+      const response = await fetch(`http://https://part-back.onrender.com/user/data/${email}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error al recuperar al usuario', error);
+    }
+  }
+
   async updateUser(id: number, userData: { name: string, email: string }) {
     try {
       const response = await fetch(`http://https://part-back.onrender.com/user/${id}`, {
