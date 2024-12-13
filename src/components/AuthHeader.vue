@@ -4,14 +4,14 @@
       <div class="flex h-16 items-center justify-between">
         <!-- Welcome Message -->
         <div class="flex-1 text-center">
-          <h1 class="text-lg font-semibold text-gray-900">PCC CUJAE</h1>
+          <h1 class="text-lg font-semibold text-gray-900">Bienvenido a la Plataforma PCC CUJAE</h1>
         </div>
-        <!-- Language Selector -->
+        <!-- Language Selector 
         <div class="relative">
           <Button
             variant="ghost"
             @click="toggleLanguageMenu"
-            class="group inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="group inline-flex items-end rounded-full px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <Globe class="h-4 w-4 text-gray-400 group-hover:text-gray-500" />
             <span class="ml-1.5">{{ currentLang }}</span>
@@ -40,8 +40,16 @@
             </div>
           </div>
         </div>
+        -->
         <div>
-          <a href="/register" class="text-md font-medium text-blue-600 hover:text-blue-600"
+          <a
+            href="/login"
+            class="text-md m-1 font-medium text-gray-600 hover:text-blue-600"
+            >Iniciar sesión</a
+          >
+          <a
+            href="/register"
+            class="text-md m-4 font-medium text-blue-600 hover:text-blue-700"
             >Registrar</a
           >
         </div>

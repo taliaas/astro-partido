@@ -1,16 +1,15 @@
 export default class CoreService {
   async createCore(coreData: { name: string }, areaData: any[]) {
-    const areaDatas = JSON.stringify(areaData)
-    console.log(JSON.stringify(areaDatas))
+    console.log(JSON.stringify({ coreData, areaData }))
     try {
       const response = await fetch(`http://localhost:3000/core`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(coreData, areaData),
+        body: JSON.stringify({ coreData, areaData: [areaData] }),
       });
-      if (response.status !== 200) {
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
@@ -18,5 +17,4 @@ export default class CoreService {
       console.error(error);
     }
   }
-
 }

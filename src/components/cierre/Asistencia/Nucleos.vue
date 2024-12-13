@@ -118,7 +118,7 @@
     </div>
   </div>
 
-  <!-- Absence Reasons -->
+  <!-- Absence Reasons  que sea un dialog-->
   <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-1">
     <!-- Notes Section -->
     <div class="bg-white rounded shadow-lg p-6">
@@ -185,12 +185,6 @@ const tableData = ref([
     diferencia: 16,
     porcentaje: 0,
   },
-]);
-
-const absenceReasons = ref([
-  { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },
-  { label: "Trabajo", count: 3, percentage: 15, color: "bg-blue-600" },
-  { label: "Vacaciones", count: 2, percentage: 10, color: "bg-green-600" },
 ]);
 
 const notes = ref([

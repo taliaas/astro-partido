@@ -1,7 +1,7 @@
 ---
+import AuthHeader from "@/components/AuthHeader.vue";
 import { ClientRouter } from "astro:transitions";
 import "../globals.css";
-import AuthHeader from "@/components/AuthHeader.vue";
 ---
 
 <!doctype html>
@@ -16,7 +16,7 @@ import AuthHeader from "@/components/AuthHeader.vue";
     </head>
     <body>
         <div class="min-h-screen bg-gray-50">
-            <!-- Header -->
+            <!-- Header <AuthHeader />-->
             <AuthHeader />
             <!-- Main Content -->
             <main class="flex-1">
