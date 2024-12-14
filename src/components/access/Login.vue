@@ -65,11 +65,14 @@
           </button>
         </div>
       </form>
-      <div
-        v-if="showSuccessMessage"
-        class="mt-4 p-4 bg-green-100 text-green-700 rounded-md"
-      >
-        {{ mensaje }}
+
+      <div v-if="showSuccessMessage">
+        <Alert>
+          <AlertTitle>{{}}</AlertTitle>
+          <AlertDescription>
+            {{ mensaje }}
+          </AlertDescription>
+        </Alert>
       </div>
     </div>
   </div>
@@ -91,7 +94,6 @@ const handleSubmit = () => {
   try {
     const response = auth.login(user);
     // entrar al home
-
   } catch (error) {
     showSuccessMessage.value = true;
     mensaje = error;
@@ -100,7 +102,6 @@ const handleSubmit = () => {
     setTimeout(() => {
       showSuccessMessage.value = false;
     }, 3000);
-    
   }
 };
 </script>

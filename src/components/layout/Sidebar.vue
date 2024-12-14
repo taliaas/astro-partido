@@ -14,53 +14,65 @@
             <span class="text-xl font-bold">Nombre</span>
           </a>
         </div>
-        <nav class="mt-8 px-4">
-          <ul class="space-y-2">
-            <li v-for="item in menuItems" :key="item.name">
-              <template v-if="!item.submenu">
-                <a
-                  :href="item.href"
-                  class="flex items-center space-x-2 p-2 rounded transition-colors"
-                  :class="{
-                    'bg-blue-700 text-white': item.active,
-                    'hover:bg-blue-500 hover:text-white': !item.active,
-                  }"
-                >
-                  <component :is="item.icon" class="w-5 h-5" />
-                  <span>{{ item.name }}</span>
-                </a>
-              </template>
-              <template v-else>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      class="w-full justify-start rounded text-left font-normal"
-                      :class="{
-                        'bg-blue-700 text-white': item.active,
-                        'hover:bg-blue-500 hover:text-white': !item.active,
-                      }"
-                    >
-                      <component :is="item.icon" class="mr-2 h-4 w-4" />
-                      <span>{{ item.name }}</span>
-                      <ChevronDownIcon class="ml-auto h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent class="w-56 rounded bg-white">
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        v-for="subItem in item.submenu"
-                        :key="subItem.name"
-                      >
-                        <component :is="subItem.icon" class="mr-2 h-4 w-4" />
-                        <span>{{ subItem.name }}</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </template>
-            </li>
-          </ul>
+        <nav class="p-4 space-y-2">
+          <!-- Actas Item -->
+          <a
+            href="/actas"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-500/20 transition-all duration-200 cursor-pointer group"
+          >
+            <FileTextIcon
+              class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"
+            />
+            <span class="font-medium">Actas</span>
+          </a>
+
+          <!-- Funcionamiento Dropdown -->
+          <div class="space-y-1">
+            <button
+              @click="toggleDropdown"
+              class="w-full flex items-center justify-between px-4 py-3 rounded hover:bg-blue-500/20 transition-all duration-200 group"
+              :class="{ 'bg-blue-500/30': isOpen }"
+            >
+              <div class="flex items-center">
+                <SettingsIcon
+                  class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"
+                />
+                <span class="font-medium">Funcionamiento</span>
+              </div>
+              <ChevronDownIcon
+                class="w-4 h-4 transition-transform duration-200"
+                :class="{ 'rotate-180': isOpen }"
+              />
+            </button>
+
+            <!-- Dropdown Items -->
+            <transition
+              enter-active-class="transition duration-200 ease-out"
+              enter-from-class="transform scale-95 opacity-0"
+              enter-to-class="transform scale-100 opacity-100"
+              leave-active-class="transition duration-200 ease-in"
+              leave-from-class="transform scale-100 opacity-100"
+              leave-to-class="transform scale-95 opacity-0"
+            >
+              <div v-if="isOpen" class="pl-4 space-y-1">
+                <template v-for="(item, index) in menuItems" :key="index">
+                  <a
+                    :href="item.path"
+                    class="flex items-center px-4 py-2.5 rounded hover:bg-blue-500/20 transition-all duration-200 cursor-pointer group"
+                    :class="{ 'bg-blue-500/10': item.active }"
+                    @mouseenter="item.active = true"
+                    @mouseleave="item.active = false"
+                  >
+                    <component
+                      :is="item.icon"
+                      class="w-4 h-4 mr-3 group-hover:scale-110 transition-transform"
+                    />
+                    <span class="text-sm">{{ item.name }}</span>
+                  </a>
+                </template>
+              </div>
+            </transition>
+          </div>
         </nav>
       </aside>
 
@@ -80,52 +92,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { Button } from "@/components/ui/button";
+
+import { ref } from "vue";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuGroup,
-} from "@/components/ui/dropdown-menu";
-import {
-  Activity,
-  HomeIcon,
   FileTextIcon,
   SettingsIcon,
-  FileCheck,
-  FileText,
-  LayoutDashboard,
-  Menu,
   ChevronDownIcon,
   UserCheck,
+  CalculatorIcon,
+  BuildingIcon,
   Calculator,
-  Building2,
   ActivitySquare,
+  HomeIcon,
 } from "lucide-vue-next";
 
 const isOpen = ref(false);
-const toggleSidebar = () => {
+const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
-
-const menuItems = [
-  { name: "Actas", icon: FileTextIcon, href: "/actas", active: false },
+const menuItems = ref([
   {
-    name: "Funcionamiento",
-    icon: SettingsIcon,
+    name: "Asistencia",
+    icon: UserCheck,
+    path: "/asistencia",
     active: false,
-    submenu: [
-      { name: "Asistencia", icon: UserCheck, href: "/asistencia" },
-      { name: "Computo", icon: Calculator, href: "/cierrefunc" },
-      {
-        name: "Parte Municipio",
-        icon: Building2,
-        href: "/funcionamiento/parte-municipio",
-      },
-      { name: "Estado", icon: ActivitySquare, href: "/estado" },
-    ],
   },
-];
+  {
+    name: "Computo",
+    icon: Calculator,
+    path: "/cierrefunc",
+    active: false,
+  },
+  {
+    name: "Parte Municipio",
+    icon: BuildingIcon,
+    path: "/parte",
+    active: false,
+  },
+  {
+    name: "Estado",
+    icon: ActivitySquare,
+    path: "/estadofunc",
+    active: false,
+  },
+]);
 </script>
