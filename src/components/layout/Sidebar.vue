@@ -7,15 +7,15 @@
                 { '-translate-x-full': !isOpen }
             ]">
                 <div class="flex items-center justify-between p-4">
-                    <div class="flex items-center space-x-2">
-                        <FileBox class="w-8 h-8 text-blue-300" />
-                        <h1 class="text-xl font-bold">Nombre</h1>
-                    </div>
+                    <a href="/" class="flex items-center space-x-2">
+                        <HomeIcon class="w-8 h-8 text-blue-300" />
+                        <span class="text-xl font-bold">Nombre</span>
+                    </a>
                 </div>
                 <nav class="mt-8 px-4">
                     <ul class="space-y-2">
                         <li v-for="item in menuItems" :key="item.name">
-                            <a :href="item.href" class="flex items-center space-x-2 p-2 rounded-lg transition-colors"
+                            <a :href="item.href" class="flex items-center space-x-2 p-2 rounded transition-colors"
                                 :class="{
                                     'bg-blue-700 text-white': item.active,
                                     'hover:bg-blue-500 hover:text-white': !item.active,
@@ -61,18 +61,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Button } from '@/components/ui/button'
-import { Activity, FileCheck, FileText, LayoutDashboard, FileBox, Menu } from 'lucide-vue-next';
+import { Activity,HomeIcon, FileTextIcon, SettingsIcon, FileCheck, FileText, LayoutDashboard, Menu } from 'lucide-vue-next';
 
 const isOpen = ref(false);
-
 const toggleSidebar = () => {
     isOpen.value = !isOpen.value;
 };
 
 const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, href: '/', active: true },
-    { name: 'Actas', icon: FileText, href: '/actas', active: false },
-    { name: 'Cierre de Funcionamiento', icon: FileCheck, href: '/cierrefunc', active: false },
-    { name: 'Estado de Funcionamiento', icon: Activity, href: '/estadofunc', active: false }
+    { name: 'Actas', icon: FileTextIcon, href: '/actas', active: false },
+    { name: 'Funcionamiento', icon: SettingsIcon, href: '/estadofunc', active: false }
 ];
 </script>

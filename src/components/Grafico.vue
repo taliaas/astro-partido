@@ -12,99 +12,117 @@
       <!-- Form with animated transitions -->
       <form
         @submit.prevent="actualizarGrafico"
-        class="mb-8 grid grid-cols-1 md:grid-cols-5 gap-6 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl"
+        class="mb-8 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl"
       >
-        <!-- Indicadores Select -->
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-700 mb-1">
-            Indicadores
-          </label>
-          <div class="relative">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-medium text-gray-900">Filtros</h3>
+          <button
+            @click="isFilterVisible = !isFilterVisible"
+            class="flex items-center space-x-2 rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+          >
+            <span>{{ isFilterVisible ? "Ocultar filtros" : "Mostrar filtros" }}</span>
+            <ChevronDownIcon
+              :class="{ 'rotate-180 transform': isFilterVisible }"
+              class="h-5 w-5 transition-transform duration-200"
+            />
+          </button>
+        </div>
+
+        <div class="mt-4 grid gap-6 md:grid-cols-4" v-show="isFilterVisible">
+          <!-- Indicadores Select -->
+          <div class="space-y-2">
+            <label class="block text-md font-semibold text-gray-700 mb-1">
+              Indicadores
+            </label>
+            <div class="relative">
+              <select
+                v-model="indicadoresSeleccionados"
+                multiple
+                class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option
+                  v-for="indicador in indicadores"
+                  :key="indicador"
+                  :value="indicador"
+                  class="py-2"
+                >
+                  {{ indicador }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Núcleo Select -->
+          <div class="space-y-2">
+            <label class="block text-md font-semibold text-gray-700 mb-1"> Núcleo </label>
             <select
-              v-model="indicadoresSeleccionados"
-              multiple
+              v-model="nucleoSeleccionado"
               class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option
-                v-for="indicador in indicadores"
-                :key="indicador"
-                :value="indicador"
-                class="py-2"
-              >
-                {{ indicador }}
+              <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
+                {{ nucleo }}
               </option>
             </select>
           </div>
-        </div>
 
-        <!-- Núcleo Select -->
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-700 mb-1"> Núcleo </label>
-          <select
-            v-model="nucleoSeleccionado"
-            class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
-              {{ nucleo }}
-            </option>
-          </select>
-        </div>
+          <div>
+            <!-- Período Select -->
+            <div class="space-y-2 w-3/4">
+              <label class="block text-md font-semibold text-gray-700 mb-1">
+                Período
+              </label>
+              <select
+                v-model="periodoSeleccionado"
+                class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="semestre">Semestre 1</option>
+                <option value="semestral">Semestre 2</option>
+                <option value="anual">Anual</option>
+                <option value="ultimos">Últimos años</option>
+              </select>
+            </div>
+          </div>
 
-        <div>
-          <!-- Período Select -->
-          <div class="space-y-2 w-3/4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">
-              Período
-            </label>
-            <select
-              v-model="periodoSeleccionado"
-              class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="semestre">Semestre 1</option>
-              <option value="semestral">Semestre 2</option>
-              <option value="anual">Anual</option>
-              <option value="ultimos">Últimos años</option>
-            </select>
+          <div class="w-3/4">
+            <NumberField id="age" :default-value="2024" :min="2000" :max="2024">
+              <Label for="year" class="block text-md font-semibold text-gray-700 mb-1">Año</Label>
+              <NumberFieldContent class="mr-3 rounded">
+                <NumberFieldDecrement />
+                <NumberFieldInput class="border-gray-200 h-12" />
+                <NumberFieldIncrement />
+              </NumberFieldContent>
+            </NumberField>
           </div>
         </div>
+      </form>
 
-        <div class="w-3/4">
-          <NumberField id="age" :default-value="2024" :min="2000" :max="2024">
-            <Label for="year">Año</Label>
-            <NumberFieldContent class="mt-3 mr-3">
-              <NumberFieldDecrement />
-              <NumberFieldInput class="border-gray-200 h-12" />
-              <NumberFieldIncrement />
-            </NumberFieldContent>
-          </NumberField>
-        </div>
-
-        <!-- Exportar -->
-        <div class="flex mt-8">
+      <!-- Chart Section -->
+      <div class="rounded-lg bg-white p-6 shadow-lg">
+        <div class="flex mt-8 justify-end">
           <Button
-            class="rounded border bg-gray-200 border-gray-200 hover:bg-gray-50 h-12"
+            @click="exportData"
+            class="flex space-x-2 rounded bg-gray-600 px-4 py-2 text-md font-medium text-white transition-colors hover:bg-gray-700"
           >
             <DownloadIcon class="h-4 w-4 mr-2" />
             Exportar
           </Button>
         </div>
-      </form>
-
-      <!-- Chart Container with animation -->
-      <transition
-        enter-active-class="transition-all duration-700 ease-out"
-        enter-from-class="opacity-0 transform translate-y-4"
-        enter-to-class="opacity-100 transform translate-y-0"
-        leave-active-class="transition-all duration-300 ease-in"
-        leave-from-class="opacity-100 transform translate-y-0"
-        leave-to-class="opacity-0 transform translate-y-4"
-      >
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 transition-all duration-500 hover:shadow-xl"
+        <!-- Chart Container with animation -->
+        <transition
+          enter-active-class="transition-all duration-700 ease-out"
+          enter-from-class="opacity-0 transform translate-y-4"
+          enter-to-class="opacity-100 transform translate-y-0"
+          leave-active-class="transition-all duration-300 ease-in"
+          leave-from-class="opacity-100 transform translate-y-0"
+          leave-to-class="opacity-0 transform translate-y-4"
         >
-          <canvas ref="chartCanvas" class="transition-all duration-500"></canvas>
-        </div>
-      </transition>
+          <div
+            class="bg-white p-6 transition-all duration-500"
+          >
+            <canvas ref="chartCanvas" class="transition-all duration-500"></canvas>
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -132,6 +150,7 @@ const indicadores = [
 ];
 const nucleos = ["Núcleo 1", "Núcleo 2", "Núcleo 3"];
 
+const isFilterVisible = ref(true)
 const indicadoresSeleccionados = ref([]);
 const periodoSeleccionado = ref("semestre");
 const nucleoSeleccionado = ref("Núcleo 1");
