@@ -18,7 +18,7 @@
           <h3 class="text-lg font-medium text-gray-900">Filtros</h3>
           <button
             @click="isFilterVisible = !isFilterVisible"
-            class="flex items-center space-x-2 rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+            class="flex items-center space-x-2 rounded px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
           >
             <span>{{ isFilterVisible ? "Ocultar filtros" : "Mostrar filtros" }}</span>
             <ChevronDownIcon
@@ -131,7 +131,7 @@
 import { ref, onMounted, watch } from "vue";
 import Chart from "chart.js/auto";
 import Button from "./ui/button/Button.vue";
-import { DownloadIcon } from "lucide-vue-next";
+import { DownloadIcon, ChevronDownIcon } from "lucide-vue-next";
 import { Label } from "@/components/ui/label";
 import {
   NumberField,
