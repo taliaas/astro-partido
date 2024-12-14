@@ -1,7 +1,7 @@
 export default class UserService {
   async getAllUser() {
     try {
-      const response = await fetch(`http://https://part-back.onrender.com/user`, {
+      const response = await fetch(`https://part-back.onrender.com/user`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ export default class UserService {
 
   async getUser(id: string) {
     try {
-      const response = await fetch(`http://https://part-back.onrender.com/user/${id}`, {
+      const response = await fetch(`https://part-back.onrender.com/user/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export default class UserService {
 
   async getUserByEmail(email: string) {
     try {
-      const response = await fetch(`http://https://part-back.onrender.com/user/data/${email}`, {
+      const response = await fetch(`https://part-back.onrender.com/user/data/${email}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export default class UserService {
 
   async updateUser(id: number, userData: { name: string, email: string }) {
     try {
-      const response = await fetch(`http://https://part-back.onrender.com/user/${id}`, {
+      const response = await fetch(`https://part-back.onrender.com/user/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export default class UserService {
 
   async removeUser(id: number) {
     try {
-      const response = await fetch(`http://https://part-back.onrender.com/user/${id}`, {
+      const response = await fetch(`https://part-back.onrender.com/user/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

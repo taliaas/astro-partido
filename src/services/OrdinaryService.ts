@@ -3,7 +3,7 @@ import type Minute from "@/interface/MinuteOrdinary";
 export default class OrdinaryService {
     async createMinute(createMinutesOrdinaryDto: Minute) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/minutes-ordinary`, {
+            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export default class OrdinaryService {
     }
     async getMinute(id: string) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/minutes-ordinary/${id}`, {
+            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export default class OrdinaryService {
     }
     async getAll() {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/minutes-ordinary`, {
+            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default class OrdinaryService {
 
     async updateMinute(id: string) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/minutes-ordinary/${id}`, {
+            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export default class OrdinaryService {
     }
     async deleteMinute(id: string) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/minutes-ordinary/${id}`, {
+            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

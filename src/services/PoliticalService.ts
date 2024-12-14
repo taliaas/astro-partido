@@ -3,7 +3,7 @@ import type Minute from "@/interface/MinutePolitical";
 export default class PoliticalService {
      async createMinute(createMinutesPoliticalDto: Minute) {
             try {
-                const response = await fetch(`http://https://part-back.onrender.com/minutes-political`, {
+                const response = await fetch(`https://part-back.onrender.com/minutes-political`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export default class PoliticalService {
         }
         async getMinute(id: string) {
             try {
-                const response = await fetch(`http://https://part-back.onrender.com/minutes-political/${id}`, {
+                const response = await fetch(`https://part-back.onrender.com/minutes-political/${id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export default class PoliticalService {
         }
         async getAll() {
             try {
-                const response = await fetch(`http://https://part-back.onrender.com/minutes-political`, {
+                const response = await fetch(`https://part-back.onrender.com/minutes-political`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default class PoliticalService {
     
         async updateMinute(id: string) {
             try {
-                const response = await fetch(`http://https://part-back.onrender.com/minutes-political/${id}`, {
+                const response = await fetch(`https://part-back.onrender.com/minutes-political/${id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export default class PoliticalService {
         }
         async deleteMinute(id: string) {
             try {
-                const response = await fetch(`http://https://part-back.onrender.com/minutes-political/${id}`, {
+                const response = await fetch(`https://part-back.onrender.com/minutes-political/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

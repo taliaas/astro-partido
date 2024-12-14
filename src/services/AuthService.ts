@@ -5,7 +5,7 @@ export default class AuthService {
         password: string
     }) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/login`, {
+            const response = await fetch(`https://part-back.onrender.com/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export default class AuthService {
         name: string,
         password: string) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/register`, {
+            const response = await fetch(`https://part-back.onrender.com/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export default class AuthService {
     async profile(){
         const value = 'access-token' //cargar el token de donde lo guarde (localStorage.getItem('access_token'))
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/verify`, {
+            const response = await fetch(`https://part-back.onrender.com/verify`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default class AuthService {
 
     async updatePassword(id: number, prev_pw: string, new_pw: string ) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/auth/${id}/change-password`, {
+            const response = await fetch(`https://part-back.onrender.com/auth/${id}/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 export default class AreaService {
     async createCore(areaData: { name: string }) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/area`, {
+            const response = await fetch(`https://part-back.onrender.com/area`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export default class AreaService {
 
     async getAllArea() {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/area`, {
+            const response = await fetch(`https://part-back.onrender.com/area`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export default class AreaService {
 
     async getArea(id: string) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/area/${id}`, {
+            const response = await fetch(`https://part-back.onrender.com/area/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default class AreaService {
 
     async updateArea(id: string) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/area/${id}`, {
+            const response = await fetch(`https://part-back.onrender.com/area/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export default class AreaService {
 
     async deleteArea(id: string) {
         try {
-            const response = await fetch(`http://https://part-back.onrender.com/area/${id}`, {
+            const response = await fetch(`https://part-back.onrender.com/area/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
