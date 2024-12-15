@@ -1,10 +1,12 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header Banner -->
-    <div class="bg-gradient-to-r from-gray-600 to-gray-800 text-white p-8">
+    <div
+      class="max-w-6xl mx-auto mt-2 rounded bg-gradient-to-r from-blue-400 to-blue-800 text-white p-8"
+    >
       <div class="max-w-4xl mx-auto flex items-center gap-6">
         <div
-          class="h-24 w-24 rounded-full bg-gray-700 flex items-center justify-center ring-4 ring-gray-600"
+          class="h-24 w-24 rounded-full bg-blue-700 flex items-center justify-center ring-4 ring-blue-600"
         >
           <UserIcon class="h-12 w-12 text-gray-300" />
         </div>
@@ -12,7 +14,7 @@
           <h1 class="text-3xl font-bold">{{ user.name }}</h1>
           <div class="flex items-center gap-2 mt-2 text-gray-300">
             <ShieldCheckIcon class="h-4 w-4" />
-            <span>{{ user.role || "Administrador" }}</span>
+            <span class="text-lg">{{ user.role || "Administrador" }}</span>
           </div>
         </div>
       </div>
@@ -49,21 +51,23 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Núcleo</label>
                 <Input
-                  v-model="formData.nucleo"
+                  v-model="user.nucleo"
                   type="text"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  readonly
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm bg-gray-50"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Role</label>
+                <Input
+                  v-model="user.role"
+                  type="text"
+                  readonly
+                  class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"
                 />
               </div>
             </div>
             <!-- Role (Read-only) -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Role</label>
-              <Input
-                :value="user.role"
-                type="text"
-                class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"
-              />
-            </div>
 
             <!-- Action Buttons -->
             <div class="flex justify-end space-x-4 border-t my-5">
@@ -180,7 +184,7 @@ const user = reactive({
 
 // Form data
 const formData = reactive({
-  name: user.firstName,
+  name: user.name,
   email: user.email,
 });
 
@@ -211,11 +215,7 @@ const handlePasswordChange = () => {
   const service = new AuthService();
   const id = user.id;
   try {
-    const response = service.updatePassword(
-      id,
-      passwordForm.new,
-      passwordForm.confirm
-    );
+    const response = service.updatePassword(id, passwordForm.new, passwordForm.confirm);
     alert("Password updated successfully!");
     showPasswordModal.value = false;
     passwordForm.current = "";

@@ -1,9 +1,7 @@
-import type AbsentInterface from "@/interface/Absent";
-
-export default class AbsentService {
+export default class EstadoService {
     async getAll() {
         try {
-            const response = await fetch(`https://part-back.onrender.com/attendance`, {
+            const response = await fetch(`https://part-back.onrender.com/estado`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -17,9 +15,9 @@ export default class AbsentService {
             console.log(error)
         }
     }
-    async getAbsent(id: number): Promise<AbsentInterface | undefined> {
+    async getEstado(id: number) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/attendance/${id}`, {
+            const response = await fetch(`https://part-back.onrender.com/estado/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

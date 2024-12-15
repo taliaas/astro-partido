@@ -67,11 +67,11 @@
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <!-- Table Headers -->
-            <thead class="bg-gray-100">
+            <thead class="bg-gray-300">
               <tr>
                 <th
                   scope="col"
-                  class="sticky left-0 z-10 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900"
+                  class="sticky left-0 z-10 bg-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-900"
                 >
                   Núcleos  
                 </th>

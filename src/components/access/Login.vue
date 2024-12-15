@@ -85,7 +85,7 @@ import AuthService from "src/services/AuthService.ts";
 const email = ref("");
 const password = ref("");
 const showSuccessMessage = ref(false);
-const mensaje = "";
+const mensaje = ref("");
 
 const handleSubmit = () => {
   const user = { email: email.value, password: password.value };

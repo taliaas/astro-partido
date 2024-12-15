@@ -100,11 +100,7 @@
             <DialogTitle>Notas y Observaciones</DialogTitle>
           </DialogHeader>
           <div class="space-y-4 max-h-[60vh] overflow-y-auto">
-            <div
-              v-for="note in notes"
-              :key="note.id"
-              class="p-4 rounded bg-gray-200"
-            >
+            <div v-for="note in notes" :key="note.id" class="p-4 rounded bg-gray-200">
               <div class="flex justify-between items-start">
                 <span class="font-medium">{{ note.area }}</span>
                 <span class="text-sm text-gray-500">{{ note.date }}</span>
@@ -146,6 +142,14 @@
         </DialogContent>
       </Dialog>
     </div>
+    <div v-if="showSuccessMessage">
+      <Alert>
+        <AlertTitle>{{}}</AlertTitle>
+        <AlertDescription>
+          {{ mensaje }}
+        </AlertDescription>
+      </Alert>
+    </div>
   </div>
 </template>
 
@@ -163,7 +167,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import AbsentService from "src/services/AbsentService";
 
+const showSuccessMessage = ref(false);
+const mensaje = ref("");
 const showNotesDialog = ref(false);
 const showAbsenceReasons = ref(false);
 const selectedNucleo = ref("all");
@@ -251,4 +258,29 @@ const notes = ref([
     text: "Revisar trámite de traslado de Modesto.",
   },
 ]);
+
+async function loadAttendance() {
+  const service = new AbsentService();
+
+  try {
+    const response = await service.getAll();
+    //darle valor a la tabla con la AbsentInterface
+    //dar valor a notas con esta info
+  } catch (error) {
+    showSuccessMessage.value = true;
+    mensaje = "error";
+    console.log("Error", error);
+  } finally {
+    setTimeout(() => {
+      showSuccessMessage.value = false;
+    }, 3000);
+  }
+}
+
+/*interface Notas {
+  id: number;
+  area: string;
+  date: Date;
+  text: string;
+}*/
 </script>

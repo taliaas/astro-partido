@@ -19,7 +19,5 @@
 
 <script setup lang="ts">
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Comite from "./Asistencia/Comite.vue";
-import General from "./Asistencia/General.vue";
 import AsistNucleos from "./Asistencia/AsistNucleos.vue";
 </script>
