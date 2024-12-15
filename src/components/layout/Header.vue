@@ -178,6 +178,7 @@ const toggleProfileMenu = () => {
 };
 
 const changeLanguage = (lang) => {
+  //locale.value = lang;
   currentLang.value = lang;
   showLanguageMenu.value = false;
 };

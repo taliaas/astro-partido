@@ -1,8 +1,12 @@
 ---
+
+import { h } from 'vue';
 import LoginContainer from "@/components/access/Login.vue";
 import AuthLayout from "@/layouts/AuthLayout.astro";
+import i18n from '@/i18n';
 ---
 
 <AuthLayout>
     <LoginContainer client:load />
+    {h(LoginContainer, { i18n })}
 </AuthLayout>
