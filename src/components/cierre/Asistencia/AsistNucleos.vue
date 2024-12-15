@@ -3,23 +3,35 @@
     <div class="max-w-7xl mx-auto space-y-8">
       <!-- Stats Overview -->
       <div class="bg-white rounded shadow-sm p-6">
-        <div class="flex px-4 py-5 sm:px-6 border-gray-200">
-          <h2 class="p-3 font-semibold text-gray-900">Núcleos</h2>
-          <select
-            v-model="nucleoSeleccionado"
-            class="p-3 font-semibold text-gray-900 border-none rounded"
-          >
-            <option value="ind">Independientes</option>
-            <option value="semestral">Mecánica</option>
-            <option value="anual">ICB</option>
-            <option value="anual">Civil</option>
-            <option value="anual">Mixtos</option>
-          </select>
+        <div class="flex justify-between">
+          <div class="flex px-4 py-5 sm:px-6 border-gray-200">
+            <h2 class="p-3 font-semibold text-gray-900">Núcleos</h2>
+            <select
+              v-model="nucleoSeleccionado"
+              class="p-3 font-semibold text-gray-900 border rounded"
+            >
+              <option value="ind">Independientes</option>
+              <option value="semestral">Mecánica</option>
+              <option value="anual">ICB</option>
+              <option value="anual">Civil</option>
+              <option value="anual">Mixtos</option>
+            </select>
+          </div>
+          <div class="flex px-4 py-5 sm:px-6">
+            <Button
+              @click="exportData"
+              class="flex space-x-2 h-12 rounded bg-blue-600 px-4 py-2 text-md font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              <DownloadIcon class="h-4 w-4 mr-2" />
+              Exportar
+            </Button>
+          </div>
         </div>
+
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
-              <tr class="border-b">
+              <tr class="border-b text-gray-700 font-normal bg-gray-100">
                 <th class="text-left py-3 px-4">Núcleo</th>
                 <th class="text-center py-3 px-4">Fecha de Reunión</th>
                 <th class="text-center py-3 px-4">Fecha de Entrega</th>
@@ -67,7 +79,7 @@
                         <span>Detalles</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Download class="w-4 h-4" /> <span>Exportar</span>
+                        <DownloadIcon class="w-4 h-4" /> <span>Exportar</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -155,7 +167,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { MoreVerticalIcon, Eye, Download } from "lucide-vue-next";
+import { MoreVerticalIcon, Eye, DownloadIcon } from "lucide-vue-next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";

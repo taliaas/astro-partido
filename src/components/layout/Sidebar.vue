@@ -74,6 +74,18 @@
             </transition>
           </div>
         </nav>
+        <!-- Main content 
+        <div class="flex items-center justify-center">
+          <div class="space-y-4">
+            <div class="h-24 w-24 rounded flex items-center justify-center">
+              <img
+                src="/logo.jpg"
+                alt="Logo CUJAE"
+                class="h-16 w-1 rounded flex items-center justify-center"
+              />
+            </div>
+          </div>
+        </div>-->
       </aside>
 
       <!-- Main content -->

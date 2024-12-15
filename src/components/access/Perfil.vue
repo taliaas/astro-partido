@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header Banner -->
     <div
-      class="max-w-6xl mx-auto mt-2 rounded bg-gradient-to-r from-blue-400 to-blue-800 text-white p-8"
+      class="max-w-6xl mx-auto mt-5 rounded bg-gradient-to-r from-blue-400 to-blue-800 text-white p-8"
     >
       <div class="max-w-4xl mx-auto flex items-center gap-6">
         <div
