@@ -29,7 +29,7 @@
             class="relative p-2 text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full"
           >
             <span class="sr-only">Ver notificaciones</span>
-            <Bell class="h-5 w-5" />
+            <BellIcon class="h-5 w-5" />
             <span
               class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500"
             ></span>
@@ -154,7 +154,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Separator } from "src/components/ui/separator";
-import { Bell, ChevronDown, Globe, LogOut, Search, User } from "lucide-vue-next";
+import { BellIcon, ChevronDown, Globe, LogOut, Search, User } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 
 const showSesionModal = ref(false);

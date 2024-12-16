@@ -112,7 +112,7 @@
                   <td
                     v-for="indicator in indicators"
                     :key="indicator.id"
-                    class="whitespace-nowrap px-6 py-4 text-sm text-gray-500"
+                    class="whitespace-nowrap text-center px-6 py-4 text-sm text-gray-500"
                   >
                     {{ area.values[indicator.id] || "-" }}
                   </td>
@@ -127,7 +127,7 @@
                   <td
                     v-for="indicator in indicators"
                     :key="indicator.id"
-                    class="px-6 py-4 text-sm font-semibold text-gray-900"
+                    class="px-6 py-4 text-sm font-semibold text-center text-gray-900"
                   >
                     {{ calculateSubtotal(nucleo.areas, indicator.id) }}
                   </td>
@@ -167,10 +167,8 @@ const indicators: Indicator[] = [
   { id: "totalAcuerdos", name: "Total Acuerdos" },
   { id: "participacionSup", name: "Particip. Org Sup" },
   { id: "invitadosUJC", name: "Invitados" },
-  { id: "rendicionCuentas", name: "Rendición Cuentas" },
-  { id: "rendicionCuentas", name: "Traslados e incorporaciones" },
-  { id: "rendicionCuentas", name: "Círculo Político" },
-  { id: "rendicionCuentas", name: "Acuerdos C. Político" },
+  { id: "cp", name: "Círculo Político" },
+  { id: "acuerdos_cp", name: "Acuerdos C. Político" },
 ];
 
 const nucleos: Nucleo[] = [

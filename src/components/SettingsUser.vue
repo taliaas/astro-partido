@@ -1,6 +1,31 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-6xl mx-auto p-4 mt-6 bg-white shadow-md rounded">
+    <h1 class="text-3xl font-bold p-4 ml-10">Configuraciones</h1>
+    <div
+      class="max-w-7xl mx-auto mt-5 rounded bg-gradient-to-r from-blue-400 to-blue-800 h-48 relative"
+    >
+      <div class="max-w-6xl mx-auto px-4 py-6">
+        <div class="absolute bottom-0 left-0 right-0 bg-white">
+          <div class="max-w-7xl mx-auto px-4 flex space-x-8">
+            <button
+              v-for="tab in menuItems"
+              :key="tab.id"
+              @click="activeTab = tab.id"
+              class="px-4 py-4 text-md font-medium transition-colors duration-200 -mb-px"
+              :class="
+                activeTab === tab.id
+                  ? 'border-blue-800 border-b-2 text-blue-600'
+                  : 'text-gray-600 hover:text-blue-600'
+              "
+            >
+              {{ tab.name }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-4 mt-6 bg-white shadow-md rounded">
       <!-- Usuarios del sistema -->
       <div v-if="activeTab === 'usuarios'" class="space-y-6">
         <div class="flex justify-between">
@@ -19,6 +44,7 @@
                 <th class="py-2 px-4 text-left">Nombre</th>
                 <th class="py-2 px-4 text-center">Correo</th>
                 <th class="py-2 px-4 text-center">Rol</th>
+                <th class="py-2 px-4 text-center">Estado</th>
                 <th class="py-2 px-4 text-center">Acciones</th>
               </tr>
             </thead>
@@ -26,7 +52,20 @@
               <tr v-for="user in users" :key="user.id" class="border-b hover:bg-gray-50">
                 <td class="py-2 px-4 text-left">{{ user.name }}</td>
                 <td class="py-2 px-4 text-center">{{ user.email }}</td>
-                <td class="py-2 px-4 text-center">{{ user.role }}</td>
+                <td class="px-4 py-2 text-center whitespace-nowrap">
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                  >
+                    {{ user.rol }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center whitespace-nowrap">
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
+                  >
+                    Activo
+                  </span>
+                </td>
                 <td class="py-2 px-4 text-center">
                   <button class="text-gray-600 hover:text-gray-800 mr-2">
                     <PencilIcon class="h-5 w-5" />
@@ -71,6 +110,10 @@
               <option>Oscuro</option>
             </select>
           </div>
+          <h2>Notificaciones</h2>
+          <button class="text-red-600 hover:text-red-800">
+            <Bell class="h-5 w-5" />
+          </button>
         </div>
         <button
           class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 ease-in-out"
@@ -153,24 +196,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import {
   UsersIcon,
   CogIcon,
+  Bell,
   ShieldIcon,
   FileTextIcon,
   PencilIcon,
   TrashIcon,
   UserPlusIcon,
 } from "lucide-vue-next";
+import UserService from "../services/UserService";
 
 const activeTab = ref("usuarios");
-
-const users = [
-  { id: 1, name: "Juan Pérez", email: "juan@cujae.edu.cu", role: "Administrador" },
-  { id: 2, name: "María González", email: "maria@cujae.edu.cu", role: "Editor" },
-  { id: 3, name: "Carlos Rodríguez", email: "carlos@cujae.edu.cu", role: "Lector" },
-];
 
 const roles = [
   {
@@ -203,4 +242,28 @@ const roles = [
     ],
   },
 ];
+
+const menuItems = [
+  { id: "usuarios", name: "Usuarios", icon: UsersIcon },
+  { id: "general", name: "General", icon: CogIcon },
+  { id: "permisos", name: "Permisos", icon: ShieldIcon },
+  { id: "documentos", name: "Documentos", icon: FileTextIcon },
+];
+
+const users = ref([]);
+
+async function obtenerUsuarios() {
+  const service = new UserService();
+  try {
+    const user = await service.getAllUser();
+    console.log("User:", user);
+    users.value = user;
+  } catch (error) {
+    console.log("error");
+  }
+}
+
+onMounted(() => {
+  obtenerUsuarios();
+});
 </script>

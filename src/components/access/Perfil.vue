@@ -11,10 +11,10 @@
           <UserIcon class="h-12 w-12 text-gray-300" />
         </div>
         <div>
-          <h1 class="text-3xl font-bold">{{ user.name }}</h1>
+          <h1 class="text-3xl font-bold">{{ data.name }}</h1>
           <div class="flex items-center gap-2 mt-2 text-gray-300">
             <ShieldCheckIcon class="h-4 w-4" />
-            <span class="text-lg">{{ user.role || "Administrador" }}</span>
+            <span class="text-lg">{{ data.rol || "Militante" }}</span>
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Nombre</label>
                 <Input
-                  v-model="formData.name"
+                  v-model="data.name"
                   type="text"
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -41,7 +41,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Correo</label>
                 <Input
-                  v-model="formData.email"
+                  v-model="data.email"
                   type="email"
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -51,7 +51,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Núcleo</label>
                 <Input
-                  v-model="user.nucleo"
+                  v-model="data.nucleo"
                   type="text"
                   readonly
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm bg-gray-50"
@@ -60,7 +60,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Role</label>
                 <Input
-                  v-model="user.role"
+                  v-model="data.rol"
                   type="text"
                   readonly
                   class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"
@@ -132,7 +132,7 @@
           </div>
           <div class="flex justify-end space-x-3">
             <button
-              type="button"
+              type="reset"
               @click="showPasswordModal = false"
               class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
@@ -152,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { UserIcon, LockIcon, SaveIcon, ShieldCheckIcon } from "lucide-vue-next";
 import Input from "../ui/input/Input.vue";
 import AuthService from "src/services/AuthService.ts";
@@ -174,18 +174,12 @@ const userData = (email) => {
 };
 
 //GetUser
-const user = reactive({
-  id: 1,
-  name: "Juan",
-  email: "juan.montes@cujae.edu.cu",
-  nucleo: "Independientes",
-  role: "Administrador",
-});
+const data = ref([]);
 
 // Form data
 const formData = reactive({
-  name: user.name,
-  email: user.email,
+  name: data.name,
+  email: data.email,
 });
 
 // Password form
@@ -193,6 +187,22 @@ const passwordForm = reactive({
   current: "",
   new: "",
   confirm: "",
+});
+
+async function getUser() {
+  const service = new UserService();
+  try {
+    const user = await service.getUser(1);
+    console.log(user)
+    data.value = user;
+    console.log(data)
+  } catch (error) {
+    console.log("error");
+  }
+}
+
+onMounted(() => {
+  getUser();
 });
 
 const handleSubmit = () => {
