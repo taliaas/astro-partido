@@ -1,6 +1,6 @@
 ---
 import Header from "@/components/layout/Header.vue";
-import Sidebar from "@/components/layout/Sidebar.vue";
+import SidebarSetting from "@/components/layout/SidebarSetting.vue";
 import { ClientRouter } from "astro:transitions";
 import "../globals.css";
 ---
@@ -22,7 +22,7 @@ import "../globals.css";
 
             <div class="flex">
                 <!-- Left Sidebar -->
-                <Sidebar client:load />
+                <SidebarSetting />
 
                 <!-- Main Content -->
                 <main class="flex-1">

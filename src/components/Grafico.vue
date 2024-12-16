@@ -84,6 +84,7 @@
           </div>
 
           <div class="w-3/4">
+          <!-- <input type="number" /> -->
             <NumberField id="age" :default-value="2024" :min="2000" :max="2024">
               <Label for="year" class="block text-md font-semibold text-gray-700 mb-1">Año</Label>
               <NumberFieldContent class="mr-3 rounded">

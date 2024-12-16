@@ -5,11 +5,15 @@
       <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-bold text-gray-900">COMITÉ DEL PCC CUJAE</h1>
         <h2 class="text-2xl font-semibold text-gray-600">
-          CÓMPUTO PARA EL CONTROL DE LAS ACTAS 
+          CÓMPUTO PARA EL CONTROL DE LAS ACTAS
         </h2>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-500 font-medium">{{ mes }}</span>
-          <span class="text-sm text-gray-500 font-medium">{{ anno }}</span>
+          <input
+            type="month"
+            lang="es"
+            v-model="fecha"
+            class="text-sm text-gray-500 font-medium"
+          />
         </div>
       </div>
     </header>
@@ -73,7 +77,7 @@
                   scope="col"
                   class="sticky left-0 z-10 bg-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-900"
                 >
-                  Núcleos  
+                  Núcleos
                 </th>
                 <th
                   v-for="indicator in indicators"
@@ -140,6 +144,7 @@
 import { ref, computed } from "vue";
 import { Search } from "lucide-vue-next";
 
+const fecha = ref("2024-03");
 interface Indicator {
   id: string;
   name: string;
