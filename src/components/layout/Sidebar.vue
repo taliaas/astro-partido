@@ -113,6 +113,7 @@ import {
   SettingsIcon,
   ChevronDownIcon,
   UserCheck,
+  Menu,
   CalculatorIcon,
   BuildingIcon,
   Calculator,
