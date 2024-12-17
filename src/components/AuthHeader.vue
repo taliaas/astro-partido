@@ -3,7 +3,7 @@
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <!-- Welcome Message -->
-        <div class="flex-1 text-center">
+        <div class="flex-1">
           <h1 class="text-lg font-semibold text-gray-900">Bienvenido a la Plataforma PCC CUJAE</h1>
         </div>
         <!-- Language Selector 
@@ -43,7 +43,7 @@
         -->
         <div>
           <a
-            href="/login"
+            href="/"
             class="text-md m-1 font-medium text-gray-600 hover:text-blue-600"
             >Iniciar sesión</a
           >

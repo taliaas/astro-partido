@@ -137,9 +137,9 @@
               </button>
               
                 <a
-                  href="/login"
+                  href="/"
                   class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-                  @click="handleLogout"
+                  @click="out"
                 >
                   OK
                 </a>
@@ -156,6 +156,7 @@ import { ref } from "vue";
 import { Separator } from "src/components/ui/separator";
 import { BellIcon, ChevronDown, Globe, LogOut, Search, User } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
+import { removeToken } from "@/lib/auth";
 
 const showSesionModal = ref(false);
 const showProfileMenu = ref(false);
@@ -165,6 +166,9 @@ const showLanguageMenu = ref(false);
 const handleLogout = () => {
   showSesionModal.value = true;
 };
+const out = () => {
+  removeToken();
+}
 
 const handleSesion = () => {
   showSesionModal.value = false;
@@ -177,7 +181,7 @@ const toggleProfileMenu = () => {
   showProfileMenu.value = !showProfileMenu.value;
 };
 
-const changeLanguage = (lang) => {
+const changeLanguage = (lang: string) => {
   //locale.value = lang;
   currentLang.value = lang;
   showLanguageMenu.value = false;

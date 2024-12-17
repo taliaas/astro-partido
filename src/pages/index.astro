@@ -1,8 +1,8 @@
 ---
-import Dashboard from "@/components/layout/Dashboard.vue";
-import RootLayout from "../layouts/RootLayout.astro";
+import LoginContainer from "@/components/access/Login.vue";
+import AuthLayout from "@/layouts/AuthLayout.astro";
 ---
 
-<RootLayout>
-  <Dashboard client:load/>
-</RootLayout>
+<AuthLayout>
+  <LoginContainer client:load />
+</AuthLayout>

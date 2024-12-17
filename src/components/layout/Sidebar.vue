@@ -95,9 +95,7 @@
         <header
           class="bg-white shadow-md p-4 flex items-center justify-between lg:hidden"
         >
-          <Button variant="ghost" size="icon" @click="toggleSidebar">
-            <Menu class="h-6 w-6" />
-          </Button>
+          
         </header>
       </div>
     </div>

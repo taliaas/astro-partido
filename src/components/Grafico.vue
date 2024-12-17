@@ -28,7 +28,7 @@
           </button>
         </div>
 
-        <div class="mt-4 grid gap-6 md:grid-cols-4" v-show="isFilterVisible">
+        <div class="mt-4 grid gap-6 md:grid-cols-3" v-show="isFilterVisible">
           <!-- Indicadores Select -->
           <div class="space-y-2">
             <label class="block text-md font-semibold text-gray-700 mb-1">
@@ -50,19 +50,6 @@
                 </option>
               </select>
             </div>
-          </div>
-
-          <!-- Núcleo Select -->
-          <div class="space-y-2">
-            <label class="block text-md font-semibold text-gray-700 mb-1"> Núcleo </label>
-            <select
-              v-model="nucleoSeleccionado"
-              class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
-                {{ nucleo }}
-              </option>
-            </select>
           </div>
 
           <div>
@@ -149,7 +136,6 @@ const indicadores = [
   "Indicador C",
   "Indicador D",
 ];
-const nucleos = ["Núcleo 1", "Núcleo 2", "Núcleo 3"];
 
 const isFilterVisible = ref(true)
 const indicadoresSeleccionados = ref([]);

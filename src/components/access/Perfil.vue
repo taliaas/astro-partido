@@ -164,7 +164,7 @@ const openChangePasswordModal = () => {
   showPasswordModal.value = true;
 };
 
-const userData = (email) => {
+const userData = (email: string) => {
   const service = new UserService();
   try {
     const user = service.getUserByEmail(email);
@@ -190,9 +190,9 @@ const passwordForm = reactive({
 });
 
 async function getUser() {
-  const service = new UserService();
+  const service = new AuthService();
   try {
-    const user = await service.getUser(1);
+    const user = await service.profile()
     console.log(user)
     data.value = user;
     console.log(data)
@@ -208,8 +208,9 @@ onMounted(() => {
 const handleSubmit = () => {
   // Update user data
   const service = new UserService();
+
   try {
-    const response = service.updateUser(id, formData);
+    //const response = service.updateUser(formData.id, formData);
     alert("Profile updated successfully!");
   } catch (error) {
     console.log(error);
@@ -223,7 +224,7 @@ const handlePasswordChange = () => {
   }
   // Handle password change logic here
   const service = new AuthService();
-  const id = user.id;
+  const id = "2"//user.id;
   try {
     const response = service.updatePassword(id, passwordForm.new, passwordForm.confirm);
     alert("Password updated successfully!");

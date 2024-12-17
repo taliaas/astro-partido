@@ -4,30 +4,15 @@
       <!-- Stats Overview -->
       <div class="bg-white rounded shadow-sm p-6">
         <div class="flex justify-between">
-          <div class="flex px-4 py-5 sm:px-6 border-gray-200">
-            <h2 class="p-3 font-semibold text-gray-900">Núcleos</h2>
-            <select
-              v-model="nucleoSeleccionado"
-              class="p-3 font-semibold text-gray-900 border rounded"
-            >
-              <option value="ind">Independientes</option>
-              <option value="semestral">Mecánica</option>
-              <option value="anual">ICB</option>
-              <option value="anual">Civil</option>
-              <option value="anual">Mixtos</option>
-            </select>
-          </div>
-          <div class="flex px-4 py-5 sm:px-6">
             <Button
-              @click="exportData"
-              class="flex space-x-2 h-12 rounded bg-blue-600 px-4 py-2 text-md font-medium text-white transition-colors hover:bg-blue-700"
+              @click="exportData" variant="outline"
+              class="m-4 rounded "
             >
               <DownloadIcon class="h-4 w-4 mr-2" />
               Exportar
             </Button>
-          </div>
         </div>
-
+      
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
@@ -44,7 +29,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="nucleo in filteredNucleos"
+                v-for="nucleo in nucleos"
                 :key="nucleo.name"
                 class="border-b hover:bg-gray-50"
               >
@@ -54,7 +39,7 @@
                 <td class="text-center py-3 px-4">{{ nucleo.total }}</td>
                 <td class="text-center py-3 px-4">{{ nucleo.attendance }}</td>
                 <td class="text-center py-3 px-4">{{ nucleo.absent }}</td>
-                <td class="text-right py-3 px-4">
+                <td class="text-center py-3 px-4">
                   <span
                     :class="{
                       'text-green-600': nucleo.percentage >= 70,
@@ -76,7 +61,11 @@
                     <DropdownMenuContent align="start">
                       <DropdownMenuItem @click="showAbsenceReasons = true">
                         <Eye class="w-4 h-4" />
-                        <span>Detalles</span>
+                        <span>Causas</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem @click="showNotesDialog = true">
+                        <Notebook class="w-4 h-4" />
+                        <span>Notas</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <DownloadIcon class="w-4 h-4" /> <span>Exportar</span>
@@ -87,21 +76,6 @@
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- Notes Section -->
-      <div class="bg-white rounded shadow-sm p-6">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold">Notas y Observaciones</h2>
-          <Button @click="showNotesDialog = true" variant="outline" class="rounded">
-            Ver Detalles
-          </Button>
-        </div>
-
-        <!-- Preview of latest notes -->
-        <div class="text-gray-600 bg-gray-200 rounded p-4">
-          {{ notes[0].text }}
         </div>
       </div>
 
@@ -166,17 +140,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { MoreVerticalIcon, Eye, DownloadIcon } from "lucide-vue-next";
+import { ref } from "vue";
+import { MoreVerticalIcon, Eye, DownloadIcon, Notebook } from "lucide-vue-next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AbsentService from "src/services/AbsentService";
@@ -185,15 +156,6 @@ const showSuccessMessage = ref(false);
 const mensaje = ref("");
 const showNotesDialog = ref(false);
 const showAbsenceReasons = ref(false);
-const selectedNucleo = ref("all");
-const nucleoSeleccionado = ref("ind");
-
-const nucleoOptions = [
-  { label: "Todos los Núcleos", value: "all" },
-  { label: "Arquitectura", value: "arquitectura" },
-  { label: "Automática", value: "automatica" },
-  { label: "CIPEL", value: "cipel" },
-];
 
 const nucleos = ref([
   {
@@ -222,17 +184,34 @@ const nucleos = ref([
     attendance: 0,
     absent: 16,
     percentage: 0,
+  }, {
+    name: "Arquitectura",
+    meetingDate: "2024-03-15",
+    deliveryDate: "2024-03-20",
+    total: 11,
+    attendance: 11,
+    absent: 0,
+    percentage: 100,
+  },
+  {
+    name: "Automática",
+    meetingDate: "2024-03-16",
+    deliveryDate: "2024-03-21",
+    total: 16,
+    attendance: 10,
+    absent: 6,
+    percentage: 62.5,
+  },
+  {
+    name: "CIPEL",
+    meetingDate: "2024-03-17",
+    deliveryDate: "2024-03-22",
+    total: 16,
+    attendance: 0,
+    absent: 16,
+    percentage: 0,
   },
 ]);
-
-const filteredNucleos = computed(() => {
-  if (selectedNucleo.value === "all") {
-    return nucleos.value;
-  }
-  return nucleos.value.filter(
-    (nucleo) => nucleo.name.toLowerCase() === selectedNucleo.value
-  );
-});
 
 const absenceReasons = ref([
   { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },

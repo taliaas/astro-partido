@@ -26,6 +26,7 @@
               name="password"
               type="password"
               required
+              maxlength="8"
               class="appearance-none rounded text-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 md:text-md"
               placeholder="Contraseña"
               v-model="password"
@@ -67,12 +68,7 @@
       </form>
 
       <div v-if="showSuccessMessage">
-        <Alert>
-          <AlertTitle>{{}}</AlertTitle>
-          <AlertDescription>
-            {{ mensaje }}
-          </AlertDescription>
-        </Alert>
+        {{ mensaje }}
       </div>
     </div>
   </div>
@@ -81,6 +77,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import AuthService from "src/services/AuthService.ts";
+import { navigate } from "astro:transitions/client";
 
 const email = ref("");
 const password = ref("");
@@ -93,10 +90,11 @@ const handleSubmit = () => {
 
   try {
     const response = auth.login(user);
-    // entrar al home
+    navigate("/home")
+    
   } catch (error) {
     showSuccessMessage.value = true;
-    mensaje = error;
+    mensaje.value = "Error";
     console.log("Error", error);
   } finally {
     setTimeout(() => {

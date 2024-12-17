@@ -137,9 +137,9 @@
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-full">
+                    <DropdownMenuContent className="w-full bg-white">
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem @click="verActa">
                         <Eye className="mr-2 h-4 w-4" />
                         <span>Ver</span>
                       </DropdownMenuItem>
@@ -198,6 +198,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { navigate } from "astro:transitions/client";
 
 const searchQuery = ref("");
 const selectedNucleo = ref("");
@@ -262,7 +263,7 @@ const formatDate = (date) => {
   });
 };
 
-const getStatusClass = (status) => {
+const getStatusClass = (status: string) => {
   const classes = {
     Aprobada: "bg-green-100 text-green-800",
     Pendiente: "bg-yellow-100 text-yellow-800",
@@ -270,6 +271,10 @@ const getStatusClass = (status) => {
   };
   return classes[status] || "bg-gray-100 text-gray-800";
 };
+
+const verActa = () => {
+  navigate("/viewRO")
+}
 </script>
 
 <style>

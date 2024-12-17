@@ -22,8 +22,8 @@
             v-model="form.name"
             type="text"
             required
-            class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-            placeholder="Juan Pérez"
+            class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+            placeholder="Juan"
           />
         </div>
 
@@ -40,7 +40,7 @@
             v-model="form.email"
             type="email"
             required
-            class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+            class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
             placeholder="juan@cujae.edu.cu"
           />
         </div>
@@ -59,7 +59,8 @@
               v-model="form.password"
               :type="showPassword ? 'text' : 'password'"
               required
-              class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+              maxlength="8"
+              class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
               placeholder="••••••••"
             />
             <button
@@ -101,7 +102,7 @@
         <!-- Sign In Link -->
         <div class="text-center text-sm">
           ¿Ya tienes una cuenta?
-          <a href="/login" class="text-primary hover:text-blue-500 hover:underline">
+          <a href="/" class="text-primary hover:text-blue-500 hover:underline">
             Inicia sesión
           </a>
         </div>
@@ -115,6 +116,7 @@ import { Loader2Icon } from "lucide-vue-next";
 import { reactive, ref } from "vue";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import AuthService from "@/services/AuthService";
 
 const isLoading = ref(false);
 const showPassword = ref(false);
@@ -127,11 +129,11 @@ const form = reactive({
 });
 
 const handleSubmit = async () => {
+  const service = new AuthService()
   try {
+    const user = await service.register( form.email, form.name, form.password)
     isLoading.value = true;
-    // Aquí iría la lógica de registro
-    console.log("Form submitted:", form);
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulación de registro
+    console.log(form.name)
   } catch (error) {
     console.error("Registration error:", error);
   } finally {
