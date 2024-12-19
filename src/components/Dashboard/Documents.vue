@@ -7,8 +7,8 @@
       <CardContent>
         <div class="space-y-4">
           <div class="flex items-center">
-            <Input type="search" placeholder="Buscar documentos..." class="max-w-sm mr-2" />
-            <Button variant="secondary">
+            <Input type="search" placeholder="Buscar documentos..." class="max-w-sm mr-2 rounded border-gray-300" />
+            <Button variant="secondary" class="rounded border-gray-300 bg-blue-600 text-white shadow-md">
               <Search class="h-4 w-4 mr-2" />
               Buscar
             </Button>
@@ -17,8 +17,8 @@
             <h3 class="font-semibold mb-2">{{ doc.title }}</h3>
             <p class="text-sm text-muted-foreground mb-2">{{ doc.date }}</p>
             <div class="flex space-x-2">
-              <Button variant="outline" size="sm">Ver Detalles</Button>
-              <Button variant="outline" size="sm">Descargar</Button>
+              <Button variant="outline" class="rounded border-gray-300 shadow-md" size="sm">Ver Detalles</Button>
+              <Button variant="outline" class="rounded border-gray-300 shadow-md" size="sm">Descargar</Button>
             </div>
           </div>
         </div>

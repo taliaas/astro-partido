@@ -6,6 +6,8 @@ export default class AuthService {
         email: string,
         password: string
     }) {
+        console.log("Entro");
+        
         try {
             const response = await fetch(`https://part-back.onrender.com/auth/login`, {
                 method: 'POST',
@@ -28,6 +30,8 @@ export default class AuthService {
         name: string,
         password: string) {
         try {
+            
+        console.log("Entro");
             const response = await fetch(`https://part-back.onrender.com/auth/register`, {
                 method: 'POST',
                 headers: {

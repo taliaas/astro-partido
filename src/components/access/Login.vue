@@ -84,14 +84,13 @@ const password = ref("");
 const showSuccessMessage = ref(false);
 const mensaje = ref("");
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const user = { email: email.value, password: password.value };
   const auth = new AuthService();
 
   try {
-    const response = auth.login(user);
+    const response = await auth.login(user);
     navigate("/home")
-    
   } catch (error) {
     showSuccessMessage.value = true;
     mensaje.value = "Error";

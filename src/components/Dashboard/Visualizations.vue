@@ -1,15 +1,15 @@
 <template>
-    <Card>
+    <Card class="shadow-md">
       <CardHeader>
         <CardTitle>Visualizaciones Disponibles</CardTitle>
         <CardDescription>Gráficos y dashboards personalizables</CardDescription>
       </CardHeader>
       <CardContent>
         <div class="grid gap-4 md:grid-cols-2">
-          <div v-for="chart in charts" :key="chart.id" class="border rounded-lg p-4">
+          <div v-for="chart in charts" :key="chart.id" class="border rounded p-4">
             <h3 class="font-semibold mb-2">{{ chart.title }}</h3>
             <p class="text-sm text-muted-foreground mb-2">{{ chart.type }}</p>
-            <Button variant="outline">Ver Gráfico</Button>
+            <Button variant="outline" class="rounded shadow-md border-gray-300">Ver Gráfico</Button>
           </div>
         </div>
       </CardContent>

@@ -12,8 +12,8 @@
               <p class="text-sm text-muted-foreground">{{ kpi.description }}</p>
             </div>
             <div class="text-right">
-              <p class="text-2xl font-bold text-primary">{{ kpi.value }}</p>
-              <p :class="kpi.trend > 0 ? 'text-green-600 dark:text-green-400' : 'text-destructive'" class="text-sm font-semibold">
+              <p class="text-2xl font-bold text-blue-500">{{ kpi.value }}</p>
+              <p :class="kpi.trend > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600'" class="text-sm font-semibold">
                 {{ kpi.trend > 0 ? '+' : '' }}{{ kpi.trend }} vs mes anterior
               </p>
             </div>
