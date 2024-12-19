@@ -1,333 +1,151 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-    <div class="max-w-7xl mx-auto">
-      <!-- Header with subtle animation -->
-      <div class="mb-8 text-center transform transition-all duration-500 hover:scale-102">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">
-          Estado del Funcionamiento PCC CUJAE
-        </h1>
-        <p class="text-xl font-semibold text-gray-600">Cómite UJC CUJAE</p>
+  <div class="min-h-screen bg-gray-50/50 dark:bg-zinc-800">
+    <header class="border-b bg-white">
+      <div class="container mx-auto px-4">
+        
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+      <div class="mb-8 text-center">
+        <h2 class="text-2xl font-medium text-gray-900 dark:text-white">Estado del Funcionamiento PCC CUJAE</h2>
+        <p class="text-gray-600 text-lg dark:text-gray-300 font-semibold">Comité UJC CUJAE</p>
       </div>
 
-      <!-- Form with animated transitions -->
-      <form
-        @submit.prevent="actualizarGrafico"
-        class="mb-8 bg-white rounded shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl"
-      >
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-medium text-gray-900">Filtros</h3>
-          <button
-            @click="isFilterVisible = !isFilterVisible"
-            class="flex items-center space-x-2 rounded px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
-          >
+      <div class="mb-8 rounded-lg border bg-white dark:bg-zinc-800 dark:border-gray-400 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold">Filtros</h3>
+          <button @click="isFilterVisible = !isFilterVisible" class="flex items-center space-x-2 rounded px-4 py-2 text-sm font-medium hover:bg-gray-100">
             <span>{{ isFilterVisible ? "Ocultar filtros" : "Mostrar filtros" }}</span>
             <ChevronDownIcon
               :class="{ 'rotate-180 transform': isFilterVisible }"
               class="h-5 w-5 transition-transform duration-200"
-            />
+            />          
           </button>
         </div>
 
-        <div class="mt-4 grid gap-6 md:grid-cols-3" v-show="isFilterVisible">
-          <!-- Indicadores Select -->
+        <div class="grid gap-6 md:grid-cols-3" v-show="isFilterVisible">
           <div class="space-y-2">
-            <label class="block text-md font-semibold text-gray-700 mb-1">
-              Indicadores
-            </label>
-            <div class="relative">
-              <select
-                v-model="indicadoresSeleccionados"
-                multiple
-                class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option
-                  v-for="indicador in indicadores"
-                  :key="indicador"
-                  :value="indicador"
-                  class="py-2"
-                >
-                  {{ indicador }}
-                </option>
-              </select>
-            </div>
+            <label class="text-md font-medium text-gray-700 dark:text-gray-300">Indicadores</label>
+            <select class="w-full rounded-md border border-gray-300 p-2 text-sm">
+              <option>Ptos del Orden del Día</option>
+              <option>Total de acuerdos</option>
+              <option>Indicador C</option>
+              <option>Indicador D</option>
+            </select>
           </div>
 
-          <div>
-            <!-- Período Select -->
-            <div class="space-y-2 w-3/4">
-              <label class="block text-md font-semibold text-gray-700 mb-1">
-                Período
-              </label>
-              <select
-                v-model="periodoSeleccionado"
-                class="w-full p-3 border border-gray-200 rounded shadow-sm transition-all duration-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="semestre">Semestre 1</option>
-                <option value="semestral">Semestre 2</option>
-                <option value="anual">Anual</option>
-                <option value="ultimos">Últimos años</option>
-              </select>
-            </div>
+          <div class="space-y-2">
+            <label class="text-md font-medium dark:text-gray-300 text-gray-700">Periodo</label>
+            <select class="w-full rounded-md border border-gray-300 p-2 text-sm">
+              <option>Semestre 1</option>
+              <option>Semestre 2</option>
+            </select>
           </div>
 
-          <div class="w-3/4">
-          <!-- <input type="number" /> -->
-            <NumberField id="age" :default-value="2024" :min="2000" :max="2024">
-              <Label for="year" class="block text-md font-semibold text-gray-700 mb-1">Año</Label>
-              <NumberFieldContent class="mr-3 rounded">
-                <NumberFieldDecrement />
-                <NumberFieldInput class="border-gray-200 h-12" />
-                <NumberFieldIncrement />
-              </NumberFieldContent>
-            </NumberField>
+          <div class="space-y-2">
+            <label class="text-md font-medium dark:text-gray-300 text-gray-700">Año</label>
+            <input type="number" value="2024" class="w-full rounded-md border border-gray-300 p-2 text-sm" />
           </div>
         </div>
-      </form>
-
-      <!-- Chart Section -->
-      <div class="rounded-lg bg-white p-6 shadow-lg">
-        <div class="flex mt-8 justify-end">
-          <Button
-            @click="exportData"
-            class="flex space-x-2 rounded bg-gray-600 px-4 py-2 text-md font-medium text-white transition-colors hover:bg-gray-700"
-          >
-            <DownloadIcon class="h-4 w-4 mr-2" />
-            Exportar
-          </Button>
-        </div>
-        <!-- Chart Container with animation -->
-        <transition
-          enter-active-class="transition-all duration-700 ease-out"
-          enter-from-class="opacity-0 transform translate-y-4"
-          enter-to-class="opacity-100 transform translate-y-0"
-          leave-active-class="transition-all duration-300 ease-in"
-          leave-from-class="opacity-100 transform translate-y-0"
-          leave-to-class="opacity-0 transform translate-y-4"
-        >
-          <div
-            class="bg-white p-6 transition-all duration-500"
-          >
-            <canvas ref="chartCanvas" class="transition-all duration-500"></canvas>
-          </div>
-        </transition>
       </div>
-    </div>
+
+      <div class="rounded-lg border bg-white dark:bg-zinc-800 p-6 shadow-sm">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-lg font-semibold">Indicadores para Núcleo 1</h3>
+          <button class="inline-flex items-center rounded-md bg-gray-700 dark:bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+            Exportar
+          </button>
+        </div>
+
+        <div class="h-[400px] w-full ">
+          <LineChart
+          class="dark:text-white"
+            :data="chartData"
+            :options="chartOptions"
+          />
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
-import Chart from "chart.js/auto";
-import Button from "./ui/button/Button.vue";
-import { DownloadIcon, ChevronDownIcon } from "lucide-vue-next";
-import { Label } from "@/components/ui/label";
+import { ref } from 'vue'
 import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput,
-} from "@/components/ui/number-field";
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { Line as LineChart } from 'vue-chartjs'
+import { ChevronDownIcon } from 'lucide-vue-next';
 
-// Datos de ejemplo (reemplazar con datos reales)
-const indicadores = [
-  "Ptos del Orden del Día",
-  "Total de acuerdos",
-  "Indicador C",
-  "Indicador D",
-];
-
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
 const isFilterVisible = ref(true)
-const indicadoresSeleccionados = ref([]);
-const periodoSeleccionado = ref("semestre");
-const nucleoSeleccionado = ref("Núcleo 1");
-const chartCanvas = ref(null);
-let chart = null;
+const chartData = {
+  labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+  datasets: [
+    {
+      label: 'Indicador 1',
+      data: [0.65, 0.75, 0.85, 0.80, 0.90, 0.88],
+      borderColor: '#3b82f6', // Blue
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      tension: 0.4,
+      fill: true
+    },
+    {
+      label: 'Indicador 2',
+      data: [0.70, 0.68, 0.82, 0.85, 0.82, 0.95],
+      borderColor: '#22c55e', // Green
+      backgroundColor: 'rgba(34, 197, 94, 0.1)',
+      tension: 0.4,
+      fill: true
+    }
+  ]
+}
 
-// Colores modernos con gradientes
-const colores = {
-  "Ptos del Orden del Día": "rgb(255, 99, 132)",
-  "Total de acuerdos": "rgb(54, 162, 235)",
-  "Indicador C": "rgb(75, 192, 192)",
-  "Indicador D": "rgb(255, 205, 86)",
-};
-
-const datosEjemplo = {
-  semestre: {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
-    datasets: {
-      "Ptos del Orden del Día": [65, 59, 45, 89, 98, 43, 78],
-      "Total de acuerdos": [28, 48, 28, 48, 40, 19],
-      "Indicador C": [40, 19, 28, 48, 40, 19],
-      "Indicador D": [96, 27, 28, 48, 40, 19],
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: {
+      beginAtZero: true,
+      max: 1,
+      ticks: {
+        stepSize: 0.2
+      },
+      grid: {
+        display: true,
+        color: 'rgba(0, 0, 0, 0.05)'
+      }
     },
+    x: {
+      grid: {
+        display: false
+      }
+    }
   },
-  semestral: {
-    labels: ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    datasets: {
-      "Ptos del Orden del Día": [65, 59],
-      "Total de acuerdos": [28, 48, 40, 19, 28, 48, 40],
-      "Indicador C": [40, 19],
-      "Indicador D": [96, 27],
-    },
-  },
-  anual: {
-    labels: [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
-    ],
-    datasets: {
-      "Ptos del Orden del Día": [65, 59, 80, 81],
-      "Total de acuerdos": [28, 48, 28, 48, 40, 19, 28, 48, 40, 19, 28, 48, 40],
-      "Indicador C": [40, 19, 86, 27],
-      "Indicador D": [96, 27, 90, 50],
-    },
-  },
-  ultimos: {
-    labels: [2020, 2021, 2022, 2023, 2024],
-    datasets: {
-      "Ptos del Orden del Día": [65, 59, 80, 81, 90],
-      "Total de acuerdos": [28, 48, 28, 48, 40],
-      "Indicador C": [40, 19, 86, 27],
-      "Indicador D": [96, 27, 90, 50],
-    },
-  },
-};
-
-const actualizarGrafico = () => {
-  if (chart) {
-    chart.destroy();
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: {
+        usePointStyle: true,
+        padding: 20
+      }
+    }
   }
-
-  const ctx = chartCanvas.value.getContext("2d");
-  const datos = datosEjemplo[periodoSeleccionado.value];
-
-  // Crear gradientes para cada línea
-  const gradients = {};
-  indicadoresSeleccionados.value.forEach((indicador) => {
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    const color = colores[indicador];
-    gradient.addColorStop(0, color.replace(")", ", 0.4)"));
-    gradient.addColorStop(1, color.replace(")", ", 0.1)"));
-    gradients[indicador] = gradient;
-  });
-
-  chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: datos.labels,
-      datasets: indicadoresSeleccionados.value.map((indicador) => ({
-        label: indicador,
-        data: datos.datasets[indicador],
-        borderColor: colores[indicador],
-        backgroundColor: gradients[indicador],
-        tension: 0.4,
-        fill: true,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        pointBackgroundColor: colores[indicador],
-        pointBorderColor: "#fff",
-        pointBorderWidth: 2,
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: colores[indicador],
-        pointHoverBorderWidth: 3,
-      })),
-    },
-    options: {
-      responsive: true,
-      animation: {
-        duration: 1000,
-        easing: "easeInOutQuart",
-      },
-      plugins: {
-        title: {
-          display: true,
-          text: `Indicadores para ${nucleoSeleccionado.value || "Todos los Núcleos"}`,
-          font: {
-            size: 16,
-            weight: "bold",
-          },
-          padding: 20,
-        },
-        legend: {
-          position: "bottom",
-          labels: {
-            padding: 20,
-            usePointStyle: true,
-            pointStyle: "circle",
-          },
-        },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            drawBorder: false,
-            color: "rgba(0,0,0,0.05)",
-          },
-        },
-        x: {
-          grid: {
-            display: false,
-          },
-        },
-      },
-      interaction: {
-        intersect: false,
-        mode: "index",
-      },
-    },
-  });
-};
-
-onMounted(() => {
-  actualizarGrafico();
-});
-
-watch([indicadoresSeleccionados, periodoSeleccionado, nucleoSeleccionado], () => {
-  actualizarGrafico();
-});
+}
 </script>
-
-<style>
-.scale-102 {
-  transform: scale(1.02);
-}
-
-/* Smooth transitions for all interactive elements */
-select,
-button {
-  transition: all 0.3s ease;
-}
-
-/* Custom scrollbar for the multiple select */
-select[multiple] {
-  max-height: 200px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-}
-
-select[multiple]::-webkit-scrollbar {
-  width: 6px;
-}
-
-select[multiple]::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-select[multiple]::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-</style>

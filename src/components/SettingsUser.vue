@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <h1 class="text-3xl font-bold p-4 ml-10">Configuraciones</h1>
+    
     <div
-      class="max-w-7xl mx-auto mt-5 rounded bg-gradient-to-r from-blue-400 to-blue-800 h-48 relative"
+      class="mx-auto bg-gradient-to-r from-blue-400 to-blue-800 h-48 relative"
     >
       <div class="max-w-6xl mx-auto px-4 py-6">
         <div class="absolute bottom-0 left-0 right-0 bg-white">

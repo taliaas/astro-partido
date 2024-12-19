@@ -18,15 +18,15 @@
           </div>
   
           <Tabs v-model="activeTab" class="space-y-4">
-            <TabsList class="grid w-full grid-cols-1 md:grid-cols-4 h-auto">
-              <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value" class="bg-gray-200 p-2 border dark:border-gray-700">
-                {{ tab.label }}
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent v-for="tab in tabs" :key="tab.value" class="bg-white rounded m-2 space-y-4" :value="tab.value">
-              <component :is="tab.component" />
-            </TabsContent>
-          </Tabs>
+          <TabsList class="grid w-full grid-cols-1 md:grid-cols-4 h-auto">
+            <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
+              {{ tab.label }}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" class="space-y-4">
+            <component :is="tab.component" />
+          </TabsContent>
+        </Tabs>
         </div>
         
         <div class="space-y-6 flex flex-col w-96 mt-12 p-4 ml-20">

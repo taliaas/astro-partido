@@ -22,9 +22,8 @@
 </template>
 
 <script setup lang="ts">
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AsistNucleos from "./Asistencia/AsistNucleos.vue";
 import { ref } from "vue";
+import AsistNucleos from "./Asistencia/AsistNucleos.vue";
 
 const fecha = ref("2024-03");
 
