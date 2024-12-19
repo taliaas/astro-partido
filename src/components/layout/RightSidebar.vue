@@ -1,7 +1,7 @@
 <template>
-    <div class="w-80 p-4 space-y-6 bg-background border rounded-lg shadow-sm">
+    <div class="w-80 p-4 space-y-6 bg-white border rounded shadow-md">
       <!-- Calendar and Events Section -->
-      <div class="space-y-4">
+      <div class="space-y-4 ">
         <h2 class="text-2xl font-semibold">Calendario y Eventos</h2>
         
         <!-- Calendar Select -->
@@ -11,7 +11,7 @@
             <ChevronDownIcon class="h-4 w-4" />
           </CollapsibleTrigger>
             <CollapsibleContent class="space-y-3 pt-3">
-              <Calendar v-model="value" :weekday-format="'short'" class="rounded-md border" />
+              <Calendar v-model="value" :weekday-format="'short'" class="rounded border" />
             </CollapsibleContent>
         </Collapsible>
 
@@ -27,8 +27,8 @@
               placeholder="Añadir tarea o evento"
             />
             <Select v-model="newEvent.type" class="w-full">
-              <SelectTrigger class="border-gray-300">
-                <SelectValue placeholder="Tipo" class="text-gray-700"/>
+              <SelectTrigger class="border-gray-300 rounded">
+                <SelectValue placeholder="Tipo" class="text-gray-700 "/>
               </SelectTrigger>
               <SelectContent class="bg-white">
                 <SelectItem class="hover:bg-gray-100" value="tarea">Tarea</SelectItem>
@@ -45,26 +45,26 @@
         </div>
         
         <!-- No Events Message -->
-        <p class="text-sm text-muted-foreground">
+        <p class="text-md text-gray-500">
           No hay tareas o eventos para este día.
         </p>
       </div>
     </div>
-    <div class="w-80 p-4 space-y-6 bg-background border rounded-lg shadow-sm">
+    <div class="w-80 p-4 space-y-6 bg-white border rounded shadow-md">
       <!-- Pending Tasks Section -->
       <div class="space-y-4">
-        <h2 class="text-xl font-semibold">Tareas Pendientes</h2>
+        <h2 class="text-2xl font-semibold">Tareas Pendientes</h2>
         <div class="space-y-2">
           <div v-for="task in pendingTasks" :key="task.id" class="flex items-start space-x-2">
-            <Checkbox v-model="task.completed" class="text-blue-600 rounded data-[state-checked]:bg-blue-600" />
+            <input type="checkbox" v-model="task.completed" class="rounded border-gray-200 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:focus:ring-blue-600" />
             <div class="grid gap-1.5 leading-none">
               <label 
                 :for="task.id" 
-                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {{ task.title }}
               </label>
-              <p class="text-sm text-muted-foreground">
+              <p class="text-sm text-gray-500">
                 {{ task.dueDate }}
               </p>
             </div>
@@ -75,20 +75,18 @@
   </template>
   
   <script setup lang="ts"> 
-import { ref } from 'vue'
-import { type DateValue, getLocalTimeZone, today } from '@internationalized/date'
-import { type Ref } from 'vue'
-import { ChevronDownIcon } from 'lucide-vue-next'
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../ui/collapsible';
+import { type DateValue, getLocalTimeZone, today } from '@internationalized/date';
+import { ChevronDownIcon } from 'lucide-vue-next';
+import { ref, type Ref } from 'vue';
+import Button from '../ui/button/Button.vue';
+import Calendar from '../ui/calendar/Calendar.vue';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import Input from '../ui/input/Input.vue';
 import Select from '../ui/select/Select.vue';
-import SelectTrigger from '../ui/select/SelectTrigger.vue';
-import SelectValue from '../ui/select/SelectValue.vue';
 import SelectContent from '../ui/select/SelectContent.vue';
 import SelectItem from '../ui/select/SelectItem.vue';
-import Button from '../ui/button/Button.vue';
-import Checkbox from '../ui/checkbox/Checkbox.vue';
-import Calendar from '../ui/calendar/Calendar.vue';
+import SelectTrigger from '../ui/select/SelectTrigger.vue';
+import SelectValue from '../ui/select/SelectValue.vue';
   
   const newEvent = ref({
     title: '',

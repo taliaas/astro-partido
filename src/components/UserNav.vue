@@ -8,26 +8,26 @@
             </div>
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-56">
-          <DropdownMenuItem @click="profileOpen" class="hover:bg-gray-200">
+        <DropdownMenuContent class="w-56 dark:bg-zinc-700 dark:text-white  dark:border-gray-400 rounded">
+          <DropdownMenuItem @click="profileOpen" class="hover:bg-gray-200 dark:hover:bg-zinc-600">
             <User class="mr-2 h-4 w-4" />
             <span>Mi Cuenta</span>
           </DropdownMenuItem>
           
-          <DropdownMenuItem @click="settingsOpen" class="hover:bg-gray-200">
+          <DropdownMenuItem @click="settingsOpen" class="hover:bg-gray-200 dark:hover:bg-zinc-600">
             <Settings class="mr-2 h-4 w-4" />
             <span>Configuración</span>
           </DropdownMenuItem>
           
-          <DropdownMenuItem @click="helpOpen" class="hover:bg-gray-200">
+          <DropdownMenuItem @click="helpOpen" class="hover:bg-gray-200 dark:hover:bg-zinc-600">
             <HelpCircle class="mr-2 h-4 w-4" />
             <span>Ayuda</span>
           </DropdownMenuItem>
           
-          <DropdownMenuSeparator class="bg-gray-200 border"/>
+          <DropdownMenuSeparator class="bg-gray-200 border dark:border-gray-400"/>
           
           <DropdownMenuItem  @click="handleLogout"
-          class="text-red-500 focus:text-red-500 hover:bg-gray-200 hover:text-red-700">
+          class="text-red-500 focus:text-red-500 hover:bg-gray-200 hover:text-red-700 dark:hover:bg-zinc-600">
             <LogOut class="mr-2 h-4 w-4" />
             <span>Cerrar Sesión</span>
           </DropdownMenuItem>
