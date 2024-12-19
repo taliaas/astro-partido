@@ -1,7 +1,5 @@
 ---
 import Header from "@/components/layout/Header.vue";
-import RightSidebar from "@/components/layout/RightSidebar.vue";
-import Sidebar from "@/components/layout/Sidebar.vue";
 import { ClientRouter } from "astro:transitions";
 import "../globals.css";
 ---
@@ -13,25 +11,20 @@ import "../globals.css";
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Partido de la CUJAE</title>
+    <title>Motor</title>
     <ClientRouter />
   </head>
   <body>
     <div class="min-h-screen bg-gray-50">
       <!-- Header -->
       <Header client:load />
-
       <div class="flex">
-        <!-- Left Sidebar -->
-        <Sidebar client:load />
+        <!-- Sidebar -->
 
         <!-- Main Content -->
         <main class="flex-1">
           <slot />
         </main>
-
-        <!-- Right Sidebar -->
-        <RightSidebar client:load />
       </div>
     </div>
   </body>

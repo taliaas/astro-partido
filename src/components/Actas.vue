@@ -107,25 +107,25 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="acta in filteredActas" :key="acta.id" class="hover:bg-gray-50">
+              <tr v-for="acta in actas" :key="acta.id" class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ acta.titulo }}</div>
+                  <div class="text-sm font-medium text-gray-900">Acta Ordinaria {{ acta.id }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.nucleo }}</div>
+                  <div class="text-sm text-left text-gray-500">{{ acta.core.name }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm text-gray-500">{{ acta.fecha }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ acta.creador }}</div>
+                  <div class="text-sm text-gray-500">{{ acta.secretarioGeneral }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span
-                    :class="getStatusClass(acta.estado)"
+                    :class="getStatusClass(estado)"
                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                   >
-                    {{ acta.estado }}
+                    {{ estado }}
                   </span>
                 </td>
                 <td
@@ -165,7 +165,7 @@
         </div>
 
         <!-- Empty State -->
-        <div v-if="filteredActas.length === 0" class="text-center py-12">
+        <div v-if="actas.length === 0" class="text-center py-12">
           <h3 class="mt-2 text-sm font-medium text-gray-900">No hay actas</h3>
           <p class="mt-1 text-sm text-gray-500">
             Comienza creando una nueva acta o cargando un documento existente.
@@ -177,19 +177,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import {
-  SearchIcon,
-  PlusIcon,
-  UploadIcon,
-  MoreVertical,
-  DeleteIcon,
-  Eye,
-  Edit,
-  Trash2,
-  Download,
-} from "lucide-vue-next";
-import Button from "./ui/button/Button.vue";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -198,71 +185,34 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import OrdinaryService from "@/services/OrdinaryService";
 import { navigate } from "astro:transitions/client";
+import {
+  Download,
+  Edit,
+  Eye,
+  MoreVertical,
+  PlusIcon,
+  SearchIcon,
+  Trash2
+} from "lucide-vue-next";
+import { onMounted, ref } from "vue";
+import Button from "./ui/button/Button.vue";
 
 const searchQuery = ref("");
 const selectedNucleo = ref("");
 const selectedMonth = ref("");
 
-const actas = ref([
-  {
-    id: 1,
-    titulo: "Acta Reunión Enero",
-    nucleo: "Mecánica",
-    fecha: "2024-01-14",
-    creador: "Juan",
-    estado: "Aprobada",
-  },
-  {
-    id: 1,
-    titulo: "Acta Reunión Ordinaria",
-    nucleo: "Mecánica",
-    fecha: "2024-03-17",
-    creador: "Juan",
-    estado: "Aprobada",
-  },
-  {
-    id: 2,
-    titulo: "Acta Planificación Q1",
-    nucleo: "Industrial",
-    fecha: "2024-01-09",
-    creador: "Pedro",
-    estado: "Pendiente",
-  },
-  {
-    id: 3,
-    titulo: "Acta Revisión Proyectos",
-    nucleo: "Informática",
-    fecha: "2024-01-04",
-    creador: "Teresa",
-    estado: "Rechazada",
-  },
-]);
+const actas = ref([]);
 
-const filteredActas = computed(() => {
-  return actas.value.filter((acta) => {
-    const matchesSearch = acta.titulo
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase());
-    const matchesNucleo = !selectedNucleo.value || acta.nucleo === selectedNucleo.value;
-    const matchesMonth =
-      !selectedMonth.value ||
-      new Date(acta.fecha).getMonth() + 1 === parseInt(selectedMonth.value);
-    return matchesSearch && matchesNucleo && matchesMonth;
-  });
-});
-
-function openPage() {
-  window.location.href = "/addRO";
-}
-const formatDate = (date) => {
+const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString("es-ES", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 };
-
+const estado = ref('Aprobada')
 const getStatusClass = (status: string) => {
   const classes = {
     Aprobada: "bg-green-100 text-green-800",
@@ -275,6 +225,20 @@ const getStatusClass = (status: string) => {
 const verActa = () => {
   navigate("/viewRO")
 }
+
+async function obtenerActas() {
+  const service = new OrdinaryService();
+  try {
+    const user = await service.getAll();
+    console.log("ACTAS:", user);
+    actas.value = user;
+  } catch (error) {
+    console.log("error");
+  }
+}
+onMounted(() => {
+  obtenerActas();
+});
 </script>
 
 <style>
