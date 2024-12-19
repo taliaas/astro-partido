@@ -3,7 +3,7 @@
       <DropdownMenu>
         <DropdownMenuTrigger class="focus:outline-none">
           <button class="flex items-center space-x-2 hover:bg-accent rounded-full p-1 bg-gray-100 hover:bg-gray-200">
-            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center ">
               <span class="text-md font-medium text-muted-foreground">U</span>
             </div>
           </button>

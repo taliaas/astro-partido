@@ -1,8 +1,8 @@
 <template>
-    <div class="container mx-auto p-6 bg-gray-50 dark:bg-gray-700">
+    <div class="container mx-auto p-6 bg-gray-50 dark:bg-zinc-800">
       <div class="grid gap-6 md:grid-cols-[1fr_300px]">
         <div class="space-y-6">
-          <h1 class="text-3xl font-bold text-blue-600">Panel de Control de KPIs</h1>
+          <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Panel de Control de KPIs</h1>
           
           <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4 ">
             <Card v-for="(card, index) in cards" :key="index" class="bg-white rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition">

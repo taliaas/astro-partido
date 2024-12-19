@@ -2,8 +2,8 @@
   <header class="flex items-center justify-between px-4 py-3 bg-white dark:bg-zinc-800 border-b dark:border-gray-700">
     <!-- Logo and Brand -->
     <div class="flex items-center space-x-2">
-      <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-        <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+      <div class="w-8 h-8 rounded flex items-center justify-center">
+        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
           M
         </span>
       </div>
