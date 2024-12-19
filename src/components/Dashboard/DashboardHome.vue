@@ -4,15 +4,15 @@
         <div class="space-y-6">
           <h1 class="text-3xl font-bold text-blue-600">Panel de Control de KPIs</h1>
           
-          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 ">
+          <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4 ">
             <Card v-for="(card, index) in cards" :key="index">
               <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle class="text-md font-semibold">{{ card.title }}</CardTitle>
-                <component :is="card.icon" class="h-6 w-6" :class="card.iconClass" />
+                <component :is="card.icon" class="h-6 w-6 text-blue-500" />
               </CardHeader>
               <CardContent>
-                <div class="text-2xl font-bold">{{ card.value }}</div>
-                <p class="text-xs text-muted-foreground">{{ card.subtext }}</p>
+                <div class="text-3xl font-bold">{{ card.value }}</div>
+                <p class="text-sm text-blue-400 font-medium">{{ card.subtext }}</p>
               </CardContent>
             </Card>
           </div>
@@ -30,7 +30,7 @@
         </div>
         
         <div class="space-y-6 flex flex-col w-96 mt-12 p-4 ml-20">
-        <RightSidebar />
+          <RightSidebar />
         </div>
       </div>
     </div>
@@ -50,10 +50,10 @@ import RightSidebar from '../layout/RightSidebar.vue'
   const activeTab = ref('overview')
   
   const cards = [
-    { title: 'Documentos Pendientes', value: '12', subtext: '4 nuevos hoy', icon: UploadCloud, iconClass: 'text-accent' },
-    { title: 'Documentos Procesados', value: '45', subtext: '+15% este mes', icon: BarChart2, iconClass: 'text-secondary' },
-    { title: 'Total de Documentos', value: '57', subtext: '+5% desde ayer', icon: PieChart, iconClass: 'text-primary' },
-    { title: 'KPIs Identificados', value: '24', subtext: '+2 esta semana', icon: LineChart, iconClass: 'text-muted-foreground' },
+    { title: 'Documentos Pendientes', value: '12', subtext: '4 nuevos hoy', icon: UploadCloud },
+    { title: 'Documentos Procesados', value: '45', subtext: '+15% este mes', icon: BarChart2 },
+    { title: 'Total de Documentos', value: '57', subtext: '+5% desde ayer', icon: PieChart },
+    { title: 'KPIs Identificados', value: '24', subtext: '+2 esta semana', icon: LineChart },
   ]
   
   const tabs = [

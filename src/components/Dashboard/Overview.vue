@@ -25,7 +25,7 @@
       {
         label: 'Ventas',
         data: [4000, 3000, 2000, 2780, 1890, 2390],
-        backgroundColor: 'hsl(var(--accent))',
+        backgroundColor: 'hsl(var(--primary))',
       },
       {
         label: 'Gastos',
