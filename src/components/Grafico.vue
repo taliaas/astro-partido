@@ -27,38 +27,35 @@
         <div class="grid gap-6 md:grid-cols-3" v-show="isFilterVisible">
           <div class="space-y-2">
             <label class="text-md font-medium text-gray-700 dark:text-gray-300">Indicadores</label>
-            <select class="w-full rounded-md border border-gray-300 p-2 text-sm">
-              <option>Ptos del Orden del Día</option>
-              <option>Total de acuerdos</option>
-              <option>Indicador C</option>
-              <option>Indicador D</option>
+            <select v-model="selectedIndicator" class="w-full rounded-md border border-gray-300 p-2 text-sm">
+              <option v-for="indicador in indicadores" :key="indicador.value" :value="indicador.value">{{ indicador.text }}</option>
             </select>
           </div>
-
+          
           <div class="space-y-2">
             <label class="text-md font-medium dark:text-gray-300 text-gray-700">Periodo</label>
-            <select class="w-full rounded-md border border-gray-300 p-2 text-sm">
-              <option>Semestre 1</option>
-              <option>Semestre 2</option>
+            <select v-model="selectedPeriod" class="w-full rounded-md border border-gray-300 p-2 text-sm">
+              <option value="1">Semestre 1</option>
+              <option value="2" >Semestre 2</option>
             </select>
           </div>
 
           <div class="space-y-2">
             <label class="text-md font-medium dark:text-gray-300 text-gray-700">Año</label>
-            <input type="number" value="2024" class="w-full rounded-md border border-gray-300 p-2 text-sm" />
+            <input type="number"  v-model="selectedYear" max="2024"class="w-full rounded-md border border-gray-300 p-2 text-sm" />
           </div>
         </div>
       </div>
 
       <div class="rounded-lg border bg-white dark:bg-zinc-800 p-6 shadow-sm">
         <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-lg font-semibold">Indicadores para Núcleo 1</h3>
-          <button class="inline-flex items-center rounded-md bg-gray-700 dark:bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+          <h3 class="text-lg font-semibold">Comportamiento de Indicadores </h3>
+          <button @click="exportToPDF" class="inline-flex items-center rounded-md bg-gray-700 dark:bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
             Exportar
           </button>
         </div>
 
-        <div class="h-[400px] w-full ">
+        <div ref="chartContainer" class="h-[400px] w-full ">
           <LineChart
           class="dark:text-white"
             :data="chartData"
@@ -71,7 +68,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import html2canvas from 'html2canvas'
+import { jsPDF } from 'jspdf'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -80,10 +79,11 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,Filler 
 } from 'chart.js'
 import { Line as LineChart } from 'vue-chartjs'
 import { ChevronDownIcon } from 'lucide-vue-next';
+import EstadoService from '@/services/EstadoService'
 
 ChartJS.register(
   CategoryScale,
@@ -92,30 +92,57 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend, 
+  Filler 
 )
 const isFilterVisible = ref(true)
-const chartData = {
-  labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+const selectedIndicator = ref('order')
+const selectedYear = ref(2024)
+const selectedPeriod = ref('1')
+const chartContainer = ref(null)
+import type { ChartData } from 'chart.js'
+
+const chartData = ref<ChartData<'line'>>({ labels: [], datasets: [] })
+
+const indicadores = ref([
+  { value: 'order', text: 'Ptos del Orden del Día' },
+  { value: 'agreem', text: 'Acuerdos' },
+  { value: 'invitados', text: 'Invitados' },
+  { value: 'participant', text: 'Participantes' }
+])
+
+const selectedIndicatorText = indicadores.value.find(indicador => indicador.value === selectedIndicator.value)?.text || 'N/A';
+
+const fetchData = async () => {
+  const months = selectedPeriod.value === '1'
+      ? ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun']
+      : ['Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+  const service = new EstadoService()
+  try {
+    const yearData = await service.getYear(selectedYear.value, selectedIndicator.value)
+    const semesterData = selectedPeriod.value === '1' 
+      ? yearData[0].slice(0, 6) 
+      : yearData[0].slice(6, 12)
+      const val = semesterData
+      console.log(yearData,semesterData,val);
+      chartData.value = {
+  labels: months,
   datasets: [
     {
-      label: 'Indicador 1',
-      data: [0.65, 0.75, 0.85, 0.80, 0.90, 0.88],
+      label: selectedIndicatorText,
+      data: semesterData,
       borderColor: '#3b82f6', // Blue
       backgroundColor: 'rgba(59, 130, 246, 0.1)',
       tension: 0.4,
       fill: true
     },
-    {
-      label: 'Indicador 2',
-      data: [0.70, 0.68, 0.82, 0.85, 0.82, 0.95],
-      borderColor: '#22c55e', // Green
-      backgroundColor: 'rgba(34, 197, 94, 0.1)',
-      tension: 0.4,
-      fill: true
-    }
   ]
 }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 
 const chartOptions = {
   responsive: true,
@@ -123,9 +150,9 @@ const chartOptions = {
   scales: {
     y: {
       beginAtZero: true,
-      max: 1,
+      max: 10,
       ticks: {
-        stepSize: 0.2
+        stepSize: 2
       },
       grid: {
         display: true,
@@ -148,4 +175,33 @@ const chartOptions = {
     }
   }
 }
+
+const exportToPDF = async () => {
+  try {
+    const canvas = await html2canvas(chartContainer.value)
+    const imgData = canvas.toDataURL('image/png')
+    
+    const pdf = new jsPDF('l', 'mm', 'a4')
+    const pdfWidth = pdf.internal.pageSize.getWidth()
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+    
+    pdf.text('Estado del Funcionamiento PCC CUJAE', 14, 15)
+    
+    pdf.text(`Indicador: ${selectedIndicatorText} - Año: ${selectedYear.value} - Semestre: ${selectedPeriod.value}`, 14, 25)
+    pdf.addImage(imgData, 'PNG', 10, 30, pdfWidth - 20, pdfHeight - 20)
+    
+    pdf.save(`estado-funcionamiento-${selectedYear.value}-S${selectedPeriod.value}.pdf`)
+  } catch (error) {
+    console.error('Error exporting PDF:', error)
+  }
+}
+// Watch for changes in filters
+watch([selectedYear, selectedIndicator, selectedPeriod], () => {
+  fetchData()
+})
+
+// Initial data fetch
+onMounted(() => {
+  fetchData()
+})
 </script>
