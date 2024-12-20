@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen bg-gray-50 p-6">
+    <div class="min-h-screen bg-gray-50 p-6 dark:bg-zinc-800">
       <div class="flex flex-col md:flex-row gap-6 justify-center">
         <!-- Main Table Section -->
         <div class="flex-1 bg-white max-w-5xl rounded-lg shadow-md p-6">
@@ -59,11 +59,11 @@
         </div>
   
         <!-- Side Panel -->
-        <div class="w-full max-w-xl space-y-6">
+        <div class="w-full max-w-xl space-y-6 ">
           <!-- Absence Reasons Chart -->
-          <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="bg-white rounded-lg shadow-md p-6 dark:bg-zinc-800 dark:border dark:border-gray-400">
             <div class="flex items-center justify-between mb-4">
-              <h3 class="text-xl font-semibold text-gray-800">Causas de Ausencia</h3>
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Causas de Ausencia</h3>
               <button @click="isChartOpen = !isChartOpen" class="text-gray-400 hover:text-gray-500">
                 <ChevronDownIcon v-if="!isChartOpen" class="w-5 h-5" />
                 <ChevronUpIcon v-else class="w-5 h-5" />
@@ -73,7 +73,7 @@
             <div v-show="isChartOpen" class="space-y-4">
               <div v-for="reason in absenceReasons" :key="reason.label" class="space-y-2">
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">{{ reason.label }}</span>
+                  <span class="text-gray-600 dark:text-gray-300">{{ reason.label }}</span>
                   <span class="font-medium">{{ reason.count }}</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
@@ -88,25 +88,25 @@
           </div>
   
           <!-- Notes Section -->
-          <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="bg-white rounded-lg shadow-md p-6 dark:bg-zinc-800 dark:border dark:border-gray-400">
             <div class="flex items-center justify-between mb-4">
-              <h3 class="text-xl font-semibold text-gray-800">Análisis de Injustificados</h3>
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white ">Análisis de Injustificados</h3>
               <button @click="isNotesOpen = !isNotesOpen" class="text-gray-400 hover:text-gray-500">
                 <ChevronDownIcon v-if="!isNotesOpen" class="w-5 h-5" />
                 <ChevronUpIcon v-else class="w-5 h-5" />
               </button>
             </div>
             
-            <div v-show="isNotesOpen" class="space-y-4">
+            <div v-show="isNotesOpen" class="space-y-4 ">
                 <div class="space-y-4 max-h-[60vh] overflow-y-auto">
-            <div v-for="note in notes" :key="note.id" class="p-4 rounded bg-blue-100">
+                    <div v-for="note in notes" :key="note.id" class="p-4 rounded bg-blue-100 dark:bg-blue-800">
               <div class="flex justify-between items-start">
                 <span class="font-medium">{{ note.area }}</span>
-                <span class="text-sm text-gray-500">{{ note.date }}</span>
+                <span class="text-sm text-gray-500 dark:text-gray-300">{{ note.date }}</span>
               </div>
-              <p class="mt-2 text-gray-700">{{ note.text }}</p>
-            </div>
-          </div>
+              <p class="mt-2 text-gray-700 dark:text-gray-200">{{ note.text }}</p>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
