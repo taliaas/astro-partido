@@ -1,7 +1,7 @@
 export default class EstadoService {
-    async getAll() {
+    async getYear(anno: number, indicator: string) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/estado`, {
+            const response = await fetch(`https://part-back.onrender.com/estado/${anno}/${indicator}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

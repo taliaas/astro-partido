@@ -157,7 +157,7 @@ import Dialog from './ui/dialog/Dialog.vue';
 import DialogContent from './ui/dialog/DialogContent.vue';
 import DialogHeader from './ui/dialog/DialogHeader.vue';
   
-  const isChartOpen = ref(true)
+  const isChartOpen = ref(false)
   const isNotesOpen = ref(true)
   const showAbsenceReasons = ref(false);
   const fecha = ref("2024-03");
