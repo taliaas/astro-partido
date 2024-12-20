@@ -3,12 +3,12 @@
       <div class="flex flex-col md:flex-row gap-6 justify-center">
         <!-- Main Table Section -->
         <div class="flex-1 bg-white max-w-5xl rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold text-gray-800">Cierre del funcionamiento</h2>
+            <h2 class="text-3xl font-bold text-blue-600">Cierre del funcionamiento</h2>
             <div class="flex justify-between items-center mt-4">
             <h2 class="text-xl font-bold text-gray-500 ">Asistencia</h2>
           </div>
           <div class="flex justify-between items-center mb-6">
-            <input type="month" class=""/>
+            <input type="month" class="" v-model="fecha"/>
             <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
               <DownloadIcon class="w-4 h-4 mr-2" />
               Exportar
@@ -64,7 +64,7 @@
           <div class="bg-white rounded-lg shadow-md p-6 dark:bg-zinc-800 dark:border dark:border-gray-400">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Causas de Ausencia</h3>
-              <button @click="isChartOpen = !isChartOpen" class="text-gray-400 hover:text-gray-500">
+              <button @click="isChartOpen = !isChartOpen" class="rounded-full hover:bg-gray-100 p-1 text-gray-400 hover:text-gray-500">
                 <ChevronDownIcon v-if="!isChartOpen" class="w-5 h-5" />
                 <ChevronUpIcon v-else class="w-5 h-5" />
               </button>
@@ -91,7 +91,7 @@
           <div class="bg-white rounded-lg shadow-md p-6 dark:bg-zinc-800 dark:border dark:border-gray-400">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-xl font-semibold text-gray-800 dark:text-white ">Análisis de Injustificados</h3>
-              <button @click="isNotesOpen = !isNotesOpen" class="text-gray-400 hover:text-gray-500">
+              <button @click="isNotesOpen = !isNotesOpen"  class="rounded-full hover:bg-gray-100 p-1 text-gray-400 hover:text-gray-500">
                 <ChevronDownIcon v-if="!isNotesOpen" class="w-5 h-5" />
                 <ChevronUpIcon v-else class="w-5 h-5" />
               </button>
@@ -160,7 +160,8 @@ import DialogHeader from './ui/dialog/DialogHeader.vue';
   const isChartOpen = ref(true)
   const isNotesOpen = ref(true)
   const showAbsenceReasons = ref(false);
-  
+  const fecha = ref("2024-03");
+
   const absenceReasons = ref([
     { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },
     { label: "Extranjero", count: 3, percentage: 1, color: "bg-blue-600" },
