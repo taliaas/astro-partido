@@ -1,264 +1,151 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <!-- Header -->
+      <div class="space-y-2">
         <h1 class="text-2xl font-bold text-gray-900">COMITÉ DEL PCC CUJAE</h1>
-        <h2 class="text-2xl font-semibold text-gray-600">
-          CÓMPUTO PARA EL CONTROL DE LAS ACTAS
-        </h2>
-        <div class="flex items-center gap-2">
-          <input
-            type="month"
-            lang="es"
-            v-model="fecha"
-            class="text-sm text-gray-500 font-medium"
-          />
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg text-gray-600">CÓMPUTO PARA EL CONTROL DE LAS ACTAS</h2>
+          <!-- Month Selector -->
+          <input type="month"
+            v-model="selectedMonth" 
+            class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+          </input>
         </div>
       </div>
-    </header>
 
-    <!-- Main Content -->
-    <main
-      class="max-w-7xl rounded bg-white shadow-lg mx-auto mt-5 px-3 py-8 sm:px-6 lg:px-8"
-    >
-      <!-- Cómputo -->
-      <div>
-        <div class="border-b border-gray-200 p-2">
-          <!-- Search and Filter Section -->
-          <div class="my-4 flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
-            <div class="flex-1 w-full md:w-3/4">
-              <label for="search" class="mb-1 block text-sm font-medium text-gray-700"
-                >Buscar</label
-              >
-              <div class="flex-1 relative">
-                <Search
-                  class="h-5 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
-                />
-                <input
-                  id="search"
-                  v-model="searchQuery"
-                  placeholder="Buscar área..."
-                  class="w-full rounded pl-10 pr-4 py-2 border shadow-sm border-gray-300 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-            <div class="flex-1 w-full md:w-1/4">
-              <label
-                for="nucleo-filter"
-                class="mb-1 block text-sm font-medium text-gray-700"
-                >Filtrar por Núcleo</label
-              >
-              <select
-                id="nucleo-filter"
-                v-model="selectedNucleo"
-                class="w-1/2 rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              >
-                <option value="">Todos los Núcleos</option>
-                <option
-                  v-for="nucleo in nucleos"
-                  :key="nucleo.id"
-                  :value="nucleo.id.toString()"
-                >
-                  {{ nucleo.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
+      <!-- Controls -->
+      <div class="flex justify-between items-center">
 
-        <!-- Table Section -->
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <!-- Table Headers -->
-            <thead class="bg-gray-300">
-              <tr>
-                <th
-                  scope="col"
-                  class="sticky left-0 z-10 bg-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-900"
-                >
-                  Núcleos
-                </th>
-                <th
-                  v-for="indicator in indicators"
-                  :key="indicator.id"
-                  scope="col"
-                  class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
-                >
-                  {{ indicator.name }}
-                </th>
-              </tr>
-            </thead>
+        <!-- Filter by Núcleo -->
+        <select 
+          v-model="selectedNucleo" 
+          class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Todos los Núcleos</option>
+          <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
+            {{ nucleo }}
+          </option>
+        </select>
 
-            <!-- Table Body -->
-            <tbody class="divide-y divide-gray-200 bg-white">
-              <template v-for="nucleo in filteredNucleos" :key="nucleo.id">
-                <!-- Nucleo Group -->
-                <tr v-if="nucleo.areas.length > 0" class="bg-blue-50">
-                  <td
-                    colspan="100%"
-                    class="px-6 py-3 text-left text-sm font-semibold text-gray-900"
-                  >
-                    {{ nucleo.name }}
-                  </td>
-                </tr>
-                <!-- Areas within Nucleo -->
-                <tr v-for="area in nucleo.areas" :key="area.id">
-                  <td
-                    class="sticky left-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-sm font-medium text-gray-900"
-                  >
-                    {{ area.name }}
-                  </td>
-                  <td
-                    v-for="indicator in indicators"
-                    :key="indicator.id"
-                    class="whitespace-nowrap text-center px-6 py-4 text-sm text-gray-500"
-                  >
-                    {{ area.values[indicator.id] || "-" }}
-                  </td>
-                </tr>
-                <!-- Subtotal for Nucleo -->
-                <tr class="bg-gray-100">
-                  <td
-                    class="sticky left-0 z-10 bg-gray-100 px-6 py-4 text-sm font-semibold text-gray-900"
-                  >
-                    Subtotal {{ nucleo.name }}
-                  </td>
-                  <td
-                    v-for="indicator in indicators"
-                    :key="indicator.id"
-                    class="px-6 py-4 text-sm font-semibold text-center text-gray-900"
-                  >
-                    {{ calculateSubtotal(nucleo.areas, indicator.id) }}
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+        <!-- Filter by Indicator -->
+
+        <!-- Export Button -->
+        <button 
+          @click="exportData"
+          class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          <DownloadIcon class="mr-2 h-4 w-4" />
+          Exportar Datos
+        </button>
       </div>
-    </main>
+
+      <!-- Table -->
+      <div class="rounded-lg border bg-white shadow-md ">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th v-for="header in headers" :key="header" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {{ header }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="item in filteredData" :key="item.nucleo">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {{ item.nucleo }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-center" :class="{ 'text-red-600 font-semibold': item.pto < 3 }">
+                {{ item.pto }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                {{ item.acuerdos }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                {{ item.particip }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                {{ item.invitados }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-center" :class="{ 'text-red-600 font-semibold': item.cp === 0 }">
+                {{ item.cp }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                {{ item.cp_agree }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { Search } from "lucide-vue-next";
+import ComputoService from '@/services/Computo';
+import { DownloadIcon } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
 
-const fecha = ref("2024-03");
-interface Indicator {
-  id: string;
-  name: string;
+const selectedMonth = ref('2024-12')
+const selectedNucleo = ref('')
+
+const headers = [
+  'Núcleos',
+  'Puntos Orden Día',
+  'Total Acuerdos',
+  'Particip. Org Sup',
+  'Invitados',
+  'Círculo Político',
+  'Acuerdos C. Político'
+]
+
+const data = ref([])
+
+const nucleos = computed(() => {
+  return [...new Set(data.value.map(item => item.nucleo))]
+})
+
+const filteredData = computed(() => {
+  return data.value.filter(item => {
+    if (selectedNucleo.value && item.nucleo !== selectedNucleo.value) return false
+    return true
+  })
+})
+
+async function obtenerUsuarios() {
+  const service = new ComputoService();
+  try {
+    const temp = await service.getByDate(12, 2024);
+    console.log(temp);
+    data.value = temp;
+  } catch (error) {
+    console.log("error");
+  }
 }
 
-interface Area {
-  id: number;
-  name: string;
-  values: Record<string, number>;
-}
-
-interface Nucleo {
-  id: number;
-  name: string;
-  areas: Area[];
-}
-
-const indicators: Indicator[] = [
-  { id: "puntosOrdenDia", name: "Puntos Orden Día" },
-  { id: "totalAcuerdos", name: "Total Acuerdos" },
-  { id: "participacionSup", name: "Particip. Org Sup" },
-  { id: "invitadosUJC", name: "Invitados" },
-  { id: "cp", name: "Círculo Político" },
-  { id: "acuerdos_cp", name: "Acuerdos C. Político" },
-];
-
-const nucleos: Nucleo[] = [
-  {
-    id: 1,
-    name: "Independientes",
-    areas: [
-      {
-        id: 1,
-        name: "Arquitectura",
-        values: {
-          puntosOrdenDia: 8,
-          totalAcuerdos: 4,
-          participacionSup: 1,
-          invitadosUJC: 0,
-          rendicionCuentas: 1,
-        },
-      },
-      {
-        id: 2,
-        name: "Automática",
-        values: {
-          puntosOrdenDia: 6,
-          totalAcuerdos: 5,
-          participacionSup: 1,
-          invitadosUJC: 1,
-          rendicionCuentas: 0,
-        },
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Mecánica",
-    areas: [
-      {
-        id: 3,
-        name: "CP Mecánica",
-        values: {
-          puntosOrdenDia: 7,
-          totalAcuerdos: 3,
-          participacionSup: 2,
-          invitadosUJC: 1,
-          rendicionCuentas: 1,
-        },
-      },
-    ],
-  },
-];
-
-const mes = ref("Marzo");
-const anno = ref(2024);
-const searchQuery = ref("");
-const selectedNucleo = ref("");
-
-const filteredNucleos = computed(() => {
-  return nucleos
-    .map((nucleo) => ({
-      ...nucleo,
-      areas: nucleo.areas.filter((area) =>
-        area.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      ),
-    }))
-    .filter(
-      (nucleo) =>
-        selectedNucleo.value === "" || nucleo.id.toString() === selectedNucleo.value
-    );
+onMounted(() => {
+  obtenerUsuarios();
 });
 
-const calculateSubtotal = (areas: Area[], indicatorId: string): number => {
-  return areas.reduce((sum, area) => sum + (area.values[indicatorId] || 0), 0);
-};
+const exportData = () => { //exportar en excel
+  const csvContent = [
+    headers.join(','),
+    ...filteredData.value.map(item => [
+      item.nucleo,
+      item.puntosOrden,
+      item.totalAcuerdos,
+      item.particip,
+      item.invitados,
+      item.circuloPolitico,
+      item.acuerdosPolitico
+    ].join(','))
+  ].join('\n')
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = `kpi_data_${selectedMonth.value}_2024.csv`
+  link.click()
+}
 </script>
-
-<style scoped>
-.overflow-x-auto {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-}
-
-.overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
-}
-
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 4px;
-}
-</style>
