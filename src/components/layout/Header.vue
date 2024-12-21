@@ -3,7 +3,8 @@
     <!-- Logo and Brand -->
     <div class="flex items-center space-x-2">
       <div class="w-8 h-8 rounded flex items-center justify-center">
-        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+        <span
+          class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
           M
         </span>
       </div>
@@ -14,13 +15,8 @@
 
     <!-- Navigation -->
     <nav class="hidden md:flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6">
-      <a 
-        v-for="item in navigationItems" 
-        :key="item.name"
-        :href="item.href"
-        @click="selectedTab = item.name"
-        class="text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors"
-      >
+      <a v-for="item in navigationItems" :key="item.name" :href="item.href" @click="selectedTab = item.name"
+        :class="['text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors', { 'bg-blue-600': selectedTab === item.name }]">
         {{ item.name }}
       </a>
     </nav>
@@ -30,11 +26,8 @@
       <!-- Search -->
       <div class="relative hidden sm:block">
         <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground dark:text-gray-400" />
-        <input
-          type="search"
-          placeholder="Buscar..." 
-          class="w-64 pl-10 pr-4 py-2 text-sm bg-muted dark:bg-zinc-700 rounded-full border dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-gray-400"
-        />
+        <input type="search" placeholder="Buscar..."
+          class="w-64 pl-10 pr-4 py-2 text-sm bg-muted dark:bg-zinc-700 rounded-full border dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-gray-400" />
       </div>
 
       <!-- Action Buttons -->
@@ -42,14 +35,11 @@
         <BellIcon class="h-5 w-5 text-muted-foreground dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
       </button>
       <button class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
-        <MessageSquareIcon class="h-5 w-5 text-muted-foreground dark:text-gray-400 dark:hover:text-white"/>
+        <MessageSquareIcon class="h-5 w-5 text-muted-foreground dark:text-gray-400 dark:hover:text-white" />
       </button>
-      
+
       <!-- Theme Toggle -->
-      <button 
-        @click="toggleTheme" 
-        class="p-2 hover:bg-accent dark:hover:bg-gray-700 rounded-full"
-      >
+      <button @click="toggleTheme" class="p-2 hover:bg-accent dark:hover:bg-gray-700 rounded-full">
         <SunIcon v-if="isDark" class="h-5 w-5 text-muted-foreground dark:text-gray-400 dark:hover:text-white" />
         <MoonIcon v-else class="h-5 w-5 text-muted-foreground dark:text-gray-400 " />
       </button>
@@ -80,23 +70,23 @@ const navigationItems = [
 ]
 const isDark = ref(false)
 const selectedTab = ref('Inicio')
-  
-  const toggleTheme = () => {
-    isDark.value = !isDark.value
-    document.documentElement.classList.toggle('dark')
-    localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+
+const toggleTheme = () => {
+  isDark.value = !isDark.value
+  document.documentElement.classList.toggle('dark')
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+}
+
+onMounted(() => {
+  // Check for saved theme preference or system preference
+  const savedTheme = localStorage.getItem('theme')
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+  isDark.value = savedTheme === 'dark' || (!savedTheme && systemPrefersDark)
+
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
   }
-  
-  onMounted(() => {
-    // Check for saved theme preference or system preference
-    const savedTheme = localStorage.getItem('theme')
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    
-    isDark.value = savedTheme === 'dark' || (!savedTheme && systemPrefersDark)
-    
-    if (isDark.value) {
-      document.documentElement.classList.add('dark')
-    }
-  })
+})
 
 </script>
