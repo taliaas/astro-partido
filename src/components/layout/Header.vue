@@ -64,7 +64,7 @@ import UserNav from '../UserNav.vue';
 
 const navigationItems = [
   { name: 'Inicio', href: '/home' },
-  { name: 'Funcionamiento', href: '/asistencia' },
+  { name: 'Funcionamiento', href: '/minutes' },
   { name: 'Análisis', href: '/cierrefunc' },
   { name: 'Reportes', href: '/estadofunc' }
 ]

@@ -17,8 +17,4 @@
 </template>
 
 <script setup lang="ts">
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Nucleos from "src/components/cierre/asistencia/Nucleos.vue";
-import Comite from "src/components/cierre/asistencia/Comite.vue";
-import General from "src/components/cierre/asistencia/General.vue";
 </script>

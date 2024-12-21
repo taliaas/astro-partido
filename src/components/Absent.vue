@@ -3,17 +3,18 @@
       <div class="flex flex-col md:flex-row gap-6 justify-center">
         <!-- Main Table Section -->
         <div class="flex-1 bg-white max-w-5xl rounded-lg shadow-md p-6">
-            <h2 class="text-3xl font-bold text-blue-600">Cierre del funcionamiento</h2>
-            <div class="flex justify-between items-center mt-4">
-            <h2 class="text-lg text-gray-600 ">ASISTENCIA PARA EL CONTROL DE LAS ACTAS</h2>
-          </div>
           <div class="flex justify-between items-center mb-6">
-            <input type="month" class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+           <h2 class="text-lg text-gray-600 ">ASISTENCIA PARA EL CONTROL DE LAS ACTAS</h2>
+           <div class="flex items-center space-x-4">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-2 py-2">
+              <input type="month" class="text-sm focus:outline-none text-gray-900"
             v-model="fecha"/>
-            <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-sm text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
               <DownloadIcon class="w-4 h-4 mr-2" />
               Exportar
             </button>
+           </div>
           </div>
           
           <div class="overflow-x-auto">

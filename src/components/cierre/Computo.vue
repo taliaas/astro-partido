@@ -1,22 +1,41 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="max-w-7xl mx-auto space-y-6">
+  <div class="min-h-screen p-8 dark:bg-zinc-800">
       <!-- Header -->
-      <div class="space-y-2">
+      <div class="bg-white rounded shadow-md container mx-auto">
+        <div class="p-8  space-y-6">
+        <div class="space-y-2">
         <div class="flex justify-between items-center">
           <h2 class="text-lg text-gray-600">CÓMPUTO PARA EL CONTROL DE LAS ACTAS</h2>
           <!-- Month Selector -->
-          <input type="month"
+          <div class="flex items-center space-x-4">
+            <input type="month"
             v-model="selectedMonth" 
             class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
           </input>
+          <!-- Export Button -->
+        <button 
+          @click="exportData"
+          class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-sm text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+          <DownloadIcon class="mr-2 h-4 w-4" />
+          Exportar
+        </button>
+          </div>
         </div>
       </div>
 
       <!-- Controls -->
       <div class="flex justify-between items-center">
-
+        <div class="flex-1 relative">
+              <SearchIcon
+                class="h-5 w-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2"
+              />
+              <input
+                type="text"
+                placeholder="Buscar ..."
+                class="w-1/2 bg-muted pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
         <!-- Filter by Núcleo -->
         <select 
           v-model="selectedNucleo" 
@@ -27,16 +46,6 @@
             {{ nucleo }}
           </option>
         </select>
-
-        <!-- Filter by Indicator -->
-
-        <!-- Export Button -->
-        <button 
-          @click="exportData"
-          class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
-          <DownloadIcon class="mr-2 h-4 w-4" />
-          Exportar
-        </button>
       </div>
 
       <!-- Table -->
@@ -76,6 +85,14 @@
           </tbody>
         </table>
       </div>
+      <!-- Empty State -->
+      <div v-if="data.length === 0" class="text-center py-12">
+          <h3 class="mt-2 text-md font-medium text-gray-900">No hay actas</h3>
+          <p class="mt-1 text-md text-gray-500">
+            Comienza creando una nueva acta o cargando un documento existente.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -83,7 +100,7 @@
 <script setup lang="ts">
 import ComputoService from '@/services/Computo';
 import CoreService from '@/services/CoreService';
-import { DownloadIcon } from 'lucide-vue-next';
+import { DownloadIcon, SearchIcon } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 const selectedMonth = ref('2024-12')
