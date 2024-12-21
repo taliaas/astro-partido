@@ -26,7 +26,7 @@
           
           <DropdownMenuSeparator class="bg-gray-200 border dark:border-gray-400"/>
           
-          <DropdownMenuItem  @click="handleLogout"
+          <DropdownMenuItem  @click="showSesionModal = false"
           class="text-red-500 focus:text-red-500 hover:bg-gray-200 hover:text-red-700 dark:hover:bg-zinc-600">
             <LogOut class="mr-2 h-4 w-4" />
             <span>Cerrar Sesión</span>
@@ -87,9 +87,6 @@ import { navigate } from 'astro:transitions/client';
   import { ref } from "vue";
   const showSesionModal = ref(false);
   
-  const handleLogout = () => {
-    showSesionModal.value = true;
-  };
   const out = () => {
     removeToken();
   }

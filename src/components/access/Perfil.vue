@@ -2,13 +2,13 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header Banner -->
     <div
-      class="max-w-6xl mx-auto mt-5 rounded bg-gradient-to-r from-blue-400 to-blue-800 text-white p-8"
+      class="max-w-6xl mx-auto mt-5 rounded bg-gradient-to-r from-blue-600 to-blue-800 text-white p-8"
     >
       <div class="max-w-4xl mx-auto flex items-center gap-6">
         <div
           class="h-24 w-24 rounded-full bg-blue-700 flex items-center justify-center ring-4 ring-blue-600"
         >
-          <UserIcon class="h-12 w-12 text-gray-300" />
+        <UserIcon class="h-12 w-12 text-white" />
         </div>
         <div>
           <h1 class="text-3xl font-bold">{{ data.name }}</h1>
@@ -57,7 +57,8 @@
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm bg-gray-50"
                 />
               </div>
-              <div>
+              <!-- Role (Read-only) -->
+               <div>
                 <label class="block text-sm font-medium text-gray-700">Role</label>
                 <Input
                   v-model="data.rol"
@@ -67,7 +68,19 @@
                 />
               </div>
             </div>
-            <!-- Role (Read-only) -->
+            
+            <div class="space-y-2">
+              <label for="biografia" class="text-sm font-medium text-gray-700">
+                Biografía
+              </label>
+              <textarea
+                id="biografia"
+                v-model="biografia"
+                rows="4"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                placeholder="Breve descripción de su trayectoria política..."
+              ></textarea>
+            </div>
 
             <!-- Action Buttons -->
             <div class="flex justify-end space-x-4 border-t my-5">
@@ -159,6 +172,7 @@ import AuthService from "src/services/AuthService.ts";
 import UserService from "src/services/UserService.ts";
 
 const showPasswordModal = ref(false);
+const biografia = ref('')
 
 const openChangePasswordModal = () => {
   showPasswordModal.value = true;

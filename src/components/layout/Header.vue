@@ -16,7 +16,7 @@
     <!-- Navigation -->
     <nav class="hidden md:flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6">
       <a v-for="item in navigationItems" :key="item.name" :href="item.href" @click="selectedTab = item.name"
-        :class="['text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors', { 'bg-blue-600': selectedTab === item.name }]">
+        :class="['dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors', { 'text-blue-600': selectedTab === item.name }]">
         {{ item.name }}
       </a>
     </nav>
@@ -31,12 +31,12 @@
       </div>
 
       <!-- Action Buttons -->
-      <button class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
+      <a href="notification" class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
         <BellIcon class="h-5 w-5 text-muted-foreground dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
-      </button>
-      <button class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
+      </a>
+      <a href="chat" class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
         <MessageSquareIcon class="h-5 w-5 text-muted-foreground dark:text-gray-400 dark:hover:text-white" />
-      </button>
+      </a>
 
       <!-- Theme Toggle -->
       <button @click="toggleTheme" class="p-2 hover:bg-accent dark:hover:bg-gray-700 rounded-full">
