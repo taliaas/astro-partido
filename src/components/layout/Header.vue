@@ -18,6 +18,7 @@
         v-for="item in navigationItems" 
         :key="item.name"
         :href="item.href"
+        @click="selectedTab = item.name"
         class="text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors"
       >
         {{ item.name }}
@@ -78,6 +79,7 @@ const navigationItems = [
   { name: 'Reportes', href: '/estadofunc' }
 ]
 const isDark = ref(false)
+const selectedTab = ref('Inicio')
   
   const toggleTheme = () => {
     isDark.value = !isDark.value

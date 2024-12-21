@@ -84,6 +84,7 @@
 
 <script setup lang="ts">
 import ComputoService from '@/services/Computo';
+import CoreService from '@/services/CoreService';
 import { DownloadIcon } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
@@ -123,7 +124,14 @@ async function obtenerUsuarios() {
     console.log("error");
   }
 }
-
+async function obtenerNucleo(){
+  const service = new CoreService();
+  try {
+    const temp = await service.getCore()
+  } catch (error) {
+    console.log("error");
+  }
+}
 onMounted(() => {
   obtenerUsuarios();
 });
