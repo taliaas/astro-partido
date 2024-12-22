@@ -4,7 +4,7 @@ export default interface AbsentInterface {
     mili: number;
     aus: number;
     pres: number;
-    reason: string; //rectificar el tipo
+    //reason: string; //rectificar el tipo
     porciento: number;
     note: string;
     fecha: Date;

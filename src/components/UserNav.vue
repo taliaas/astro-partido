@@ -2,7 +2,7 @@
       <!-- User Dropdown -->
       <DropdownMenu>
         <DropdownMenuTrigger class="focus:outline-none">
-          <button class="flex items-center space-x-2 border-2 border-blue-400 bg-blue-50 text-blue-500 hover:bg-accent rounded-full hover:bg-gray-200">
+          <button @click="!openMenu" class="flex items-center space-x-2 border-2 border-blue-400 bg-blue-50 text-blue-500 hover:bg-accent rounded-full hover:bg-gray-200">
             <div class="w-8 h-8 rounded-full  flex items-center justify-center ">
               <span class="text-md font-medium">U</span>
             </div>
@@ -26,7 +26,7 @@
           
           <DropdownMenuSeparator class="bg-gray-200 border dark:border-gray-400"/>
           
-          <DropdownMenuItem  @click="showSesionModal = false"
+          <DropdownMenuItem  @click="showSesionModal = true"
           class="text-red-500 focus:text-red-500 hover:bg-gray-200 hover:text-red-700 dark:hover:bg-zinc-600">
             <LogOut class="mr-2 h-4 w-4" />
             <span>Cerrar Sesión</span>
@@ -86,7 +86,8 @@ import { navigate } from 'astro:transitions/client';
   
   import { ref } from "vue";
   const showSesionModal = ref(false);
-  
+  const openMenu = ref(false)
+
   const out = () => {
     removeToken();
   }

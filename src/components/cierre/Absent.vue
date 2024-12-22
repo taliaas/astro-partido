@@ -147,17 +147,12 @@
       </Dialog>
   </template>
   
-  <script setup>
+  <script setup lang="ts">
   import { ref } from 'vue'
   import { ChevronDownIcon, ChevronUpIcon, MoreVerticalIcon, DownloadIcon, Eye } from 'lucide-vue-next'
-import DropdownMenu from './ui/dropdown-menu/DropdownMenu.vue';
-import DropdownMenuTrigger from './ui/dropdown-menu/DropdownMenuTrigger.vue';
-import Button from './ui/button/Button.vue';
-import DropdownMenuContent from './ui/dropdown-menu/DropdownMenuContent.vue';
-import DropdownMenuItem from './ui/dropdown-menu/DropdownMenuItem.vue';
-import Dialog from './ui/dialog/Dialog.vue';
-import DialogContent from './ui/dialog/DialogContent.vue';
-import DialogHeader from './ui/dialog/DialogHeader.vue';
+import { Button } from '../ui/button';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../ui/dropdown-menu'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
   
   const isChartOpen = ref(false)
   const isNotesOpen = ref(true)

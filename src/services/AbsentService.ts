@@ -17,7 +17,7 @@ export default class AbsentService {
             console.log(error)
         }
     }
-    async getAbsent(id: number): Promise<AbsentInterface | undefined> {
+    async getAbsent(id: number) {
         try {
             const response = await fetch(`https://part-back.onrender.com/attendance/${id}`, {
                 method: 'GET',

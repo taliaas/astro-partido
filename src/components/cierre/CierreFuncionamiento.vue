@@ -83,13 +83,13 @@
   
   <script setup>
   import { ref } from 'vue'
+  import Computo from 'src/components/cierre/Computo.vue';
+  import Absent from 'src/components/cierre/Absent.vue';
   import { 
     ClipboardCheckIcon, 
     CalculatorIcon,
     BuildingIcon
   } from 'lucide-vue-next'
-import Absent from '../Absent.vue';
-import Computo from './Computo.vue';
   
   const tabs = [
     {

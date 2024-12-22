@@ -61,7 +61,7 @@
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-for="item in filteredData" :key="item.nucleo">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {{ item.nucleo }}
+                {{ core.name }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-center" :class="{ 'text-red-600 font-semibold': item.pto < 3 }">
                 {{ item.pto }}
@@ -117,6 +117,7 @@ const headers = [
 ]
 
 const data = ref([])
+const core = ref([])
 
 const nucleos = computed(() => {
   return [...new Set(data.value.map(item => item.nucleo))]
@@ -129,10 +130,12 @@ const filteredData = computed(() => {
   })
 })
 
-async function obtenerUsuarios() {
+async function obtenerComputo() {
   const service = new ComputoService();
   try {
     const temp = await service.getByDate(12, 2024);
+    const list = obtenerNucleo();
+    core.value = buscarNucleos(temp, list);
     console.log(temp);
     data.value = temp;
   } catch (error) {
@@ -142,13 +145,19 @@ async function obtenerUsuarios() {
 async function obtenerNucleo(){
   const service = new CoreService();
   try {
-    const temp = await service.getCore()
+    const temp = await service.getAllCore()
+    return temp
   } catch (error) {
     console.log("error");
   }
 }
+
+async function buscarNucleos(temp: any, list: any) {
+
+  return 'io';
+}
 onMounted(() => {
-  obtenerUsuarios();
+  obtenerComputo();
 });
 
 const exportData = () => { //exportar en excel

@@ -1,65 +1,107 @@
 <template>
-    <div class="container mx-auto p-6 bg-gray-50 dark:bg-zinc-800">
-      <div class="grid gap-6 md:grid-cols-[1fr_300px]">
-        <div class="space-y-6">
-          <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Panel de Control de KPIs</h1>
-          
-          <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4 ">
-            <Card v-for="(card, index) in cards" :key="index" class="bg-white rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition">
-              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle class="text-md font-semibold">{{ card.title }}</CardTitle>
-                <component :is="card.icon" class="h-6 w-6 text-blue-500" />
-              </CardHeader>
-              <CardContent class="flex items-baseline space-x-4">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ card.value }}</div>
-                <p class="text-sm font-medium" :class="card.subtext.color">{{ card.subtext.text }}</p>
-              </CardContent>
-            </Card>
-          </div>
-  
-          <Tabs v-model="activeTab" class="space-y-4">
+  <div class="container mx-auto p-6 bg-gray-50 dark:bg-zinc-800">
+    <div class="grid gap-6 md:grid-cols-[1fr_300px]">
+      <div class="space-y-6">
+        <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Panel de Control de KPIs</h1>
+        
+        <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
+          <Card v-for="(card, index) in cards" :key="index" 
+            class="bg-white rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 ease-in-out">
+            <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle class="text-md font-semibold">{{ card.title }}</CardTitle>
+              <component :is="card.icon" class="h-6 w-6 text-blue-500" />
+            </CardHeader>
+            <CardContent class="flex items-baseline space-x-4">
+              <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ card.value }}</div>
+              <p class="text-sm font-medium" :class="card.subtext.color">{{ card.subtext.text }}</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs v-model="activeTab" class="space-y-4">
           <TabsList class="grid w-full grid-cols-1 md:grid-cols-4 h-auto">
-            <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
+            <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value"
+              class="transition-all duration-200 ease-in-out data-[state=active]:bg-blue-500 data-[state=active]:text-white">
               {{ tab.label }}
             </TabsTrigger>
           </TabsList>
-          <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" class="space-y-4">
-            <component :is="tab.component" />
-          </TabsContent>
+          <div class="relative">
+            <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" 
+              class="space-y-4 transition-all duration-300 ease-in-out"
+              :class="{'translate-y-0 opacity-100': activeTab === tab.value, 
+                      'translate-y-4 opacity-0 absolute': activeTab !== tab.value}">
+              <component :is="tab.component" />
+            </TabsContent>
+          </div>
         </Tabs>
-        </div>
-        
-        <div class="space-y-6 flex flex-col w-96 mt-12 p-4 ml-20">
-          <RightSidebar />
-        </div>
+      </div>
+      
+      <div class="space-y-6 w-full md:w-[300px] mt-12">
+        <RightSidebar />
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  import { ClipboardIcon, BarChart2, PieChart, LineChart } from 'lucide-vue-next'
-  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-  import Overview from './Overview.vue'
-  import Documents from './Documents.vue'
-  import KPIs from './KPIs.vue'
-  import Visualizations from './Visualizations.vue'
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { 
+  FileText, 
+  FileCheck2, 
+  Files,
+  Activity
+} from 'lucide-vue-next'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Overview from './Overview.vue'
+import Documents from './Documents.vue'
+import KPIs from './KPIs.vue'
+import Visualizations from './Visualizations.vue'
 import RightSidebar from '../layout/RightSidebar.vue'
-  
-  const activeTab = ref('overview')
-  
-  const cards = [
-    { title: 'Documentos Pendientes', value: '12', subtext: { text: '4 nuevos hoy', color: 'text-blue-500' }, icon: ClipboardIcon },
-    { title: 'Documentos Procesados', value: '45', subtext: { text: '+15% este mes', color: 'text-green-500' }, icon: BarChart2 },
-    { title: 'Total de Documentos', value: '57', subtext: { text: '+5% desde ayer', color: 'text-green-500' }, icon: PieChart },
-    { title: 'KPIs Identificados', value: '24', subtext:  { text: '+2 esta semana', color: 'text-blue-500' }, icon: LineChart },
-  ]
-  
-  const tabs = [
-    { value: 'overview', label: 'Vista General', component: Overview },
-    { value: 'documents', label: 'Documentos', component: Documents },
-    { value: 'kpis', label: 'KPIs', component: KPIs },
-    { value: 'visualizations', label: 'Visualizaciones', component: Visualizations },
-  ]
-  </script>
+
+const activeTab = ref('visualizations')
+
+const cards = [
+  { 
+    title: 'Documentos Pendientes', 
+    value: '12', 
+    subtext: { text: '4 nuevos hoy', color: 'text-blue-500' }, 
+    icon: FileText 
+  },
+  { 
+    title: 'Documentos Procesados', 
+    value: '45', 
+    subtext: { text: '+15% este mes', color: 'text-green-500' }, 
+    icon: FileCheck2 
+  },
+  { 
+    title: 'Total de Documentos', 
+    value: '57', 
+    subtext: { text: '+5% desde ayer', color: 'text-green-500' }, 
+    icon: Files 
+  },
+  { 
+    title: 'KPIs Identificados', 
+    value: '24', 
+    subtext: { text: '+2 esta semana', color: 'text-blue-500' }, 
+    icon: Activity 
+  },
+]
+
+const tabs = [
+  { value: 'overview', label: 'Vista General', component: Overview },
+  { value: 'documents', label: 'Documentos', component: Documents },
+  { value: 'kpis', label: 'KPIs', component: KPIs },
+  { value: 'visualizations', label: 'Visualizaciones', component: Visualizations },
+]
+</script>
+
+<style scoped>
+.TabsContent {
+  transition: all 0.3s ease-in-out;
+}
+
+.TabsContent[data-state='inactive'] {
+  display: none;
+}
+</style>

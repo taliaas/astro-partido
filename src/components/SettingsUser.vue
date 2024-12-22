@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    
     <div
       class="mx-auto bg-gradient-to-r from-blue-400 to-blue-800 h-48 relative"
     >
