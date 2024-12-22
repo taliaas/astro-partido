@@ -24,7 +24,7 @@
         </button>
 
         <div class="text-center">
-          <a href="/login" class="text-sm text-blue-600 hover:text-blue-500 font-medium">
+          <a href="/" class="text-sm text-blue-600 hover:text-blue-500 font-medium">
             Volver al inicio de sesión
           </a>
         </div>

@@ -5,3 +5,7 @@ export function getAccessToken() {
 export function removeToken() {
     return localStorage.removeItem('access_token')
 }
+
+export function isAuthenticated(){
+    return ;
+}

@@ -2,9 +2,9 @@
       <!-- User Dropdown -->
       <DropdownMenu>
         <DropdownMenuTrigger class="focus:outline-none">
-          <button class="flex items-center space-x-2 hover:bg-accent rounded-full p-1 bg-gray-100 hover:bg-gray-200">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center ">
-              <span class="text-md font-medium text-muted-foreground">U</span>
+          <button class="flex items-center space-x-2 border-2 border-blue-400 bg-blue-50 text-blue-500 hover:bg-accent rounded-full hover:bg-gray-200">
+            <div class="w-8 h-8 rounded-full  flex items-center justify-center ">
+              <span class="text-md font-medium">U</span>
             </div>
           </button>
         </DropdownMenuTrigger>

@@ -83,7 +83,7 @@
           />
           <label for="terms" class="text-sm text-gray-600">
             Acepto los
-            <a href="#" class="text-primary hover:text-blue-500 hover:underline"
+            <a href="/condition" class="text-primary hover:text-blue-500 hover:underline"
               >términos y condiciones</a
             >
           </label>
