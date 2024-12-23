@@ -14,12 +14,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="hidden md:flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6">
-      <a v-for="item in navigationItems" :key="item.name" :href="item.href" @click="selectedTab = item.name"
-        :class="['dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors', { 'text-blue-600': selectedTab === item.name }]">
-        {{ item.name }}
-      </a>
-    </nav>
+    <slot name="navigation"/>
 
     <!-- Right Section -->
     <div class="flex items-center space-x-4">
@@ -62,14 +57,8 @@ import {
 } from 'lucide-vue-next'
 import UserNav from '../UserNav.vue';
 
-const navigationItems = [
-  { name: 'Inicio', href: '/home' },
-  { name: 'Funcionamiento', href: '/minutes' },
-  { name: 'Análisis', href: '/cierrefunc' },
-  { name: 'Reportes', href: '/estadofunc' }
-]
+
 const isDark = ref(false)
-const selectedTab = ref('Inicio')
 
 const toggleTheme = () => {
   isDark.value = !isDark.value

@@ -2,6 +2,9 @@
 import Header from "@/components/layout/Header.vue";
 import { ClientRouter } from "astro:transitions";
 import "../globals.css";
+import Navigation from "@/components/layout/Navigation.vue";
+
+const pathName = Astro.originPathname;
 ---
 
 <!doctype html>
@@ -17,7 +20,9 @@ import "../globals.css";
   <body>
     <div class="min-h-screen bg-gray-50 dark:bg-zinc-800">
       <!-- Header -->
-      <Header client:load transition:persist/>
+      <Header client:load>
+        <Navigation client:load slot="navigation" path={pathName} />
+      </Header>
       <div class="flex">
         <!-- Sidebar -->
 

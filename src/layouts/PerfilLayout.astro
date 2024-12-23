@@ -2,29 +2,34 @@
 import Header from "@/components/layout/Header.vue";
 import { ClientRouter } from "astro:transitions";
 import "../globals.css";
+import Navigation from "@/components/layout/Navigation.vue";
+
+const pathName = Astro.originPathname;
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="generator" content={Astro.generator} />
-        <title>Motor</title>
-        <ClientRouter />
-    </head>
-    <body>
-        <div class="min-h-screen bg-gray-50">
-            <!-- Header -->
-            <Header client:load />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Motor</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <div class="min-h-screen bg-gray-50">
+      <!-- Header -->
+      <Header client:load>
+        <Navigation client:load slot="navigation" path={pathName} />
+      </Header>
 
-            <div class="flex">
-                <!-- Main Content -->
-                <main class="flex-1">
-                    <slot />
-                </main>
-            </div>
-        </div>
-    </body>
+      <div class="flex">
+        <!-- Main Content -->
+        <main class="flex-1">
+          <slot />
+        </main>
+      </div>
+    </div>
+  </body>
 </html>
