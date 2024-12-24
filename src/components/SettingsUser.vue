@@ -10,7 +10,7 @@
               v-for="tab in menuItems"
               :key="tab.id"
               @click="activeTab = tab.id"
-              class="px-4 py-4 text-md font-medium transition-colors duration-200 -mb-px"
+              class="px-4 py-4 w-full text-md font-medium transition-colors duration-200 -mb-px"
               :class="
                 activeTab === tab.id
                   ? 'border-blue-800 border-b-2 text-blue-600'
@@ -29,7 +29,7 @@
       <div v-if="activeTab === 'usuarios'" class="space-y-6">
         <div class="flex justify-between">
           <h2 class="text-2xl font-semibold">Usuarios del Sistema</h2>
-          <button
+          <button @click="activeUser = true"
             class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 ease-in-out"
           >
             <UserPlusIcon class="inline-block mr-2" />
@@ -190,25 +190,32 @@
           Guardar Configuración
         </button>
       </div>
+
+      <div v-if="activeUser">
+        <div>
+          
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import {
-  UsersIcon,
-  CogIcon,
   Bell,
-  ShieldIcon,
+  CogIcon,
   FileTextIcon,
   PencilIcon,
+  ShieldIcon,
   TrashIcon,
   UserPlusIcon,
+  UsersIcon,
 } from "lucide-vue-next";
+import { onMounted, ref } from "vue";
 import UserService from "../services/UserService";
 
 const activeTab = ref("usuarios");
+const activeUser = ref(false)
 
 const roles = [
   {

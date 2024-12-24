@@ -18,22 +18,7 @@
           </Card>
         </div>
 
-        <Tabs v-model="activeTab" class="space-y-4">
-          <TabsList class="grid w-full grid-cols-1 md:grid-cols-4 h-auto">
-            <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value"
-              class="transition-all duration-200 ease-in-out data-[state=active]:bg-blue-500 data-[state=active]:text-white">
-              {{ tab.label }}
-            </TabsTrigger>
-          </TabsList>
-          <div class="relative">
-            <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" 
-              class="space-y-4 transition-all duration-300 ease-in-out"
-              :class="{'translate-y-0 opacity-100': activeTab === tab.value, 
-                      'translate-y-4 opacity-0 absolute': activeTab !== tab.value}">
-              <component :is="tab.component" />
-            </TabsContent>
-          </div>
-        </Tabs>
+       <MenuDash />
       </div>
       
       <div class="space-y-6 w-full md:w-[300px] mt-12">
@@ -44,22 +29,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { 
-  FileText, 
-  FileCheck2, 
-  Files,
-  Activity
-} from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Overview from './Overview.vue'
-import Documents from './Documents.vue'
-import KPIs from './KPIs.vue'
-import Visualizations from './Visualizations.vue'
+import {
+Activity,
+FileCheck2,
+Files,
+FileText
+} from 'lucide-vue-next'
+import { ref } from 'vue'
+import MenuDash from '../Dashboard/MenuDash.vue'
 import RightSidebar from '../layout/RightSidebar.vue'
-
-const activeTab = ref('visualizations')
 
 const cards = [
   { 
@@ -88,20 +67,6 @@ const cards = [
   },
 ]
 
-const tabs = [
-  { value: 'overview', label: 'Vista General', component: Overview },
-  { value: 'documents', label: 'Documentos', component: Documents },
-  { value: 'kpis', label: 'KPIs', component: KPIs },
-  { value: 'visualizations', label: 'Visualizaciones', component: Visualizations },
-]
+
 </script>
 
-<style scoped>
-.TabsContent {
-  transition: all 0.3s ease-in-out;
-}
-
-.TabsContent[data-state='inactive'] {
-  display: none;
-}
-</style>
