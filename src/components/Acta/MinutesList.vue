@@ -264,29 +264,29 @@
     FileSearchIcon, EyeIcon, PencilIcon, TrashIcon, ClipboardIcon, 
     BookOpenIcon, FileCheckIcon 
   } from 'lucide-vue-next'
-import Button from './ui/button/Button.vue';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
-import Table from './ui/table/Table.vue';
-import TableHeader from './ui/table/TableHeader.vue';
-import TableRow from './ui/table/TableRow.vue';
-import TableHead from './ui/table/TableHead.vue';
-import TableBody from './ui/table/TableBody.vue';
-import TableCell from './ui/table/TableCell.vue';
-import Badge from './ui/badge/Badge.vue';
-import DropdownMenu from './ui/dropdown-menu/DropdownMenu.vue';
-import DropdownMenuTrigger from './ui/dropdown-menu/DropdownMenuTrigger.vue';
-import DropdownMenuContent from './ui/dropdown-menu/DropdownMenuContent.vue';
-import DropdownMenuItem from './ui/dropdown-menu/DropdownMenuItem.vue';
-import Label from './ui/label/Label.vue';
-import Select from './ui/select/Select.vue';
-import SelectTrigger from './ui/select/SelectTrigger.vue';
-import SelectValue from './ui/select/SelectValue.vue';
-import SelectContent from './ui/select/SelectContent.vue';
-import SelectItem from './ui/select/SelectItem.vue';
-import Input from './ui/input/Input.vue';
-import Tabs from './ui/tabs/Tabs.vue';
-import TabsList from './ui/tabs/TabsList.vue';
-import TabsTrigger from './ui/tabs/TabsTrigger.vue';
+import Button from '../ui/button/Button.vue';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog/index.js';
+import Table from '../ui/table/Table.vue';
+import TableHeader from '../ui/table/TableHeader.vue';
+import TableRow from '../ui/table/TableRow.vue';
+import TableHead from '../ui/table/TableHead.vue';
+import TableBody from '../ui/table/TableBody.vue';
+import TableCell from '../ui/table/TableCell.vue';
+import Badge from '../ui/badge/Badge.vue';
+import DropdownMenu from '../ui/dropdown-menu/DropdownMenu.vue';
+import DropdownMenuTrigger from '../ui/dropdown-menu/DropdownMenuTrigger.vue';
+import DropdownMenuContent from '../ui/dropdown-menu/DropdownMenuContent.vue';
+import DropdownMenuItem from '../ui/dropdown-menu/DropdownMenuItem.vue';
+import Label from '../ui/label/Label.vue';
+import Select from '../ui/select/Select.vue';
+import SelectTrigger from '../ui/select/SelectTrigger.vue';
+import SelectValue from '../ui/select/SelectValue.vue';
+import SelectContent from '../ui/select/SelectContent.vue';
+import SelectItem from '../ui/select/SelectItem.vue';
+import Input from '../ui/input/Input.vue';
+import Tabs from '../ui/tabs/Tabs.vue';
+import TabsList from '../ui/tabs/TabsList.vue';
+import TabsTrigger from '../ui/tabs/TabsTrigger.vue';
   
   
   const currentTab = ref('all')

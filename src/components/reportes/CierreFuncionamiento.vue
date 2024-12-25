@@ -83,8 +83,8 @@
   
   <script setup>
   import { ref } from 'vue'
-  import Computo from 'src/components/cierre/Computo.vue';
-  import Absent from 'src/components/cierre/Absent.vue';
+  import Computo from '@/components/reportes/Computo.vue';
+  import Absent from '@/components/reportes/Absent.vue';
   import { 
     ClipboardCheckIcon, 
     CalculatorIcon,

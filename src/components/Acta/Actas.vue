@@ -185,7 +185,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import OrdinaryService from "@/services/OrdinaryService";
+import OrdinaryService from "@/services/OrdinaryService.ts";
 import { navigate } from "astro:transitions/client";
 import {
   Download,
@@ -197,7 +197,7 @@ import {
   Trash2
 } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
-import Button from "./ui/button/Button.vue";
+import Button from "../ui/button/Button.vue";
 
 const searchQuery = ref("");
 const selectedNucleo = ref("");

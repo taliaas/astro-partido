@@ -14,7 +14,6 @@
 
 <script setup>
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import AbsenceReasonsChart from "../AbsenceReasonsChart.vue";
-
+import AbsenceReasonsChart from "@/components/Home/AbsenceReasonsChart.vue";
 
 </script>

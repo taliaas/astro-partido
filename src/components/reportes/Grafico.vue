@@ -83,7 +83,7 @@ import {
 } from 'chart.js'
 import { Line as LineChart } from 'vue-chartjs'
 import { ChevronDownIcon } from 'lucide-vue-next';
-import EstadoService from '@/services/EstadoService'
+import EstadoService from '@/services/EstadoService.ts'
 
 ChartJS.register(
   CategoryScale,

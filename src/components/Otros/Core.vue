@@ -70,7 +70,7 @@ import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import CoreService from "src/services/CoreService.ts";
+import CoreService from "@/services/CoreService.ts";
 import { TrashIcon } from "lucide-vue-next";
 
 interface Area {

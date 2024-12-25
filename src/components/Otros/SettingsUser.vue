@@ -212,7 +212,7 @@ import {
   UsersIcon,
 } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
-import UserService from "../services/UserService";
+import UserService from "../../services/UserService.ts";
 
 const activeTab = ref("usuarios");
 const activeUser = ref(false)

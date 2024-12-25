@@ -55,7 +55,7 @@ import {
   SunIcon,
   MoonIcon
 } from 'lucide-vue-next'
-import UserNav from '../UserNav.vue';
+import UserNav from '../Otros/UserNav.vue';
 
 
 const isDark = ref(false)
