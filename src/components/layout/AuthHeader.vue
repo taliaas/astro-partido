@@ -4,17 +4,17 @@
       <div class="flex h-16 items-center justify-between">
         <!-- Welcome Message -->
         <div class="flex-1">
-          <h1 class="text-lg font-semibold text-gray-900">Bienvenido a la Plataforma PCC CUJAE</h1>
+          <div class="text-xl font-bold text-blue-600">MOTOR</div>
         </div>
         <div>
           <a
-            href="/"
+            href="/login"
             class="text-md m-1 font-medium text-gray-600 hover:text-blue-600"
             >Iniciar sesión</a
           >
           <a
             href="/register"
-            class="text-md m-4 font-medium text-blue-600 hover:text-blue-700"
+            class="text-md m-4 p-3 font-medium rounded-full bg-blue-600 text-white"
             >Registrar</a
           >
         </div>
@@ -23,5 +23,3 @@
   </header>
 </template>
 
-<script setup lang="ts">
-</script>

@@ -46,7 +46,7 @@
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import {
   SearchIcon,
@@ -56,7 +56,6 @@ import {
   MoonIcon
 } from 'lucide-vue-next'
 import UserNav from '../Otros/UserNav.vue';
-
 
 const isDark = ref(false)
 

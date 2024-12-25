@@ -8,7 +8,7 @@
       ></div>
       <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-          <h1 class="text-4xl font-bold">
+          <h1 class="text-4xl font-bold text-white">
             Sistema Motor
           </h1>
           <p class="mx-auto mt-6 max-w-2xl text-xl text-blue-100 sm:text-2xl">
@@ -72,7 +72,7 @@
       </div>
 
       <!-- Technical Advantages -->
-      <div class="mt-24">
+      <div class="mt-24 border-2 rounded m-2 p-4 bg-gray-100">
         <h2 class="mb-12 text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Ventajas Técnicas
         </h2>
@@ -109,7 +109,7 @@
           <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div class="inline-flex rounded-md shadow">
               <a
-                  href="#start"
+                  href="/register"
                   class="inline-flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-blue-600 hover:bg-blue-50"
               >
                 Comenzar ahora

@@ -11,8 +11,8 @@
             <input type="month"
             v-model="selectedMonth" 
             class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-          </input>
+          />
+
           <!-- Export Button -->
         <button 
           @click="exportData"

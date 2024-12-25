@@ -102,7 +102,7 @@
         <!-- Sign In Link -->
         <div class="text-center text-sm">
           ¿Ya tienes una cuenta?
-          <a href="/" class="text-primary hover:text-blue-500 hover:underline">
+          <a href="/login" class="text-primary hover:text-blue-500 hover:underline">
             Inicia sesión
           </a>
         </div>
