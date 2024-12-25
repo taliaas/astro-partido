@@ -256,7 +256,7 @@
     </div>
   </template>
   
-  <script setup>
+  <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { 
     FileTextIcon, UploadIcon, DownloadIcon, PlusIcon, MoreVerticalIcon, 
@@ -265,7 +265,7 @@
     BookOpenIcon, FileCheckIcon 
   } from 'lucide-vue-next'
 import Button from '../ui/button/Button.vue';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog/index.js';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import Table from '../ui/table/Table.vue';
 import TableHeader from '../ui/table/TableHeader.vue';
 import TableRow from '../ui/table/TableRow.vue';

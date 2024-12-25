@@ -61,7 +61,7 @@
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-for="item in filteredData" :key="item.nucleo">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {{ core.name }}
+                {{ item.nucleo.name }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-center" :class="{ 'text-red-600 font-semibold': item.pto < 3 }">
                 {{ item.pto }}
@@ -99,11 +99,10 @@
 
 <script setup lang="ts">
 import ComputoService from '@/services/Computo';
-import CoreService from '@/services/CoreService';
-import { DownloadIcon, SearchIcon } from 'lucide-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import {DownloadIcon, SearchIcon} from 'lucide-vue-next';
+import {computed, watch, ref} from 'vue';
 
-const selectedMonth = ref('2024-12')
+const selectedMonth = ref('')
 const selectedNucleo = ref('')
 
 const headers = [
@@ -120,45 +119,34 @@ const data = ref([])
 const core = ref([])
 
 const nucleos = computed(() => {
-  return [...new Set(data.value.map(item => item.nucleo))]
+  return [...new Set(data.value.map(item => item.nucleo.name))]
 })
 
 const filteredData = computed(() => {
   return data.value.filter(item => {
-    if (selectedNucleo.value && item.nucleo !== selectedNucleo.value) return false
+    if (selectedNucleo.value && item.nucleo.name !== selectedNucleo.value) return false
     return true
   })
 })
 
 async function obtenerComputo() {
+  data.value = null
   const service = new ComputoService();
+  const value = selectedMonth.value;
+  const [year, month] = value.split('-');
   try {
-    const temp = await service.getByDate(12, 2024);
-    const list = obtenerNucleo();
-    core.value = buscarNucleos(temp, list);
-    console.log(temp);
-    data.value = temp;
-  } catch (error) {
-    console.log("error");
-  }
-}
-async function obtenerNucleo(){
-  const service = new CoreService();
-  try {
-    const temp = await service.getAllCore()
-    return temp
+    data.value = await service.getByDate(month, year);
+    console.log(year, month)
   } catch (error) {
     console.log("error");
   }
 }
 
-async function buscarNucleos(temp: any, list: any) {
-
-  return 'io';
-}
-onMounted(() => {
-  obtenerComputo();
-});
+watch(() => selectedMonth.value, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    obtenerComputo();
+  }
+})
 
 const exportData = () => { //exportar en excel
   const csvContent = [

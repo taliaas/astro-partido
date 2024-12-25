@@ -63,15 +63,7 @@
                   key="computation"
                   class="bg-gray-50 rounded-lg shadow-sm p-6"
                 >
-                  <Computo />
-                </div>
-  
-                <div 
-                  v-if="activeTab === 'municipality'" 
-                  key="municipality"
-                  class="bg-gray-50 rounded-lg shadow-sm p-6"
-                >
-                  
+                  <Compute />
                 </div>
               </TransitionGroup>
             </div>
@@ -82,15 +74,11 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
-  import Computo from '@/components/reportes/Computo.vue';
+  import {ref} from 'vue'
+  import Compute from '@/components/reportes/Computo.vue';
   import Absent from '@/components/reportes/Absent.vue';
-  import { 
-    ClipboardCheckIcon, 
-    CalculatorIcon,
-    BuildingIcon
-  } from 'lucide-vue-next'
-  
+  import {CalculatorIcon, ClipboardCheckIcon} from 'lucide-vue-next'
+
   const tabs = [
     {
       id: 'attendance',
@@ -101,11 +89,6 @@
       id: 'computation',
       name: 'Cómputo',
       icon: CalculatorIcon
-    },
-    {
-      id: 'municipality',
-      name: 'Parte municipio',
-      icon: BuildingIcon
     }
   ]
   
