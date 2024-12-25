@@ -3,7 +3,6 @@
     <div class="grid gap-6 md:grid-cols-[1fr_300px]">
       <div class="space-y-6">
         <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Panel de Control de KPIs</h1>
-
         <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
           <Card v-for="(card, index) in cards" :key="index"
                 class="bg-white rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 ease-in-out">

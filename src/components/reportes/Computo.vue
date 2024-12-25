@@ -59,7 +59,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="item in filteredData" :key="item.nucleo">
+            <tr v-for="item in filteredData" :key="item.nucleo.id">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {{ item.nucleo.name }}
               </td>
