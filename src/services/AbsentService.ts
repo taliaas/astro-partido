@@ -1,36 +1,17 @@
-import type AbsentInterface from "@/interface/Absent";
+const API_URL = 'https://part-back.onrender.com/attendance';
 
 export default class AbsentService {
-    async getAll() {
+
+    async getByDate(month: number, year: number) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/attendance`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await fetch(`${API_URL}/${month}/${year}`);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error('Network response was not ok');
             }
             return await response.json();
         } catch (error) {
-            console.log(error)
-        }
-    }
-    async getAbsent(id: number) {
-        try {
-            const response = await fetch(`https://part-back.onrender.com/attendance/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return await response.json();
-        } catch (error) {
-            console.log(error)
+            console.error('Fetch error:', error);
+            throw error;
         }
     }
 }

@@ -39,11 +39,6 @@
         </CollapsibleContent>
       </Collapsible>
 
-      <!-- Current Date -->
-      <div class="text-sm mt-4 font-medium">
-        {{ currentDate }}
-      </div>
-
       <!-- No Events Message -->
       <p class="text-md text-gray-500">
         No hay tareas o eventos para este día.
@@ -93,8 +88,6 @@ const newEvent = ref({
   title: '',
   type: ''
 })
-
-const currentDate = ref('18 de diciembre, 2024')
 
 const pendingTasks = ref([
   {

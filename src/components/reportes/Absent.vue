@@ -148,16 +148,17 @@
   </template>
   
   <script setup lang="ts">
-  import { ref } from 'vue'
+  import {ref, watch} from 'vue'
   import { ChevronDownIcon, ChevronUpIcon, MoreVerticalIcon, DownloadIcon, Eye } from 'lucide-vue-next'
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../ui/dropdown-menu'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+  import AbsentService from "@/services/AbsentService.ts";
   
   const isChartOpen = ref(false)
   const isNotesOpen = ref(true)
   const showAbsenceReasons = ref(false);
-  const fecha = ref("2024-03");
+  const date = ref("");
 
   const absenceReasons = ref([
     { label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600" },
@@ -175,8 +176,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
   
   const tableHeaders = [
     'Núcleo',
-    'Fecha de Reunión',
-    'Fecha de Entrega',
+    'Fecha',
+    'Entrega',
     'Militantes',
     'Asistencia',
     'Ausentes',
@@ -184,35 +185,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
     'Acciones'
   ]
   
-  const tableData = [
-    {
-      nucleo: 'Arquitectura',
-      fechaReunion: '2024-03-15',
-      fechaEntrega: '2024-03-20',
-      militantes: 11,
-      asistencia: 11,
-      ausentes: 0,
-      porcentaje: 100
-    },
-    {
-      nucleo: 'Automática',
-      fechaReunion: '2024-03-16',
-      fechaEntrega: '2024-03-21',
-      militantes: 16,
-      asistencia: 10,
-      ausentes: 6,
-      porcentaje: 62.5
-    },
-    {
-      nucleo: 'CIPEL',
-      fechaReunion: '2024-03-17',
-      fechaEntrega: '2024-03-22',
-      militantes: 16,
-      asistencia: 0,
-      ausentes: 16,
-      porcentaje: 0
-    }
-  ]
+  const tableData = ref([]) //<data>
+
   const notes = ref([
   {
     id: 1,
@@ -240,4 +214,32 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
     if (percentage >= 60) return 'text-yellow-600'
     return 'text-red-600'
   }
+
+  interface data {
+    core: any,
+    fechaRO: string,
+    fechaEntrega: string,
+    total: number,
+    asis: number,
+    aus: number,
+    porciento: number,
+    observ: string
+  }
+
+  async function getAttendance(){
+    const service = new AbsentService()
+    const value = selectedMonth.value;
+    const [year, month] = value.split('-');
+    try{
+      tableData.value = await service.getByDate(month,year)
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+  watch(() => date.value, (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      getAttendance();
+    }
+  })
   </script>

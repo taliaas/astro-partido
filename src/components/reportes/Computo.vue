@@ -63,7 +63,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {{ item.nucleo.name }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-center" :class="{ 'text-red-600 font-semibold': item.pto < 3 }">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-center" :class="{ 'text-red-600 font-semibold': item.pto < 5 }">
                 {{ item.pto }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
