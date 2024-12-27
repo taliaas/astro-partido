@@ -73,7 +73,7 @@
     </div>
   </template>
   
-  <script setup>
+  <script setup lang="ts">
   import {ref} from 'vue'
   import Compute from '@/components/reportes/Computo.vue';
   import Absent from '@/components/reportes/Absent.vue';

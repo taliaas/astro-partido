@@ -1,4 +1,6 @@
-const API_URL = 'https://part-back.onrender.com/attendance';
+import type {AttendanceResponse} from "@/interface/Absent.ts";
+
+const API_URL = 'https://part-back.onrender.com/minutes-ordinary/attendance';
 
 export default class AbsentService {
 
@@ -8,7 +10,7 @@ export default class AbsentService {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return await response.json();
+            return await response.json() as AttendanceResponse;
         } catch (error) {
             console.error('Fetch error:', error);
             throw error;

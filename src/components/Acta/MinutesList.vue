@@ -124,21 +124,24 @@
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger class="focus:outline-none">
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" class="rounded-full">
                           <MoreVerticalIcon class="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem @click="handleAction('ver', acta)">
-                          Ver detalles
+                          <Eye class="h-4 w-4" />
+                          Ver
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('editar', acta)">
+                          <Edit class="h-4 w-4" />
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             @click="handleAction('eliminar', acta)"
-                            class="text-red-600 focus:text-red-600"
+                            class="text-red-600 border-t focus:text-red-600"
                         >
+                          <TrashIcon class="h-4 w-4" />
                           Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -246,10 +249,63 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    <div
+        v-if="showOption"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    >
+      <div class="bg-white rounded p-6 w-full max-w-md">
+        <div class="relative flex items-center justify-end">
+        <button
+            @click="handleSesion">
+          <XIcon class="h-4 w-4 mr-2" />
+        </button>
+        </div>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Seleccione el tipo de acta</h3>
+        </div>
+          <div class="py-2 my-2">
+            <a href="/addRO"
+               class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+            >Acta Ordinaria</a
+            >
+            <a href="/addCP"
+               class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+            >Acta de Circulo Politico</a>
+          </div>
+      </div>
+    </div>
+    <div
+        v-if="showDelete"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    >
+      <div class="bg-white rounded p-6 w-full max-w-md">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
+        <form @submit.prevent="handleDelete" class="space-y-4 p-4">
+          <div>
+           ¿Estás seguro que desea eliminar el acta?
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button
+                type="submit"
+                class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+
+            <button
+                class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+                @click="eliminarActa()"
+            >
+              OK
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {computed, ref} from 'vue'
 import {
   ChevronLeftIcon,
@@ -257,7 +313,8 @@ import {
   MoreVerticalIcon,
   PlusIcon,
   SearchIcon,
-  UploadCloudIcon
+  UploadCloudIcon, XIcon,
+  Eye, Edit, TrashIcon,
 } from 'lucide-vue-next'
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '../ui/dialog'
 import {Button} from '../ui/button'
@@ -266,12 +323,14 @@ import {Badge} from '../ui/badge'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '../ui/dropdown-menu'
 import {Select} from '../ui/select'
 import {Input} from '../ui/input'
+import {navigate} from "astro:transitions/client";
 
 const currentTab = ref('all')
 const showUploadDialog = ref(false)
 const uploadedFiles = ref([])
 const isDragging = ref(false)
 const showOption = ref(false)
+const showDelete = ref(false)
 
 const tabs = [
   { id: 'all', name: 'Todas las actas' },
@@ -326,6 +385,10 @@ const filteredActas = computed(() => {
   })
 })
 
+const handleSesion = () => {
+  showOption.value = false;
+};
+
 const getStatusClass = (status) => {
   const classes = {
     'Aprobada': 'bg-green-100 text-green-800 hover:bg-green-200',
@@ -337,7 +400,18 @@ const getStatusClass = (status) => {
 }
 
 const handleAction = (action, acta) => {
-  console.log(`${action} acta:`, acta)
+  if (action === 'ver'){
+    navigate(`/view/${acta.id}`)
+  }
+  else if(action === 'editar'){
+    navigate(`/edit/${acta.id}`)
+  }
+  else {
+    showDelete.value = true
+  }
+}
+const handleDelete = () => {
+  showDelete.value = false
 }
 
 //cargar acta

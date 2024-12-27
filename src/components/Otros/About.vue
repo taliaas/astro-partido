@@ -27,7 +27,7 @@
     </section>
 
     <!-- Main Content -->
-    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <div id="features"  class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <!-- Overview Section -->
       <div class="mb-20 text-center">
         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -39,7 +39,7 @@
       </div>
 
       <!-- Features Grid -->
-      <div id="features" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div  class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         <!-- Feature Cards -->
         <div
             v-for="(feature, index) in features"

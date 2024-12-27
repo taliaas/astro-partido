@@ -43,7 +43,7 @@
           <form @submit.prevent="handleSesion" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700"
-                >Está seguro que desea cerrar sesión?</label
+                >¿Estás seguro que desea cerrar sesión?</label
               >
             </div>
             <div class="flex justify-end space-x-3">

@@ -14,10 +14,10 @@
             </Button>
           </div>
           <div v-for="doc in documents" :key="doc.id" class="border rounded-lg p-4">
-            <h3 class="font-semibold mb-2">{{ doc.title }}</h3>
-            <p class="text-sm text-muted-foreground mb-2">{{ doc.date }}</p>
+            <h3 class="font-semibold mb-2"> Acta Ordinaria {{ doc.id }}</h3>
+            <p class="text-sm text-muted-foreground mb-2">{{ doc.fecha }}</p>
             <div class="flex space-x-2">
-              <Button variant="outline" class="rounded border-gray-300 shadow-md" size="sm">Ver Detalles</Button>
+              <Button variant="outline" @click="openMinute" class="rounded border-gray-300 shadow-md" size="sm">Ver Detalles</Button>
               <Button variant="outline" class="rounded border-gray-300 shadow-md" size="sm">Descargar</Button>
             </div>
           </div>
@@ -26,14 +26,31 @@
     </Card>
   </template>
   
-  <script setup>
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-  import { Button } from "@/components/ui/button"
-  import { Input } from "@/components/ui/input"
-  import { Search } from 'lucide-vue-next'
-  
-  const documents = [
-    { id: 1, title: 'Informe Anual 2023', date: 'Procesado el 15/04/2024' },
-    { id: 2, title: 'Reporte Trimestral Q1 2024', date: 'Procesado el 10/04/2024' },
-  ]
+  <script setup lang="ts">
+  import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+  import {Button} from "@/components/ui/button"
+  import {Input} from "@/components/ui/input"
+  import {Search} from 'lucide-vue-next'
+  import OrdinaryService from "@/services/OrdinaryService.ts";
+  import {onMounted, ref } from "vue";
+
+  const documents = ref([])
+
+  async function getMinute() {
+    const service = new OrdinaryService()
+    try {
+      documents.value = await service.getLatestMinute()
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
+
+  async function openMinute(){
+    
+  }
+
+  onMounted(
+      getMinute
+  )
   </script>

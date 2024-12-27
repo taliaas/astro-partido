@@ -6,7 +6,7 @@ export default class AuthService {
         email: string,
         password: string
     }) {
-        console.log("Entro");
+        console.log("Entro", user);
         
         try {
             const response = await fetch(`https://part-back.onrender.com/auth/login`, {
@@ -20,8 +20,9 @@ export default class AuthService {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const { token } = await response.json();
-            //guardar el token
+            //save token
             localStorage.setItem('access_token', token);
+            console.log("Guardo", token);
         } catch (error) {
             console.error('Error al autenticar al usuario', error);
         }

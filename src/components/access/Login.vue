@@ -1,6 +1,9 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-lg space-y-8 p-10 bg-white rounded shadow-2xl">
+    <div class="w-full max-w-lg space-y-8 p-10 bg-white rounded-md shadow-2xl">
+      <div class="flex items-center justify-center h-28">
+        <UserIcon class="w-28 h-full mr-2 bg-blue-600 border border-blue-400 text-white p-6 rounded-full" />
+      </div>
       <div class="text-center">
         <h2 class="mt-6 text-3xl font-bold text-gray-900">Bienvenido de nuevo</h2>
         <p class="mt-2 text-xl text-gray-600">Inicia sesión en tu cuenta</p>
@@ -78,6 +81,7 @@
 import { ref } from "vue";
 import AuthService from "src/services/AuthService.ts";
 import { navigate } from "astro:transitions/client";
+import { UserIcon } from "lucide-vue-next";
 
 const email = ref("");
 const password = ref("");
@@ -85,12 +89,13 @@ const showSuccessMessage = ref(false);
 const mensaje = ref("");
 
 const handleSubmit = async () => {
-  const user = { email: email.value, password: password.value };
   const auth = new AuthService();
 
   try {
-    const response = await auth.login(user);
-    navigate("/home")
+    const response = await auth.login(email.value, password.value);
+    console.log(response)
+    if (response !== undefined)
+      await navigate("/home/")
   } catch (error) {
     showSuccessMessage.value = true;
     mensaje.value = "Error";

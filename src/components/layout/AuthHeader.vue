@@ -4,7 +4,7 @@
       <div class="flex h-16 items-center justify-between">
         <!-- Welcome Message -->
         <div class="flex-1">
-          <div class="text-xl font-bold text-blue-600">MOTOR</div>
+          <a href="/" class="text-xl font-bold text-blue-600">MOTOR</a>
         </div>
         <div>
           <a

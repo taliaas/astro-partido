@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen p-8 dark:bg-zinc-800">
       <!-- Header -->
-      <div class="bg-white rounded shadow-md container mx-auto">
+      <div class="bg-white rounded shadow-md p-4 container mx-auto">
         <div class="p-8  space-y-6">
         <div class="space-y-2">
         <div class="flex justify-between items-center">
@@ -9,12 +9,12 @@
           <!-- Month Selector -->
           <div class="flex items-center space-x-4">
             <input type="month"
-            v-model="selectedMonth" 
+            v-model="selectedMonth"
             class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           <!-- Export Button -->
-        <button 
+        <button
           @click="exportData"
           class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-sm text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
           <DownloadIcon class="mr-2 h-4 w-4" />
@@ -37,8 +37,8 @@
               />
             </div>
         <!-- Filter by Núcleo -->
-        <select 
-          v-model="selectedNucleo" 
+        <select
+          v-model="selectedNucleo"
           class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Todos los Núcleos</option>
@@ -93,6 +93,15 @@
           </p>
         </div>
       </div>
+        <Card class="mx-8">
+          <CardHeader>
+            <CardTitle class="font-normal text-lg">Leyenda</CardTitle>
+          </CardHeader>
+          <CardContent class="">
+            <div class="size-2 rounded-full bg-red-500 inline-block"/>
+            <h2 class="text-gray-500 inline"> Alerta </h2>
+          </CardContent>
+        </Card>
     </div>
   </div>
 </template>
@@ -101,6 +110,7 @@
 import ComputoService from '@/services/Computo';
 import {DownloadIcon, SearchIcon} from 'lucide-vue-next';
 import {computed, watch, ref} from 'vue';
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 
 const selectedMonth = ref('')
 const selectedNucleo = ref('')
