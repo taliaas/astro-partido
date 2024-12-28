@@ -6,7 +6,6 @@ export default class AuthService {
         email: string,
         password: string
     }) {
-        console.log("Entro", user);
         
         try {
             const response = await fetch(`https://part-back.onrender.com/auth/login`, {

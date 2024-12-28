@@ -117,6 +117,7 @@ import { reactive, ref } from "vue";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import AuthService from "@/services/AuthService";
+import {navigate} from "astro:transitions/client";
 
 const isLoading = ref(false);
 const showPassword = ref(false);
@@ -131,7 +132,8 @@ const form = reactive({
 const handleSubmit = async () => {
   const service = new AuthService()
   try {
-    const user = await service.register( form.email, form.name, form.password)
+    await service.register( form.email, form.name, form.password)
+    await navigate("/home/");
     isLoading.value = true;
     console.log(form.name)
   } catch (error) {

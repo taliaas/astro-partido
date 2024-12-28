@@ -116,8 +116,16 @@
           </div>
         </div>
       </div>
-
     </div>
+    <Card class="my-8">
+      <CardHeader>
+        <CardTitle class="font-normal text-lg">Leyenda</CardTitle>
+      </CardHeader>
+      <CardContent class="">
+        <div class="size-2 rounded-full bg-red-500 inline-block"/>
+        <h2 class="text-gray-500 inline"> Alerta </h2>
+      </CardContent>
+    </Card>
   </div>
   <!-- Absence Reasons Dialog -->
   <Dialog v-model:open="showAbsenceReasons">
@@ -159,6 +167,7 @@ import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from '../ui/dialog';
 import AbsentService from "@/services/AbsentService.ts";
 import type {AttendanceResponse} from "@/interface/Absent.ts";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
 const isChartOpen = ref(false)
 const isNotesOpen = ref(true)
