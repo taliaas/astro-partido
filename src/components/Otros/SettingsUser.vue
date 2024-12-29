@@ -66,39 +66,6 @@
                   </span>
                 </td>
                 <td class="py-2 px-4 text-center">
-                  <Sheet>
-                    <SheetTrigger>
-                      <button class="text-gray-600 hover:text-gray-800 mr-2">
-                        <PencilIcon class="h-5 w-5" />
-                      </button>
-                    </SheetTrigger>
-                    <SheetContent :side="'bottom'">
-                      <SheetHeader>
-                        <SheetTitle>Editar usuario</SheetTitle>
-                        <SheetDescription>
-                          "Haga clic en guardar cuando esté listo."
-                        </SheetDescription>
-                      </SheetHeader>
-                      <div class="grid gap-4 py-4">
-                        <div class="grid items-center grid-cols-4 gap-4">
-                          <Label for="name" class="text-right">Nombre</Label>
-                          <Input id="name" v-model="username" placeholder="nombre" class="w-3/4 col-span-3 border border-gray-300 rounded-lg" />
-                        </div>
-                        <div class="grid items-center grid-cols-4 gap-4">
-                          <Label for="username" class="text-right">Correo</Label>
-                          <Input id="username" v-model="username" placeholder="correo" class="w-3/4 col-span-3 border border-gray-300 rounded-lg"/>
-                        </div>
-                      </div>
-                      <SheetFooter>
-                        <SheetClose as-child>
-                          <Button type="submit">
-                            Guardar
-                          </Button>
-                        </SheetClose>
-                      </SheetFooter>
-                    </SheetContent>
-                  </Sheet>
-
                   <button @click="handleAction('delete',user.id)" class="text-red-600 hover:text-red-800">
                     <TrashIcon class="h-5 w-5" />
                   </button>
@@ -269,14 +236,6 @@ import {
   UserPlusIcon,
   UsersIcon,
 } from "lucide-vue-next";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
 import { onMounted, ref } from "vue";
 import UserService from "../../services/UserService.ts";
 import {Button} from "@/components/ui/button";

@@ -130,17 +130,11 @@
         <DialogTitle>Causas de Ausencias</DialogTitle>
       </DialogHeader>
       <div class="space-y-3 max-h-[60vh] overflow-y-auto">
-        <div
-            v-for="(value, reason) in absenceReasons.attendances[index].reasons"
-            :key="reason"
-            class="flex items-center justify-between"
-        >
           <div class="flex items-center space-x-3">
             <span class="text-sm">{{ reason }}</span>
             <p>{{value}}</p>
           </div>
         </div>
-      </div>
     </DialogContent>
   </Dialog>
 </template>
