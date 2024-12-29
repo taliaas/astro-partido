@@ -33,7 +33,7 @@
             class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 ease-in-out"
           >
             <UserPlusIcon class="inline-block mr-2" />
-            Agregar Usuario
+            Agregar
           </button>
         </div>
         <div class="overflow-x-auto">
@@ -66,10 +66,40 @@
                   </span>
                 </td>
                 <td class="py-2 px-4 text-center">
-                  <button class="text-gray-600 hover:text-gray-800 mr-2">
-                    <PencilIcon class="h-5 w-5" />
-                  </button>
-                  <button class="text-red-600 hover:text-red-800">
+                  <Sheet>
+                    <SheetTrigger>
+                      <button class="text-gray-600 hover:text-gray-800 mr-2">
+                        <PencilIcon class="h-5 w-5" />
+                      </button>
+                    </SheetTrigger>
+                    <SheetContent :side="'bottom'">
+                      <SheetHeader>
+                        <SheetTitle>Editar usuario</SheetTitle>
+                        <SheetDescription>
+                          "Haga clic en guardar cuando esté listo."
+                        </SheetDescription>
+                      </SheetHeader>
+                      <div class="grid gap-4 py-4">
+                        <div class="grid items-center grid-cols-4 gap-4">
+                          <Label for="name" class="text-right">Nombre</Label>
+                          <Input id="name" v-model="username" placeholder="nombre" class="w-3/4 col-span-3 border border-gray-300 rounded-lg" />
+                        </div>
+                        <div class="grid items-center grid-cols-4 gap-4">
+                          <Label for="username" class="text-right">Correo</Label>
+                          <Input id="username" v-model="username" placeholder="correo" class="w-3/4 col-span-3 border border-gray-300 rounded-lg"/>
+                        </div>
+                      </div>
+                      <SheetFooter>
+                        <SheetClose as-child>
+                          <Button type="submit">
+                            Guardar
+                          </Button>
+                        </SheetClose>
+                      </SheetFooter>
+                    </SheetContent>
+                  </Sheet>
+
+                  <button @click="handleAction('delete',user.id)" class="text-red-600 hover:text-red-800">
                     <TrashIcon class="h-5 w-5" />
                   </button>
                 </td>
@@ -197,6 +227,34 @@
         </div>
       </div>
     </div>
+    <div
+        v-if="showDelete"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    >
+      <div class="bg-white rounded p-6 w-full max-w-md">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
+        <form @submit.prevent="handleDelete" class="space-y-4 p-4">
+          <div>
+            ¿Estás seguro que desea eliminar el usuario?
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button
+                type="submit"
+                class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+
+            <button
+                class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+                @click="deleteUser"
+            >
+              OK
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -211,8 +269,18 @@ import {
   UserPlusIcon,
   UsersIcon,
 } from "lucide-vue-next";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { onMounted, ref } from "vue";
 import UserService from "../../services/UserService.ts";
+import {Button} from "@/components/ui/button";
+import {navigate} from "astro:transitions/client";
 
 const activeTab = ref("usuarios");
 const activeUser = ref(false)
@@ -257,6 +325,7 @@ const menuItems = [
 ];
 
 const users = ref([]);
+const showDelete = ref(false)
 
 async function obtenerUsuarios() {
   const service = new UserService();
@@ -266,6 +335,29 @@ async function obtenerUsuarios() {
     users.value = user;
   } catch (error) {
     console.log("error");
+  }
+}
+const handleDelete = () => {
+  showDelete.value = false
+}
+
+const handleAction = (action, user) => {
+  if (action === "eliminar"){
+    showDelete.value = true
+  }
+  else if (action === 'editar'){
+    navigate(`/edit/${user}`)
+  }
+}
+
+async function deleteUser(id: number) {
+  const service = new UserService();
+  try{
+    await service.removeUser(id);
+    showDelete.value = false
+  }
+  catch (e) {
+    console.error(e)
   }
 }
 

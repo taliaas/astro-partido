@@ -18,6 +18,7 @@
           </div>
         </div>
 
+        <!-- Table -->
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -49,9 +50,9 @@
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
-                    <DropdownMenuItem @click="showAbsenceReasons = true">
+                    <DropdownMenuItem @click="handleAct(row.reasons)">
                       <Eye class="w-4 h-4"/>
-                      <span>Causas</span>
+                      <span>Ver Causas</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -76,17 +77,12 @@
           </div>
 
           <div v-show="isChartOpen" class="space-y-4">
-            <div v-for="reason in absenceReasons" :key="reason.label" class="space-y-2">
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600 dark:text-gray-300">{{ reason.label }}</span>
-                <span class="font-medium">{{ reason.count }}</span>
+            <div v-for="(value, reason) in absenceReasons.reasons" :key="reason" class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <span class="text-sm">{{ reason }}</span>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
-                <div
-                    :class="reason.color"
-                    class="rounded-full h-2 transition-all duration-500"
-                    :style="{ width: `${reason.percentage}%` }"
-                ></div>
+              <div class="flex items-center space-x-4">
+                <span class="text-sm font-medium">{{ value }}</span>
               </div>
             </div>
           </div>
@@ -135,23 +131,13 @@
       </DialogHeader>
       <div class="space-y-3 max-h-[60vh] overflow-y-auto">
         <div
-            v-for="reason in absenceReasons"
-            :key="reason.label"
+            v-for="(value, reason) in absenceReasons.attendances[index].reasons"
+            :key="reason"
             class="flex items-center justify-between"
         >
           <div class="flex items-center space-x-3">
-            <div :class="[reason.color, 'w-3 h-3 rounded']"></div>
-            <span class="text-sm">{{ reason.label }}</span>
-          </div>
-          <div class="flex items-center space-x-4">
-            <span class="text-sm font-medium">{{ reason.count }}</span>
-            <div class="w-24 bg-gray-200 rounded h-2">
-              <div
-                  :class="[reason.color, 'h-2 rounded']"
-                  :style="{ width: `${reason.percentage}%` }"
-              ></div>
-            </div>
-
+            <span class="text-sm">{{ reason }}</span>
+            <p>{{value}}</p>
           </div>
         </div>
       </div>
@@ -168,25 +154,15 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from '../ui/dialog';
 import AbsentService from "@/services/AbsentService.ts";
 import type {AttendanceResponse} from "@/interface/Absent.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {bgBlue, bgRed} from "kolorist";
 
 const isChartOpen = ref(false)
 const isNotesOpen = ref(true)
 const showAbsenceReasons = ref(false);
 const fecha = ref("");
+const index = ref('')
 
-const absenceReasons = ref([
-  {label: "Enfermedad", count: 6, percentage: 30, color: "bg-red-600"},
-  {label: "Extranjero", count: 3, percentage: 1, color: "bg-blue-600"},
-  {label: "Trabajo", count: 3, percentage: 15, color: "bg-gray-600"},
-  {label: "Fuera de Provincia", count: 6, percentage: 30, color: "bg-yellow-400"},
-  {label: "Vacaciones", count: 2, percentage: 10, color: "bg-green-600"},
-  {label: "Lic. de Maternidad", count: 2, percentage: 1, color: "bg-pink-600"},
-  {label: "Problemas Personales", count: 3, percentage: 1, color: "bg-purple-600"},
-  {label: "Problemas Familiares", count: 2, percentage: 1, color: "bg-orange-600"},
-  {label: "Movilizado", count: 2, percentage: 1, color: "bg-blue-300"},
-  {label: "Injustificado", count: 3, percentage: 1, color: "bg-violet-800"},
-  {label: "Otros", count: 2, percentage: 1, color: "bg-red-400"},
-])
+const absenceReasons =ref<AttendanceResponse>({attendances: undefined, reasons: {}})
 
 const tableHeaders = [
   'Núcleo',
@@ -233,13 +209,19 @@ async function getAttendance() {
   const value = fecha.value;
   const [year, month] = value.split('-');
   try {
-    tableData.value = await service.getByDate(month, year)
-    console.log()
+    const response = await service.getByDate(month, year)
+    tableData.value = response
+    absenceReasons.value = response
+    console.log(response)
   } catch (error) {
     console.log(error)
   }
 }
 
+async function handleAct(reason: any){
+  showAbsenceReasons.value = true
+  index.value = reason
+}
 watch(() => fecha.value, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     getAttendance();

@@ -55,7 +55,7 @@
               </button>
               
                 <a
-                  href="/public"
+                  href="/login"
                   class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
                   @click="out"
                 >
