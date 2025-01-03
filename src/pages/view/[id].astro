@@ -2,9 +2,13 @@
 import RootLayout from "../../layouts/RootLayout.astro";
 import Display from "../../components/Ordinary/ActaDisplay.vue";
 
-const {id} = Astro.params
+const { id } = Astro.params;
+
+if (!id) {
+  throw new Error("No id provided");
+}
 ---
 
-<RootLayout >
-    <Display id={id} client:load />
+<RootLayout>
+  <Display id={id} client:load />
 </RootLayout>
