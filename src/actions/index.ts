@@ -18,7 +18,7 @@ export const server = {
   }),
 
   logout: defineAction({
-    async handler(input, ctx){
+    async handler(ctx){
       ctx.cookies.delete("access_token", {
         path: "/",
       })
