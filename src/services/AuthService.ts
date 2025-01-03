@@ -1,5 +1,4 @@
-import { getAccessToken, saveToken } from "@/lib/auth";
-import { actions } from "astro:actions";
+import { getAccessToken } from "@/lib/auth";
 
 export default class AuthService {
   async login(user: any) {
