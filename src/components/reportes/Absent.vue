@@ -88,16 +88,16 @@
               <p>No hay causas de ausencias</p>
             </div>
             <div class="space-y-4">
-              <div v-for="reason in absenceReasons" :key="reason" class="relative">
+              <div v-for="(reason, index) in absenceReasons.reasons" :key="reason" class="relative">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="text-sm font-medium text-gray-700">{{ reason }}</span>
-                  <span class="text-sm font-medium text-gray-500">{{ value }}%</span>
+                  <span class="text-sm font-medium text-gray-700">{{ index }}</span>
+                  <span class="text-sm font-medium text-gray-500">{{ reason }}</span>
                 </div>
-                <div class="h-4 w-full bg-blue-100 rounded-full overflow-hidden">
+                <div class="h-3 w-full bg-blue-100 rounded-full overflow-hidden">
                   <div
                       class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out"
                       :style="{
-              width: `${value}%`,
+              width: `${reason}%`,
               boxShadow: 'inset 0 0 0 2px rgba(29, 78, 216, 0.7)' // Darker blue border
             }"></div>
                 </div>
@@ -181,11 +181,11 @@ import AbsentService from "@/services/AbsentService.ts";
 import type {AttendanceResponse} from "@/interface/Absent.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
-const isChartOpen = ref(false)
-const isNotesOpen = ref(true)
+const isChartOpen = ref(false);
+const isNotesOpen = ref(true);
 const showAbsenceReasons = ref(false);
 const fecha = ref("2024-02");
-const reasonAbsent = ref('')
+const reasonAbsent = ref('');
 
 const absenceReasons =ref<AttendanceResponse>({attendances: undefined, reasons: {}})
 
@@ -229,6 +229,7 @@ async function handleAct(reason: any){
 }
 
 watch(() => fecha.value, (newValue, oldValue) => {
+  console.log(oldValue)
   if (newValue !== oldValue) {
     getAttendance();
   }
