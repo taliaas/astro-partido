@@ -17,7 +17,7 @@
           </Card>
         </div>
         <Tabs v-model="activeTab" class="space-y-4">
-          <TabsList class="grid w-full grid-cols-1 md:grid-cols-4 h-auto">
+          <TabsList class="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
             <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
               {{ tab.label }}
             </TabsTrigger>
@@ -42,7 +42,6 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import Overview from '../Home/Overview.vue'
 import Documents from '../Home/Documents.vue'
 import KPIs from '../Home/KPIs.vue'
-import Visualizations from '../Home/Visualizations.vue'
 import RightSidebar from './RightSidebar.vue'
 
 const activeTab = ref('overview')
@@ -51,7 +50,6 @@ const tabs = [
   {value: 'overview', label: 'Vista General', component: Overview},
   {value: 'documents', label: 'Documentos', component: Documents},
   {value: 'kpis', label: 'KPIs', component: KPIs},
-  {value: 'visualizations', label: 'Visualizaciones', component: Visualizations},
 ]
 
 const cards = [

@@ -4,10 +4,6 @@ export function getAccessToken() {
   return localStorage.getItem("access_token");
 }
 
-export function removeToken() {
-  return coo("access_token");
-}
-
 export async function isAuthenticated(callAction: Function) {
   console.log("Entro")
   try {

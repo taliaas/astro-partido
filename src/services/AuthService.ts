@@ -2,7 +2,7 @@ import { getAccessToken, saveToken } from "@/lib/auth";
 import { actions } from "astro:actions";
 
 export default class AuthService {
-  async login(user) {
+  async login(user: any) {
     console.log(user);
     try {
       const response = await fetch(
