@@ -96,14 +96,15 @@
           </div>
 
           <!-- Enhanced Table -->
-          <div class="overflow-x-auto">
-            <Table>
-              <TableHeader>
+          <div class="overflow-x-auto p-6">
+            <Table class=" p-2">
+              <TableHeader  class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <TableRow>
                   <TableHead class="w-[100px]">No.</TableHead>
                   <TableHead>Nombre del acta</TableHead>
-                  <TableHead>Núcleo</TableHead>
-                  <TableHead>Estado</TableHead>
+                  <TableHead class="text-center">Núcleo</TableHead>
+                  <TableHead class="text-center">Fecha</TableHead>
+                  <TableHead class="text-center">Estado</TableHead>
                   <TableHead class="w-[100px]">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
@@ -113,15 +114,16 @@
                     :key="acta.id"
                     class="hover:bg-gray-50/50 transition-colors duration-200"
                 >
-                  <TableCell class="font-medium">{{ acta.no }}</TableCell>
-                  <TableCell>{{ acta.name }}</TableCell>
-                  <TableCell>{{ acta.nucleo }}</TableCell>
-                  <TableCell>
+                  <TableCell class="font-medium">{{ acta.id }}</TableCell>
+                  <TableCell>{{ acta.name }} {{acta.id}}</TableCell>
+                  <TableCell class="text-center">{{ acta.core.name }}</TableCell>
+                  <TableCell class="text-center" >{{ acta.fecha }}</TableCell>
+                  <TableCell class="text-center">
                     <Badge :class="getStatusClass(acta.status)">
                       {{ acta.status }}
                     </Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell class="text-center">
                     <DropdownMenu>
                       <DropdownMenuTrigger class="focus:outline-none">
                         <Button variant="ghost" size="icon" class="rounded-full">
@@ -163,32 +165,6 @@
             </div>
           </div>
 
-          <!-- Improved Pagination -->
-          <div class="px-6 py-4 bg-white">
-            <div class="flex items-center justify-between">
-              <p class="text-sm text-gray-700">
-                Mostrando <span class="font-medium">10</span> de <span class="font-medium">{{ filteredActas.length }}</span> resultados
-              </p>
-              <nav class="flex items-center space-x-2">
-                <Button variant="outline" size="icon" class="h-8 w-8">
-                  <ChevronLeftIcon class="h-4 w-4" />
-                </Button>
-                <Button
-                    v-for="page in 3"
-                    :key="page"
-                    variant="outline"
-                    size="icon"
-                    class="h-8 w-8"
-                    :class="{ 'bg-blue-50 text-blue-600': page === 1 }"
-                >
-                  {{ page }}
-                </Button>
-                <Button variant="outline" size="icon" class="h-8 w-8">
-                  <ChevronRightIcon class="h-4 w-4" />
-                </Button>
-              </nav>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -306,10 +282,8 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
   MoreVerticalIcon,
   PlusIcon,
   SearchIcon,
@@ -324,6 +298,8 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Select} from '../ui/select'
 import {Input} from '../ui/input'
 import {navigate} from "astro:transitions/client";
+import OrdinaryService from "@/services/OrdinaryService.ts";
+import PoliticalService from "@/services/PoliticalService.ts";
 
 const currentTab = ref('all')
 const showUploadDialog = ref(false)
@@ -334,12 +310,24 @@ const showDelete = ref(false)
 
 const tabs = [
   { id: 'all', name: 'Todas las actas' },
-  { id: 'ro', name: 'Actas RO' },
-  { id: 'cp', name: 'Actas CP' }
+  { id: 'ro', name: 'Actas Ordinaria' },
+  { id: 'cp', name: 'Actas de Círculo Político' }
 ]
 
-const nucleos = ['Arquitectura', 'Automática', 'CIPEL', 'CIME']
-const statuses = ['Pendiente', 'Aprobada', 'Rechazada', 'En revisión']
+const nucleos = computed(() => {
+  return [...new Set(actas.value.map(item => item.core.name))]
+})
+
+const statuses = computed ( () => {
+  return [ ...new Set(actas.value.map(item => item.status))]
+})
+
+const filteredActas = computed(() => {
+  return actas.value.filter(item => {
+    if (selectedNucleo.value && item.core.name !== selectedNucleo.value) return false
+    return true
+  })
+})
 
 const selectedNucleo = ref('')
 const selectedStatus = ref('')
@@ -349,31 +337,9 @@ const filters = ref({
   status: ''
 })
 
-const actas = ref([
-  {
-    id: 1,
-    no: '001',
-    name: 'Acta RO Marzo 2024',
-    nucleo: 'Arquitectura',
-    status: 'Aprobada'
-  },
-  {
-    id: 2,
-    no: '002',
-    name: 'Acta CP Marzo 2024',
-    nucleo: 'Automática',
-    status: 'Pendiente'
-  },
-  {
-    id: 3,
-    no: '003',
-    name: 'Acta RO Febrero 2024',
-    nucleo: 'CIPEL',
-    status: 'En revisión'
-  }
-])
+const actas = ref([])
 
-const filteredActas = computed(() => {
+const filteredData = computed(() => {
   return actas.value.filter(acta => {
     const matchesSearch = !filters.value.search ||
         acta.name.toLowerCase().includes(filters.value.search.toLowerCase())
@@ -414,6 +380,42 @@ const handleDelete = () => {
   showDelete.value = false
 }
 
+async function getActas(tipo: string) {
+  const services = {
+    ro: new OrdinaryService(),
+    cp: new PoliticalService(),
+    all: () => Promise.all([new PoliticalService(), new OrdinaryService()])
+  };
+
+  try {
+    const service = services[tipo];
+    if (!service) {
+      throw new Error('Invalid tipo');
+    }
+
+    if (tipo === 'all') {
+      const [pol, ord] = await service();
+      actas.value = [...(await pol.getAll()), ...(await ord.getAll())];
+    } else {
+      actas.value = await service.getAll();
+    }
+  console.log(actas)
+  } catch (error) {
+    console.error('Error fetching actas:', error);
+    throw error;
+  }
+}
+
+watch(() => currentTab, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    console.log(currentTab)
+    getActas(newValue)
+  }
+})
+
+onMounted(() => {
+  getActas('all')
+})
 //cargar acta
 const handleDrop = (event) => {
   isDragging.value = false

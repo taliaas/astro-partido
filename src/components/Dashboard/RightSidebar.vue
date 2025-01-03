@@ -11,7 +11,7 @@
           <ChevronDownIcon class="h-4 w-4"/>
         </CollapsibleTrigger>
         <CollapsibleContent class="space-y-3 pt-3">
-          <Calendar v-model="value" :weekday-format="'short'" class="rounded border "/>
+          <Calendar v-model="value" :weekday-format="'short'" class="rounded border" colo/>
         </CollapsibleContent>
       </Collapsible>
 

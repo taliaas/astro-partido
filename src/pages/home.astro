@@ -1,6 +1,11 @@
 ---
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
+import {isAuthenticated} from "../lib/auth";
+
+if (!await isAuthenticated(Astro.callAction)) {
+    return Astro.redirect("/login")
+}
 ---
 
 <RootLayout>

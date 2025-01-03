@@ -19,8 +19,8 @@
         </div>
 
         <!-- Table -->
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
+        <div class=" shadow-md rounded-md">
+          <table class="min-w-full divide-y divide-gray-200 border">
             <thead class="bg-gray-50">
             <tr>
               <th v-for="header in tableHeaders" :key="header"
@@ -61,6 +61,13 @@
             </tbody>
           </table>
         </div>
+        <!-- Empty State -->
+        <div v-if="tableData.attendances.length === 0" class="text-center py-12">
+          <h3 class="mt-2 text-md font-medium text-gray-900">No hay actas</h3>
+          <p class="mt-1 text-md text-gray-500">
+            Comienza creando una nueva acta o cargando un documento existente.
+          </p>
+        </div>
       </div>
 
       <!-- Side Panel -->
@@ -77,7 +84,10 @@
           </div>
 
           <div v-show="isChartOpen" class="space-y-4">
-            <div v-for="(value, reason) in absenceReasons.reasons" :key="reason" class="flex items-center justify-between">
+            <div v-if="Object.keys(absenceReasons.reasons).length === 0">
+              <p>No hay causas de ausencias</p>
+            </div>
+            <div v-else v-for="(value, reason) in absenceReasons.reasons" :key="reason" class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
                 <span class="text-sm">{{ reason }}</span>
               </div>
@@ -101,7 +111,10 @@
 
           <div v-show="isNotesOpen" class="space-y-4 ">
             <div class="space-y-4 max-h-[60vh] overflow-y-auto">
-              <div v-for="note in notes" :key="note.id" class="p-4 rounded bg-blue-100 dark:bg-blue-800">
+              <div v-if="Object.keys(notes).length === 0">
+                <p>No hay notas</p>
+              </div>
+              <div v-else v-for="note in notes" :key="note.id" class="p-4 rounded bg-blue-100 dark:bg-blue-800">
                 <div class="flex justify-between items-start">
                   <span class="font-medium">{{ note.area }}</span>
                   <span class="text-sm text-gray-500 dark:text-gray-300">{{ note.date }}</span>
@@ -113,7 +126,7 @@
         </div>
       </div>
     </div>
-    <Card class="my-8">
+    <Card class="my-8 w-1/2">
       <CardHeader>
         <CardTitle class="font-normal text-lg">Leyenda</CardTitle>
       </CardHeader>
@@ -129,12 +142,23 @@
       <DialogHeader>
         <DialogTitle>Causas de Ausencias</DialogTitle>
       </DialogHeader>
+
       <div class="space-y-3 max-h-[60vh] overflow-y-auto">
+        <div v-if="Object.keys(reasonAbsent).length === 0">
+          <p>No hay causas de ausencias</p>
+        </div>
+        <div
+            v-else
+            v-for="(reason, value) in reasonAbsent"
+            :key="value"
+            class="flex items-center justify-between"
+        >
           <div class="flex items-center space-x-3">
             <span class="text-sm">{{ reason }}</span>
-            <p>{{value}}</p>
+            <p>{{ value }}</p>
           </div>
         </div>
+      </div>
     </DialogContent>
   </Dialog>
 </template>
@@ -154,7 +178,7 @@ const isChartOpen = ref(false)
 const isNotesOpen = ref(true)
 const showAbsenceReasons = ref(false);
 const fecha = ref("");
-const index = ref('')
+const reasonAbsent = ref('')
 
 const absenceReasons =ref<AttendanceResponse>({attendances: undefined, reasons: {}})
 
@@ -170,28 +194,8 @@ const tableHeaders = [
 
 const tableData = ref<AttendanceResponse>({attendances: [], reasons: undefined})
 
-const notes = ref([
-  {
-    id: 1,
-    area: "Automática",
-    date: "Mar 24",
-    text:
-        "Hay 3 procesos de desactivación en curso, 1 en el extranjero en beca doctoral.",
-  },
-  {
-    id: 2,
-    area: "CIME",
-    date: "Mar 24",
-    text:
-        "1 con Parkinson enfermo, imposible de asistir. (El Núcleo acordó su flexibilización).",
-  },
-  {
-    id: 3,
-    area: "VRIPG",
-    date: "Mar 24",
-    text: "Revisar trámite de traslado de Modesto.",
-  },
-]);
+const notes = ref([]);
+
 const getPercentageClass = (percentage) => {
   if (percentage >= 90) return 'text-green-600'
   if (percentage >= 60) return 'text-yellow-600'
@@ -214,8 +218,9 @@ async function getAttendance() {
 
 async function handleAct(reason: any){
   showAbsenceReasons.value = true
-  index.value = reason
+  reasonAbsent.value = reason
 }
+
 watch(() => fecha.value, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     getAttendance();

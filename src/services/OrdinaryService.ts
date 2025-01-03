@@ -1,6 +1,7 @@
 import type Minute from "@/interface/MinuteOrdinary";
 
 export default class OrdinaryService {
+
     async createMinute(createMinutesOrdinaryDto: Minute) {
         try {
             const response = await fetch(`https://part-back.onrender.com/minutes-ordinary`, {

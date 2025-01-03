@@ -46,10 +46,12 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
               v-for="weekDate in weekDates"
               :key="weekDate.toString()"
               :date="weekDate"
+
             >
               <CalendarCellTrigger
                 :day="weekDate"
                 :month="month.value"
+                class="data-[selected=true]:[background-color:rgb(37_99_235)!important]"
               />
             </CalendarCell>
           </CalendarGridRow>

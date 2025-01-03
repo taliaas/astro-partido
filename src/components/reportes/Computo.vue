@@ -93,15 +93,17 @@
           </p>
         </div>
       </div>
-        <Card class="mx-8">
-          <CardHeader>
-            <CardTitle class="font-normal text-lg">Leyenda</CardTitle>
-          </CardHeader>
-          <CardContent class="">
-            <div class="size-2 rounded-full bg-red-500 inline-block"/>
-            <h2 class="text-gray-500 inline"> Alerta </h2>
-          </CardContent>
-        </Card>
+    </div>
+    <div class="space-y-6 m-2 p-2">
+      <Card class="mx-10 shadow-md">
+        <CardHeader>
+          <CardTitle class="font-normal text-lg">Leyenda</CardTitle>
+        </CardHeader>
+        <CardContent class="">
+          <div class="size-2 rounded-full bg-red-500 inline-block"/>
+          <h2 class="text-gray-500 inline"> Alerta </h2>
+        </CardContent>
+      </Card>
     </div>
   </div>
 </template>

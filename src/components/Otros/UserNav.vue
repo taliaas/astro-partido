@@ -54,13 +54,12 @@
                 Cancel
               </button>
               
-                <a
-                  href="/login"
+                <button
                   class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
                   @click="out"
                 >
                   OK
-                </a>
+                </button>
             </div>
           </form>
         </div>
@@ -75,7 +74,6 @@
     DropdownMenuItem,
     DropdownMenuSeparator,
   } from '@/components/ui/dropdown-menu'
-import { removeToken } from '@/lib/auth.ts';
 import { navigate } from 'astro:transitions/client';
   import {
     User,
@@ -85,11 +83,14 @@ import { navigate } from 'astro:transitions/client';
   } from 'lucide-vue-next'
   
   import { ref } from "vue";
+  import {actions} from "astro:actions";
+
   const showSesionModal = ref(false);
   const openMenu = ref(false)
 
-  const out = () => {
-    removeToken();
+  const out = async () => {
+    await actions.logout()
+    // navigate("/login")
   }
   
   const handleSesion = () => {

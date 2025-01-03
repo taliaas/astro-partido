@@ -86,6 +86,7 @@ import { ref } from "vue";
 import AuthService from "src/services/AuthService.ts";
 import { navigate } from "astro:transitions/client";
 import { UserIcon } from "lucide-vue-next";
+import { actions } from "astro:actions";
 
 const email = ref("");
 const password = ref("");
@@ -93,10 +94,8 @@ const showSuccessMessage = ref(false);
 const mensaje = ref("");
 
 const handleSubmit = async () => {
-  const auth = new AuthService();
-
   try {
-    await auth.login({ email: email.value, password: password.value });
+    await actions.login({ email: email.value, password: password.value });
     await navigate("/home/");
   } catch (error) {
     showSuccessMessage.value = true;
