@@ -1,0 +1,10 @@
+---
+import RootLayout from "../../layouts/RootLayout.astro";
+import Display from "../../components/Ordinary/ActaDisplay.vue";
+
+const {id} = Astro.params
+---
+
+<RootLayout >
+    <Display id={id} client:load />
+</RootLayout>
