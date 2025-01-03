@@ -180,7 +180,6 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from '../ui/dialog';
 import AbsentService from "@/services/AbsentService.ts";
 import type {AttendanceResponse} from "@/interface/Absent.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {bgBlue, bgRed} from "kolorist";
 
 const isChartOpen = ref(false)
 const isNotesOpen = ref(true)
