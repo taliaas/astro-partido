@@ -145,6 +145,10 @@
                           <Edit class="h-4 w-4"/>
                           Editar
                         </DropdownMenuItem>
+                          <DropdownMenuItem @click="handleAction('export', acta)">
+                            <Download class="h-4 w-4"/>
+                            Exportar
+                          </DropdownMenuItem>
                         <DropdownMenuItem
                             @click="handleAction('eliminar', acta)"
                             class="text-red-600 border-t focus:text-red-600"
@@ -262,8 +266,8 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue'
-import {Edit, Eye, MoreVerticalIcon, PlusIcon, SearchIcon, TrashIcon, UploadCloudIcon,} from 'lucide-vue-next'
+import {computed, ref } from 'vue'
+import {Edit, Eye, MoreVerticalIcon, PlusIcon, SearchIcon, TrashIcon, UploadCloudIcon, Download} from 'lucide-vue-next'
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '../ui/dialog'
 import {Button} from '../ui/button'
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '../ui/table'
@@ -336,9 +340,11 @@ const handleAction = (action, acta) => {
   currentsMinute.value = acta
   if (action === 'ver') {
     navigate(`/view/${acta.id}`)
-  } else if (action === 'editar') {
+  }
+  else if (action === 'editar') {
     navigate(`/edit/${acta.id}`)
-  } else if (action === 'eliminar') {
+  }
+  else if (action === 'eliminar') {
     showDelete.value = true
   }
 }
@@ -367,6 +373,9 @@ async function eliminarActa() {
     console.error(e)
   }
 }
+
+//exportar acta
+
 
 //cargar acta
 const handleDrop = (event) => {

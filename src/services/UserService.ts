@@ -1,4 +1,5 @@
 export default class UserService {
+
   async getAllUser() {
     try {
       const response = await fetch(`https://part-back.onrender.com/user`, {

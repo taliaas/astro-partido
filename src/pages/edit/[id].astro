@@ -1,0 +1,14 @@
+---
+import RootLayout from "../../layouts/RootLayout.astro";
+import EditContainer from "../../components/Acta/Edit.vue";
+
+const { id } = Astro.params;
+
+if (!id) {
+    throw new Error("No id provided");
+}
+---
+
+<RootLayout>
+    <EditContainer id={id} client:load />
+</RootLayout>

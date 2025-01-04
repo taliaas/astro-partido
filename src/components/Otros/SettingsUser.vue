@@ -28,23 +28,22 @@
       <!-- Usuarios del sistema -->
       <div v-if="activeTab === 'usuarios'" class="space-y-6">
         <div class="flex justify-between">
-          <h2 class="text-2xl font-semibold">Usuarios del Sistema</h2>
+          <h2 class="text-2xl font-medium text-gray-800">Usuarios del Sistema</h2>
           <button @click="activeUser = true"
                   class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 ease-in-out"
           >
             <UserPlusIcon class="inline-block mr-2"/>
-            Agregar
+            Usuario
           </button>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full bg-white">
             <thead>
             <tr class="border-b text-gray-700 font-normal bg-gray-100">
-              <th class="py-2 px-4 text-left">Nombre</th>
-              <th class="py-2 px-4 text-center">Correo</th>
-              <th class="py-2 px-4 text-center">Rol</th>
-              <th class="py-2 px-4 text-center">Estado</th>
-              <th class="py-2 px-4 text-center">Acciones</th>
+              <th v-for="header in tableHeaders" :key="header"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {{ header }}
+              </th>
             </tr>
             </thead>
             <tbody>
@@ -187,13 +186,58 @@
           Guardar Configuración
         </button>
       </div>
-
-      <div v-if="activeUser">
-        <div>
-
-        </div>
-      </div>
     </div>
+    <div
+      v-if="activeUser"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+  >
+    <div class="bg-white rounded p-6 w-full max-w-md">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Agregar usuario</h3>
+      <form @submit.prevent="handleCreate" class="space-y-4 p-4">
+        <div class="space-y-1">
+          <Input
+              id="name"
+              v-model="form.name"
+              type="text"
+              required
+              class="appearance-none rounded relative my-2 block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+              placeholder="Nombre"
+          />
+          <Input
+              id="email"
+              v-model="form.email"
+              type="email"
+              required
+              class="appearance-none rounded relative my-2 block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+              placeholder="Correo"
+          />
+          <Input
+              id="password"
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
+              required
+              maxlength="8"
+              class="appearance-none rounded relative my-2 block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+              placeholder="••••••••"
+          />
+        </div>
+        <div class="flex justify-end space-x-3">
+          <button
+              type="submit"
+              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Cancelar
+          </button>
+          <button
+              class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+              @click="createUser"
+          >
+            Aceptar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
     <div
         v-if="showDelete"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
@@ -227,10 +271,11 @@
 
 <script setup lang="ts">
 import {Bell, CogIcon, FileTextIcon, ShieldIcon, TrashIcon, UserPlusIcon, UsersIcon,} from "lucide-vue-next";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import UserService from "../../services/UserService.ts";
 import {Button} from "@/components/ui/button";
 import {navigate} from "astro:transitions/client";
+import {Input} from "@/components/ui/input";
 
 const {users} = defineProps<{ users: any[] }>()
 
@@ -278,9 +323,33 @@ const menuItems = [
 
 const showDelete = ref(false)
 
-
+const tableHeaders = [
+  'Nombre',
+  'Correo',
+  'Rol',
+  'Estado',
+]
 const handleDelete = () => {
   showDelete.value = false
+}
+
+const handleCreate = () => {
+  activeUser.value = false
+}
+const form = reactive({
+  name: "",
+  email: "",
+  password: ""
+});
+
+async function createUser(){
+  const service = new AuthService()
+  try{
+    await service.register( form.email, form.name, form.password)
+  }
+  catch (e) {
+    console.error("Registration error:",e)
+  }
 }
 
 const handleAction = (action, user) => {
