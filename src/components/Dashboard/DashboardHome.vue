@@ -97,7 +97,6 @@ async function getMinute() {
     temp = valor.length()
     console.log(valor);
     infoCurrentMonth.total = temp
-
   }
   catch (e) {
     console.error(e)

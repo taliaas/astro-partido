@@ -275,7 +275,7 @@ import {navigate} from "astro:transitions/client";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import PoliticalService from "@/services/PoliticalService.ts";
 
-const {actas, type} = defineProps<{ actas: any[], type: string }>()
+const { actas, type} = defineProps<{ actas: any[], type: string }>()
 
 const currentTab = ref(type)
 const showUploadDialog = ref(false)
@@ -345,7 +345,6 @@ const handleAction = (action, acta) => {
 const handleDelete = () => {
   showDelete.value = false
 }
-
 
 async function eliminarActa() {
 
