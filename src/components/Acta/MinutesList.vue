@@ -386,16 +386,8 @@ const uploadFiles = () => {
   uploadedFiles.value = []
 }
 
-watch(() => currentTab, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    console.log(currentTab)
-    getActas(newValue)
-  }
-})
-
 function handleTab(tab) {
   currentTab.value = tab.id
   navigate(`/minutes/?type=${tab.id}`, {history: "replace"})
 }
-
 </script>
