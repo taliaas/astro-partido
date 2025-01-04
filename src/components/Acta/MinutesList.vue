@@ -111,6 +111,7 @@
                              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ header }}
                   </TableHead>
+
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -121,9 +122,9 @@
                 >
                   <TableCell class="font-medium">{{ acta.id }}</TableCell>
                   <TableCell>{{ acta.name }} {{ acta.id }}</TableCell>
-                  <TableCell class="text-center">{{ acta.core.name }}</TableCell>
-                  <TableCell class="text-center">{{ acta.fecha }}</TableCell>
-                  <TableCell class="text-center">
+                  <TableCell class="text-left">{{ acta.core.name }}</TableCell>
+                  <TableCell class="text-left">{{ acta.fecha }}</TableCell>
+                  <TableCell class="text-left">
                     <Badge :class="getStatusClass(acta.status)">
                       {{ acta.status }}
                     </Badge>
@@ -285,8 +286,7 @@ const tableHeaders = [
   'Nombre del acta',
   'Núcleo',
   'Fecha',
-  'Estado',
-  'Acciones'
+  'Estado'
 ]
 const tabs = [
   {id: 'all', name: 'Todas las actas'},
@@ -332,12 +332,12 @@ const getStatusClass = (status) => {
 }
 
 const handleAction = (action, acta) => {
-  currentsMinute.value = acta
+  currentsMinute.value = acta.id
   if (action === 'ver') {
     navigate(`/view/${acta.id}`)
   } else if (action === 'editar') {
     navigate(`/edit/${acta.id}`)
-  } else if (action === 'delete') {
+  } else if (action === 'eliminar') {
     showDelete.value = true
   }
 }
