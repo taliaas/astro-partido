@@ -51,12 +51,10 @@
                 </Button>
               </div>
              <div class="flex gap-3">
-               <div class="flex relative">
                  <a href="/addRO"
                     class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700">
                    <PlusIcon class="h-4 w-4 mr-2" />
                    Ordinaria</a>
-               </div>
                <a href="/addCP"
                   class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700">
                  <PlusIcon class="h-4 w-4 mr-2" />
