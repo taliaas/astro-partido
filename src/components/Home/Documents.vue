@@ -8,7 +8,7 @@
         <div class="space-y-4">
           <div class="flex items-center">
             <Input type="search" placeholder="Buscar documentos..." class="max-w-sm mr-2 rounded border-gray-300" />
-            <Button variant="secondary" class="rounded border-gray-300 bg-blue-600 text-white shadow-md">
+            <Button variant="secondary" class="rounded border-gray-300 bg-blue-600 text-white shadow-md hover:bg-blue-700">
               <Search class="h-4 w-4 mr-2" />
               Buscar
             </Button>
@@ -31,8 +31,6 @@
   import {Button} from "@/components/ui/button"
   import {Input} from "@/components/ui/input"
   import {Search} from 'lucide-vue-next'
-  import OrdinaryService from "@/services/OrdinaryService.ts";
-  import {onMounted, ref } from "vue";
   import {navigate} from "astro:transitions/client";
 
 const {documents} = defineProps<{ documents: any[] }>()
