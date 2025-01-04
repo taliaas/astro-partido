@@ -52,11 +52,11 @@
               </div>
              <div class="flex gap-3">
                  <a href="/addRO"
-                    class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700">
+                    class="px-4 py-2 mr-4 bg-blue-600 flex gap-2 text-white rounded text-sm font-medium hover:bg-blue-700">
                    <PlusIcon class="h-4 w-4 mr-2" />
                    Ordinaria</a>
                <a href="/addCP"
-                  class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700">
+                  class="px-4 py-2 mr-4 flex bg-blue-600 gap-2 text-white rounded text-sm font-medium hover:bg-blue-700">
                  <PlusIcon class="h-4 w-4 mr-2" />
                  C. Político</a>
              </div>
@@ -106,12 +106,10 @@
             <Table class=" p-2">
               <TableHeader  class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <TableRow>
-                  <TableHead class="w-[100px]">No.</TableHead>
-                  <TableHead>Nombre del acta</TableHead>
-                  <TableHead class="text-center">Núcleo</TableHead>
-                  <TableHead class="text-center">Fecha</TableHead>
-                  <TableHead class="text-center">Estado</TableHead>
-                  <TableHead class="w-[100px]">Acciones</TableHead>
+                  <TableHead v-for="header in tableHeaders" :key="header"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ header }}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -170,7 +168,6 @@
               </p>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -247,14 +244,14 @@
                 type="submit"
                 class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              Cancel
+              Cancelar
             </button>
 
             <button
                 class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
                 @click="eliminarActa()"
             >
-              OK
+              Aceptar
             </button>
           </div>
         </form>
@@ -287,14 +284,22 @@ const currentTab = ref('all')
 const showUploadDialog = ref(false)
 const uploadedFiles = ref([])
 const isDragging = ref(false)
-const showOption = ref(false)
 const showDelete = ref(false)
 
+const tableHeaders = [
+  'No.',
+  'Nombre del acta',
+  'Núcleo',
+  'Fecha',
+  'Estado',
+  'Acciones'
+]
 const tabs = [
   { id: 'all', name: 'Todas las actas' },
   { id: 'ro', name: 'Actas Ordinaria' },
   { id: 'cp', name: 'Actas de Círculo Político' }
 ]
+const currentsMinutes = ref(null)
 
 const nucleos = computed(() => {
   return [...new Set(actas.value.map(item => item.core.name))]
@@ -322,10 +327,6 @@ const filters = ref({
 const actas = ref([])
 const menssage = ref('')
 
-const handleSesion = () => {
-  showOption.value = false;
-};
-
 const getStatusClass = (status) => {
   const classes = {
     'Aprobada': 'bg-green-100 text-green-800 hover:bg-green-200',
@@ -337,13 +338,14 @@ const getStatusClass = (status) => {
 }
 
 const handleAction = (action, acta) => {
+  currentsMinutes.value = acta
   if (action === 'ver'){
     navigate(`/view/${acta.id}`)
   }
   else if(action === 'editar'){
     navigate(`/edit/${acta.id}`)
   }
-  else {
+  else if(action === 'delete'){
     showDelete.value = true
   }
 }
@@ -377,9 +379,11 @@ async function getActas(tipo: string) {
   }
 }
 
-async function eliminarActa(tipo: string, id: string){
+async function eliminarActa(){
   const ro = new OrdinaryService()
   const cp = new PoliticalService()
+
+
 
   try{
     if(tipo === 'ro'){
