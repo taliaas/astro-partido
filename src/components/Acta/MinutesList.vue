@@ -360,7 +360,7 @@ async function getActas(tipo: string) {
 
     if (tipo === 'all') {
       const [pol, ord] = service() as ReturnType<typeof services["all"]>;
-      const [cpMinutes, ordMinutes] = await Promise.all(pol.getAll(), ord.getAll())
+      const [cpMinutes, ordMinutes] = await Promise.all([pol.getAll(), ord.getAll()])
       actas.value = [
         ...cpMinutes.map(minute => ({...minute, type: "cp"})),
         ...ordMinutes.map(minute => ({...minute, type: "ro"}))
