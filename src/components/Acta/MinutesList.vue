@@ -259,6 +259,19 @@
       </div>
     </div>
   </div>
+  <!-- Modal de Edición -->
+<Dialog :open="showEditModal" @update:open="showEditModal = $event">
+  <DialogContent class="sm:max-w-4xl">
+    <DialogHeader>
+      <DialogTitle>Editar Acta</DialogTitle>
+    </DialogHeader>
+    <EditActa 
+      v-if="selectedActa" 
+      :id="selectedActa.id" 
+      @close="showEditModal = false"
+    />
+  </DialogContent>
+</Dialog>
 </template>
 
 <script setup lang="ts">
@@ -274,7 +287,7 @@ import {Input} from '../ui/input'
 import {navigate} from "astro:transitions/client";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import PoliticalService from "@/services/PoliticalService.ts";
-
+import EditActa from './Edit.vue'
 const {actas, type} = defineProps<{ actas: any[], type: string }>()
 
 const currentTab = ref(type)
@@ -282,6 +295,8 @@ const showUploadDialog = ref(false)
 const uploadedFiles = ref([])
 const isDragging = ref(false)
 const showDelete = ref(false)
+const showEditModal = ref(false)
+const selectedActa = ref(null)
 
 const tableHeaders = [
   'No.',
@@ -337,11 +352,13 @@ const handleAction = (action, acta) => {
   if (action === 'ver') {
     navigate(`/view/${acta.id}`)
   } else if (action === 'editar') {
-    navigate(`/edit/${acta.id}`)
+    selectedActa.value = acta
+    showEditModal.value = true
   } else if (action === 'eliminar') {
     showDelete.value = true
   }
 }
+
 const handleDelete = () => {
   showDelete.value = false
 }
@@ -391,3 +408,7 @@ function handleTab(tab) {
   navigate(`/minutes/?type=${tab.id}`, {history: "replace"})
 }
 </script>
+
+
+
+
