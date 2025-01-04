@@ -15,7 +15,7 @@ async function getActas(tipo: string) {
     } as const;
 
     try {
-        const service = services[tipo];
+        const service = services[tipo as keyof typeof services] as any;
         if (!service) {
             throw new Error('Invalid tipo');
         }
@@ -24,12 +24,12 @@ async function getActas(tipo: string) {
             const [pol, ord] = service() as ReturnType<typeof services["all"]>;
             const [cpMinutes, ordMinutes] = await Promise.all([pol.getAll(), ord.getAll()])
             return [
-                ...cpMinutes.map(minute => ({...minute, type: "cp"})),
-                ...ordMinutes.map(minute => ({...minute, type: "ro"}))
+                ...cpMinutes.map((minute: any) => ({...minute, type: "cp"})),
+                ...ordMinutes.map((minute: any) => ({...minute, type: "ro"}))
             ];
         } else {
             const minutes = await service.getAll()
-            return minutes.map(minute => ({...minute, type: tipo}));
+            return minutes.map((minute: any) => ({...minute, type: tipo}));
         }
     } catch (error) {
         console.error('Error fetching actas:', error);
