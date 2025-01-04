@@ -18,7 +18,7 @@
               <button
                   v-for="tab in tabs"
                   :key="tab.id"
-                  @click="currentTab = tab.id"
+                  @click="handleTab(tab)"
                   :class="[
                   'py-4 px-1 relative',
                   'font-medium text-sm whitespace-nowrap',
@@ -262,7 +262,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref, watch} from 'vue'
+import {computed, ref, watch} from 'vue'
 import {Edit, Eye, MoreVerticalIcon, PlusIcon, SearchIcon, TrashIcon, UploadCloudIcon,} from 'lucide-vue-next'
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '../ui/dialog'
 import {Button} from '../ui/button'
@@ -275,7 +275,9 @@ import {navigate} from "astro:transitions/client";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import PoliticalService from "@/services/PoliticalService.ts";
 
-const currentTab = ref('all')
+const {actas, type} = defineProps<{ actas: any[], type: string }>()
+
+const currentTab = ref(type)
 const showUploadDialog = ref(false)
 const uploadedFiles = ref([])
 const isDragging = ref(false)
@@ -296,15 +298,15 @@ const tabs = [
 const currentsMinute = ref(null)
 
 const nucleos = computed(() => {
-  return [...new Set(actas.value.map(item => item.core.name))]
+  return [...new Set(actas.map(item => item.core.name))]
 })
 
 const statuses = computed(() => {
-  return [...new Set(actas.value.map(item => item.status))]
+  return [...new Set(actas.map(item => item.status))]
 })
 
 const filteredActas = computed(() => {
-  return actas.value.filter(item => {
+  return actas.filter(item => {
     if (selectedNucleo.value && item.core.name !== selectedNucleo.value) return false
     return true
   })
@@ -318,7 +320,6 @@ const filters = ref({
   status: ''
 })
 
-const actas = ref([])
 const menssage = ref('')
 
 const getStatusClass = (status) => {
@@ -345,36 +346,6 @@ const handleDelete = () => {
   showDelete.value = false
 }
 
-async function getActas(tipo: string) {
-  const services = {
-    ro: new OrdinaryService(),
-    cp: new PoliticalService(),
-    all: () => [new PoliticalService(), new OrdinaryService()] as const
-  } as const;
-
-  try {
-    const service = services[tipo];
-    if (!service) {
-      throw new Error('Invalid tipo');
-    }
-
-    if (tipo === 'all') {
-      const [pol, ord] = service() as ReturnType<typeof services["all"]>;
-      const [cpMinutes, ordMinutes] = await Promise.all([pol.getAll(), ord.getAll()])
-      actas.value = [
-        ...cpMinutes.map(minute => ({...minute, type: "cp"})),
-        ...ordMinutes.map(minute => ({...minute, type: "ro"}))
-      ];
-    } else {
-      const minutes = await service.getAll()
-      actas.value = minutes.map(minute => ({...minute, type: tipo}));
-    }
-    console.log(actas)
-  } catch (error) {
-    console.error('Error fetching actas:', error);
-    throw error;
-  }
-}
 
 async function eliminarActa() {
 
@@ -422,7 +393,9 @@ watch(() => currentTab, (newValue, oldValue) => {
   }
 })
 
-onMounted(() => {
-  getActas('all')
-})
+function handleTab(tab) {
+  currentTab.value = tab.id
+  navigate(`/minutes/?type=${tab.id}`, {history: "replace"})
+}
+
 </script>
