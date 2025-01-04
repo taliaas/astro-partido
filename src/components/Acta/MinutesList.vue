@@ -50,16 +50,16 @@
                   Exportar
                 </Button>
               </div>
-             <div class="flex gap-3">
-                 <a href="/addRO"
-                    class="px-4 py-2 mr-4 bg-blue-600 flex gap-2 text-white rounded text-sm font-medium hover:bg-blue-700">
-                   <PlusIcon class="h-4 w-4 mr-2" />
-                   Ordinaria</a>
-               <a href="/addCP"
-                  class="px-4 py-2 mr-4 flex bg-blue-600 gap-2 text-white rounded text-sm font-medium hover:bg-blue-700">
-                 <PlusIcon class="h-4 w-4 mr-2" />
-                 C. Político</a>
-             </div>
+              <div class="flex gap-3">
+                <a href="/addRO"
+                   class="px-4 py-2 mr-4 bg-blue-600 flex gap-2 text-white rounded text-sm font-medium hover:bg-blue-700">
+                  <PlusIcon class="h-4 w-4 mr-2"/>
+                  Ordinaria</a>
+                <a href="/addCP"
+                   class="px-4 py-2 mr-4 flex bg-blue-600 gap-2 text-white rounded text-sm font-medium hover:bg-blue-700">
+                  <PlusIcon class="h-4 w-4 mr-2"/>
+                  C. Político</a>
+              </div>
             </div>
           </div>
 
@@ -68,7 +68,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1.5">
                 <div class="relative">
-                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"/>
                   <Input
                       id="search"
                       v-model="filters.search"
@@ -104,10 +104,11 @@
           <!-- Enhanced Table -->
           <div class="overflow-x-auto p-6">
             <Table class=" p-2">
-              <TableHeader  class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <TableHeader
+                  class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <TableRow>
                   <TableHead v-for="header in tableHeaders" :key="header"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ header }}
                   </TableHead>
                 </TableRow>
@@ -119,9 +120,9 @@
                     class="hover:bg-gray-50/50 transition-colors duration-200"
                 >
                   <TableCell class="font-medium">{{ acta.id }}</TableCell>
-                  <TableCell>{{ acta.name }} {{acta.id}}</TableCell>
+                  <TableCell>{{ acta.name }} {{ acta.id }}</TableCell>
                   <TableCell class="text-center">{{ acta.core.name }}</TableCell>
-                  <TableCell class="text-center" >{{ acta.fecha }}</TableCell>
+                  <TableCell class="text-center">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-center">
                     <Badge :class="getStatusClass(acta.status)">
                       {{ acta.status }}
@@ -131,23 +132,23 @@
                     <DropdownMenu>
                       <DropdownMenuTrigger class="focus:outline-none">
                         <Button variant="ghost" size="icon" class="rounded-full">
-                          <MoreVerticalIcon class="h-4 w-4" />
+                          <MoreVerticalIcon class="h-4 w-4"/>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem @click="handleAction('ver', acta)">
-                          <Eye class="h-4 w-4" />
+                          <Eye class="h-4 w-4"/>
                           Ver
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('editar', acta)">
-                          <Edit class="h-4 w-4" />
+                          <Edit class="h-4 w-4"/>
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             @click="handleAction('eliminar', acta)"
                             class="text-red-600 border-t focus:text-red-600"
                         >
-                          <TrashIcon class="h-4 w-4" />
+                          <TrashIcon class="h-4 w-4"/>
                           Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -160,7 +161,7 @@
             <!-- Empty State -->
             <div v-if="filteredActas.length === 0" class="text-center py-16">
               <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
-                <SearchIcon class="h-6 w-6" />
+                <SearchIcon class="h-6 w-6"/>
               </div>
               <h3 class="mt-4 text-sm font-medium text-gray-900">No se encontraron actas</h3>
               <p class="mt-1 text-sm text-gray-500">
@@ -237,7 +238,7 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
         <form @submit.prevent="handleDelete" class="space-y-4 p-4">
           <div>
-           ¿Estás seguro que desea eliminar el acta?
+            ¿Estás seguro que desea eliminar el acta?
           </div>
           <div class="flex justify-end space-x-3">
             <button
@@ -246,7 +247,6 @@
             >
               Cancelar
             </button>
-
             <button
                 class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
                 @click="eliminarActa()"
@@ -262,13 +262,7 @@
 
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from 'vue'
-import {
-  MoreVerticalIcon,
-  PlusIcon,
-  SearchIcon,
-  UploadCloudIcon, XIcon,
-  Eye, Edit, TrashIcon,
-} from 'lucide-vue-next'
+import {Edit, Eye, MoreVerticalIcon, PlusIcon, SearchIcon, TrashIcon, UploadCloudIcon,} from 'lucide-vue-next'
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '../ui/dialog'
 import {Button} from '../ui/button'
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '../ui/table'
@@ -295,18 +289,18 @@ const tableHeaders = [
   'Acciones'
 ]
 const tabs = [
-  { id: 'all', name: 'Todas las actas' },
-  { id: 'ro', name: 'Actas Ordinaria' },
-  { id: 'cp', name: 'Actas de Círculo Político' }
+  {id: 'all', name: 'Todas las actas'},
+  {id: 'ro', name: 'Actas Ordinaria'},
+  {id: 'cp', name: 'Actas de Círculo Político'}
 ]
-const currentsMinutes = ref(null)
+const currentsMinute = ref(null)
 
 const nucleos = computed(() => {
   return [...new Set(actas.value.map(item => item.core.name))]
 })
 
-const statuses = computed ( () => {
-  return [ ...new Set(actas.value.map(item => item.status))]
+const statuses = computed(() => {
+  return [...new Set(actas.value.map(item => item.status))]
 })
 
 const filteredActas = computed(() => {
@@ -338,14 +332,12 @@ const getStatusClass = (status) => {
 }
 
 const handleAction = (action, acta) => {
-  currentsMinutes.value = acta
-  if (action === 'ver'){
+  currentsMinute.value = acta
+  if (action === 'ver') {
     navigate(`/view/${acta.id}`)
-  }
-  else if(action === 'editar'){
+  } else if (action === 'editar') {
     navigate(`/edit/${acta.id}`)
-  }
-  else if(action === 'delete'){
+  } else if (action === 'delete') {
     showDelete.value = true
   }
 }
@@ -357,8 +349,8 @@ async function getActas(tipo: string) {
   const services = {
     ro: new OrdinaryService(),
     cp: new PoliticalService(),
-    all: () => Promise.all([new PoliticalService(), new OrdinaryService()])
-  };
+    all: () => [new PoliticalService(), new OrdinaryService()] as const
+  } as const;
 
   try {
     const service = services[tipo];
@@ -367,38 +359,44 @@ async function getActas(tipo: string) {
     }
 
     if (tipo === 'all') {
-      const [pol, ord] = await service();
-      actas.value = [...(await pol.getAll()), ...(await ord.getAll())];
+      const [pol, ord] = service() as ReturnType<typeof services["all"]>;
+      const [cpMinutes, ordMinutes] = await Promise.all(pol.getAll(), ord.getAll())
+      actas.value = [
+        ...cpMinutes.map(minute => ({...minute, type: "cp"})),
+        ...ordMinutes.map(minute => ({...minute, type: "ro"}))
+      ];
     } else {
-      actas.value = await service.getAll();
+      const minutes = await service.getAll()
+      actas.value = minutes.map(minute => ({...minute, type: tipo}));
     }
-  console.log(actas)
+    console.log(actas)
   } catch (error) {
     console.error('Error fetching actas:', error);
     throw error;
   }
 }
 
-async function eliminarActa(){
+async function eliminarActa() {
+
+  const id = currentsMinute.value?.id
+  const tipo = acta.type
+
   const ro = new OrdinaryService()
   const cp = new PoliticalService()
 
-
-
-  try{
-    if(tipo === 'ro'){
+  try {
+    if (tipo === 'ro') {
       await ro.deleteMinute(id)
       menssage.value = 'Se eliminó correctamente el acta'
-    }
-    else if(tipo === 'cp'){
+    } else if (tipo === 'cp') {
       await cp.deleteMinute(id)
       menssage.value = 'Se eliminó correctamente el acta'
     }
-  }
-  catch (e) {
+  } catch (e) {
     console.error(e)
   }
 }
+
 //cargar acta
 const handleDrop = (event) => {
   isDragging.value = false
