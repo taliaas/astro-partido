@@ -1,5 +1,5 @@
 import type Minute from "@/interface/MinuteOrdinary";
-const API_URL = 'https://part-back.onrender.com/minutes-ordinary/'
+const API_URL = 'https://part-back.onrender.com/minutes-ordinary'
 
 export default class OrdinaryService {
 

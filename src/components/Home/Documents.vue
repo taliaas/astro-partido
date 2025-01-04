@@ -8,7 +8,7 @@
         <div class="space-y-4">
           <div class="flex items-center">
             <Input type="search" placeholder="Buscar documentos..." class="max-w-sm mr-2 rounded border-gray-300" />
-            <Button variant="secondary" class="rounded border-gray-300 bg-blue-600 text-white shadow-md hover:bg-blue-700">
+            <Button variant="secondary" class="rounded border-gray-300 bg-blue-600 text-white shadow-md">
               <Search class="h-4 w-4 mr-2" />
               Buscar
             </Button>
@@ -35,23 +35,10 @@
   import {onMounted, ref } from "vue";
   import {navigate} from "astro:transitions/client";
 
-  const documents = ref([])
+const {documents} = defineProps<{ documents: any[] }>()
 
-  async function getMinute() {
-    const service = new OrdinaryService()
-    try {
-      documents.value = await service.getLatestMinute()
-    }
-    catch (e) {
-      console.error(e)
-    }
-  }
+async function openMinute(id: string) {
+  await navigate(`/view/${id}`)
+}
 
-  async function openMinute(id: string){
-    await navigate(`/view/${id}`)
-  }
-
-  onMounted(()=> {
-    getMinute()
-  })
-  </script>
+</script>

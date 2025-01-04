@@ -23,7 +23,7 @@
             </TabsTrigger>
           </TabsList>
           <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" class="space-y-4">
-            <component :is="tab.component"/>
+            <component :is="tab.component" :documents :kpis/>
           </TabsContent>
         </Tabs>
       </div>
@@ -44,6 +44,8 @@ import Documents from '../Home/Documents.vue'
 import KPIs from '../Home/KPIs.vue'
 import RightSidebar from './RightSidebar.vue'
 import OrdinaryService from "@/services/OrdinaryService.ts";
+
+const {documents, kpis} = defineProps<{ documents: any[], kpis: any[] }>()
 
 const activeTab = ref('overview')
 const updatedData = ref([])
@@ -94,15 +96,15 @@ async function getMinute() {
   let temp = 0
   try {
     const valor = await service.getMinutesByCurrentMonth()
-    temp = valor.length()
+    temp = valor.length
     console.log(valor);
-    infoCurrentMonth.total = temp
-  }
-  catch (e) {
+    // infoCurrentMonth.total = temp
+  } catch (e) {
     console.error(e)
   }
 }
-onMounted(()=>{
+
+onMounted(() => {
   getMinute()
 })
 </script>

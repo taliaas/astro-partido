@@ -2,12 +2,64 @@
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import {isAuthenticated} from "../lib/auth";
+import OrdinaryService from "../services/OrdinaryService";
+import Computo from "../services/Computo";
+import {ref} from "vue";
 
 if (!await isAuthenticated(Astro.callAction)) {
     return Astro.redirect("/login")
 }
+
+async function getMinute() {
+    const service = new OrdinaryService()
+    try {
+        return service.getLatestMinute()
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+const data = [
+    {
+        id: 1,
+        title: 'Acuerdos',
+        name: 'acuerdos',
+        description: 'Comportamiento de acuerdos en el último mes',
+        porcen: 2,
+        trend: 0
+    },
+    {
+        id: 2,
+        title: 'Participantes',
+        name: 'participantes',
+        description: 'Asistencia de participantes',
+        porcen: 3,
+        trend: 0
+    },
+    {id: 3, title: 'Invitados', name: 'invitados', description: 'Asistencia de invitados', porcen: 4, trend: 0}
+]
+
+async function getKPIs() {
+    const services = new Computo()
+    try {
+        const kpis = await services.getCompare();
+        return data.map(item => {
+            const kpiValue = kpis.difference[item.name];
+            if (kpiValue !== undefined) {
+                return {...item, trend: kpiValue};
+            }
+            return item;
+        });
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+const documents = await getMinute()
+const kpis = await getKPIs();
+console.log(documents)
 ---
 
 <RootLayout>
-    <DashboardHome client:load/>
+    <DashboardHome client:load documents={documents} kpis={kpis}/>
 </RootLayout>
