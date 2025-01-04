@@ -26,10 +26,10 @@
       </div>
 
       <!-- Action Buttons -->
-      <a href="notification" class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
+      <a href="/notification" class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
         <BellIcon class="h-5 w-5 text-muted-foreground dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
       </a>
-      <a href="chat" class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
+      <a href="/chat" class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full">
         <MessageSquareIcon class="h-5 w-5 text-muted-foreground dark:text-gray-400 dark:hover:text-white" />
       </a>
 

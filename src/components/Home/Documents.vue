@@ -17,7 +17,7 @@
             <h3 class="font-semibold mb-2"> Acta Ordinaria {{ doc.id }}</h3>
             <p class="text-sm text-muted-foreground mb-2">{{ doc.fecha }}</p>
             <div class="flex space-x-2">
-              <Button variant="outline" @click="openMinute" class="rounded border-gray-300 shadow-md" size="sm">Ver Detalles</Button>
+              <Button variant="outline" @click="openMinute(doc.id)" class="rounded border-gray-300 shadow-md" size="sm">Ver Detalles</Button>
               <Button variant="outline" class="rounded border-gray-300 shadow-md" size="sm">Descargar</Button>
             </div>
           </div>
@@ -33,6 +33,7 @@
   import {Search} from 'lucide-vue-next'
   import OrdinaryService from "@/services/OrdinaryService.ts";
   import {onMounted, ref } from "vue";
+  import {navigate} from "astro:transitions/client";
 
   const documents = ref([])
 
@@ -46,11 +47,11 @@
     }
   }
 
-  async function openMinute(){
-    
+  async function openMinute(id: string){
+    await navigate(`/view/${id}`)
   }
 
-  onMounted(
-      getMinute
-  )
+  onMounted(()=> {
+    getMinute()
+  })
   </script>

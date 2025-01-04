@@ -106,32 +106,6 @@
           </div>
         </div>
 
-        <!-- Notes Section -->
-        <div class="bg-white rounded-lg shadow-md p-6 dark:bg-zinc-800 dark:border dark:border-gray-400">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-white ">Análisis de Injustificados</h3>
-            <button @click="isNotesOpen = !isNotesOpen"
-                    class="rounded-full hover:bg-gray-100 p-1 text-gray-400 hover:text-gray-500">
-              <ChevronDownIcon v-if="!isNotesOpen" class="w-5 h-5"/>
-              <ChevronUpIcon v-else class="w-5 h-5"/>
-            </button>
-          </div>
-
-          <div v-show="isNotesOpen" class="space-y-4 ">
-            <div class="space-y-4 max-h-[60vh] overflow-y-auto">
-              <div v-if="Object.keys(notes).length === 0">
-                <p>No hay notas</p>
-              </div>
-              <div v-else v-for="note in notes" :key="note.id" class="p-4 rounded bg-blue-100 dark:bg-blue-800">
-                <div class="flex justify-between items-start">
-                  <span class="font-medium">{{ note.area }}</span>
-                  <span class="text-sm text-gray-500 dark:text-gray-300">{{ note.date }}</span>
-                </div>
-                <p class="mt-2 text-gray-700 dark:text-gray-200">{{ note.text }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <Card class="my-8 w-1/2">
@@ -172,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import {ChevronDownIcon, ChevronUpIcon, MoreVerticalIcon, DownloadIcon, Eye} from 'lucide-vue-next'
 import {Button} from '../ui/button';
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from '../ui/dropdown-menu'
@@ -182,7 +156,6 @@ import type {AttendanceResponse} from "@/interface/Absent.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
 const isChartOpen = ref(false);
-const isNotesOpen = ref(true);
 const showAbsenceReasons = ref(false);
 const fecha = ref("2024-02");
 const reasonAbsent = ref('');
@@ -196,7 +169,8 @@ const tableHeaders = [
   'Total',
   'Presentes',
   'Ausentes',
-  'Porciento'
+  'Porciento',
+  'Acciones'
 ]
 
 const tableData = ref<AttendanceResponse>({attendances: [], reasons: undefined})
@@ -228,6 +202,9 @@ async function handleAct(reason: any){
   reasonAbsent.value = reason
 }
 
+onMounted(()=>{
+  getAttendance()
+})
 watch(() => fecha.value, (newValue, oldValue) => {
   console.log(oldValue)
   if (newValue !== oldValue) {

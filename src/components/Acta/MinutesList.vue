@@ -50,10 +50,18 @@
                   Exportar
                 </Button>
               </div>
-              <Button @click="showOption = true" class="bg-blue-600 hover:bg-blue-700">
-                <PlusIcon class="h-4 w-4 mr-2" />
-                Nueva acta
-              </Button>
+             <div class="flex gap-3">
+               <div class="flex relative">
+                 <a href="/addRO"
+                    class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700">
+                   <PlusIcon class="h-4 w-4 mr-2" />
+                   Ordinaria</a>
+               </div>
+               <a href="/addCP"
+                  class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700">
+                 <PlusIcon class="h-4 w-4 mr-2" />
+                 C. Político</a>
+             </div>
             </div>
           </div>
 
@@ -225,31 +233,7 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    <div
-        v-if="showOption"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-    >
-      <div class="bg-white rounded p-6 w-full max-w-md">
-        <div class="relative flex items-center justify-end">
-        <button
-            @click="handleSesion">
-          <XIcon class="h-4 w-4 mr-2" />
-        </button>
-        </div>
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Seleccione el tipo de acta</h3>
-        </div>
-          <div class="py-2 my-2">
-            <a href="/addRO"
-               class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-            >Acta Ordinaria</a
-            >
-            <a href="/addCP"
-               class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-            >Acta de Circulo Politico</a>
-          </div>
-      </div>
-    </div>
+
     <div
         v-if="showDelete"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
@@ -338,18 +322,7 @@ const filters = ref({
 })
 
 const actas = ref([])
-
-const filteredData = computed(() => {
-  return actas.value.filter(acta => {
-    const matchesSearch = !filters.value.search ||
-        acta.name.toLowerCase().includes(filters.value.search.toLowerCase())
-    const matchesNucleo = !filters.value.nucleo ||
-        acta.nucleo === filters.value.nucleo
-    const matchesStatus = !filters.value.status ||
-        acta.status === filters.value.status
-    return matchesSearch && matchesNucleo && matchesStatus
-  })
-})
+const menssage = ref('')
 
 const handleSesion = () => {
   showOption.value = false;
@@ -406,16 +379,24 @@ async function getActas(tipo: string) {
   }
 }
 
-watch(() => currentTab, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    console.log(currentTab)
-    getActas(newValue)
-  }
-})
+async function eliminarActa(tipo: string, id: string){
+  const ro = new OrdinaryService()
+  const cp = new PoliticalService()
 
-onMounted(() => {
-  getActas('all')
-})
+  try{
+    if(tipo === 'ro'){
+      await ro.deleteMinute(id)
+      menssage.value = 'Se eliminó correctamente el acta'
+    }
+    else if(tipo === 'cp'){
+      await cp.deleteMinute(id)
+      menssage.value = 'Se eliminó correctamente el acta'
+    }
+  }
+  catch (e) {
+    console.error(e)
+  }
+}
 //cargar acta
 const handleDrop = (event) => {
   isDragging.value = false
@@ -433,4 +414,15 @@ const uploadFiles = () => {
   showUploadDialog.value = false
   uploadedFiles.value = []
 }
+
+watch(() => currentTab, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    console.log(currentTab)
+    getActas(newValue)
+  }
+})
+
+onMounted(() => {
+  getActas('all')
+})
 </script>

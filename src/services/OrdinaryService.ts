@@ -1,4 +1,5 @@
 import type Minute from "@/interface/MinuteOrdinary";
+const API_URL = 'https://part-back.onrender.com/minutes-ordinary/'
 
 export default class OrdinaryService {
 
@@ -21,7 +22,7 @@ export default class OrdinaryService {
     }
     async getMinute(id: string) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/${id}`, {
+            const response = await fetch(`${API_URL}/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,9 +86,28 @@ export default class OrdinaryService {
         }
     }
 
+    //obtener las actas recientes
     async getLatestMinute(){
         try {
-            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/latest`, {
+            const response = await fetch(`${API_URL}/latest`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async getMinutesByCurrentMonth(){
+        console.log('Entro')
+        try {
+            const response = await fetch(`${API_URL}/byMonth`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

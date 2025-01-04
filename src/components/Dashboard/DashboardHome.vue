@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 import {Activity, FileCheck2, Files, FileText} from 'lucide-vue-next'
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
@@ -43,8 +43,10 @@ import Overview from '../Home/Overview.vue'
 import Documents from '../Home/Documents.vue'
 import KPIs from '../Home/KPIs.vue'
 import RightSidebar from './RightSidebar.vue'
+import OrdinaryService from "@/services/OrdinaryService.ts";
 
 const activeTab = ref('overview')
+const updatedData = ref([])
 
 const tabs = [
   {value: 'overview', label: 'Vista General', component: Overview},
@@ -78,5 +80,31 @@ const cards = [
     icon: Activity
   },
 ]
+
+//informacion de las card
+interface infoCurrentMonth {
+  pendientes: number,
+  procesados: number,
+  total: number,
+  kpis: number
+}
+
+async function getMinute() {
+  const service = new OrdinaryService()
+  let temp = 0
+  try {
+    const valor = await service.getMinutesByCurrentMonth()
+    temp = valor.length()
+    console.log(valor);
+    infoCurrentMonth.total = temp
+
+  }
+  catch (e) {
+    console.error(e)
+  }
+}
+onMounted(()=>{
+  getMinute()
+})
 </script>
 

@@ -26,20 +26,10 @@
 
       <!-- Controls -->
       <div class="flex justify-between items-center">
-        <div class="flex-1 relative">
-              <SearchIcon
-                class="h-5 w-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2"
-              />
-              <input
-                type="text"
-                placeholder="Buscar ..."
-                class="w-1/2 bg-muted pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
         <!-- Filter by Núcleo -->
         <select
           v-model="selectedNucleo"
-          class="rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="rounded-lg p-2 border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Todos los Núcleos</option>
           <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
@@ -111,10 +101,10 @@
 <script setup lang="ts">
 import ComputoService from '@/services/Computo';
 import {DownloadIcon, SearchIcon} from 'lucide-vue-next';
-import {computed, watch, ref} from 'vue';
-import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {computed, watch, ref, onMounted} from 'vue';
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
-const selectedMonth = ref('')
+const selectedMonth = ref('2024-02')
 const selectedNucleo = ref('')
 
 const headers = [
@@ -154,6 +144,9 @@ async function obtenerComputo() {
   }
 }
 
+onMounted(()=>{
+  obtenerComputo()
+})
 watch(() => selectedMonth.value, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     obtenerComputo();
