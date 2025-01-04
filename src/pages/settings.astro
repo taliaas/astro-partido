@@ -1,8 +1,22 @@
 ---
 import SettingsUser from "../components/Otros/SettingsUser.vue"
 import RootLayout from "../layouts/RootLayout.astro";
+import UserService from "../services/UserService";
+
+async function obtenerUsuarios() {
+    const service = new UserService();
+    try {
+        const user = await service.getAllUser();
+        console.log("User:", user);
+        return user;
+    } catch (error) {
+        console.log("error");
+    }
+}
+
+const users = await obtenerUsuarios()
 ---
 
 <RootLayout>
-    <SettingsUser client:load />
+    <SettingsUser users={users} client:load/>
 </RootLayout>
