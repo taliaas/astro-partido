@@ -275,7 +275,7 @@ import {navigate} from "astro:transitions/client";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import PoliticalService from "@/services/PoliticalService.ts";
 
-const { actas, type} = defineProps<{ actas: any[], type: string }>()
+const {actas, type} = defineProps<{ actas: any[], type: string }>()
 
 const currentTab = ref(type)
 const showUploadDialog = ref(false)
@@ -333,7 +333,7 @@ const getStatusClass = (status) => {
 }
 
 const handleAction = (action, acta) => {
-  currentsMinute.value = acta.id
+  currentsMinute.value = acta
   if (action === 'ver') {
     navigate(`/view/${acta.id}`)
   } else if (action === 'editar') {
@@ -348,7 +348,8 @@ const handleDelete = () => {
 
 async function eliminarActa() {
 
-  const id = currentsMinute.value?.id
+  const acta = currentsMinute.value
+  const id = acta.id
   const tipo = acta.type
 
   const ro = new OrdinaryService()
