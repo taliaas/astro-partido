@@ -1,8 +1,22 @@
 ---
+import AuthService from "../services/AuthService";
 import PerfilContainer from "@/components/access/Perfil.vue";
 import RootLayout from "../layouts/RootLayout.astro";
+
+async function getUser() {
+    const service = new AuthService();
+    try {
+        const user = await service.profile()
+        console.log(user)
+        return user;
+    } catch (error) {
+        console.log("error");
+    }
+}
+
+const user = await getUser()
 ---
 
 <RootLayout>
-    <PerfilContainer client:load />
+    <PerfilContainer client:load user={user}/>
 </RootLayout>

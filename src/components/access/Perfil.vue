@@ -8,13 +8,13 @@
         <div
           class="h-24 w-24 rounded-full bg-blue-700 flex items-center justify-center ring-4 ring-blue-600"
         >
-        <UserIcon class="h-12 w-12 text-white" />
+          <UserIcon class="h-12 w-12 text-white" />
         </div>
         <div>
-          <h1 class="text-3xl font-bold">{{ data.name }}</h1>
+          <h1 class="text-3xl font-bold">{{ $props.user.name }}</h1>
           <div class="flex items-center gap-2 mt-2 text-gray-300">
             <ShieldCheckIcon class="h-4 w-4" />
-            <span class="text-lg">{{ data.rol || "Militante" }}</span>
+            <span class="text-lg">{{ $props.user.rol || "Militante" }}</span>
           </div>
         </div>
       </div>
@@ -29,9 +29,11 @@
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <!-- First Name -->
               <div>
-                <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Nombre</label
+                >
                 <Input
-                  v-model="data.name"
+                  v-model="$props.user.name"
                   type="text"
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -39,9 +41,11 @@
 
               <!-- Email -->
               <div>
-                <label class="block text-sm font-medium text-gray-700">Correo</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Correo</label
+                >
                 <Input
-                  v-model="data.email"
+                  v-model="$props.user.email"
                   type="email"
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -49,26 +53,30 @@
 
               <!-- Nucleo -->
               <div>
-                <label class="block text-sm font-medium text-gray-700">Núcleo</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Núcleo</label
+                >
                 <Input
-                  v-model="data.nucleo"
+                  v-model="$props.user.nucleo"
                   type="text"
                   readonly
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm bg-gray-50"
                 />
               </div>
               <!-- Role (Read-only) -->
-               <div>
-                <label class="block text-sm font-medium text-gray-700">Role</label>
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Role</label
+                >
                 <Input
-                  v-model="data.rol"
+                  v-model="$props.user.rol"
                   type="text"
                   readonly
                   class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"
                 />
               </div>
             </div>
-            
+
             <div class="space-y-2">
               <label for="biografia" class="text-sm font-medium text-gray-700">
                 Biografía
@@ -111,7 +119,9 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
     >
       <div class="bg-white rounded p-6 w-full max-w-md">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Cambiar contraseña</h3>
+        <h3 class="text-lg font-medium text-gray-900 mb-4">
+          Cambiar contraseña
+        </h3>
         <form @submit.prevent="handlePasswordChange" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700"
@@ -171,24 +181,14 @@ import Input from "../ui/input/Input.vue";
 import AuthService from "src/services/AuthService.ts";
 import UserService from "src/services/UserService.ts";
 
+defineProps<{ user: any }>();
+
 const showPasswordModal = ref(false);
-const biografia = ref('')
+const biografia = ref("");
 
 const openChangePasswordModal = () => {
   showPasswordModal.value = true;
 };
-
-const userData = (email: string) => {
-  const service = new UserService();
-  try {
-    const user = service.getUserByEmail(email);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-//GetUser
-const data = ref([]);
 
 // Form data
 const formData = reactive({
@@ -201,22 +201,6 @@ const passwordForm = reactive({
   current: "",
   new: "",
   confirm: "",
-});
-
-async function getUser() {
-  const service = new AuthService();
-  try {
-    const user = await service.profile()
-    console.log(user)
-    data.value = user;
-    console.log(data)
-  } catch (error) {
-    console.log("error");
-  }
-}
-
-onMounted(() => {
-  getUser();
 });
 
 const handleSubmit = () => {
@@ -238,9 +222,13 @@ const handlePasswordChange = () => {
   }
   // Handle password change logic here
   const service = new AuthService();
-  const id = "2"//user.id;
+  const id = "2"; //user.id;
   try {
-    const response = service.updatePassword(id, passwordForm.new, passwordForm.confirm);
+    const response = service.updatePassword(
+      id,
+      passwordForm.new,
+      passwordForm.confirm,
+    );
     alert("Password updated successfully!");
     showPasswordModal.value = false;
     passwordForm.current = "";
