@@ -20,6 +20,7 @@
     <Input
         type="text"
         id="secretario"
+        name="secretario"
         v-model="formData.secretario"
         required
         class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
