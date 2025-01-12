@@ -84,8 +84,6 @@ import OrdinaryService from "@/services/OrdinaryService.ts";
 
 const currentStep = ref(1);
 
-const { cores } = defineProps<{ cores: any[] }>()
-
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
 };

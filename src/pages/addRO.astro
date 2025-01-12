@@ -19,8 +19,8 @@ const cores = await getCore();
 ---
 
 <RootLayout>
-  <MinutesOrdinary cores={cores} client:load>
-    <FirstStep slot="first-step" client:load />
+  <MinutesOrdinary client:load>
+    <FirstStep cores={cores} slot="first-step" client:load />
     <SecondStep slot="second-step" client:load />
     <ThirdStep slot="third-step" client:load />
   </MinutesOrdinary>

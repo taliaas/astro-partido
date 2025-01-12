@@ -6,8 +6,8 @@
         v-model="selectedNucleo"
         class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
       >
-        <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
-          {{ nucleo }}
+        <option v-for="nucleo in cores" :key="nucleo" :value="nucleo">
+          {{ nucleo?.name }}
         </option>
       </select>
     </div>
@@ -176,6 +176,7 @@ import {PlusIcon, SearchIcon, TrashIcon} from "lucide-vue-next";
 import {Button} from "@/components/ui/button";
 
 const selectedNucleo = ref("");
+const { cores } = defineProps<{ cores: any[] }>()
 
 const formData = reactive({
   fecha: "",
@@ -213,10 +214,6 @@ const absenceReasons = ref([
   { id: 12, label: "Otros" },
 ]);
 
-const nucleos = [
-    "Industrial",
-    "Automatica"
-]
 const militantes = async() => {
   const service = new MilitantesServices()
 
