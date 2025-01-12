@@ -1,8 +1,21 @@
 ---
+import CoreService from "../services/CoreService";
 import RootLayout from "../layouts/RootLayout.astro";
 import MinutesOrdinary from "@/components/Ordinary/MinutesOrdinary.vue";
+
+async function getCore(){
+    const service = new CoreService()
+    try{
+        return await service.getAllCore()
+    }
+    catch (e) {
+        console.error(e)
+    }
+}
+
+const cores = await getCore()
 ---
 
 <RootLayout >
-    <MinutesOrdinary client:load />
+    <MinutesOrdinary cores={cores} client:load />
 </RootLayout>

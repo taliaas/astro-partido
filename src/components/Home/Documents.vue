@@ -7,7 +7,7 @@
       <CardContent>
         <div class="space-y-4">
           <div class="flex items-center">
-            <Input type="search" placeholder="Buscar documentos..." class="max-w-sm mr-2 rounded border-gray-300" />
+            <Input type="search" placeholder="Buscar documentos..." class="max-w-sm mr-2 rounded-md border-gray-300" />
             <Button variant="secondary" class="rounded border-gray-300 bg-blue-600 text-white shadow-md hover:bg-blue-700">
               <Search class="h-4 w-4 mr-2" />
               Buscar
@@ -32,11 +32,20 @@
   import {Input} from "@/components/ui/input"
   import {Search} from 'lucide-vue-next'
   import {navigate} from "astro:transitions/client";
+  import {computed} from "vue";
+  import {ref} from "vue";
 
 const {documents} = defineProps<{ documents: any[] }>()
+  const filters = ref('')
+
+  const filteredActas = computed(() => {
+    return actas.filter(item => {
+      if (filters.value && item.core.name !== filters.value) return false
+      return true
+    })
+  })
 
 async function openMinute(id: string) {
   await navigate(`/view/${id}`)
 }
-
 </script>

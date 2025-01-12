@@ -211,6 +211,13 @@
           <p class="mt-1 text-xs text-gray-500">
             PDF, hasta 10MB por archivo
           </p>
+          <div class="m-2 border-t mt-4">
+            <ul class="space-y-4 mt-3">
+              <li v-for="(files,index) in uploadedFiles" :key="index" >
+                <p class="text-muted-foreground">{{ files.name }}</p>
+              </li>
+            </ul>
+          </div>
           <input
               ref="fileInput"
               type="file"
@@ -222,10 +229,10 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="showUploadDialog = false">
+          <Button type="reset" variant="outline" @click="showUploadDialog = false">
             Cancelar
           </Button>
-          <Button @click="uploadFiles" :disabled="!uploadedFiles.length">
+          <Button @click="uploadFiles" :disabled="!uploadedFiles.length" class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
             Cargar archivos
           </Button>
         </DialogFooter>
@@ -385,6 +392,11 @@ async function getActa(id: string){
   }
 }
 
+function handleTab(tab) {
+  currentTab.value = tab.id
+  navigate(`/minutes/?type=${tab.id}`, {history: "replace"})
+}
+
 //exportar acta
 async function exportarPDF(id: any){
     const acta  = await getActa(id);
@@ -422,12 +434,9 @@ const handleFileSelect = (event) => {
 
 const uploadFiles = () => {
   console.log('Uploading files:', uploadedFiles.value)
+  //llamar al service
   showUploadDialog.value = false
   uploadedFiles.value = []
 }
 
-function handleTab(tab) {
-  currentTab.value = tab.id
-  navigate(`/minutes/?type=${tab.id}`, {history: "replace"})
-}
 </script>
