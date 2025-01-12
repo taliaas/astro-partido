@@ -116,7 +116,7 @@
     </div>
   </div>
   <!-- 4. Relación de Asistencia -->
-  <div class="overflow-x-auto">
+  <div class="overflow-x-auto mt-4">
     <label class="block mb-3 text-md font-medium text-gray-700">Relación de Militantes del Núcleo</label>
     <table class="min-w-full divide-y rounded divide-gray-200 border border-gray-300">
       <thead class="bg-gray-100 ">
@@ -129,11 +129,13 @@
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr v-for="(militante, index) in militantes" :key="index">
-          <td class="px-6 py-4 whitespace-nowrap">{{ militante.nombre }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ militante.firstname }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ militante.lastname }}</td>
           <td class="px-6 py-4 whitespace-nowrap">
             <select
-              v-model="asistente.estado"
-              class="px-4 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              v-model="estado"
+              class="px-2 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="presente">Presente</option>
               <option value="virtual">Virtual</option>
@@ -176,7 +178,7 @@ import {PlusIcon, SearchIcon, TrashIcon} from "lucide-vue-next";
 import {Button} from "@/components/ui/button";
 
 const selectedNucleo = ref("");
-const { cores } = defineProps<{ cores: any[] }>()
+const { cores, militantes } = defineProps<{ cores: any[], militantes: any[] }>()
 
 const formData = reactive({
   fecha: "",
@@ -186,7 +188,7 @@ const formData = reactive({
   secretario: ""
 });
 const person = ref([{ nombre: "", cargo: ""}]);
-
+const estado = ref("presente")
 const cargos = [
     'Miembro del secretariado',
     'Secretario General',
@@ -196,7 +198,8 @@ const addPerson = () => {
 }
 const headers = [
   "No.",
-  "Nombre Completo",
+  "Nombre",
+  "Apellidos",
   "Estado",
   "Causa",
 ]
@@ -214,14 +217,4 @@ const absenceReasons = ref([
   { id: 12, label: "Otros" },
 ]);
 
-const militantes = async() => {
-  const service = new MilitantesServices()
-
-  try{
-    return await service.getAll()
-  }
-  catch (e) {
-    console.error(e)
-  }
-}
 </script>
