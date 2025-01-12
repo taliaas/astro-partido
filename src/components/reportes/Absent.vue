@@ -10,7 +10,7 @@
               <input type="month" class="text-sm focus:outline-none text-gray-900"
                      v-model="fecha"/>
             </div>
-            <button
+            <button @click="exportar"
                 class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-sm text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
               <DownloadIcon class="w-4 h-4 mr-2"/>
               Exportar
@@ -19,7 +19,7 @@
         </div>
 
         <!-- Table -->
-        <div class=" shadow-md rounded-md">
+        <div ref="infoAsis" class="shadow-md rounded-md">
           <table class="min-w-full divide-y divide-gray-200 border">
             <thead class="bg-gray-50">
             <tr>
@@ -154,6 +154,8 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from '../ui/dialog';
 import AbsentService from "@/services/AbsentService.ts";
 import type {AttendanceResponse} from "@/interface/Absent.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import html2canvas from "html2canvas";
+import {jsPDF} from "jspdf";
 
 const isChartOpen = ref(false);
 const showAbsenceReasons = ref(false);
@@ -205,10 +207,36 @@ async function handleAct(reason: any){
 onMounted(()=>{
   getAttendance()
 })
+
 watch(() => fecha.value, (newValue, oldValue) => {
   console.log(oldValue)
   if (newValue !== oldValue) {
     getAttendance();
   }
 })
+
+const infoAsis = ref("");
+
+//mejorar EXPORTAR
+const exportar = async () => {
+  try {
+    console.log(infoAsis.value.body)
+    if(!infoAsis.value.body ){
+      return null
+    }
+    const canvas = await html2canvas(infoAsis.value)
+    const imgData = canvas.toDataURL('image/png')
+
+    const pdf = new jsPDF("l", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.text("ASISTENCIA PARA EL CONTROL DE LAS ACTAS", 14, 15);
+    pdf.addImage(imgData, 'PNG', 10, 30, pdfWidth - 20, pdfHeight - 20)
+
+    pdf.save(`Asistencia-${fecha.value}.pdf`);
+  } catch (error) {
+    console.error("Error exporting PDF:", error);
+  }
+};
 </script>

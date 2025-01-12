@@ -175,13 +175,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive } from "vue";
 import { UserIcon, LockIcon, SaveIcon, ShieldCheckIcon } from "lucide-vue-next";
 import Input from "../ui/input/Input.vue";
 import AuthService from "src/services/AuthService.ts";
 import UserService from "src/services/UserService.ts";
 
-defineProps<{ user: any }>();
+const { user: data } = defineProps<{ user: any }>();
 
 const showPasswordModal = ref(false);
 const biografia = ref("");

@@ -1,14 +1,26 @@
 ---
+import OrdinaryService from "../../services/OrdinaryService";
 import RootLayout from "../../layouts/RootLayout.astro";
 import Display from "../../components/Ordinary/ActaDisplay.vue";
 
-const { id } = Astro.params;
+const {id} = Astro.params;
 
 if (!id) {
-  throw new Error("No id provided");
+    throw new Error("No id provided");
 }
+
+async function getActa() {
+    const services = new OrdinaryService()
+    try {
+        return services.getMinute(id!)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+const acta = await getActa()
 ---
 
 <RootLayout>
-  <Display id={id} client:load />
+    <Display client:load acta={acta}/>
 </RootLayout>

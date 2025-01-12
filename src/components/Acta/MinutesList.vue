@@ -46,9 +46,7 @@
                 <Button variant="outline" @click="showUploadDialog = true">
                   Cargar acta
                 </Button>
-                <Button variant="outline">
-                  Exportar
-                </Button>
+
               </div>
               <div class="flex gap-3">
                 <a href="/addRO"
@@ -111,7 +109,6 @@
                              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ header }}
                   </TableHead>
-
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -278,6 +275,7 @@ import {Input} from '../ui/input'
 import {navigate} from "astro:transitions/client";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import PoliticalService from "@/services/PoliticalService.ts";
+import html2pdf from 'html2canvas';
 
 const {actas, type} = defineProps<{ actas: any[], type: string }>()
 
@@ -344,6 +342,9 @@ const handleAction = (action, acta) => {
   else if (action === 'editar') {
     navigate(`/edit/${acta.id}`)
   }
+  else if(action === 'export'){
+    exportarPDF(acta.id)
+  }
   else if (action === 'eliminar') {
     showDelete.value = true
   }
@@ -374,8 +375,38 @@ async function eliminarActa() {
   }
 }
 
-//exportar acta
+async function getActa(id: string){
+  const services = new OrdinaryService()
+  try {
+    return await services.getMinute(id)
+  }
+  catch (error){
+    console.log(error)
+  }
+}
 
+//exportar acta
+async function exportarPDF(id: any){
+    const acta  = await getActa(id);
+  if (!acta) {
+    console.error("No se pudo obtener el acta.");
+    return;
+  }
+  console.log(acta)
+  // Crear un contenedor temporal en el DOM para renderizar el contenido como HTML
+  const elemento = contenidoPDF.value;
+
+    const opciones = {
+      margin: 10,
+      filename: "Acta.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    };
+
+    // Generar PDF
+    html2pdf().set(opciones).from(elemento).save();
+}
 
 //cargar acta
 const handleDrop = (event) => {

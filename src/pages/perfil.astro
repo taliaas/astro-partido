@@ -3,12 +3,13 @@ import AuthService from "../services/AuthService";
 import PerfilContainer from "@/components/access/Perfil.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 
+const token = Astro.cookies.get("access_token")?.value
+
 async function getUser() {
     const service = new AuthService();
     try {
-        const user = await service.profile()
-        console.log(user)
-        return user;
+        return service.profile(token)
+
     } catch (error) {
         console.log("error");
     }

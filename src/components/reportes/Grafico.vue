@@ -150,7 +150,6 @@ const fetchData = async () => {
   }
 }
 
-
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
