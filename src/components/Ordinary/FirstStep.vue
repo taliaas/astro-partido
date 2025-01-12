@@ -26,7 +26,7 @@
         class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
     />
   </div>
-
+  <!-- 3. Invitados -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div class="w-3/4">
        <label for="fecha" class="block text-md font-medium text-gray-700"
@@ -176,14 +176,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import {onMounted, ref, watch} from "vue";
 import { reactive } from "vue";
 import Input from "../ui/input/Input.vue";
 import {PlusIcon, SearchIcon, TrashIcon} from "lucide-vue-next";
 import {Button} from "@/components/ui/button";
+import MilitanteService from "@/services/MilitanteService.ts";
 
 const selectedNucleo = ref("");
-const { cores, militantes } = defineProps<{ cores: any[], militantes: any[] }>()
+const { cores } = defineProps<{ cores: any[] }>()
 
 const formData = reactive({
   fecha: "",
@@ -198,9 +199,25 @@ const cargos = [
     'Miembro del secretariado',
     'Secretario General',
 ]
+const militantes = ref([])
+
+async function getMilitantes(){
+  console.log(selectedNucleo.value)
+  const service = new MilitanteService()
+  try {
+    const core = selectedNucleo.value
+     militantes.value = await service.getMilitantesByCore(core.id);
+     console.log(militantes.value, core)
+  }
+  catch (e) {
+    console.error(e)
+  }
+}
+
 const addPerson = () => {
   person.value.push({ nombre: "", cargo: "" });
 }
+
 const headers = [
   "No.",
   "Nombre",
@@ -222,4 +239,11 @@ const absenceReasons = ref([
   { id: 12, label: "Otros" },
 ]);
 
+watch([selectedNucleo.value],()=> {
+  getMilitantes()
+})
+
+onMounted(() => {
+  getMilitantes()
+})
 </script>

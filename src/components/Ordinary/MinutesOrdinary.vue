@@ -4,8 +4,8 @@
       <h1 class="text-3xl font-bold text-gray-800 mb-2">Acta Ordinaria</h1>
     </div>
 
-    <div class="max-w-7xl mx-auto rounded overflow-hidden">
-      <div class="relative p-2">
+    <div class="max-w-7xl mx-auto rounded overflow-hidden p-2">
+      <div class="relative">
         <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2" />
 
         <!-- Active Progress Bar -->

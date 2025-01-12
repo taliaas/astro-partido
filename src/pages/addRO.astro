@@ -15,22 +15,12 @@ async function getCore() {
     console.error(e);
   }
 }
-async function getMilitantes(){
-  const service = new MilitanteService()
-  try {
-    return await service.getAll();
-  }
-  catch (e) {
-    console.error(e)
-  }
-}
 const cores = await getCore();
-const militantes = await getMilitantes();
 ---
 
 <RootLayout>
   <MinutesOrdinary client:load>
-    <FirstStep cores={cores} militantes={militantes} slot="first-step" client:load />
+    <FirstStep cores={cores} slot="first-step" client:load />
     <SecondStep slot="second-step" client:load />
     <ThirdStep slot="third-step" client:load />
   </MinutesOrdinary>
