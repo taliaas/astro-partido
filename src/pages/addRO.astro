@@ -2,20 +2,26 @@
 import CoreService from "../services/CoreService";
 import RootLayout from "../layouts/RootLayout.astro";
 import MinutesOrdinary from "@/components/Ordinary/MinutesOrdinary.vue";
+import FirstStep from "src/components/Ordinary/FirstStep.vue";
+import SecondStep from "src/components/Ordinary/SecondStep.vue";
+import ThirdStep from "src/components/Ordinary/ThirdStep.vue";
 
-async function getCore(){
-    const service = new CoreService()
-    try{
-        return await service.getAllCore()
-    }
-    catch (e) {
-        console.error(e)
-    }
+async function getCore() {
+  const service = new CoreService();
+  try {
+    return await service.getAllCore();
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-const cores = await getCore()
+const cores = await getCore();
 ---
 
-<RootLayout >
-    <MinutesOrdinary cores={cores} client:load />
+<RootLayout>
+  <MinutesOrdinary cores={cores} client:load>
+    <FirstStep slot="first-step" client:load />
+    <SecondStep slot="second-step" client:load />
+    <ThirdStep slot="third-step" client:load />
+  </MinutesOrdinary>
 </RootLayout>

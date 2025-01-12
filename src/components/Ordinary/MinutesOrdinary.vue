@@ -1,8 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <div
-      class="mb-8 text-center transform transition-all duration-500 hover:scale-102"
-    >
+    <div class="mb-8 text-center transform transition-all duration-500 hover:scale-102">
       <h1 class="text-3xl font-bold text-gray-800 mb-2">Acta Ordinaria</h1>
     </div>
 
@@ -11,47 +9,27 @@
         <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2" />
 
         <!-- Active Progress Bar -->
-        <div
-            class="absolute top-1/2 left-0 h-1 bg-blue-600 transition-all duration-500 ease-in-out -translate-y-1/2"
-            :style="{ width: `${progress}%` }"
-        />
+        <div class="absolute top-1/2 left-0 h-1 bg-blue-600 transition-all duration-500 ease-in-out -translate-y-1/2"
+          :style="{ width: `${progress}%` }" />
         <!-- Steps -->
         <div class="relative flex justify-between">
-          <div
-              v-for="step in 3"
-              :key="step"
-              class="flex flex-col items-center"
-          >
+          <div v-for="step in 3" :key="step" class="flex flex-col items-center">
             <!-- Step Circle -->
             <button
-                class="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 ease-in-out relative"
-                :class="[
+              class="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 ease-in-out relative"
+              :class="[
                 currentStep >= step
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-500',
                 'hover:scale-110 active:scale-95'
-              ]"
-                @click="currentStep = step"
-            >
-              <span>{{step}}</span>
+              ]" @click="currentStep = step">
+              <span>{{ step }}</span>
 
               <!-- Check mark for completed steps -->
-              <div
-                  v-if="currentStep > step"
-                  class="absolute inset-0 flex items-center justify-center bg-blue-600 rounded-full"
-              >
-                <svg
-                    class="w-5 h-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                  <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                  />
+              <div v-if="currentStep > step"
+                class="absolute inset-0 flex items-center justify-center bg-blue-600 rounded-full">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
             </button>
@@ -62,58 +40,51 @@
         <form @submit.prevent="submitForm" class="space-y-6">
           <!--  Información 1 -->
           <section v-show="currentStep === 1" class="space-y-4">
-            <FirstStep />
+            <slot name="first-step" />
+
           </section>
 
           <!--  Información 2 -->
           <section v-show="currentStep === 2" class="space-y-4">
-            <SecondStep />
+            <slot name="second-step" />
+
           </section>
           <!--  Información 3 -->
           <section v-show="currentStep === 3" class="space-y-4">
-            <ThirdStep />
+            <slot name="third-step" />
+
           </section>
 
           <!-- Botones de navegación -->
           <div class="flex justify-between mt-8">
-            <button
-                @click="prevStep"
-                :disabled="currentStep === 1"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50"
-            >
+            <button @click="prevStep" :disabled="currentStep === 1"
+              class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50">
 
               Anterior
             </button>
-            <button
-                v-if="currentStep < 3"
-                @click="nextStep"
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
+            <button v-if="currentStep < 3" @click="nextStep"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
               Siguiente
             </button>
-            <button
-                v-else
-                type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-            >
+            <button v-else type="submit"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
               Enviar
             </button>
           </div>
-        </form></div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import FirstStep from "src/components/Ordinary/FirstStep.vue";
-import SecondStep from "src/components/Ordinary/SecondStep.vue";
-import ThirdStep from "src/components/Ordinary/ThirdStep.vue";
+
 import { ref, computed } from "vue";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 
 const currentStep = ref(1);
 
-const {cores} = defineProps<{ cores: any[] }>()
+const { cores } = defineProps<{ cores: any[] }>()
 
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
