@@ -1,67 +1,36 @@
 <template>
   <!-- 2. Núcleo -->
   <div class="w-1/3">
-      <label for="nucleo" class="block text-md font-medium text-gray-700">Núcleo</label>
-      <select
-          name="nucleo"
-        v-model="selectedNucleo"
-        class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-      >
-        <option v-for="nucleo in cores" :key="nucleo" :value="nucleo">
-          {{ nucleo?.name }}
-        </option>
-      </select>
-    </div>
+    <label for="nucleo" class="block text-md font-medium text-gray-700">Núcleo</label>
+    <select name="nucleo" v-model="selectedNucleo"
+      class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+      <option v-for="nucleo in cores" :key="nucleo" :value="nucleo">
+        {{ nucleo?.name }}
+      </option>
+    </select>
+  </div>
   <!-- 2. Presidencia -->
   <div>
-    <label for="secretario" class="block text-md font-medium text-gray-700"
-    >Nombre del Secretario General</label
-    >
-    <Input
-        type="text"
-        id="secretario"
-        name="secretario"
-        v-model="formData.secretario"
-        required
-        class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-    />
+    <label for="secretario" class="block text-md font-medium text-gray-700">Nombre del Secretario General</label>
+    <Input type="text" id="secretario" name="secretario" v-model="formData.secretario" required
+      class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
   </div>
   <!-- 3. Invitados -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div class="w-3/4">
-       <label for="fecha" class="block text-md font-medium text-gray-700"
-        >Fecha de la reunión</label
-      >
-      <Input
-        type="date"
-        id="fecha"
-        name="fecha"
-        v-model="formData.fecha"
-        required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
+      <label for="fecha" class="block text-md font-medium text-gray-700">Fecha de la reunión</label>
+      <Input type="date" id="fecha" name="fecha" v-model="formData.fecha" required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
     </div>
     <div class="w-3/4">
       <label for="hora" class="block text-md font-medium text-gray-700">Hora</label>
-      <Input
-        type="time"
-        id="hora"
-        name="hora"
-        v-model="formData.hora"
-        required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
+      <Input type="time" id="hora" name="hora" v-model="formData.hora" required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
     </div>
     <div class="w-3/4">
-       <label for="lugar" class="block text-md font-medium text-gray-700">Lugar</label>
-      <Input
-        type="text"
-        id="lugar"
-        name="lugar"
-        v-model="formData.lugar"
-        required
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
+      <label for="lugar" class="block text-md font-medium text-gray-700">Lugar</label>
+      <Input type="text" id="lugar" name="lugar" v-model="formData.lugar" required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
     </div>
   </div>
 
@@ -69,52 +38,52 @@
     <div class="flex justify-between">
       <label class="block my-2 text-md font-medium text-gray-700">Invitados y Participantes</label>
       <Button @click="addPerson" variant="outline"
-              class="group inline-flex items-center m-3 justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
+        class="group inline-flex items-center m-3 justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
         <PlusIcon class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90" />
         Agregar
       </Button>
     </div>
     <table class="min-w-full divide-y rounded-md divide-gray-200 border border-gray-300">
       <thead class="bg-gray-100 rounded">
-      <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          No.
-        </th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Nombre
-        </th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Cargo
-        </th>
-        <th></th>
-      </tr>
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            No.
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Nombre
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Cargo
+          </th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
-      <tr v-for="(item, index) in person" :key="index" class="border-b">
-        <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
-        <td class="p-4 align-middle">
-          <input type="text" v-model="item.nombre" class="w-full px-2 bg-transparent focus:outline-none"
-                 placeholder="Nombre" name="name" />
-        </td>
-        <td class="p-4 align-middle">
-          <select type="text" v-model="item.cargo" class="w-3/5 px-2 bg-transparent focus:outline-none">
-            <option v-for="cargo in cargos" :key="cargo" :value="cargo">
-              {{ cargo }}
-            </option>
-          </select>
-        </td>
-        <td class="p-4 text-center align-middle">
-          <button @click="removeAgreement(index)" class="text-destructive  hover:text-destructive/90">
-            <TrashIcon class="h-4 w-4" />
-          </button>
-        </td>
-      </tr>
+        <tr v-for="(item, index) in person" :key="index" class="border-b">
+          <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
+          <td class="p-4 align-middle">
+            <input type="text" v-model="item.nombre" class="w-full px-2 bg-transparent focus:outline-none"
+              placeholder="Nombre" name="name" />
+          </td>
+          <td class="p-4 align-middle">
+            <select type="text" v-model="item.cargo" class="w-3/5 px-2 bg-transparent focus:outline-none">
+              <option v-for="cargo in cargos" :key="cargo" :value="cargo">
+                {{ cargo }}
+              </option>
+            </select>
+          </td>
+          <td class="p-4 text-center align-middle">
+            <button @click="removeAgreement(index)" class="text-destructive  hover:text-destructive/90">
+              <TrashIcon class="h-4 w-4" />
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
     <!-- Empty State -->
     <div v-if="person.length === 0" class="text-center py-16 border border-gray-300 rounded">
       <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
-        <SearchIcon class="h-6 w-6"/>
+        <SearchIcon class="h-6 w-6" />
       </div>
       <h3 class="mt-4 text-sm font-medium text-gray-500">No hay invitados o participantes</h3>
 
@@ -138,26 +107,17 @@
           <td class="px-6 py-4 whitespace-nowrap">{{ militante.firstname }}</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ militante.lastname }}</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <select
-              v-model="estado"
-              class="px-2 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
+            <select v-model="estado"
+              class="px-2 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
               <option value="presente">Presente</option>
               <option value="virtual">Virtual</option>
               <option value="ausente">Ausente</option>
             </select>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <select
-              v-model="militante.selectedCausa"
-              class="px-4 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option
-                v-for="causa in absenceReasons"
-                :key="causa.id"
-                :value="causa.label"
-                class="rounded"
-              >
+            <select v-model="militante.selectedCausa"
+              class="px-4 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+              <option v-for="causa in absenceReasons" :key="causa.id" :value="causa.label" class="rounded">
                 {{ causa.label }}
               </option>
             </select>
@@ -168,7 +128,7 @@
     <!-- Empty State -->
     <div v-if="militantes.length === 0" class="text-center py-16 border border-gray-300 rounded">
       <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
-        <SearchIcon class="h-6 w-6"/>
+        <SearchIcon class="h-6 w-6" />
       </div>
       <h3 class="mt-4 text-sm font-medium text-gray-500">No se encontraron militantes en este núcleo</h3>
     </div>
@@ -176,14 +136,16 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import { onMounted, ref, watch } from "vue";
 import { reactive } from "vue";
 import Input from "../ui/input/Input.vue";
-import {PlusIcon, SearchIcon, TrashIcon} from "lucide-vue-next";
-import {Button} from "@/components/ui/button";
+import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
 import MilitanteService from "@/services/MilitanteService.ts";
 
-const selectedNucleo = ref("");
+const selectedNucleo = ref(null);
+console.log(selectedNucleo.value);
+
 const { cores } = defineProps<{ cores: any[] }>()
 
 const formData = reactive({
@@ -193,21 +155,22 @@ const formData = reactive({
   nucleo: "",
   secretario: ""
 });
-const person = ref([{ nombre: "", cargo: ""}]);
+const person = ref([{ nombre: "", cargo: "" }]);
 const estado = ref("presente")
 const cargos = [
-    'Miembro del secretariado',
-    'Secretario General',
+  'Miembro del secretariado',
+  'Secretario General',
 ]
 const militantes = ref([])
 
-async function getMilitantes(){
+async function getMilitantes() {
   console.log(selectedNucleo.value)
   const service = new MilitanteService()
   try {
-    const core = selectedNucleo.value
-     militantes.value = await service.getMilitantesByCore(selectedNucleo.value);
-     console.log(militantes.value, core)
+    const core = selectedNucleo.value as any
+
+    militantes.value = await service.getMilitantesByCore(core?.id ?? 1);
+    console.log(militantes.value, core)
   }
   catch (e) {
     console.error(e)
@@ -239,7 +202,7 @@ const absenceReasons = ref([
   { id: 12, label: "Otros" },
 ]);
 
-watch([selectedNucleo.value],()=> {
+watch(selectedNucleo, () => {
   getMilitantes()
 })
 
