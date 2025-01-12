@@ -89,7 +89,7 @@
         <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
         <td class="p-4 align-middle">
           <input type="text" v-model="item.nombre" class="w-full px-2 bg-transparent focus:outline-none"
-                 placeholder="Nombre" />
+                 placeholder="Nombre" name="name" />
         </td>
         <td class="p-4 align-middle">
           <select type="text" v-model="item.cargo" class="w-3/5 px-2 bg-transparent focus:outline-none">

@@ -38,7 +38,7 @@
                    placeholder="Responsable" />
           </td>
           <td class="p-4 align-middle">
-            <Input type="date" v-model="item.date"
+            <Input type="date" v-model="item.date" name="date1"
                    class="w-1/2 border-none rounded bg-transparent focus:outline-none" />
           </td>
           <td class="p-4 align-middle">

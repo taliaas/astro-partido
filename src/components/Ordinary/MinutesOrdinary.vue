@@ -41,18 +41,15 @@
           <!--  Información 1 -->
           <section v-show="currentStep === 1" class="space-y-4">
             <slot name="first-step" />
-
           </section>
 
           <!--  Información 2 -->
           <section v-show="currentStep === 2" class="space-y-4">
             <slot name="second-step" />
-
           </section>
           <!--  Información 3 -->
           <section v-show="currentStep === 3" class="space-y-4">
             <slot name="third-step" />
-
           </section>
 
           <!-- Botones de navegación -->
@@ -96,12 +93,16 @@ const progress = computed(() => {
   return ((currentStep.value - 1) / (3 - 1)) * 100
 })
 
-const submitForm = async () => {
+const submitForm = async (e: any) => {
+  const form = e.target as HTMLFormElement
+  const formData = new FormData(form)
+  const data = Object.fromEntries(formData.entries())
+
   const service = new OrdinaryService();
   try {
     //notificar acta creada
     //redireccionar
-    return await service.createMinute(info_acta);
+    // return await service.createMinute(info_acta);
   } catch (e) {
     console.error(e);
   }
