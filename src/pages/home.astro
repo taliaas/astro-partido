@@ -4,7 +4,6 @@ import RootLayout from "../layouts/RootLayout.astro";
 import {isAuthenticated} from "../lib/auth";
 import OrdinaryService from "../services/OrdinaryService";
 import Computo from "../services/Computo";
-import {ref} from "vue";
 
 if (!await isAuthenticated(Astro.callAction)) {
     return Astro.redirect("/login")
