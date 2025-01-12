@@ -7,7 +7,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto rounded overflow-hidden">
-      <div class="relative">
+      <div class="relative p-2">
         <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2" />
 
         <!-- Active Progress Bar -->
@@ -31,9 +31,9 @@
                   : 'bg-gray-200 text-gray-500',
                 'hover:scale-110 active:scale-95'
               ]"
-                @click="currentStep === step"
+                @click="currentStep = step"
             >
-              <span>{{ step}}</span>
+              <span>{{step}}</span>
 
               <!-- Check mark for completed steps -->
               <div

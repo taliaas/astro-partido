@@ -172,8 +172,6 @@
 import { ref } from "vue";
 import { reactive } from "vue";
 import Input from "../ui/input/Input.vue";
-import CoreService from "@/services/CoreService.ts";
-import {TableHead} from "@/components/ui/table";
 import {PlusIcon, SearchIcon, TrashIcon} from "lucide-vue-next";
 import {Button} from "@/components/ui/button";
 
@@ -193,7 +191,7 @@ const cargos = [
     'Secretario General',
 ]
 const addPerson = () => {
-  agreements.value.push({ nombre: "", cargo: "" });
+  person.value.push({ nombre: "", cargo: "" });
 }
 const headers = [
   "No.",
