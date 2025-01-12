@@ -206,7 +206,7 @@ async function getMilitantes(){
   const service = new MilitanteService()
   try {
     const core = selectedNucleo.value
-     militantes.value = await service.getMilitantesByCore(core.id);
+     militantes.value = await service.getMilitantesByCore(selectedNucleo.value);
      console.log(militantes.value, core)
   }
   catch (e) {

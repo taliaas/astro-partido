@@ -19,9 +19,9 @@ export default class MilitanteService {
         }
     }
 
-    async getMilitantesByCore(){
+    async getMilitantesByCore(id: number){
         try {
-            const response = await fetch(`${API_URL}/`, {
+            const response = await fetch(`${API_URL}/core/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
