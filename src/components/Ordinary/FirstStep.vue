@@ -3,6 +3,7 @@
   <div class="w-1/3">
       <label for="nucleo" class="block text-md font-medium text-gray-700">Núcleo</label>
       <select
+          name="nucleo"
         v-model="selectedNucleo"
         class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
       >
@@ -33,6 +34,7 @@
       <Input
         type="date"
         id="fecha"
+        name="fecha"
         v-model="formData.fecha"
         required
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
@@ -43,6 +45,7 @@
       <Input
         type="time"
         id="hora"
+        name="hora"
         v-model="formData.hora"
         required
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
@@ -53,6 +56,7 @@
       <Input
         type="text"
         id="lugar"
+        name="lugar"
         v-model="formData.lugar"
         required
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"

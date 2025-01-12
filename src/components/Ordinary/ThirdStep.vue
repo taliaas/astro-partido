@@ -128,21 +128,21 @@
         <label for="proxima" class="block text-md font-medium text-gray-700">
           Próxima reunión 
         </label>
-        <Input type="date" id="proxima" v-model="formData.proximaReunion"
+        <Input type="date" id="proxima" name="proxima" v-model="formData.proximaReunion"
           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
       </div>
       <div class="w-3/4 space-y-2">
         <label for="preparacion" class="block text-md font-medium text-gray-700">
           Preparación próxima reunión
         </label>
-        <Input type="date" id="preparacion" v-model="formData.preparacionReunion"
+        <Input type="date" id="preparacion" name="preparacion" v-model="formData.preparacionReunion"
           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
       </div>
       <div class="w-3/4 space-y-2">
         <label for="circulo" class="block text-md font-medium text-gray-700">
           Próximo círculo de estudios políticos
         </label>
-        <Input type="date" id="circulo" v-model="formData.circuloEstudios"
+        <Input type="date" id="circulo" name="circulo" v-model="formData.circuloEstudios"
           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
       </div>
     </div>
