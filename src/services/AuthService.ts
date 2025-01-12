@@ -1,5 +1,3 @@
-import { getAccessToken } from "@/lib/auth";
-
 export default class AuthService {
   async login(user: any) {
     console.log(user);
@@ -27,7 +25,6 @@ export default class AuthService {
 
   async register(email: string, name: string, password: string) {
     try {
-      console.log("Entro");
       const response = await fetch(
         `https://part-back.onrender.com/auth/register`,
         {
@@ -53,7 +50,7 @@ export default class AuthService {
   }
 
   async profile(token?: string) {
-    const value = token ?? getAccessToken();
+    //const value = token; ?? getAccessToken(); analizar
     try {
       const response = await fetch(
         `https://part-back.onrender.com/auth/verify`,
@@ -61,7 +58,7 @@ export default class AuthService {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${value}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
