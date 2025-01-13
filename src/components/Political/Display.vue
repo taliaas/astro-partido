@@ -20,20 +20,20 @@
               <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Información General
               </h2>
-              <div class="grid grid-cols-4 gap-4">
-                <div>
+              <div class="flex gap-4">
+                <div class="card">
                   <span class="font-medium text-gray-700">Núcleo:</span>
                   {{ acta.core?.name }}
                 </div>
-                <div>
+                <div class="card">
                   <span class="font-medium text-gray-700">Lugar:</span>
                   {{ acta.lugar }}
                 </div>
-                <div>
+                <div class="card">
                   <span class="font-medium text-gray-700">Fecha:</span>
                   {{ acta.fecha }}
                 </div>
-                <div>
+                <div class="card">
                   <span class="font-medium text-gray-700">Hora:</span>
                   {{ acta.hora }}
                 </div>
@@ -55,11 +55,11 @@
               <div class="grid grid-cols-2 gap-4 text-md text-gray-700">
                 <div class="flex">
                   <h3 class="font-medium text-gray-700">Total de trabajadores:</h3>
-                  <p class="ml-8">{{acta.total_trabajador}}</p>
+                  <p class="ml-8">{{ acta.total_trabajador }}</p>
                 </div>
                 <div class="flex">
                   <h3 class="font-medium text-gray-700">Por el organismo superior:</h3>
-                  <p class="ml-8">{{acta.total_organismo}}</p>
+                  <p class="ml-8">{{ acta.total_organismo }}</p>
                 </div>
               </div>
             </Section>
@@ -69,7 +69,7 @@
               <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Tema evaluado en la reunión
               </h2>
-              <p>{{acta.tema}}</p>
+              <p>{{ acta.tema }}</p>
             </section>
 
             <!-- Desarrollo de la reunión -->
@@ -78,14 +78,14 @@
                 Principales planteamientos realizados
               </h2>
               <div v-for="(punto, index) in acta.planteamientos" :key="index" class="mb-4">
-                <p>{{punto}}</p>
+                <p>{{ punto }}</p>
               </div>
             </Section>
             <Section title="Valoracion">
               <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Valoración
               </h2>
-                <p>{{acta.valoracion}}</p>
+              <p>{{ acta.valoracion }}</p>
             </Section>
 
             <!-- Próximas fechas -->
@@ -110,7 +110,7 @@ import { ref } from 'vue'
 import { DownloadIcon } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import {jsPDF} from "jspdf";
+import { jsPDF } from "jspdf";
 
 const { acta } = defineProps<{
   acta: string;
@@ -168,3 +168,15 @@ const exportar = () => {
   pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`)
 }
 </script>
+
+<style scoped>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .card {
+    @apply border flex flex-col rounded-lg p-2 px-4 w-fit text-gray-600 min-w-32;
+  }
+}
+</style>
