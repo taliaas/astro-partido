@@ -83,7 +83,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import AuthService from "src/services/AuthService.ts";
 import { navigate } from "astro:transitions/client";
 import { UserIcon } from "lucide-vue-next";
 import { actions } from "astro:actions";

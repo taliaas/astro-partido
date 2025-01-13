@@ -55,13 +55,12 @@
           <!-- Botones de navegación -->
           <div class="flex justify-between mt-8">
             <button @click="prevStep" :disabled="currentStep === 1"
-              class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50">
-
-              Anterior
+              class="px-4 py-2 flex bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50">
+              <ArrowLeft class="w-4 h-4 m-2" />
             </button>
             <button v-if="currentStep < 3" @click="nextStep"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-              Siguiente
+              class="px-4 py-2 flex bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              <ArrowRight class="w-4 h-4 m-2" />
             </button>
             <button v-else type="submit"
               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
@@ -75,9 +74,10 @@
 </template>
 
 <script setup lang="ts">
-
+import {ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { ref, computed } from "vue";
 import OrdinaryService from "@/services/OrdinaryService.ts";
+import {navigate} from "astro:transitions/client";
 
 const currentStep = ref(1);
 
@@ -100,10 +100,11 @@ const submitForm = async (e: any) => {
 
   const service = new OrdinaryService();
   try {
-    //notificar acta creada
-    //redireccionar
-    // return await service.createMinute(info_acta);
+    await service.createMinute(data);
+    await navigate("/minutes/");
+    alert("Acta creada!")
   } catch (e) {
+    alert("Error al crear el acta")
     console.error(e);
   }
 };

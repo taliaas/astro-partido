@@ -1,9 +1,9 @@
 <template>
 
   <!-- Acuerdos Table -->
-  <div class="space-y-4">
+  <div class="space-y-4 my-4">
     <div class="flex justify-between">
-      <h3 class="text-lg font-medium">Acuerdos</h3>
+      <label for="agreements" class="block text-md font-medium text-gray-700">Acuerdos</label>
       <div class="flex justify-end">
         <Button @click="addAgreement" variant="outline"
                 class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
@@ -53,9 +53,9 @@
   </div>
 
   <!-- Salidas al Extranjero Table -->
-  <div class="space-y-4">
+  <div class="space-y-4 my-4">
     <div class="flex justify-between">
-      <h3 class="text-lg font-medium">Salidas al Extranjero</h3>
+      <label for="salidas" class="block text-md font-medium text-gray-700">Salidas al Extranjero</label>
       <Button @click="addTravel" variant="outline"
               class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
         <PlusIcon class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90" />
@@ -111,7 +111,7 @@
   </div>
 
   <!-- Observaciones y Firmas -->
-  <section class="space-y-4">
+  <section class="space-y-4 my-4">
     <div class="space-y-2">
       <label for="observaciones" class="block text-md font-medium text-gray-700">
         Observaciones generales

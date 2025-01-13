@@ -344,7 +344,12 @@ const getStatusClass = (status) => {
 const handleAction = (action, acta) => {
   currentsMinute.value = acta
   if (action === 'ver') {
-    navigate(`/view/${acta.id}`)
+    if(acta.name === 'Acta Ordinaria'){
+      navigate(`/view/${acta.id}`)
+    }
+    else {
+      navigate(`/cp_view/${acta.id}`)
+    }
   }
   else if (action === 'editar') {
     navigate(`/edit/${acta.id}`)

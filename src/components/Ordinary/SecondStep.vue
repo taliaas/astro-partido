@@ -36,7 +36,29 @@
         </tbody>
       </table>
     </div>
+  </div>
+  <div class="space-y-4">
+    <h2 class="text-lg mt-8 mb-4 font-bold">Desarrollo</h2>
+    <div class="">
+      <label for="chequeo" class="block text-md font-medium text-gray-700">1. Chequeo de acuerdos</label>
+      <Textarea id="chekeo" name="chekeo" v-model="formData.chequeo" rows="4"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        placeholder="Chequeo de acuerdos">
+      </Textarea>
 
+    </div>
+    <div class="">
+      <label for="orient" class="block text-md font-medium text-gray-700">2. Orientaciones del Organismo Superior</label>
+      <Textarea id="orient" name="orient" v-model="formData.orientaciones" rows="4"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+      placeholder="Orientaciones del Organismo Superior"></Textarea>
+    </div>
+    <div>
+      <label for="analisis" class="block text-md font-medium text-gray-700">3. Análisis y discusiones</label>
+      <Textarea id="analisis_" name="analisis_" v-model="formData.analisis" rows="4"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                placeholder="Análisis y discusiones"></Textarea>
+    </div>
   </div>
 </template>
 
@@ -46,14 +68,15 @@ import { reactive, ref } from "vue";
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import Textarea from "../ui/textarea/Textarea.vue";
 
+const formData = reactive({
+  ordenDelDia: "",
+  orientaciones: '',
+  chequeo: '',
+  analisis: ''
+});
 const agendaItems = ref([{ description: "" }]);
-
-const agreements = ref([{ description: "", responsible: "", date: "" }]);
-
-const travels = ref([
-  { name: "", reason: "", destination: "", dates: "", status: "pendiente" },
-]);
 
 const addAgendaItem = () => {
   agendaItems.value.push({ description: "" });
@@ -62,29 +85,4 @@ const addAgendaItem = () => {
 const removeAgendaItem = (index) => {
   agendaItems.value.splice(index, 1);
 };
-
-const addAgreement = () => {
-  agreements.value.push({ description: "", responsible: "", date: "" });
-};
-
-const removeAgreement = (index) => {
-  agreements.value.splice(index, 1);
-};
-
-const addTravel = () => {
-  travels.value.push({
-    name: "",
-    reason: "",
-    destination: "",
-    dates: "",
-    status: "pendiente",
-  });
-};
-
-const removeTravel = (index) => {
-  travels.value.splice(index, 1);
-};
-const formData = reactive({
-  ordenDelDia: "",
-});
 </script>
