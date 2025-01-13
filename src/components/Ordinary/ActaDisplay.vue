@@ -176,7 +176,6 @@
 import { ref } from 'vue'
 import { DownloadIcon } from 'lucide-vue-next'
 import { jsPDF } from 'jspdf'
-import html2canvas from 'html2canvas'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table'

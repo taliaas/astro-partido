@@ -46,6 +46,12 @@
                 Se encuentran presentes {{ presentes }} miembros de un total de {{ acta.total }}
                 posibles a asistir para un {{ acta.porciento }}% de asistencia.
               </p>
+              <div v-if="acta.causa.length !== 0">
+                <h3 class="font-medium text-gray-700 my-4">Causas: </h3>
+                <div v-for="(causa, index) in acta.causa" :key="index" class="mb-4">
+                  <p>{{causa}}</p>
+                </div>
+              </div>
               <div class="grid grid-cols-2 gap-4 text-md text-gray-700">
                 <div class="flex">
                   <h3 class="font-medium text-gray-700">Total de trabajadores:</h3>
@@ -110,11 +116,12 @@ const { acta } = defineProps<{
   acta: string;
 }>();
 
-const presentes = 12;//acta.value.total - acta.value.ausentes
+const presentes = 12;
 const infoActa = ref<HTMLElement | null>(null)
 
 const exportar = () => {
   const pdf = new jsPDF()
+  let yPos = 35
 
   // Título
   pdf.setFontSize(18)
@@ -135,6 +142,27 @@ const exportar = () => {
   pdf.setFontSize(10)
   pdf.text(`Total: ${acta.total}`, 14, 70)
   pdf.text(`Ausentes: ${acta.ausentes}`, 14, 75)
+  pdf.text(`Presentes: ${presentes}`, 14, 80 )
+  pdf.text(`Total de trabajadores presentes: ${acta.total_trabajador}`, 14, 85 )
+  pdf.text(`Por el organismo superior: ${acta.total_organismo}`, 14, 90 )
+  //pdf.text(`Causas: ${acta.causas}`, 14, 95)
+
+  // Tema
+  pdf.setFontSize(14)
+  pdf.text('Tema evaluado en la reunión:', 14, 105)
+  pdf.setFontSize(10)
+  pdf.text(`${acta.tema}`, 14, 110 )
+
+// Planteamiento
+  pdf.setFontSize(14)
+  pdf.text('Principales planteamientos realizados: ', 14, 120)
+  yPos = 125
+  acta.planteamientos.forEach((planteam, index) => {
+    pdf.setFontSize(10)
+    const splitAcuerdo = pdf.splitTextToSize(planteam, 180)
+    pdf.text(splitAcuerdo, 14, yPos + 5)
+    yPos += 20 + (splitAcuerdo.length * 5)
+  })
 
   // Guardar el PDF
   pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`)
