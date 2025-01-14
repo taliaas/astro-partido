@@ -1,4 +1,6 @@
+
 ---
+
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import {isAuthenticated} from "../lib/auth";
@@ -53,12 +55,69 @@ async function getKPIs() {
         console.error(e)
     }
 }
+async function getDocument(): Promise<number | undefined>{
+    const service = new OrdinaryService()
+    try{
+        const act = await service.getMinutesByCurrentMonth()
+        return act.length
+    }
+    catch (e) {
+        console.error(e)
+    }
+}
+async function getCountMinutesPending(): Promise<number | undefined>{
+    const service = new OrdinaryService()
+    try{
+        return await service.getMinutesByStatus('Pendiente');
+    }
+    catch(e){
+        console.error(e)
+    }
+}
+async function getCountMinutesProcesada(){
+    const service = new OrdinaryService()
+    try{
+        return await service.getMinutesByStatus('Procesada');
+    }
+    catch(e){
+        console.error(e)
+    }
+}
 
 const documents = await getMinute()
 const kpis = await getKPIs();
-console.log(documents)
+const totalDoc = await getDocument();
+const pending = await getCountMinutesPending();
+const procesada = await getCountMinutesPending();
+
+const cards = [
+    {
+        title: 'Documentos Pendientes',
+        value: pending,
+        subtext: {text: '4 nuevos hoy', color: 'text-blue-500'},
+        icon: "FileText"
+    },
+    {
+        title: 'Documentos Procesados',
+        value: procesada,
+        subtext: {text: '+15% este mes', color: 'text-green-500'},
+        icon: "FileCheck2"
+    },
+    {
+        title: 'Total de Documentos',
+        value: totalDoc,
+        subtext: {text: '+5% desde ayer', color: 'text-green-500'},
+        icon: "Files"
+    },
+    {
+        title: 'KPIs Identificados',
+        value: '24',
+        subtext: {text: '+2 esta semana', color: 'text-blue-500'},
+        icon: "Activity"
+    },
+]
 ---
 
 <RootLayout>
-    <DashboardHome client:load documents={documents!} kpis={kpis!}/>
+    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards}/>
 </RootLayout>

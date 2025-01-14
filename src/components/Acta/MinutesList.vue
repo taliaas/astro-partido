@@ -283,9 +283,10 @@ import {navigate} from "astro:transitions/client";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import PoliticalService from "@/services/PoliticalService.ts";
 import html2pdf from 'html2canvas';
+import {exportar} from "@/lib/export_cp.ts";
+import {exportarRO} from "@/lib/export_ro.ts"
 
 const {actas, type} = defineProps<{ actas: any[], type: string }>()
-
 const currentTab = ref(type)
 const showUploadDialog = ref(false)
 const uploadedFiles = ref([])
@@ -297,7 +298,8 @@ const tableHeaders = [
   'Nombre del acta',
   'Núcleo',
   'Fecha',
-  'Estado'
+  'Estado',
+  ''
 ]
 const tabs = [
   {id: 'all', name: 'Todas las actas'},
@@ -352,10 +354,19 @@ const handleAction = (action, acta) => {
     }
   }
   else if (action === 'editar') {
-    navigate(`/edit/${acta.id}`)
+    if(acta.name === 'Acta Ordinaria'){
+      navigate(`/edit/${acta.id}`)
+    }
+    else {
+      navigate(`/edit_acta/${acta.id}`)
+    }
   }
   else if(action === 'export'){
-    exportarPDF(acta.id)
+    if(acta.name !== 'Acta Ordinaria'){
+      exportar(acta)
+    }
+    else
+      exportarRO(acta)
   }
   else if (action === 'eliminar') {
     showDelete.value = true
@@ -366,7 +377,6 @@ const handleDelete = () => {
 }
 
 async function eliminarActa() {
-
   const acta = currentsMinute.value
   const id = acta.id
   const tipo = acta.type
@@ -387,42 +397,9 @@ async function eliminarActa() {
   }
 }
 
-async function getActa(id: string){
-  const services = new OrdinaryService()
-  try {
-    return await services.getMinute(id)
-  }
-  catch (error){
-    console.log(error)
-  }
-}
-
 function handleTab(tab) {
   currentTab.value = tab.id
   navigate(`/minutes/?type=${tab.id}`, {history: "replace"})
-}
-
-//exportar acta
-async function exportarPDF(id: any){
-    const acta  = await getActa(id);
-  if (!acta) {
-    console.error("No se pudo obtener el acta.");
-    return;
-  }
-  console.log(acta)
-  // Crear un contenedor temporal en el DOM para renderizar el contenido como HTML
-  const elemento = contenidoPDF.value;
-
-    const opciones = {
-      margin: 10,
-      filename: "Acta.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-
-    // Generar PDF
-    html2pdf().set(opciones).from(elemento).save();
 }
 
 //cargar acta

@@ -1,8 +1,8 @@
 ---
 import CoreService from "../../services/CoreService";
-import OrdinaryService from "../../services/OrdinaryService";
 import RootLayout from "../../layouts/RootLayout.astro";
-import EditContainer from "../../components/Acta/Edit.vue";
+import EditContainer from "../../components/Political/Edit.vue";
+import PoliticalService from "../../services/PoliticalService";
 
 const { id } = Astro.params;
 
@@ -11,7 +11,7 @@ if (!id) {
 }
 
 async function getActa() {
-    const services = new OrdinaryService()
+    const services = new PoliticalService()
     try {
         const acta = services.getMinute(id!)
         console.log(acta)

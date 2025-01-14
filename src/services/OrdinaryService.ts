@@ -53,13 +53,14 @@ export default class OrdinaryService {
         }
     }
 
-    async updateMinute(id: string) {
+    async updateMinute(id: string, acta: any) {
         try {
             const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify(acta)
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -105,7 +106,6 @@ export default class OrdinaryService {
     }
 
     async getMinutesByCurrentMonth(){
-        console.log('Entro')
         try {
             const response = await fetch(`${API_URL}/byMonth`, {
                 method: 'GET',
@@ -119,6 +119,24 @@ export default class OrdinaryService {
             return await response.json();
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    async getMinutesByStatus(status: any){
+        try{
+            const response = await fetch(`${API_URL}/pending/${status}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'aplication/json',
+                },
+            });
+            if(!response.ok){
+                throw new Error(`HTTP error! status:  ${response.status}`);
+            }
+            return await response.json()
+        }
+        catch (e) {
+            console.log(e)
         }
     }
 }

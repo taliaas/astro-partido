@@ -1,4 +1,4 @@
-import type Minute from "@/interface/MinutePolitical";
+  import type Minute from "@/interface/MinutePolitical";
 
 export default class PoliticalService {
      async createMinute(createMinutesPoliticalDto: Minute) {
@@ -51,13 +51,15 @@ export default class PoliticalService {
             }
         }
     
-        async updateMinute(id: string) {
+        async updateMinute(id: string, acta: any) {
+         console.log(id,acta)
             try {
                 const response = await fetch(`https://part-back.onrender.com/minutes-political/${id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    body: JSON.stringify(acta)
                 });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

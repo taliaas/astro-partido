@@ -150,7 +150,6 @@ import { Button } from "@/components/ui/button";
 import MilitanteService from "@/services/MilitanteService.ts";
 
 const selectedNucleo = ref(null);
-console.log(selectedNucleo.value);
 
 const { cores } = defineProps<{ cores: any[] }>()
 

@@ -121,7 +121,7 @@ const infoActa = ref<HTMLElement | null>(null)
 
 const exportar = () => {
   const pdf = new jsPDF()
-  let yPos = 35
+  let yPos = 90
 
   // Título
   pdf.setFontSize(18)
@@ -145,24 +145,49 @@ const exportar = () => {
   pdf.text(`Presentes: ${presentes}`, 14, 80 )
   pdf.text(`Total de trabajadores presentes: ${acta.total_trabajador}`, 14, 85 )
   pdf.text(`Por el organismo superior: ${acta.total_organismo}`, 14, 90 )
-  //pdf.text(`Causas: ${acta.causas}`, 14, 95)
+  // acta.causas.forEach((causa) => {
+  //   pdf.setFontSize(10)
+  //   const splitCausa = pdf.splitTextToSize(causa, 180)
+  //   pdf.text(splitCausa, 14, yPos+5)
+  //   yPos += 20 + (splitCausa.length * 5)
+  // })
 
   // Tema
+  yPos += 5
   pdf.setFontSize(14)
-  pdf.text('Tema evaluado en la reunión:', 14, 105)
+  pdf.text('Tema evaluado en la reunión:', 14, yPos+5)
   pdf.setFontSize(10)
-  pdf.text(`${acta.tema}`, 14, 110 )
+  const split = pdf.splitTextToSize(`${acta.tema}`, 180)
+  pdf.text(split, 14, yPos+10)
 
 // Planteamiento
   pdf.setFontSize(14)
   pdf.text('Principales planteamientos realizados: ', 14, 120)
   yPos = 125
-  acta.planteamientos.forEach((planteam, index) => {
+  acta.planteamientos.forEach((planteam) => {
     pdf.setFontSize(10)
     const splitAcuerdo = pdf.splitTextToSize(planteam, 180)
     pdf.text(splitAcuerdo, 14, yPos + 5)
     yPos += 20 + (splitAcuerdo.length * 5)
   })
+
+  //Valoracion
+  pdf.setFontSize(14)
+  pdf.text('Valoración de la reunión: ', 14, yPos+5)
+  pdf.setFontSize(10)
+  yPos += 5
+  pdf.text(`${acta.valoracion}`, 14, yPos+5 )
+
+  yPos += 10
+  pdf.setFontSize(12)
+  pdf.text(`Orientador político:`, 14, yPos+5)
+  pdf.setFontSize(10)
+  pdf.text(`${acta.name_orientador}`, 14, yPos+10)
+  yPos += 15
+  pdf.setFontSize(12)
+  pdf.text(`Secretario del núcleo:`, 14, yPos+5)
+  pdf.setFontSize(10)
+  pdf.text(`${acta.name_secretario}`, 14, yPos+10)
 
   // Guardar el PDF
   pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`)
