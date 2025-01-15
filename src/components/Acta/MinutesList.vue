@@ -397,11 +397,40 @@ const handleFileSelect = (event) => {
   uploadedFiles.value = [...uploadedFiles.value, ...files]
 }
 
-const uploadFiles = () => {
-  console.log('Uploading files:', uploadedFiles.value)
-  showUploadDialog.value = false
-  uploadedFiles.value = []
+const uploadService = new UploadService()
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB in bytes
+
+const uploadFiles = async () => {
+  try {
+    for (const file of uploadedFiles.value) {
+      // File size validation
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`File ${file.name} exceeds maximum size of 10MB`)
+        continue
+      }
+
+      const metadata = {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        uploadDate: new Date().toISOString()
+      }
+      
+      await uploadService.uploadMinute(file, metadata)
+    }
+    
+    // Reload minutes list
+    await loadMinutes()
+    
+    // Clean up and close dialog
+    showUploadDialog.value = false
+    uploadedFiles.value = []
+    
+  } catch (error) {
+    console.error('Error uploading files:', error)
+  }
 }
+
 
 function handleTab(tab) {
   currentTab.value = tab.id
