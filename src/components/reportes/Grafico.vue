@@ -41,12 +41,13 @@
             <select v-model="selectedPeriod" class="w-full rounded-md border border-gray-300 p-2 text-sm">
               <option value="1">Semestre 1</option>
               <option value="2">Semestre 2</option>
+              <option value="3">Anual</option>
             </select>
           </div>
 
           <div class="space-y-2">
-            <label class="text-md font-medium dark:text-gray-300 text-gray-700">Año</label>
-            <input type="number" v-model="selectedYear" max="2024"
+            <label class="text-md font-medium dark:text-gray-300 text-gray-700">Año</label> //arreglar limite
+            <input type="number" v-model="selectedYear" max="2025"
                    class="w-full rounded-md border border-gray-300 p-2 text-sm"/>
           </div>
         </div>

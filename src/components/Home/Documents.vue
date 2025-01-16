@@ -47,22 +47,12 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { navigate } from "astro:transitions/client";
-import { computed } from "vue";
-import { ref } from "vue";
 import type MinuteOrdinary from "@/interface/MinuteOrdinary.ts";
 import type MinutePolitical from "@/interface/MinutePolitical.ts";
 import {exportarRO} from "@/lib/export_ro.ts";
 import {exportar} from "@/lib/export_cp.ts";
 
 const { documents } = defineProps<{ documents: any[] }>();
-const filters = ref("");
-
-const filteredActas = computed(() => {
-  return actas.filter((item) => {
-    if (filters.value && item.core.name !== filters.value) return false;
-    return true;
-  });
-});
 
 async function openMinute(id: string) {
   await navigate(`/view/${id}`);

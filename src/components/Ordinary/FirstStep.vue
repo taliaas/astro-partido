@@ -12,7 +12,7 @@
     </div>
     <!-- 2. Presidencia -->
     <div class="mt-4">
-      <label for="secretario" class="block text-md font-medium text-gray-700">Nombre del Secretario General</label>
+      <label class="block text-md font-medium text-gray-700">Nombre del Secretario General</label>
       <Input type="text" id="secretario" name="secretario" v-model="formData.secretario" required
              class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
     </div>
@@ -20,17 +20,17 @@
     <div class="mt-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="w-3/4">
-          <label for="fecha" class="block text-md font-medium text-gray-700">Fecha de la reunión</label>
+          <label class="block text-md font-medium text-gray-700">Fecha de la reunión</label>
           <Input type="date" id="fecha" name="fecha" v-model="formData.fecha" required
                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
         </div>
         <div class="w-3/4">
-          <label for="hora" class="block text-md font-medium text-gray-700">Hora</label>
+          <label class="block text-md font-medium text-gray-700">Hora</label>
           <Input type="time" id="hora" name="hora" v-model="formData.hora" required
                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
         </div>
         <div class="w-3/4">
-          <label for="lugar" class="block text-md font-medium text-gray-700">Lugar</label>
+          <label class="block text-md font-medium text-gray-700">Lugar</label>
           <Input type="text" id="lugar" name="lugar" v-model="formData.lugar" required
                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
         </div>
@@ -54,7 +54,7 @@
             No.
           </th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Nombre
+            Nombre y Apellidos
           </th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
             Cargo
@@ -64,13 +64,13 @@
         </thead>
         <tbody>
         <tr v-for="(item, index) in person" :key="index" class="border-b">
-          <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
+          <td class="p-4 align-middle">{{ index + 1 }}</td>
           <td class="p-4 align-middle">
             <input type="text" v-model="item.nombre" class="w-full px-2 bg-transparent focus:outline-none"
                    placeholder="Nombre" name="name" />
           </td>
           <td class="p-4 align-middle">
-            <select type="text" v-model="item.cargo" class="w-3/5 px-2 bg-transparent focus:outline-none">
+            <select type="text" v-model="item.cargo" class="px-2 bg-transparent focus:outline-none">
               <option v-for="cargo in cargos" :key="cargo" :value="cargo">
                 {{ cargo }}
               </option>
@@ -166,6 +166,11 @@ const estado = ref("presente")
 const cargos = [
   'Miembro del secretariado',
   'Secretario General',
+  'Miembro del Organismo Superior',
+  'Invitados UJC',
+  'Trabajador',
+  'S. Sindical',
+  'No militante',
 ]
 const militantes = ref([])
 

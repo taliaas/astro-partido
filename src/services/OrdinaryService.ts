@@ -3,14 +3,14 @@ const API_URL = 'https://part-back.onrender.com/minutes-ordinary'
 
 export default class OrdinaryService {
 
-    async createMinute(createMinutesOrdinaryDto: Minute) {
+    async createMinute(createMinutesOrdinaryDto: Minute, absent, invitados) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary`, {
+            const response = await fetch(`${API_URL}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(createMinutesOrdinaryDto)
+                body: JSON.stringify(createMinutesOrdinaryDto, absent, invitados)
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,7 +38,7 @@ export default class OrdinaryService {
     }
     async getAll() {
         try {
-            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary`, {
+            const response = await fetch(`${API_URL}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,10 +52,9 @@ export default class OrdinaryService {
             console.error(error);
         }
     }
-
     async updateMinute(id: string, acta: any) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/${id}`, {
+            const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +71,7 @@ export default class OrdinaryService {
     }
     async deleteMinute(id: string) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/minutes-ordinary/${id}`, {
+            const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +103,6 @@ export default class OrdinaryService {
             console.error(error);
         }
     }
-
     async getMinutesByCurrentMonth(){
         try {
             const response = await fetch(`${API_URL}/byMonth`, {
@@ -121,7 +119,6 @@ export default class OrdinaryService {
             console.error(error);
         }
     }
-
     async getMinutesByStatus(status: any){
         try{
             const response = await fetch(`${API_URL}/pending/${status}`, {

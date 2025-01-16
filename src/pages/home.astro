@@ -7,10 +7,6 @@ import {isAuthenticated} from "../lib/auth";
 import OrdinaryService from "../services/OrdinaryService";
 import Computo from "../services/Computo";
 
-if (!await isAuthenticated(Astro.callAction)) {
-    return Astro.redirect("/login")
-}
-
 async function getMinute() {
     const service = new OrdinaryService()
     try {
@@ -58,8 +54,7 @@ async function getKPIs() {
 async function getDocument(): Promise<number | undefined>{
     const service = new OrdinaryService()
     try{
-        const act = await service.getMinutesByCurrentMonth()
-        return act.length
+        return await service.getMinutesByCurrentMonth()
     }
     catch (e) {
         console.error(e)
@@ -88,7 +83,7 @@ const documents = await getMinute()
 const kpis = await getKPIs();
 const totalDoc = await getDocument();
 const pending = await getCountMinutesPending();
-const procesada = await getCountMinutesPending();
+const procesada = await getCountMinutesProcesada();
 
 const cards = [
     {
@@ -110,7 +105,7 @@ const cards = [
         icon: "Files"
     },
     {
-        title: 'KPIs Identificados',
+        title: 'Indicadores Alertas',
         value: '24',
         subtext: {text: '+2 esta semana', color: 'text-blue-500'},
         icon: "Activity"

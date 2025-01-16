@@ -20,7 +20,6 @@ export default class MilitanteService {
     }
 
     async getMilitantesByCore(id: number){
-        console.log(id)
         try {
             const response = await fetch(`${API_URL}/core/${id}`, {
                 method: 'GET',

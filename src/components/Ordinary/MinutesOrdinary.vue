@@ -63,7 +63,7 @@
               <ArrowRight class="w-4 h-4 m-2" />
             </button>
             <button v-else type="submit"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
               Enviar
             </button>
           </div>
@@ -98,14 +98,16 @@ const submitForm = async (e: any) => {
   const formData = new FormData(form)
   const data = Object.fromEntries(formData.entries())
 
+  console.log(data)
+
   const service = new OrdinaryService();
   try {
     await service.createMinute(data);
     await navigate("/minutes/");
     alert("Acta creada!")
-  } catch (e) {
+  } catch (error) {
     alert("Error al crear el acta")
-    console.error(e);
+    console.error(error);
   }
 };
 </script>

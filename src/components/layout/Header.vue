@@ -9,7 +9,7 @@
         </span>
       </div>
       <h1 class="text-lg font-semibold text-gray-900 dark:text-white">
-        Plataforma de Análisis de KPIs
+        Plataforma de Análisis de Indicadores
       </h1>
     </div>
 
