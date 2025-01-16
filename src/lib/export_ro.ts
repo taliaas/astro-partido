@@ -25,7 +25,7 @@ export function exportarRO (acta: any)  {
     pdf.setFontSize(14)
     pdf.text('Orden del día', 14, yPos+5)
     yPos += 5
-    acta.order.forEach((item, index) => {
+    acta.order.forEach((item: any, index: number) => {
         pdf.setFontSize(10)
         const split = pdf.splitTextToSize(item, 180)
         pdf.text(`${index + 1}. ${item}`, 14, yPos + 5)
@@ -41,7 +41,7 @@ export function exportarRO (acta: any)  {
     yPos += 5
     pdf.setFontSize(12)
     pdf.text('1. Chequeo de acuerdos', 14, yPos + 5)
-    acta.chequeo?.forEach((item, index) => {
+    acta.chequeo?.forEach((item: any, index: number) => {
         yPos = yPos + (index * 5)
         pdf.setFontSize(10)
         const splitChequeo = pdf.splitTextToSize(acta.chequeo, 180)
@@ -65,7 +65,7 @@ export function exportarRO (acta: any)  {
     pdf.setFontSize(14)
     pdf.text('4. Acuerdos', 14, yPos+10)
     yPos += 15
-    acta.agreements.forEach((acuerdo, index) => {
+    acta.agreements.forEach((acuerdo:any, index:number) => {
         pdf.setFontSize(11)
         pdf.text(`Acuerdo ${index + 1}:`, 14, yPos+5)
         pdf.setFontSize(10)
@@ -79,7 +79,7 @@ export function exportarRO (acta: any)  {
     pdf.setFontSize(14)
     pdf.text('5. Salidas al extranjero', 14, 15)
     yPos = 25
-    acta.extranjero.forEach((salida, index) => {
+    acta.extranjero.forEach((salida: any, index:number) => {
         pdf.setFontSize(11)
         pdf.text(`Salida ${index + 1}:`, 14, yPos+5)
         pdf.setFontSize(10)

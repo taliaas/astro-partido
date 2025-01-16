@@ -1,6 +1,7 @@
 import {Reason} from "@/interface/Absent.ts";
+import type MinutesOrdinary from "./MinuteOrdinary.ts";
 
-export class Asistencia {
+export interface Asistencia {
     minute: MinutesOrdinary
     //militante: any
     reason: Reason

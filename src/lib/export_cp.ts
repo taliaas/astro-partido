@@ -46,7 +46,7 @@ export function exportar (acta: any) {
         pdf.setFontSize(14)
         pdf.text('Principales planteamientos realizados: ', 14, 120)
         yPos = 125
-        acta.planteamientos.forEach((planteam) => {
+        acta.planteamientos.forEach((planteam: any) => {
             pdf.setFontSize(10)
             const splitAcuerdo = pdf.splitTextToSize(planteam, 180)
             pdf.text(splitAcuerdo, 14, yPos + 5)

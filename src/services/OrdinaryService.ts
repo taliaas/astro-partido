@@ -3,14 +3,18 @@ const API_URL = 'https://part-back.onrender.com/minutes-ordinary'
 
 export default class OrdinaryService {
 
-    async createMinute(createMinutesOrdinaryDto: Minute, absent, invitados) {
+    async createMinute(createMinutesOrdinaryDto: Minute, absent: any[], invitados: any[]) {
         try {
             const response = await fetch(`${API_URL}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(createMinutesOrdinaryDto, absent, invitados)
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                createMinutesOrdinaryDto,
+                absent,
+                invitados,
+              }),
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

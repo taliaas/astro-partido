@@ -1,7 +1,7 @@
 import {Cargo} from "@/enum/Cargo.ts";
-import {MinutesOrdinary} from "@/components/Ordinary/MinutesOrdinary.vue";
+import type MinutesOrdinary from "./MinuteOrdinary.ts";
 
-export class Invitados {
+export interface Invitados {
     nombre: string
     cargo: Cargo
     minute: MinutesOrdinary;
