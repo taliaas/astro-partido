@@ -1,67 +1,77 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-lg">
+    <div class="w-11/12 mx-auto bg-white rounded-xl shadow-lg">
       <!-- Header -->
       <div class="p-6 border-b border-gray-200">
-        <h1 class="text-2xl font-bold text-gray-900">Editor de Indicadores</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Procesar de Indicadores</h1>
         <p class="text-gray-500 mt-1">
           Gestione los valores de los indicadores del sistema
         </p>
       </div>
 
-      <!-- Form -->
-      <form @submit.prevent="saveIndicadores" class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div v-for="(value, key) in formData" :key="key" class="space-y-2">
-            <label :for="key" class="block text-sm font-medium text-gray-700">
-              {{ formatLabel(key) }}
-            </label>
-            <div class="relative">
-              <input
-                type="number"
-                :id="key"
-                v-model="formData[key]"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-                :class="{ 'border-red-500': errors[key] }"
-                min="0"
-                step="1"
-              />
-              <span
-                v-if="errors[key]"
-                class="text-xs text-red-500 mt-1 absolute -bottom-5 left-0"
-              >
+      <div class="flex p-2 gap-4">
+        <div class="flex-1">
+          <Editar :acta />
+        </div>
+
+        <aside class="py-10">
+          <h2 class="font-medium text-xl px-4">Indicadores</h2>
+          <!-- Form -->
+          <form @submit.prevent="saveIndicadores" class="p-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div v-for="(value, key) in formData" :key="key" class="space-y-2">
+                <label :for="key" class="block text-sm font-medium text-gray-700">
+                  {{ key }}
+                </label>
+                <div class="relative">
+                  <input
+                      type="number"
+                      :id="key"
+                      v-model="formData[key]"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                      :class="{ 'border-red-500': errors[key] }"
+                      min="0"
+                      step="1"
+                      :value
+                  />
+                  <span
+                      v-if="errors[key]"
+                      class="text-xs text-red-500 mt-1 absolute -bottom-5 left-0"
+                  >
                 {{ errors[key] }}
               </span>
+                </div>
+              </div>
             </div>
+
+            <!-- Actions -->
+            <div class="mt-8 flex space-x-4 *:flex-1">
+              <button
+                  type="button"
+                  @click="resetForm"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none transition-colors duration-200"
+              >
+                Restablecer
+              </button>
+              <button
+                  type="submit"
+                  class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue/90 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
+                  :disabled="isSubmitting"
+              >
+                {{ isSubmitting ? "Guardando..." : "Guardar Cambios" }}
+              </button>
+            </div>
+          </form>
+
+          <!-- Notification -->
+          <div
+              v-if="notification.show"
+              class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
+              :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
+          >
+            {{ notification.message }}
           </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="mt-8 flex justify-end space-x-4">
-          <button
-            type="button"
-            @click="resetForm"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none transition-colors duration-200"
-          >
-            Restablecer
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue/90 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
-            :disabled="isSubmitting"
-          >
-            {{ isSubmitting ? "Guardando..." : "Guardar Cambios" }}
-          </button>
-        </div>
-      </form>
-
-      <!-- Notification -->
-      <div
-        v-if="notification.show"
-        class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
-        :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
-      >
-        {{ notification.message }}
+        </aside>
       </div>
     </div>
   </div>
@@ -69,40 +79,43 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import Editar from '../Ordinary/ActaDisplay.vue'
+import type {Indicadores} from "@/interface/Indicadores.ts";
+import ComputoService from "@/services/Computo.ts";
 
-const { ind } = defineProps<{
-  ind: any;
+const { ind, acta } = defineProps<{
+  ind: Indicadores, acta: any
 }>();
 
 // Initial data structure based on the Indicadores class
 const initialData = {
-  'Puntos_Orden_Dia': 0,
-  'Total_de_acuerdos': 0,
-  'Particip_Org_Sup': 0,
-  'Invitados': 0,
-  'Rendicion': 0,
-  'Uso_Comis': 0,
-  'Impl_ortcs_Org_Sup': 0,
-  'Analisis_Act_Ftal': 0,
-  'Discus_Delito_corrup': 0,
-  'Analisis_objs': 0,
-  'Polit_de_cuadros': 0,
-  'Atencion_FEU': 0,
-  'Atencion_UJC': 0,
-  'Functo_Sind': 0,
-  'Reglam_Estatutos': 0,
-  'Analisis_Aus_RO': 0,
-  'Otros_Analisis_Discp': 0,
-  'Plan_de_Trab': 0,
-  'Sanciones': 0,
-  'Crecimiento': 0,
-  'Desactivacion': 0,
-  'Evaluacion': 0,
-  'Guardia_PCC': 0,
-  'acuerdos_salidas_ext': 0,
-  'Traslados_e_incorporaciones': 0,
-  'Circulo_Politico': 0,
-  'acuerdos_CPolitico': 0
+  'Puntos Orden Dia': ind.pto,
+  'Total de acuerdos': ind.totalDeAcuerdos,
+  'Particip. Org. Sup.': ind.participacionOrgSup,
+  'Invitados': ind.invitados,
+  'Rendicion':ind.rendicion,
+  'Uso Comis.': ind.usoComisiones,
+  'Impl. ortcs Org. Sup.': ind.implOrtcsOrgSup,
+  'Analisis Act. Ftal': ind.analisisActFtal,
+  'Discus. Delito corrup': ind.discusionDelitoCorrupcion,
+  'Analisis objs': ind.analisisObjs,
+  'Polit. de cuadros': ind.politicaDeCuadros,
+  'Atencion FEU': ind.atencionFEU,
+  'Atencion UJC': ind.atencionUJC,
+  'Functo Sind': ind.funcionamientoSindicato,
+  'Reglam. Estatutos': ind.reglamentosEstatutos,
+  'Analisis Aus. RO': ind.analisisAusenciasRO,
+  'Otros Analisis Discp.': ind.otrosAnalisisDisciplinarios,
+  'Plan de Trab.': ind.planDeTrabajo,
+  'Sanciones': ind.sanciones,
+  'Crecimiento': ind.crecimiento,
+  'Desactivacion': ind.desactivacion,
+  'Evaluacion': ind.evaluacion,
+  'Guardia PCC':ind.guardiaPCC,
+  'Acuerdos salidas ext': ind.acuerdosSalidasExternas,
+  'Traslados e incorporaciones': ind.trasladosIncorporaciones,
+  'Circulo Politico': ind.cp,
+  'acuerdos C.Politico': ind.cp_agree
 }
 
 // Form data
@@ -114,14 +127,6 @@ const notification = reactive({
   message: '',
   type: 'success'
 })
-
-// Format label for display
-const formatLabel = (key) => {
-  return key
-      .replace(/_/g, ' ')
-      .replace(/([A-Z])/g, ' $1')
-      .trim()
-}
 
 // Reset form to initial values
 const resetForm = () => {
@@ -161,15 +166,11 @@ const saveIndicadores = async () => {
     showNotification('Por favor, corrija los errores en el formulario', 'error')
     return
   }
-
+  const service = new ComputoService()
   isSubmitting.value = true
   try {
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // Here you would typically send the formData to your backend
-    console.log('Datos guardados:', formData)
-
+    return await service.create(ind)
     showNotification('Indicadores guardados exitosamente')
   } catch (error) {
     showNotification('Error al guardar los indicadores', 'error')

@@ -1,0 +1,40 @@
+---
+import ComputoService from "../../services/Computo";
+import RootLayout from "../../layouts/RootLayout.astro";
+import Editar from "../../components/GestionIndicadores/Editar.vue"
+import OrdinaryService from "../../services/OrdinaryService";
+
+const { id } = Astro.params;
+
+if (!id) {
+    throw new Error("No id provided");
+}
+
+async function getActa() {
+    const services = new OrdinaryService()
+    try {
+        return services.getMinute(id!)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+async function obtenerComputo() {
+    const service = new ComputoService();
+    try {
+        return service.getCalcularComputo(id!);
+    } catch (error) {
+        console.log("error");
+    }
+}
+
+const acta = await getActa()
+const ind = await obtenerComputo()
+console.log("Indicadores",ind)
+---
+
+<RootLayout >
+    <Editar ind={ind} acta={acta} client:load/>
+</RootLayout>
+
+---

@@ -1,8 +1,20 @@
+const API_URL = 'https://part-back.onrender.com/user'
+
 export default class UserService {
+  private static instance: UserService;
+
+  private constructor() {}
+
+  static getInstance(): UserService {
+    if (!UserService.instance) {
+      UserService.instance = new UserService();
+    }
+    return UserService.instance;
+  }
 
   async getAllUser() {
     try {
-      const response = await fetch(`https://part-back.onrender.com/user`, {
+      const response = await fetch(`${API_URL}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -14,6 +26,7 @@ export default class UserService {
       return await response.json();
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 
@@ -32,6 +45,7 @@ export default class UserService {
       return await response.json();
     } catch (error) {
       console.error('Error al recuperar al usuario', error);
+      throw error;
     }
   }
 
@@ -50,6 +64,7 @@ export default class UserService {
       return await response.json();
     } catch (error) {
       console.error('Error al recuperar al usuario', error);
+      throw error;
     }
   }
 
@@ -68,6 +83,7 @@ export default class UserService {
       return await response.json();
     } catch (error) {
       console.error('Error al actualizar al usuario', error);
+      throw error;
     }
   }
 
@@ -86,6 +102,7 @@ export default class UserService {
       return await response.json();
     } catch (error) {
       console.error('Error al eliminar al usuario', error);
+      throw error;
     }
   }
 }

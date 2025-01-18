@@ -1,7 +1,8 @@
   import type Minute from "@/interface/MinutePolitical";
+  import type MinutePolitical from "@/interface/MinutePolitical";
 
 export default class PoliticalService {
-     async createMinute(createMinutesPoliticalDto: Minute) {
+     async createMinute(createMinutesPoliticalDto: MinutePolitical) {
             try {
                 const response = await fetch(`https://part-back.onrender.com/minutes-political`, {
                     method: 'POST',
