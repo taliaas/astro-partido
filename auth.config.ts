@@ -4,6 +4,7 @@ import { defineConfig } from "auth-astro";
 const API_URL = 'https://part-back.onrender.com/auth/login'
 
 export default defineConfig({
+    trustHost: true,
     pages: {
         signIn: "/login",
         newUser: "/home",
