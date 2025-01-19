@@ -8,9 +8,11 @@ import tailwind from "@astrojs/tailwind";
 
 import vercel from "@astrojs/vercel";
 
+import auth from "auth-astro";
+
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  integrations: [vue(), tailwind()],
+  integrations: [vue(), tailwind(), auth()],
   adapter: vercel({ imageService: true, maxDuration: 60 }),
 });

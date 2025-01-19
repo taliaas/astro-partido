@@ -184,7 +184,7 @@ const steps = {
           'Sistema de alertas y notificaciones configurables',
           'Exportación de reportes en múltiples formatos'
         ],
-        image: '/public/logo-cujae.png',
+        image: '/logo-cujae.png',
         imageCaption: 'Vista general del dashboard principal'
       }
     }
