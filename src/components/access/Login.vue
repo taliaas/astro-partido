@@ -44,8 +44,9 @@
 
         <div>
           <Button type="submit" :disabled="loading"
-            class="group relative text-lg w-full flex justify-center py-2 px-4 border border-transparent font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-            Iniciar sesión
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+            <Loader2Icon v-if="loading" class="mr-2 h-4 w-4 animate-spin" />
+            {{ loading ? "Iniciando sesión..." : "Iniciar sesión" }}
           </Button>
         </div>
       </form>
@@ -58,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+import { Loader2Icon } from "lucide-vue-next";
 import { ref } from "vue";
 import { navigate } from "astro:transitions/client";
 import { UserIcon } from "lucide-vue-next";
@@ -74,7 +76,7 @@ const loading = ref(false)
 const handleSubmit = async () => {
   loading.value = true
   try {
-    await signIn("credentials", { email: email.value, password: password.value }).catch((e)=>console.log(e))
+    await signIn("credentials", { email: email.value, password: password.value }).catch((e) => console.log(e))
   } catch (error) {
     showSuccessMessage.value = true;
     mensaje.value = "Error";
