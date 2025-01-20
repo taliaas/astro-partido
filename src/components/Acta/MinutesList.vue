@@ -552,7 +552,7 @@ const handleDrop = async (event) => {
   const files = uploadedFiles.value//Array.from(event.dataTransfer.files);
   const service = new OrdinaryService()
   try{
-    await service.uploadMinutes(files)
+    await service.uploadMinutes(files[0])
     alert('Se guardo el documento')
     showUploadDialog.value = false;
     uploadedFiles.value = [];

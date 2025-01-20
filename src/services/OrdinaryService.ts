@@ -1,5 +1,5 @@
 import type Minute from "@/interface/MinuteOrdinary";
-import type {Status} from "@/enum/Status.ts";
+import type { Status } from "@/enum/Status.ts";
 
 const API_URL = "https://part-back.onrender.com/minutes-ordinary";
 
@@ -158,7 +158,7 @@ export default class OrdinaryService {
     }
   }
 
-  async updateStatusMinutes(id: string, status: Status){
+  async updateStatusMinutes(id: string, status: Status) {
     try {
       const response = await fetch(`${API_URL}/status/${id}/${status}`, {
         method: "PATCH",
@@ -175,16 +175,14 @@ export default class OrdinaryService {
     }
   }
 
-  async uploadMinutes(file: any){
+  async uploadMinutes(file: any) {
     const formData = new FormData();
     formData.append("file", file);
 
-    try{
+    try {
       const response = await fetch(`${API_URL}/upload`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "multipart/form-data", },
         body: formData
       });
       if (!response.ok) {
