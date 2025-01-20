@@ -314,7 +314,7 @@
             Cancelar
           </Button>
           <Button
-            @click="uploadFiles"
+            @click="handleDrop"
             :disabled="!uploadedFiles.length"
             class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -549,14 +549,16 @@ function handleTab(tab) {
 //cargar acta
 const handleDrop = async (event) => {
   isDragging.value = false;
-  const files = Array.from(event.dataTransfer.files);
-  const service = new MinutesService()
+  const files = uploadedFiles.value//Array.from(event.dataTransfer.files);
+  const service = new OrdinaryService()
   try{
-    await service.upload(files)
+    await service.uploadMinutes(files)
+    alert('Se guardo el documento')
     showUploadDialog.value = false;
     uploadedFiles.value = [];
   }
   catch (e) {
+    alert(e)
     throw new Error(e)
   }
 };
@@ -565,4 +567,5 @@ const handleFileSelect = (event) => {
   const files = Array.from(event.target.files);
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 };
+
 </script>

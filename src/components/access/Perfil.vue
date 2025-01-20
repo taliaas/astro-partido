@@ -66,11 +66,12 @@
               <!-- Role (Read-only) -->
               <div>
                 <label class="block text-sm font-medium text-gray-700"
-                  >Role</label
+                  >Rol</label
                 >
                 <Input
                   v-model="user.rol"
                   type="text"
+                  readonly
                   class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"
                 />
               </div>

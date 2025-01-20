@@ -2,11 +2,21 @@
 import PerfilContainer from "@/components/access/Perfil.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import {getSession} from "auth-astro/server";
+import UserService from "../services/UserService";
 
 const session = await getSession(Astro.request)
-const user = session?.user
-console.log(user)
+const n_user = session?.user
 
+async function getUser() {
+    const services = new UserService()
+    try {
+        return await services.getUserByEmail(n_user?.email ?? '')
+    } catch (e) {
+        console.error(e)
+    }
+}
+const user = await getUser()
+console.log(user)
 ---
 
 <RootLayout>

@@ -6,9 +6,7 @@ import UserService from "../services/UserService";
 async function obtenerUsuarios() {
     const service = new UserService();
     try {
-        const user = await service.getAllUser();
-        console.log("User:", user);
-        return user;
+        return await service.getAllUser();
     } catch (error) {
         console.log("error");
     }

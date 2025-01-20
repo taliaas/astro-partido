@@ -174,4 +174,26 @@ export default class OrdinaryService {
       console.error(error);
     }
   }
+
+  async uploadMinutes(file: any){
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try{
+      const response = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: formData
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
 }

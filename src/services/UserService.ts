@@ -1,17 +1,6 @@
 const API_URL = 'https://part-back.onrender.com/user'
 
 export default class UserService {
-  private static instance: UserService;
-
-  private constructor() {}
-
-  static getInstance(): UserService {
-    if (!UserService.instance) {
-      UserService.instance = new UserService();
-    }
-    return UserService.instance;
-  }
-
   async getAllUser() {
     try {
       const response = await fetch(`${API_URL}`, {
@@ -50,6 +39,7 @@ export default class UserService {
   }
 
   async getUserByEmail(email: string) {
+    console.log(email)
     try {
       const response = await fetch(`https://part-back.onrender.com/user/data/${email}`, {
         method: 'GET',

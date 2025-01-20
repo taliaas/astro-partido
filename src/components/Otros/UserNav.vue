@@ -3,8 +3,8 @@
   <DropdownMenu>
     <DropdownMenuTrigger class="focus:outline-none">
       <button @click="!openMenu"
-        class="flex items-center space-x-2 border-2 border-blue-400 bg-blue-50 text-blue-500 hover:bg-accent rounded-full hover:bg-gray-200">
-        <div class="w-8 h-8 rounded-full  flex items-center justify-center ">
+        class="flex items-center space-x-2 border-2 shadow-md bg-gray-50 hover:bg-accent rounded-full hover:bg-gray-200">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center ">
           <span class="text-md font-medium">U</span>
         </div>
       </button>
