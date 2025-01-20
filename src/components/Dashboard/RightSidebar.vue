@@ -21,7 +21,7 @@
           Añadir Evento
           <ChevronDownIcon class="h-4 w-4"/>
         </CollapsibleTrigger>
-        <CollapsibleContent class="space-y-3 pt-3">
+        <CollapsibleContent class="space-y-3 p-3">
           <Input
               v-model="newEvent.title" class="rounded hover:outline-none border-gray-300 text-gray-700"
               placeholder="Añadir tarea o evento"

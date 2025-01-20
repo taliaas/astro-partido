@@ -60,35 +60,7 @@
             <AccordionTrigger>3. Orden del día</AccordionTrigger>
             <AccordionContent>
               <div class="rounded border">
-                <table class="w-full">
-                  <thead>
-                  <tr class="border-b bg-muted/50">
-                    <th class="h-12 w-[100px] px-4 text-left align-middle font-medium">No.</th>
-                    <th class="h-12 px-4 text-left align-middle font-medium">Descripción</th>
-                    <th class="h-12 w-[100px] px-4 align-middle">
-                      <Button @click="addAgendaItem" variant="outline"
-                              class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4">
-                        <PlusIcon class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90" />
-                        Agregar
-                      </Button></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="(item, index) in agendaItems" :key="index" class="border-b">
-                    <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
-                    <td class="p-4 align-middle">
-                      <input type="text" v-model="item.description" class="w-full bg-transparent focus:outline-none"
-                             placeholder="Descripción" />
-                    </td>
-                    <td class="p-4 align-middle">
-                      <button @click="removeAgendaItem(index)"
-                              class="text-destructive hover:text-destructive/90 transition-colors duration-200">
-                        <TrashIcon class="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
+               <
               </div>
             </AccordionContent>
           </AccordionItem>

@@ -136,7 +136,7 @@
             </td>
             <td class="p-4 text-center align-middle">
               <button
-                @click="removeAgreement(index)"
+                @click="removeInvitados(index)"
                 type="button"
                 class="text-destructive hover:text-destructive/90"
               >
@@ -186,7 +186,7 @@
               <input
                 class="hidden"
                 :name="'militante.' + index + '.id'"
-                :value="militante"
+                :value="militante.id"
               />{{ militante.id }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
@@ -212,7 +212,7 @@
             >
               <select
                 v-model="militante.selectedCausa"
-                :name="'abscents.' + index + '.reason'"
+                :name="'militante.' + index + '.reason'"
                 class="w-full p-1 border-none rounded bg-white focus:outline-none ring-2 ring-primary-500"
               >
                 <option
@@ -253,6 +253,7 @@ import Input from "../ui/input/Input.vue";
 import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import MilitanteService from "@/services/MilitanteService.ts";
+import { Cargo } from "@/enum/Cargo.ts";
 
 defineEmits(["update"]);
 
@@ -270,14 +271,14 @@ const formData = reactive({
 const person = ref([{ nombre: "", cargo: "" }]);
 const estado = reactive([]);
 
-const cargos = [
-  "Miembro del secretariado",
-  "Secretario General",
-  "Miembro del Organismo Superior",
-  "Invitados UJC",
-  "Trabajador",
-  "S. Sindical",
-  "No militante",
+const cargos: Cargo[] = [
+  Cargo.inv_ujc,
+  Cargo.no_mili,
+  Cargo.org_sup,
+  Cargo.trab,
+  Cargo.s_sindic,
+  Cargo.secret_general,
+  Cargo.secretariado,
 ];
 const militantes = ref([]);
 
@@ -293,6 +294,9 @@ async function getMilitantes() {
 
 const addPerson = () => {
   person.value.push({ nombre: "", cargo: "" });
+};
+const removeInvitados = (index) => {
+  person.value.splice(index, 1);
 };
 
 const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];

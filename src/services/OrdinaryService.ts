@@ -1,8 +1,10 @@
 import type Minute from "@/interface/MinuteOrdinary";
+import type {Status} from "@/enum/Status.ts";
 
 const API_URL = "https://part-back.onrender.com/minutes-ordinary";
 
 export default class OrdinaryService {
+
   async createMinute(
     createMinutesOrdinaryDto: Minute,
     abscents: any[],
@@ -19,7 +21,7 @@ export default class OrdinaryService {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          createMinutesOrdinaryDto,
+          ...createMinutesOrdinaryDto,
           abscents,
           invitados,
           agreements,
@@ -153,6 +155,23 @@ export default class OrdinaryService {
       return await response.json();
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  async updateStatusMinutes(id: string, status: Status){
+    try {
+      const response = await fetch(`${API_URL}/status/${id}/${status}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
     }
   }
 }

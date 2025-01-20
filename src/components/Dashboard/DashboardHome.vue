@@ -80,7 +80,7 @@ const updatedData = ref([]);
 const tabs = [
   { value: "overview", label: "Vista General", component: Overview },
   { value: "documents", label: "Documentos", component: Documents },
-  { value: "kpis", label: "KPIs", component: KPIs },
+  { value: "kpis", label: "Análisis de Desempeño", component: KPIs },
 ];
 
 </script>

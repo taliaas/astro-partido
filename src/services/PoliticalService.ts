@@ -1,10 +1,12 @@
   import type Minute from "@/interface/MinutePolitical";
   import type MinutePolitical from "@/interface/MinutePolitical";
+  import type {Status} from "@/enum/Status.ts";
+  const API_URL = "https://part-back.onrender.com/minutes-political"
 
-export default class PoliticalService {
+  export default class PoliticalService {
      async createMinute(createMinutesPoliticalDto: MinutePolitical) {
             try {
-                const response = await fetch(`https://part-back.onrender.com/minutes-political`, {
+                const response = await fetch(`${API_URL}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -21,7 +23,7 @@ export default class PoliticalService {
         }
         async getMinute(id: string) {
             try {
-                const response = await fetch(`https://part-back.onrender.com/minutes-political/${id}`, {
+                const response = await fetch(`${API_URL}/${id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,7 +39,7 @@ export default class PoliticalService {
         }
         async getAll() {
             try {
-                const response = await fetch(`https://part-back.onrender.com/minutes-political`, {
+                const response = await fetch(`${API_URL}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -86,5 +88,37 @@ export default class PoliticalService {
                 console.error(error);
             }
         }
-    
+
+        async getMinutesByCore(core: any, fecha: any){
+            try {
+                const response = await fetch(`${API_URL}/${core}/${fecha}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    async updateStatusMinutes(id: string, status: Status){
+        try {
+            const response = await fetch(`${API_URL}/status/${id}/${status}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }

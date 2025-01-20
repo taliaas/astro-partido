@@ -11,10 +11,10 @@
           <UserIcon class="h-12 w-12 text-white" />
         </div>
         <div>
-          <h1 class="text-3xl font-bold">{{ $props.user.name }}</h1>
+          <h1 class="text-3xl font-bold">{{ user.name }}</h1>
           <div class="flex items-center gap-2 mt-2 text-gray-300">
             <ShieldCheckIcon class="h-4 w-4" />
-            <span class="text-lg">{{ $props.user.rol || "Militante" }}</span>
+            <span class="text-lg">{{ user.rol || "Militante" }}</span>
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
                   >Nombre</label
                 >
                 <Input
-                  v-model="$props.user.name"
+                  v-model="user.name"
                   type="text"
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -45,7 +45,7 @@
                   >Correo</label
                 >
                 <Input
-                  v-model="$props.user.email"
+                  v-model="user.email"
                   type="email"
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -57,7 +57,7 @@
                   >Núcleo</label
                 >
                 <Input
-                  v-model="$props.user.nucleo"
+                  v-model="user.nucleo"
                   type="text"
                   readonly
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm bg-gray-50"
@@ -69,9 +69,8 @@
                   >Role</label
                 >
                 <Input
-                  v-model="$props.user.rol"
+                  v-model="user.rol"
                   type="text"
-                  readonly
                   class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"
                 />
               </div>
@@ -181,7 +180,7 @@ import Input from "../ui/input/Input.vue";
 import AuthService from "src/services/AuthService.ts";
 import UserService from "src/services/UserService.ts";
 
-const { user: data } = defineProps<{ user: any }>();
+const { user } = defineProps<{ user: any }>();
 
 const showPasswordModal = ref(false);
 const biografia = ref("");
@@ -189,12 +188,6 @@ const biografia = ref("");
 const openChangePasswordModal = () => {
   showPasswordModal.value = true;
 };
-
-// Form data
-const formData = reactive({
-  name: data.name,
-  email: data.email,
-});
 
 // Password form
 const passwordForm = reactive({

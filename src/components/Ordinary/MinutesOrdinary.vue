@@ -100,15 +100,23 @@
           </div>
         </form>
       </div>
+      <!-- Notification -->
+      <div
+          v-if="notification.show"
+          class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
+          :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
+      >
+        {{ notification.message }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ArrowLeft, ArrowRight } from "lucide-vue-next";
-import { ref, computed } from "vue";
+import {computed, reactive, ref} from "vue";
 import OrdinaryService from "@/services/OrdinaryService.ts";
-import { navigate } from "astro:transitions/client";
+import {navigate} from "astro:transitions/client";
 
 const currentStep = ref(1);
 
@@ -124,6 +132,19 @@ const progress = computed(() => {
   return ((currentStep.value - 1) / (3 - 1)) * 100;
 });
 
+const notification = reactive({
+  show: false,
+  message: '',
+  type: 'success'
+})
+const showNotification = (message, type = 'success') => {
+  notification.show = true
+  notification.message = message
+  notification.type = type
+  setTimeout(() => {
+    notification.show = false
+  }, 3000)
+}
 const submitForm = async (e: any) => {
   const form = e.target as HTMLFormElement;
   const formEntries = Array.from(new FormData(form).entries());
@@ -148,11 +169,17 @@ const submitForm = async (e: any) => {
 
   const service = new OrdinaryService();
   try {
-    await service.createMinute(data, data.abscents ?? [], data.invitados ?? [], data.agreements ?? [], data.extranjero ?? []);
-    //alert("Acta creada!");
-    //await navigate("/minutes/");
+    await service.createMinute(
+        data,
+      data.militante.filter(m=>m.estado==="ausente"),
+      data.invitados ?? [],
+      data.agreements ?? [],
+      data.extranjero ?? [],
+    );
+    showNotification('Se creó el acta correctamente')
+    await navigate("/minutes/");
   } catch (error) {
-    alert("Error al crear el acta");
+    showNotification("Error al crear el acta", error);
     console.error(error);
   }
 };

@@ -3,7 +3,7 @@ const API_URL = "https://part-back.onrender.com/minutes";
 export default class MinutesService{
 
     //cargar acta
-    async upload(){
+    async upload(files: any[]){
         try {
             const response = await fetch(`${API_URL}/upload`, {
                 method: "POST",

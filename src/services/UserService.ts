@@ -88,6 +88,7 @@ export default class UserService {
   }
 
   async removeUser(id: number) {
+    console.log(id)
     try {
       const response = await fetch(`https://part-back.onrender.com/user/${id}`, {
         method: 'DELETE',

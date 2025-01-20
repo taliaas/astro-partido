@@ -1,21 +1,12 @@
 ---
-import AuthService from "../services/AuthService";
 import PerfilContainer from "@/components/access/Perfil.vue";
 import RootLayout from "../layouts/RootLayout.astro";
+import {getSession} from "auth-astro/server";
 
-const token = Astro.cookies.get("access_token")?.value
+const session = await getSession(Astro.request)
+const user = session?.user
+console.log(user)
 
-async function getUser() {
-    const service = new AuthService();
-    try {
-        return service.profile(token)
-
-    } catch (error) {
-        console.log("error");
-    }
-}
-
-const user = await getUser()
 ---
 
 <RootLayout>

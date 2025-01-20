@@ -1,70 +1,73 @@
 <template>
   <div class="min-h-screen bg-gray-50/50 dark:bg-zinc-800">
-    <main class="npcontainer mx-auto px-4 py-8">
-      <div class="mb-8 text-center">
-        <h2 class="text-2xl font-medium text-gray-900 dark:text-white">Estado del Funcionamiento PCC CUJAE</h2>
-        <p class="text-gray-600 text-lg dark:text-gray-300 font-semibold">Comité UJC CUJAE</p>
-      </div>
+    <div class="max-w-[1600px] mx-auto p-6">
+      <!-- Main Card -->
+      <div >
+        <div class="mb-8 text-center">
+          <h2 class="text-2xl font-medium text-gray-900 dark:text-white">Estado del Funcionamiento PCC CUJAE</h2>
+          <p class="text-gray-600 text-lg dark:text-gray-300 font-semibold">Comité UJC CUJAE</p>
+        </div>
 
-      <div class="mb-8 rounded-lg border bg-white dark:bg-zinc-800 dark:border-gray-400 p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold">Filtros</h3>
-          <button @click="isFilterVisible = !isFilterVisible"
-                  class="flex items-center space-x-2 rounded px-4 py-2 text-sm font-medium hover:bg-gray-100">
-            <span>{{ isFilterVisible ? "Ocultar filtros" : "Mostrar filtros" }}</span>
-            <ChevronDownIcon
-                :class="{ 'rotate-180 transform': isFilterVisible }"
-                class="h-5 w-5 transition-transform duration-200"
+        <div class="mb-8 rounded-lg border bg-white dark:bg-zinc-800 dark:border-gray-400 p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Filtros</h3>
+            <button @click="isFilterVisible = !isFilterVisible"
+                    class="flex items-center space-x-2 rounded px-4 py-2 text-sm font-medium hover:bg-gray-100">
+              <span>{{ isFilterVisible ? "Ocultar filtros" : "Mostrar filtros" }}</span>
+              <ChevronDownIcon
+                  :class="{ 'rotate-180 transform': isFilterVisible }"
+                  class="h-5 w-5 transition-transform duration-200"
+              />
+            </button>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-3" v-show="isFilterVisible">
+            <div class="space-y-2">
+              <label class="text-md font-medium text-gray-700 dark:text-gray-300">Indicadores</label>
+              <select v-model="selectedIndicator" class="w-full rounded-md border border-gray-300 p-2 text-sm">
+                <option v-for="indicador in indicadores" :key="indicador.value" :value="indicador.value">{{
+                    indicador.text
+                  }}
+                </option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-md font-medium dark:text-gray-300 text-gray-700">Periodo</label>
+              <select v-model="selectedPeriod" class="w-full rounded-md border border-gray-300 p-2 text-sm">
+                <option value="1">Semestre 1</option>
+                <option value="2">Semestre 2</option>
+                <option value="3">Anual</option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-md font-medium dark:text-gray-300 text-gray-700">Año</label>
+              <input type="number" v-model="selectedYear" :max="current_year"
+                     class="w-full rounded-md border border-gray-300 p-2 text-sm"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border bg-white dark:bg-zinc-800 p-6 shadow-sm">
+          <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Comportamiento de Indicadores </h3>
+            <button @click="exportToPDF"
+                    class="inline-flex items-center rounded-md bg-gray-700 dark:bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+              Exportar
+            </button>
+          </div>
+
+          <div ref="chartContainer" class="h-[400px] w-full ">
+            <LineChart
+                class="dark:text-white"
+                :data="chartData"
+                :options="chartOptions"
             />
-          </button>
-        </div>
-
-        <div class="grid gap-6 md:grid-cols-3" v-show="isFilterVisible">
-          <div class="space-y-2">
-            <label class="text-md font-medium text-gray-700 dark:text-gray-300">Indicadores</label>
-            <select v-model="selectedIndicator" class="w-full rounded-md border border-gray-300 p-2 text-sm">
-              <option v-for="indicador in indicadores" :key="indicador.value" :value="indicador.value">{{
-                  indicador.text
-                }}
-              </option>
-            </select>
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-md font-medium dark:text-gray-300 text-gray-700">Periodo</label>
-            <select v-model="selectedPeriod" class="w-full rounded-md border border-gray-300 p-2 text-sm">
-              <option value="1">Semestre 1</option>
-              <option value="2">Semestre 2</option>
-              <option value="3">Anual</option>
-            </select>
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-md font-medium dark:text-gray-300 text-gray-700">Año</label>
-            <input type="number" v-model="selectedYear" :max="current_year"
-                   class="w-full rounded-md border border-gray-300 p-2 text-sm"/>
           </div>
         </div>
       </div>
-
-      <div class="rounded-lg border bg-white dark:bg-zinc-800 p-6 shadow-sm">
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-lg font-semibold">Comportamiento de Indicadores </h3>
-          <button @click="exportToPDF"
-                  class="inline-flex items-center rounded-md bg-gray-700 dark:bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
-            Exportar
-          </button>
-        </div>
-
-        <div ref="chartContainer" class="h-[400px] w-full ">
-          <LineChart
-              class="dark:text-white"
-              :data="chartData"
-              :options="chartOptions"
-          />
-        </div>
-      </div>
-    </main>
+    </div>
     <!-- Notification -->
     <div
         v-if="notification.show"
@@ -122,10 +125,8 @@ const chartData = ref<ChartData<'line'>>({labels: [], datasets: []})
 
 const indicadores = ref([
   { value: 'order', text: 'Puntos del Orden' },
-  { value: 'invitados', text: 'Invitados' },
-  //{ value: 'cp', text: 'CP' },
-  { value: 'cp_agree', text: 'CP Acuerdos' },
   { value: 'agreem', text: 'Total de Acuerdos' },
+  { value: 'invitados', text: 'Invitados' },
   { value: 'participant', text: 'Participación Org. Sup.' },
   { value: 'rendicion', text: 'Rendición' },
   { value: 'usoComisiones', text: 'Uso de Comisiones' },
@@ -142,12 +143,10 @@ const indicadores = ref([
   { value: 'otrosAnalisisDisciplinarios', text: 'Otros Análisis Disciplinarios' },
   { value: 'planDeTrabajo', text: 'Plan de Trabajo' },
   { value: 'sanciones', text: 'Sanciones' },
-  //{ value: 'crecimiento', text: 'Crecimiento' },
+  { value: 'crecimiento', text: 'Crecimiento' },
   { value: 'desactivacion', text: 'Desactivación' },
-  { value: 'evaluacion', text: 'Evaluación' },
-  { value: 'guardiaPCC', text: 'Guardia PCC' },
-  { value: 'acuerdosSalidasExternas', text: 'Acuerdos de Salidas Externas' },
-  { value: 'trasladosIncorporaciones', text: 'Traslados e Incorporaciones' }
+  { value: 'cp', text: 'Círculo Político' },
+  { value: 'cp_agree', text: 'Acuerdos CP' },
 ]);
 
 const selectedIndicatorText = indicadores.value.find(indicador => indicador.value === selectedIndicator.value)?.text || 'N/A';

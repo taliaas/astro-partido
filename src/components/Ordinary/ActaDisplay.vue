@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto">
-      <Card class="w-full">
+  <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[100rem] mx-auto">
+      <Card class="w-full bg-background p-6 shadow-md">
         <CardHeader>
           <div class="flex justify-between items-center">
             <CardTitle class="text-3xl font-bold">
@@ -17,7 +17,7 @@
           <div ref="infoActa" class="space-y-8">
             <!-- Información General -->
             <section>
-              <div class="flex gap-4">
+              <div class="flex text-lg gap-6">
                 <div class="card">
                   <span class="font-medium text-gray-700">Núcleo:</span>
                   {{ acta.core?.name }}
@@ -44,58 +44,62 @@
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Porciento:</span>
-                  {{ porciento }}%
+                  {{ porciento.toFixed(2) }}%
                 </div>
               </div>
             </section>
 
             <!-- Asistencia -->
-            <Section title="Miembros">
-              <Table v-if="acta.militante.length" class="">
-                <TableHeader>
+            <section title="Miembros">
+              <Table
+                v-if="acta.militante.length"
+                class="text-md rounded-lg border border-gray-300"
+              >
+                <TableHeader class="bg-gray-100">
                   <TableRow>
                     <TableHead>No.</TableHead>
                     <TableHead>Nombre</TableHead>
+                    <TableHead>Apellidos</TableHead>
                     <TableHead class="text-center">Presente</TableHead>
                     <TableHead class="text-center">Causa</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow
-                    v-for="miembro in acta.militante"
-                    :key="miembro.nro"
-                  >
+                  <TableRow v-for="miembro in list()" :key="miembro.nro">
                     <TableCell>{{ miembro.id }}</TableCell>
                     <TableCell>{{ miembro.firstname }}</TableCell>
+                    <TableCell>{{ miembro.lastname }}</TableCell>
                     <TableCell class="text-center">
-                      <Badge v-if="miembro.presente === 'X'" variant="success"
-                        >Presente
+                      <Badge
+                        v-if="miembro.ausente === 'ausente'"
+                        variant="success"
+                        >Ausente
                       </Badge>
                       <Badge
                         v-else-if="miembro.presente === 'Virtual'"
                         variant="info"
                         >Virtual
                       </Badge>
-                      <span v-else>{{ miembro.presente || "-" }}</span>
+                      <span v-else>Presente</span>
                     </TableCell>
                     <TableCell class="text-center">
-                      {{ miembro.causa || "-" }}
+                      {{ miembro.reason || "-" }}
                     </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
-            </Section>
+            </section>
 
             <!-- Orden del día -->
             <section>
-              <h2 class="text-xl font-semibold text-gray-800 mb-2">
+              <h2 class="text-2xl font-semibold text-gray-800 mb-2">
                 Orden del día
               </h2>
-              <ol class="list-decimal list-inside space-y-1">
+              <ol class="list-decimal list-inside space-y-1 text-blue-600">
                 <li
                   v-for="(item, index) in acta.order"
                   :key="index"
-                  class="text-md text-gray-600"
+                  class="text-lg text-gray-800 pl-4"
                 >
                   {{ item }}
                 </li>
@@ -103,8 +107,8 @@
             </section>
 
             <!-- Desarrollo de la reunión -->
-            <Section title="Desarrollo de la reunión">
-              <h2 class="text-xl font-semibold text-gray-800 mb-2">
+            <section title="Desarrollo de la reunión">
+              <h2 class="text-2xl font-semibold text-gray-800 mb-2">
                 Desarrollo de la reunión
               </h2>
               <Accordion type="single" collapsible class="text-xl">
@@ -191,14 +195,14 @@
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-            </Section>
+            </section>
 
             <!-- Próximas fechas -->
             <section class="space-y-2">
-              <h2 class="text-xl font-semibold text-gray-800 my-4">
+              <h2 class="text-2xl font-semibold text-gray-800 my-4">
                 Próximas fechas
               </h2>
-              <div class="text-md text-gray-600">
+              <div class="text-lg text-gray-600">
                 <div class="flex gap-3">
                   <span class="font-medium"
                     >Fecha de la Próxima Reunión Ordinaria:</span
@@ -222,6 +226,36 @@
             </section>
           </div>
         </CardContent>
+        <CardFooter class="flex justify-end border-t p-6">
+          <div class="flex gap-5" v-if="acta.status === 'Pendiente'">
+            <Button
+              type="button"
+              variant="ghost"
+              class="p-4 bg-gray-100 text-md font-medium text-gray-700 hover:bg-gray-200 hover:shadow-md"
+              @click="updateStatus(Status.R)"
+            >
+              {{ isSubmitting ? "Rechazando..." : "Rechazada" }}
+            </Button>
+            <button
+              class="bg-blue-600 text-white text-md font-medium px-4 rounded hover:bg-blue-700 hover:shadow-md"
+              @click="updateStatus(Status.A)"
+              :disabled="isSubmitting"
+            >
+              {{ isSubmitting ? "Aprobando..." : "Aprobada" }}
+            </button>
+          </div>
+          <div v-else-if="existsCP">
+            <Button
+              type="button"
+              variant="ghost"
+              class="p-6 text-md font-medium text-gray-700 hover:bg-gray-100"
+              @click="$emit('move')"
+            >
+              Acta de Círculo Político
+              <ArrowRight class="w-4 h-4" />
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   </div>
@@ -229,30 +263,43 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { DownloadIcon } from "lucide-vue-next";
+import { DownloadIcon, ArrowRight } from "lucide-vue-next";
 import { jsPDF } from "jspdf";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableHead,
-  TableRow,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import {
   Accordion,
+  AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  AccordionContent,
 } from "../ui/accordion";
+import OrdinaryService from "@/services/OrdinaryService.ts";
+import { Status } from "@/enum/Status.ts";
+import { navigate } from "astro:transitions/client";
 
-const { acta } = defineProps<{
-  acta: string;
+const { acta, existsCP } = defineProps<{
+  acta: any;
+  existsCP?: boolean;
 }>();
+console.log("Acta Ordinaria", existsCP)
+defineEmits(["move"]);
 
+const isSubmitting = ref(false);
 const infoActa = ref<HTMLElement | null>(null);
 const totalMilitantes = acta.militante.length || 0;
 const totalAusentes = acta.abscents.length || 0;
@@ -360,6 +407,32 @@ const exportar = () => {
 
   // Guardar el PDF
   pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`);
+};
+
+const updateStatus = async (status) => {
+  const service = new OrdinaryService();
+  isSubmitting.value = true;
+  try {
+    await service.updateStatusMinutes(acta.id, status);
+    await navigate("/minutes");
+  } catch (e) {
+    throw new Error(e);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+const list = () => {
+  return acta.militante.map((militante) => {
+    const ausencia = acta.abscents.find(
+      (a) => a.militante?.id === militante?.id,
+    );
+    console.log(acta.abscents);
+    return {
+      ...militante,
+      reason: ausencia?.reason,
+    };
+  });
 };
 </script>
 

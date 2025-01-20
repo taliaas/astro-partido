@@ -2,7 +2,7 @@
   <Card>
     <CardHeader>
       <CardTitle>KPIs Principales</CardTitle>
-      <CardDescription>Indicadores clave de rendimiento identificados</CardDescription>
+      <CardDescription>Indicadores clave de rendimiento del mes actual y comparación con el anterior mes</CardDescription>
     </CardHeader>
     <CardContent>
       <div class="space-y-4">
@@ -13,7 +13,7 @@
             <p class="text-sm text-muted-foreground">{{ data.description }}</p>
           </div>
           <div class="text-right">
-            <p class="text-2xl font-bold text-blue-500">{{ data.porcen }} %</p>
+            <p class="text-2xl font-bold text-blue-500">{{ data.porcen }} </p>
             <p :class="data.trend > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600'"
                class="text-sm font-semibold">
               {{ data.trend > 0 ? '+' : '' }}{{ data.trend }} vs mes anterior
@@ -27,27 +27,7 @@
 
 <script setup lang="ts">
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {ref} from "vue"
 
 const {kpis: updatedData} = defineProps<{ kpis: any[] }>()
 
-const data = ref([
-  {
-    id: 1,
-    title: 'Acuerdos',
-    name: 'acuerdos',
-    description: 'Comportamiento de acuerdos en el último mes',
-    porcen: 2,
-    trend: 0
-  },
-  {
-    id: 2,
-    title: 'Participantes',
-    name: 'participantes',
-    description: 'Asistencia de participantes',
-    porcen: 3,
-    trend: 0
-  },
-  {id: 3, title: 'Invitados', name: 'invitados', description: 'Asistencia de invitados', porcen: 4, trend: 0}
-])
 </script>

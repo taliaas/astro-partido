@@ -1,7 +1,7 @@
-export default class AreaService {
+export default class ComiteService {
     async createCore(areaData: { name: string }) {
         try {
-            const response = await fetch(`https://part-back.onrender.com/area`, {
+            const response = await fetch(`https://part-back.onrender.com/comite`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -17,9 +17,9 @@ export default class AreaService {
         }
     }
 
-    async getAllArea() {
+    async getAllComite() {
         try {
-            const response = await fetch(`https://part-back.onrender.com/area`, {
+            const response = await fetch(`https://part-back.onrender.com/comite`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,0 +1,20 @@
+---
+import ComiteService from "../../services/ComiteService";
+import CoreContainer from "../../components/Core/Core.vue";
+import RootLayout from "../../layouts/RootLayout.astro";
+
+async function getArea() {
+    const services = new ComiteService()
+    try {
+        return services.getAllArea()
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+const area = await getArea()
+---
+
+<RootLayout>
+    <CoreContainer area={area} client:load />
+</RootLayout>

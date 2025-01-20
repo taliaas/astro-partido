@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+  <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:bg-zinc-800">
     <div class="max-w-[1600px] mx-auto p-6">
       <!-- Main Card -->
       <div
@@ -100,7 +100,16 @@
                     {{ nucleo }}
                   </option>
                 </select>
-
+                <select v-model="selectFecha" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
+                  <option value="">Todos los meses</option>
+                  <option
+                      v-for="mes in meses"
+                      :key="mes"
+                      :value="mes"
+                  >
+                    {{ mes }}
+                  </option>
+                </select>
                 <select
                   v-model="selectedStatus"
                   class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full"
@@ -172,8 +181,8 @@
                   :key="acta.id"
                   class="hover:bg-gray-50/50 transition-colors duration-200"
                 >
-                  <TableCell class="font-medium">{{ acta.id }}</TableCell>
-                  <TableCell>{{ acta.name }} {{ acta.id }}</TableCell>
+                  <TableCell class="font-medium pl-8">{{ acta.id }}</TableCell>
+                  <TableCell class="pl-6">{{ acta.name }} {{ acta.id }}</TableCell>
                   <TableCell class="text-left">{{ acta.core.name }}</TableCell>
                   <TableCell class="text-left">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-left">
@@ -202,7 +211,7 @@
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          v-if="acta.name === 'Acta Ordinaria'"
+                          v-if="acta.name === 'Acta Ordinaria' && acta.status === 'Aprobada'"
                           @click="handleAction('procesar', acta)"
                         >
                           <Edit class="h-4 w-4" />
@@ -433,13 +442,19 @@ const nucleos = computed(() => {
   return [...new Set(actas.map((item) => item.core.name))];
 });
 
+const meses = [
+    "Enero",
+    "Febrero",
+    "Marzo"
+]
+
 const statuses = computed(() => {
   return [...new Set(actas.map((item) => item.status))];
 });
 
 const filteredActas = computed(() => {
   return actas.filter((item) => {
-    if (selectedNucleo.value && item.core.name !== selectedNucleo.value)
+    if ((selectedNucleo.value && item.core.name !== selectedNucleo.value) || (selectedStatus.value && item.status !== selectedStatus.value))
       return false;
     return true;
   }).sort((a,b)=>{
@@ -455,6 +470,7 @@ const filteredActas = computed(() => {
   });
 });
 
+const selectFecha = ref("");
 const selectedNucleo = ref("");
 const selectedStatus = ref("");
 const filters = ref({
@@ -531,12 +547,12 @@ function handleTab(tab) {
 }
 
 //cargar acta
-const handleDrop = (event) => {
+const handleDrop = async (event) => {
   isDragging.value = false;
   const files = Array.from(event.dataTransfer.files);
   const service = new MinutesService()
   try{
-    return await service.upload(files)
+    await service.upload(files)
     showUploadDialog.value = false;
     uploadedFiles.value = [];
   }

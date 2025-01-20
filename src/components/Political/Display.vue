@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto shadow-md">
       <Card class="w-full">
         <CardHeader>
@@ -20,7 +20,7 @@
               <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Información General
               </h2>
-              <div class="flex gap-4">
+              <div class="flex gap-4 text-lg">
                 <div class="card">
                   <span class="font-medium text-gray-700">Núcleo:</span>
                   {{ acta.core?.name }}
@@ -37,114 +37,187 @@
                   <span class="font-medium text-gray-700">Hora:</span>
                   {{ acta.hora }}
                 </div>
+                <div class="card">
+                  <span class="font-medium text-gray-700">Ausentes:</span>
+                  {{ acta.ausentes }}
+                </div>
+                <div class="card">
+                  <span class="font-medium text-gray-700">Total:</span>
+                  {{ acta.total }}
+                </div>
+                <div class="card">
+                  <span class="font-medium text-gray-700">Porciento:</span>
+                  {{ acta.porciento }}
+                </div>
               </div>
             </section>
 
             <!-- Asistencia -->
-            <Section title="Asistencia">
-              <p class="mb-4 text-md text-gray-700">
-                Se encuentran presentes {{ presentes }} miembros de un total de {{ acta.total }}
-                posibles a asistir para un {{ acta.porciento }}% de asistencia.
-              </p>
-              <div v-if="acta.causa.length !== 0">
-                <h3 class="font-medium text-gray-700 my-4">Causas: </h3>
-                <div v-for="(causa, index) in acta.causa" :key="index" class="mb-4">
-                  <p>{{causa}}</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4 text-md text-gray-700">
+            <section title="Asistencia">
+              <div class="grid grid-cols-2 gap-4 text-lg text-gray-700">
                 <div class="flex">
-                  <h3 class="font-medium text-gray-700">Total de trabajadores:</h3>
+                  <h3 class="font-medium text-gray-700">
+                    Total de trabajadores:
+                  </h3>
                   <p class="ml-8">{{ acta.total_trabajador }}</p>
                 </div>
                 <div class="flex">
-                  <h3 class="font-medium text-gray-700">Por el organismo superior:</h3>
+                  <h3 class="font-medium text-gray-700">
+                    Total del organismo superior:
+                  </h3>
                   <p class="ml-8">{{ acta.total_organismo }}</p>
                 </div>
               </div>
-            </Section>
+              <div v-if="acta.causa.length !== 0">
+                <h3 class="font-medium text-lg text-gray-700 my-4">Causas:</h3>
+                <div
+                  v-for="(causa, index) in acta.causa"
+                  :key="index"
+                  class="mb-4 bg-gray-100 p-2 rounded text-gray-700 pl-4 font-medium"
+                >
+                  {{ causa }}
+                </div>
+              </div>
+            </section>
 
             <!-- Orden del día -->
             <section>
               <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Tema evaluado en la reunión
               </h2>
-              <p>{{ acta.tema }}</p>
+              <p class="text-md p-2">{{ acta.tema }}</p>
             </section>
 
             <!-- Desarrollo de la reunión -->
-            <Section title="Planteamientos">
-              <h2 class="text-xl font-semibold text-gray-800 mb-2">
+            <section title="Planteamientos">
+              <h2 class="text-xl font-semibold text-gray-800 mb-2 ">
                 Principales planteamientos realizados
               </h2>
-              <div v-for="(punto, index) in acta.planteamientos" :key="index" class="mb-4">
-                <p>{{ punto }}</p>
+              <div class="mb-4 text-md pr-6 pl-2">
+                <p class="text-justify">{{ acta.planteamientos }}</p>
               </div>
-            </Section>
-            <Section title="Valoracion">
+            </section>
+            <section title="Valoracion">
               <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Valoración
               </h2>
-              <p>{{ acta.valoracion }}</p>
-            </Section>
+              <p class="text-md p-2">{{ acta.valoracion }}</p>
+            </section>
 
             <!-- Próximas fechas -->
             <section class="">
-              <h2 class="text-xl font-semibold text-gray-800 my-4">
-                Firma del orientador político y el secretario del núcleo.
-              </h2>
-              <div class="grid grid-cols-2 gap-4 text-md text-gray-700">
-                <span>{{ acta.name_orientador }}</span>
-                <span>{{ acta.name_secretario }}</span>
+              <h2 class="text-xl font-semibold text-gray-800 my-4">Firmas</h2>
+              <div
+                class="flex flex-col space-y-4 text-lg p-2 text-gray-700 font-semibold"
+              >
+                <div class="flex gap-4">
+                  Orientador Político:
+                  <p class="font-normal">{{ acta.name_orientador }}</p>
+                </div>
+                <div class="flex gap-4">
+                  Secretario del Núcleo:
+                  <p class="font-normal">{{ acta.name_secretario }}</p>
+                </div>
               </div>
             </section>
           </div>
         </CardContent>
+        <CardFooter class="flex justify-end border-t p-6">
+          <div class="flex gap-5" v-if="acta.status === 'Pendiente'">
+            <Button
+              type="button"
+              variant="ghost"
+              class="p-4 bg-gray-100 text-md font-medium text-gray-700 hover:bg-gray-200 hover:shadow-md"
+              @click="updateStatus(Status.R)"
+            >
+              {{ isSubmitting ? "Rechazando..." : "Rechazada" }}
+            </Button>
+            <button
+              class="bg-blue-600 text-white text-md font-medium px-4 rounded hover:bg-blue-700 hover:shadow-md"
+              @click="updateStatus(Status.A)"
+              :disabled="isSubmitting"
+            >
+              {{ isSubmitting ? "Aprobando..." : "Aprobada" }}
+            </button>
+          </div>
+          <div v-if="acta.status === 'Aprobada'">
+            <Button
+              type="button"
+              variant="ghost"
+              class="p-6 text-lg font-medium text-gray-700 hover:bg-gray-100"
+              @click="$emit('move')"
+            >
+              <ArrowLeft class="w-4 h-4" />
+              Acta Ordinaria
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { DownloadIcon } from 'lucide-vue-next'
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { ref } from "vue";
+import { ArrowLeft, DownloadIcon } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { jsPDF } from "jspdf";
+import { Status } from "@/enum/Status.ts";
+import { navigate } from "astro:transitions/client";
+import PoliticalService from "@/services/PoliticalService.ts";
 
 const { acta } = defineProps<{
-  acta: string;
+  acta: any;
 }>();
 
-const presentes = 12;
-const infoActa = ref<HTMLElement | null>(null)
+defineEmits(["move"]);
 
+const infoActa = ref<HTMLElement | null>(null);
+const updateStatus = async (status) => {
+  const service = new PoliticalService();
+  isSubmitting.value = true;
+  try {
+    await service.updateStatusMinutes(acta.id, status);
+    await navigate("/minutes");
+  } catch (e) {
+    throw new Error(e);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 const exportar = () => {
-  const pdf = new jsPDF()
-  let yPos = 90
+  const pdf = new jsPDF();
+  let yPos = 90;
 
   // Título
-  pdf.setFontSize(18)
-  pdf.text(`${acta.name} ${acta.id}`, 14, 15)
+  pdf.setFontSize(18);
+  pdf.text(`${acta.name} ${acta.id}`, 14, 15);
 
   // Información General
-  pdf.setFontSize(14)
-  pdf.text('Información General', 14, 25)
-  pdf.setFontSize(10)
-  pdf.text(`Núcleo: ${acta.core?.name}`, 14, 35)
-  pdf.text(`Fecha: ${acta.fecha}`, 14, 40)
-  pdf.text(`Lugar: ${acta.lugar}`, 14, 45)
-  pdf.text(`Hora: ${acta.hora}`, 14, 50)
+  pdf.setFontSize(14);
+  pdf.text("Información General", 14, 25);
+  pdf.setFontSize(10);
+  pdf.text(`Núcleo: ${acta.core?.name}`, 14, 35);
+  pdf.text(`Fecha: ${acta.fecha}`, 14, 40);
+  pdf.text(`Lugar: ${acta.lugar}`, 14, 45);
+  pdf.text(`Hora: ${acta.hora}`, 14, 50);
 
   // Asistencia
-  pdf.setFontSize(14)
-  pdf.text('Asistencia', 14, 60)
-  pdf.setFontSize(10)
-  pdf.text(`Total: ${acta.total}`, 14, 70)
-  pdf.text(`Ausentes: ${acta.ausentes}`, 14, 75)
-  pdf.text(`Presentes: ${presentes}`, 14, 80 )
-  pdf.text(`Total de trabajadores presentes: ${acta.total_trabajador}`, 14, 85 )
-  pdf.text(`Por el organismo superior: ${acta.total_organismo}`, 14, 90 )
+  pdf.setFontSize(14);
+  pdf.text("Asistencia", 14, 60);
+  pdf.setFontSize(10);
+  pdf.text(`Total: ${acta.total}`, 14, 70);
+  pdf.text(`Ausentes: ${acta.ausentes}`, 14, 75);
+  pdf.text(`Presentes: ${presentes}`, 14, 80);
+  pdf.text(`Total de trabajadores presentes: ${acta.total_trabajador}`, 14, 85);
+  pdf.text(`Por el organismo superior: ${acta.total_organismo}`, 14, 90);
   // acta.causas.forEach((causa) => {
   //   pdf.setFontSize(10)
   //   const splitCausa = pdf.splitTextToSize(causa, 180)
@@ -153,45 +226,45 @@ const exportar = () => {
   // })
 
   // Tema
-  yPos += 5
-  pdf.setFontSize(14)
-  pdf.text('Tema evaluado en la reunión:', 14, yPos+5)
-  pdf.setFontSize(10)
-  const split = pdf.splitTextToSize(`${acta.tema}`, 180)
-  pdf.text(split, 14, yPos+10)
+  yPos += 5;
+  pdf.setFontSize(14);
+  pdf.text("Tema evaluado en la reunión:", 14, yPos + 5);
+  pdf.setFontSize(10);
+  const split = pdf.splitTextToSize(`${acta.tema}`, 180);
+  pdf.text(split, 14, yPos + 10);
 
-// Planteamiento
-  pdf.setFontSize(14)
-  pdf.text('Principales planteamientos realizados: ', 14, 120)
-  yPos = 125
+  // Planteamiento
+  pdf.setFontSize(14);
+  pdf.text("Principales planteamientos realizados: ", 14, 120);
+  yPos = 125;
   acta.planteamientos.forEach((planteam) => {
-    pdf.setFontSize(10)
-    const splitAcuerdo = pdf.splitTextToSize(planteam, 180)
-    pdf.text(splitAcuerdo, 14, yPos + 5)
-    yPos += 20 + (splitAcuerdo.length * 5)
-  })
+    pdf.setFontSize(10);
+    const splitAcuerdo = pdf.splitTextToSize(planteam, 180);
+    pdf.text(splitAcuerdo, 14, yPos + 5);
+    yPos += 20 + splitAcuerdo.length * 5;
+  });
 
   //Valoracion
-  pdf.setFontSize(14)
-  pdf.text('Valoración de la reunión: ', 14, yPos+5)
-  pdf.setFontSize(10)
-  yPos += 5
-  pdf.text(`${acta.valoracion}`, 14, yPos+5 )
+  pdf.setFontSize(14);
+  pdf.text("Valoración de la reunión: ", 14, yPos + 5);
+  pdf.setFontSize(10);
+  yPos += 5;
+  pdf.text(`${acta.valoracion}`, 14, yPos + 5);
 
-  yPos += 10
-  pdf.setFontSize(12)
-  pdf.text(`Orientador político:`, 14, yPos+5)
-  pdf.setFontSize(10)
-  pdf.text(`${acta.name_orientador}`, 14, yPos+10)
-  yPos += 15
-  pdf.setFontSize(12)
-  pdf.text(`Secretario del núcleo:`, 14, yPos+5)
-  pdf.setFontSize(10)
-  pdf.text(`${acta.name_secretario}`, 14, yPos+10)
+  yPos += 10;
+  pdf.setFontSize(12);
+  pdf.text(`Orientador político:`, 14, yPos + 5);
+  pdf.setFontSize(10);
+  pdf.text(`${acta.name_orientador}`, 14, yPos + 10);
+  yPos += 15;
+  pdf.setFontSize(12);
+  pdf.text(`Secretario del núcleo:`, 14, yPos + 5);
+  pdf.setFontSize(10);
+  pdf.text(`${acta.name_secretario}`, 14, yPos + 10);
 
   // Guardar el PDF
-  pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`)
-}
+  pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`);
+};
 </script>
 
 <style scoped>
@@ -201,7 +274,7 @@ const exportar = () => {
 
 @layer components {
   .card {
-    @apply border flex flex-col rounded-lg p-2 px-4 w-fit text-gray-600 min-w-32;
+    @apply border flex flex-col rounded-lg p-2 px-4 w-fit text-gray-600 min-w-32 hover:shadow-md;
   }
 }
 </style>

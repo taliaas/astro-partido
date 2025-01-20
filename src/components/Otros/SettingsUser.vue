@@ -26,52 +26,70 @@
 
     <div class="max-w-7xl mx-auto p-4 mt-6 bg-white shadow-md rounded">
       <!-- Usuarios del sistema -->
-      <div v-if="activeTab === 'usuarios'" class="space-y-6">
-        <div class="flex justify-between">
-          <h2 class="text-2xl font-medium text-gray-800">Usuarios del Sistema</h2>
+      <div v-if="activeTab === 'usuarios'" class="space-y-6 p-4">
+        <div class="flex justify-between p-6">
+          <h2 class="text-2xl font-medium text-gray-700 ">Usuarios del Sistema</h2>
           <button @click="activeUser = true"
-                  class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 ease-in-out"
+                  class="px-4 py-2 mr-4 bg-blue-600 flex gap-2 text-white rounded text-md font-medium hover:bg-blue-700"
           >
-            <UserPlusIcon class="inline-block mr-2"/>
+            <PlusIcon class="inline-block mr-2"/>
             Usuario
           </button>
         </div>
         <div class="overflow-x-auto">
-          <table class="min-w-full bg-white">
-            <thead>
-            <tr class="border-b text-gray-700 font-normal bg-gray-100">
-              <th v-for="header in tableHeaders" :key="header"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ header }}
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="user in users" :key="user.id" class="border-b hover:bg-gray-50">
-              <td class="py-2 px-4 text-left">{{ user.name }}</td>
-              <td class="py-2 px-4 text-center">{{ user.email }}</td>
-              <td class="px-4 py-2 text-center whitespace-nowrap">
-                  <span
-                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
-                  >
-                    {{ user.rol }}
-                  </span>
-              </td>
-              <td class="px-6 py-4 text-center whitespace-nowrap">
-                  <span
-                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
-                  >
-                    Activo
-                  </span>
-              </td>
-              <td class="py-2 px-4 text-center">
-                <button @click="handleAction('delete',user.id)" class="text-red-600 hover:text-red-800">
-                  <TrashIcon class="h-5 w-5"/>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+          <Table class="p-2 border">
+            <TableHeader
+                class="px-6 py-3 text-left rounded border font-medium text-gray-500 uppercase tracking-wider"
+            >
+              <TableRow>
+                <th
+                    v-for="header in tableHeaders"
+                    :key="header"
+                    class="px-6 py-3 text-left text-xs bg-gray-100 font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {{ header }}
+                </th>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                  v-for="(user, index) in users"
+                  :key="user.id"
+                  class="hover:bg-gray-50/50 text-lg transition-colors duration-200"
+              >
+                <TableCell class="font-medium pl-8">{{ index + 1 }}</TableCell>
+                <TableCell class="pl-6">{{ user.name }}</TableCell>
+                <TableCell class="text-left">{{ user.email }}</TableCell>
+                <TableCell class="text-left">{{ user.rol }}</TableCell>
+                <TableCell class="text-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger class="focus:outline-none">
+                      <Button
+                          variant="ghost"
+                          size="icon"
+                          class="rounded-full"
+                      >
+                        <MoreVerticalIcon class="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem @click="handleAction('editar', user)">
+                        <Pencil class="h-4 w-4" />
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                          @click="handleAction('eliminar', user)"
+                          class="text-red-600 border-t focus:text-red-600"
+                      >
+                        <TrashIcon class="h-4 w-4" />
+                        Eliminar
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
       </div>
 
@@ -223,7 +241,8 @@
         </div>
         <div class="flex justify-end space-x-3">
           <button
-              type="submit"
+              @click="activeUser = false"
+              type="button"
               class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Cancelar
@@ -260,25 +279,50 @@
                 class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
                 @click="deleteUser"
             >
-              OK
+              Aceptar
             </button>
           </div>
         </form>
       </div>
     </div>
+    <!-- Notification -->
+    <div
+        v-if="notification.show"
+        class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
+        :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
+    >
+      {{ notification.message }}
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {Bell, CogIcon, FileTextIcon, ShieldIcon, TrashIcon, UserPlusIcon, UsersIcon,} from "lucide-vue-next";
+import {
+  Bell,
+  CogIcon,
+  FileTextIcon,
+  ShieldIcon,
+  TrashIcon,
+  PlusIcon,
+  UsersIcon,
+  MoreVerticalIcon, Pencil, Edit, ArrowUp, ArrowDown, Download, Eye,
+} from "lucide-vue-next";
 import {reactive, ref} from "vue";
 import UserService from "../../services/UserService.ts";
 import {Button} from "@/components/ui/button";
 import {navigate} from "astro:transitions/client";
 import {Input} from "@/components/ui/input";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {Table, TableBody, TableCell, TableHeader, TableRow} from "@/components/ui/table";
+import {Badge} from "@/components/ui/badge";
 
+const currentsUser = ref(null);
 const {users} = defineProps<{ users: any[] }>()
-
+const notification = reactive({
+  show: false,
+  message: '',
+  type: 'success'
+})
 const activeTab = ref("usuarios");
 const activeUser = ref(false)
 
@@ -324,10 +368,11 @@ const menuItems = [
 const showDelete = ref(false)
 
 const tableHeaders = [
+    'No.',
   'Nombre',
   'Correo',
   'Rol',
-  'Estado',
+  '',
 ]
 const handleDelete = () => {
   showDelete.value = false
@@ -352,20 +397,33 @@ async function createUser(){
   }
 }
 
+const showNotification = (message, type = 'success') => {
+  notification.show = true
+  notification.message = message
+  notification.type = type
+  setTimeout(() => {
+    notification.show = false
+  }, 3000)
+}
 const handleAction = (action, user) => {
+  console.log(user)
+  currentsUser.value = user;
   if (action === "eliminar") {
     showDelete.value = true
-  } else if (action === 'editar') {
-    navigate(`/edit/${user}`)
   }
 }
 
-async function deleteUser(id: number) {
+async function deleteUser() {
+  const user = currentsUser.value;
+  const id = user.id
+  console.log(id)
   const service = new UserService();
   try {
     await service.removeUser(id);
+    showNotification('Se eliminó correctamente el usuario')
     showDelete.value = false
   } catch (e) {
+    showNotification('Error al eliminar el usuario', e)
     console.error(e)
   }
 }

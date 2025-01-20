@@ -7,7 +7,7 @@ const { path } = defineProps<{
 const navigationItems = [
     { name: 'Inicio', href: '/home' },
     { name: 'Funcionamiento', href: '/minutes' },
-    { name: 'Análisis', href: '/cierrefunc' },
+    { name: 'Análisis', href: '/analisis_indicador' },
     { name: 'Reportes', href: '/estadofunc' }
 ]
 

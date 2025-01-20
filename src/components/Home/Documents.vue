@@ -11,26 +11,34 @@
         <div
           v-for="doc in documents"
           :key="doc.id"
-          class="border rounded-lg p-4"
+          class="border rounded-lg p-4 flex justify-between"
         >
-          <h3 class="font-semibold mb-2">{{doc.name}} {{ doc.id }}</h3>
-          <p class="text-sm text-muted-foreground mb-2">{{ doc.fecha }}</p>
-          <div class="flex space-x-2">
+          <div class="">
+            <h3 class="text-lg font-semibold mb-2 pl-2">{{doc.name}} {{ doc.id }}</h3>
+            <p class="text-sm text-muted-foreground font-medium pl-3 mb-2">{{ doc.fecha }}</p>
+
             <Button
-              variant="outline"
-              @click="openMinute(doc.id)"
-              class="rounded border-gray-300 shadow-md"
-              size="sm"
-              >Ver Detalles</Button
-            >
-            <Button
-              variant="outline"
-              class="rounded border-gray-300 shadow-md"
-              size="sm"
-              @click="exportarActa(doc)"
-              >Descargar</Button
+                variant="link"
+                @click="openMinute(doc.id)"
+                class="hover:text-blue-600"
+                size="sm"
+            >Ver Detalles</Button
             >
           </div>
+          <div class="flex space-y-2 flex-col ">
+            <Button
+              variant="ghost"
+              class="border border-gray-200 hover:border-gray-200"
+              size="sm"
+              @click="exportarActa(doc)"
+              >
+              <Download class="w-4 h-4" />
+            </Button
+            >
+          </div>
+        </div>
+        <div v-if="documents.length === 0">
+          <p class="text-gray-700 font-semibold">No hay documentos recientes</p>
         </div>
       </div>
     </CardContent>
@@ -51,6 +59,7 @@ import type MinuteOrdinary from "@/interface/MinuteOrdinary.ts";
 import type MinutePolitical from "@/interface/MinutePolitical.ts";
 import {exportarRO} from "@/lib/export_ro.ts";
 import {exportar} from "@/lib/export_cp.ts";
+import {Download} from "lucide-vue-next";
 
 const { documents } = defineProps<{ documents: any[] }>();
 
