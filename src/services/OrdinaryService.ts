@@ -1,7 +1,8 @@
 import type Minute from "@/interface/MinuteOrdinary";
 import type { Status } from "@/enum/Status.ts";
 
-const API_URL = "https://part-back.onrender.com/minutes-ordinary";
+// const API_URL = "https://part-back.onrender.com/minutes-ordinary";
+const API_URL = "http://localhost:3000/minutes-ordinary";
 
 export default class OrdinaryService {
 
@@ -182,7 +183,6 @@ export default class OrdinaryService {
     try {
       const response = await fetch(`${API_URL}/upload`, {
         method: "POST",
-        headers: { "Content-Type": "multipart/form-data", },
         body: formData
       });
       if (!response.ok) {
