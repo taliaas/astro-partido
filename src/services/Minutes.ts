@@ -11,6 +11,7 @@ export default class MinutesService{
                     "Content-Type": "application/json",
                 },
             });
+            console.log(files)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

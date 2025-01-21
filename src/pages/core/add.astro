@@ -6,7 +6,7 @@ import RootLayout from "../../layouts/RootLayout.astro";
 async function getArea() {
     const services = new ComiteService()
     try {
-        return services.getAllArea()
+        return services.getAllComite()
     } catch (e) {
         console.error(e)
     }
@@ -16,5 +16,5 @@ const area = await getArea()
 ---
 
 <RootLayout>
-    <CoreContainer area={area} client:load />
+    <CoreContainer areas={area} client:load />
 </RootLayout>

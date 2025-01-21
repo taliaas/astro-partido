@@ -91,7 +91,7 @@ export default class ComputoService {
             return await response.json();
         } catch (error) {
             console.error('Fetch error:', error);
-            throw new error;
+            throw new Error;
         }
     }
 

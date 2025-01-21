@@ -6,7 +6,7 @@ export default interface MinutePolitical {
     status: Status
     core: any
     fecha: Date;
-    hora: Timestamp;
+    hora: any;
     lugar: string;
     createdAt: Date;
     total: number;
