@@ -22,17 +22,17 @@ export function exportarRO (acta: any)  {
     //invitados o participantes
 
     // Orden del día
-    // pdf.setFontSize(14)
-    // pdf.text('Orden del día', 14, yPos+5)
-    // yPos += 5
-    // acta.order.forEach((item: any, index: number) => {
-    //     pdf.setFontSize(10)
-    //     const split = pdf.splitTextToSize(item, 180)
-    //     pdf.text(`${index + 1}. ${item}`, 14, yPos + 5)
-    //     yPos += 20 + (split.length * 5)
-    // })
-    //
-    // // Desarrollo de la reunión
+    pdf.setFontSize(14)
+    pdf.text('Orden del día', 14, yPos+5)
+    yPos += 5
+    acta.order.forEach((item: any, index: number) => {
+        pdf.setFontSize(10)
+        const split = pdf.splitTextToSize(item, 180)
+        pdf.text(`${index + 1}. ${item}`, 14, yPos + 5)
+        yPos += 20 + (split.length * 5)
+    })
+
+    // Desarrollo de la reunión
     pdf.addPage()
      pdf.setFontSize(14)
      pdf.text('Desarrollo de la reunión', 14, 15)
@@ -75,28 +75,28 @@ export function exportarRO (acta: any)  {
         yPos += 20 + (splitAcuerdo.length * 5)
     })
 
-    // // Salidas al extranjero
-    // pdf.setFontSize(14)
-    // pdf.text('5. Salidas al extranjero', 14, 15)
-    // yPos = 25
-    // acta.extranjero.forEach((salida: any, index:number) => {
-    //     pdf.setFontSize(11)
-    //     pdf.text(`Salida ${index + 1}:`, 14, yPos+5)
-    //     pdf.setFontSize(10)
-    //     pdf.text(`País: ${salida.pais} | Fecha: ${salida.fecha}`, 14, yPos + 5)
-    //     const splitAcuerdo = pdf.splitTextToSize(salida.acuerdo, 180)
-    //     pdf.text(`Acuerdo: ${splitAcuerdo}`, 14, yPos + 10)
-    //     yPos += 20 + (splitAcuerdo.length * 5)
-    // })
-    //
-    // // Próximas fechas
-    // pdf.setFontSize(14)
-    // yPos +=10
-    // pdf.text('Próximas fechas', 14,  yPos+5)
-    // pdf.setFontSize(10)
-    // pdf.text(`Fecha de la Próxima Reunión Ordinaria: ${acta.fechaProx}`, 14, yPos + 10)
-    // pdf.text(`Fecha de la Preparación de la Próxima Reunión Ordinaria: ${acta.fechaPrep}`, 14, yPos + 15)
-    // pdf.text(`Fecha del Próximo Círculo de Estudios Políticos: ${acta.fechaCP}`, 14, yPos + 20)
+    // Salidas al extranjero
+    pdf.setFontSize(14)
+    pdf.text('5. Salidas al extranjero', 14, 15)
+    yPos = 25
+    acta.extranjero.forEach((salida: any, index:number) => {
+        pdf.setFontSize(11)
+        pdf.text(`Salida ${index + 1}:`, 14, yPos+5)
+        pdf.setFontSize(10)
+        pdf.text(`País: ${salida.pais} | Fecha: ${salida.fecha}`, 14, yPos + 5)
+        const splitAcuerdo = pdf.splitTextToSize(salida.acuerdo, 180)
+        pdf.text(`Acuerdo: ${splitAcuerdo}`, 14, yPos + 10)
+        yPos += 20 + (splitAcuerdo.length * 5)
+    })
+
+    // Próximas fechas
+    pdf.setFontSize(14)
+    yPos +=10
+    pdf.text('Próximas fechas', 14,  yPos+5)
+    pdf.setFontSize(10)
+    pdf.text(`Fecha de la Próxima Reunión Ordinaria: ${acta.fechaProx}`, 14, yPos + 10)
+    pdf.text(`Fecha de la Preparación de la Próxima Reunión Ordinaria: ${acta.fechaPrep}`, 14, yPos + 15)
+    pdf.text(`Fecha del Próximo Círculo de Estudios Políticos: ${acta.fechaCP}`, 14, yPos + 20)
 
     // Guardar el PDF
     pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`)

@@ -47,74 +47,38 @@
           <AccordionItem value="item-2">
             <AccordionTrigger>2. Asistencia</AccordionTrigger>
              <AccordionContent>
-              <div class="space-y-4 text-gray-700 text-md font-medium p-2">
-                <div class="gap-4 flex">
-                  <div>
-                    <label>Total: </label>
-                    <Input type="number" id="total" name="total" v-model="acta.total"
-                           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
-                  </div>
-                  <div>
-                    <label>Ausentes: </label>
-                    <Input type="number" id="ausentes" name="ausentes" v-model="acta.ausentes"
-                           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
-                  </div>
-                  <div>
-                    <label>Total de trabajadores: </label>
-                    <Input type="number" id="total_trabajador" name="total_trabajador" v-model="acta.total_trabajador"
-                           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
-                  </div>
-                  <div>
-                    <label>Total del organismo: </label>
-                    <Input type="number" id="total_organismo" name="total_organismo" v-model="acta.total_organismo"
-                           class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200" />
-                  </div>
-                </div>
-                <div>
-                  <div class="space-y-2">
-                    <div class="flex justify-between">
-                      <h3 class="text-lg font-medium text-gray-800 flex items-center">
-                        Causas de Ausencias
-                      </h3>
-                      <button
-                          @click="addAusencia"
-                          type="button"
-                          class="group inline-flex items-center bg-white m-3 justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
-                      >
-                        <PlusIcon
-                            class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
-                        />
-                        Agregar Ausencia
-                      </button>
-                    </div>
-                    <TransitionGroup name="list" tag="div" class="space-y-2">
-                      <div
-                          v-for="(ausencia, index) in formData.causa"
-                          :key="index"
-                          class="flex space-x-2"
-                      >
-                        <Input
-                            v-model="ausencia.nombre"
-                            type="text"
-                            class="flex-1 px-3 py-2 focus:outline-none border text-gray-500 border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                            placeholder="Nombre"
-                        />
-                        <Input
-                            v-model="ausencia.motivo"
-                            type="text"
-                            class="flex-1 px-3 py-2 border focus:outline-none text-gray-500 border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                            placeholder="Motivo"
-                        />
-                        <button
-                            @click="removeAusencia(index)"
-                            type="button"
-                            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded text-red-600 bg-gray-50 hover:bg-gray-200 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
-                        >
-                          <TrashIcon class="h-5 w-5" />
-                        </button>
-                      </div>
-                    </TransitionGroup>
-                  </div>
+              <div class="flex gap-4">
+                <div class="">
+                  <label
+                      for="total_trabajador"
+                      class="block text-lg font-medium text-gray-700"
+                  >Cantidad de trabajadores</label
+                  >
+                  <Input
+                      type="number"
+                      id="trabajador"
+                      name="trabajador"
+                      v-model="acta.total_trabajador"
+                      required
+                      min="0"
+                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                  />
+              </div>
+                <div class="">
+                  <label
+                      for="total_organismo"
+                      class="block text-lg font-medium text-gray-700"
+                  >Participantes del Org. Sup.</label
+                  >
+                  <Input
+                      type="number"
+                      id="organismo"
+                      name="organismo"
+                      v-model="acta.total_organismo"
+                      required
+                      min="0"
+                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                  />
                 </div>
               </div>
             </AccordionContent>

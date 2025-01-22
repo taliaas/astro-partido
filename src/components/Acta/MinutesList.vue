@@ -183,7 +183,7 @@
                 >
                   <TableCell class="font-medium pl-8">{{ acta.id }}</TableCell>
                   <TableCell class="pl-6">{{ acta.name }} {{ acta.id }}</TableCell>
-                  <TableCell class="text-left">{{ acta.core.name }}</TableCell>
+                  <TableCell class="text-left">{{ acta.core?.name }}</TableCell>
                   <TableCell class="text-left">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-left">
                     <Badge :class="getStatusClass(acta.status)">
@@ -439,7 +439,7 @@ function handleSort() {
 }
 
 const nucleos = computed(() => {
-  return [...new Set(actas.map((item) => item.core.name))];
+  return [...new Set(actas.map((item) => item.core?.name))];
 });
 
 const meses = [

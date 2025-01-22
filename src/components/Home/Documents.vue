@@ -69,7 +69,8 @@ async function openMinute(id: string) {
 
 async function exportarActa(doc: MinuteOrdinary | MinutePolitical){
   if(doc?.name === 'Acta Ordinaria'){
-    exportarRO(doc)
+    const expo = exportarRO(doc);
+    console.log(expo)
   }
   else{
     exportar(doc)

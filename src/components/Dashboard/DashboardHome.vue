@@ -27,7 +27,7 @@
           </Card>
         </div>
         <Tabs v-model="activeTab" class="space-y-4">
-          <TabsList class="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+          <TabsList class="grid w-full grid-cols-1 md:grid-cols-2 h-auto">
             <TabsTrigger
               v-for="tab in tabs"
               :key="tab.value"
@@ -58,7 +58,6 @@ import { ref } from "vue";
 import { Activity, FileCheck2, Files, FileText } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Overview from "../Home/Overview.vue";
 import Documents from "../Home/Documents.vue";
 import KPIs from "../Home/KPIs.vue";
 import RightSidebar from "./RightSidebar.vue";
@@ -71,13 +70,11 @@ const { documents, kpis, cards } = defineProps<{
   cards: any;
 }>();
 
-const activeTab = ref("overview");
+const activeTab = ref("documents");
 const updatedData = ref([]);
 
 const tabs = [
-  { value: "overview", label: "Vista General", component: Overview },
   { value: "documents", label: "Documentos", component: Documents },
   { value: "kpis", label: "Análisis de Desempeño", component: KPIs },
 ];
-
 </script>
