@@ -1,8 +1,7 @@
 import type Minute from "@/interface/MinuteOrdinary";
 import type { Status } from "@/enum/Status.ts";
 
-// const API_URL = "https://part-back.onrender.com/minutes-ordinary";
-const API_URL = "http://localhost:3000/minutes-ordinary";
+ const API_URL = "https://part-back.onrender.com/minutes-ordinary";
 
 export default class OrdinaryService {
 
@@ -14,7 +13,6 @@ export default class OrdinaryService {
     extranjero: any[],
   ) {
     console.log("Acta:", createMinutesOrdinaryDto);
-    console.log("Absent:", abscents);
     try {
       const response = await fetch(`${API_URL}`, {
         method: "POST",
@@ -34,7 +32,7 @@ export default class OrdinaryService {
       }
       return await response.json();
     } catch (error) {
-      console.error(error);
+      throw new Error()
     }
   }
 

@@ -171,9 +171,9 @@
                 class="w-full bg-transparent focus:outline-none rounded"
                 :name="'extranjero.' + index + '.estado'"
               >
-                <option value="pendiente">Pendiente</option>
-                <option value="aprobado">Aprobado</option>
-                <option value="rechazado">Rechazado</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Aprobado">Aprobado</option>
+                <option value="Rechazado">Rechazado</option>
               </select>
             </td>
             <td class="p-4 align-middle">
@@ -219,6 +219,7 @@
         </label>
         <Input
           type="date"
+          required
           id="proxima"
           name="fechaProx"
           v-model="formData.proximaReunion"
@@ -234,6 +235,7 @@
         </label>
         <Input
           type="date"
+          required
           id="preparacion"
           name="fechaPrep"
           v-model="formData.preparacionReunion"
@@ -246,6 +248,7 @@
         </label>
         <Input
           type="date"
+          required
           id="circulo"
           name="fechaCP"
           v-model="formData.circuloEstudios"

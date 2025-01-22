@@ -180,6 +180,9 @@ const submitForm = async (e: any) => {
     showNotification('Se creó el acta correctamente')
     await navigate("/minutes/");
   } catch (error) {
+    if (error.response) {
+      console.log(error.response.data.message);
+    }
     showNotification("Error al crear el acta", error);
     console.error(error);
   }
