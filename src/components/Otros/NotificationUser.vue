@@ -26,7 +26,7 @@
                     {{ notification.message }}
                   </p>
                   <div class="mt-2 flex items-center space-x-4">
-                    <span class="text-xs text-gray-500">{{ formatDate(notification.date) }}</span>
+                    <span class="text-xs text-gray-500">{{ formatDate(notification.createdAt) }}</span>
                     <button 
                       v-if="notification.action"
                       class="text-xs font-medium text-blue-700 hover:text-gray-700 transition-colors duration-200"
@@ -59,36 +59,40 @@
     </div>
   </template>
   
-  <script setup>
-  import { BellIcon, CheckCircle, XIcon } from 'lucide-vue-next';
+  <script setup lang="ts">
+  import { BellIcon, XIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
-  
-  const notifications = ref([
-    {
-      id: 1,
-      type: 'success',
-      title: 'Documento aprobado',
-      message: 'El acta de la última sesión ha sido aprobada por todos los miembros.',
-      date: new Date(2023, 11, 15, 10, 30),
-      action: 'Ver documento'
-    },
-    {
-      id: 2,
-      type: 'warning',
-      title: 'Recordatorio de reunión',
-      message: 'La próxima reunión del comité ejecutivo está programada para mañana a las 15:00.',
-      date: new Date(2023, 11, 14, 9, 0),
-      action: 'Confirmar asistencia'
-    },
-    {
-      id: 3,
-      type: 'info',
-      title: 'Actualización de normativa',
-      message: 'Se ha publicado una actualización de la normativa interna. Por favor, revise los cambios.',
-      date: new Date(2023, 11, 13, 14, 45),
-      action: 'Leer más'
-    }
-  ])
+
+  const { notifications } = defineProps<{
+    notifications: any[];
+  }>();
+
+  // const notifications = ref([
+  //   {
+  //     id: 1,
+  //     type: 'success',
+  //     title: 'Documento aprobado',
+  //     message: 'El acta de la última sesión ha sido aprobada por todos los miembros.',
+  //     date: new Date(2023, 11, 15, 10, 30),
+  //     action: 'Ver documento'
+  //   },
+  //   {
+  //     id: 2,
+  //     type: 'warning',
+  //     title: 'Recordatorio de reunión',
+  //     message: 'La próxima reunión del comité ejecutivo está programada para mañana a las 15:00.',
+  //     date: new Date(2023, 11, 14, 9, 0),
+  //     action: 'Confirmar asistencia'
+  //   },
+  //   {
+  //     id: 3,
+  //     type: 'info',
+  //     title: 'Actualización de normativa',
+  //     message: 'Se ha publicado una actualización de la normativa interna. Por favor, revise los cambios.',
+  //     date: new Date(2023, 11, 13, 14, 45),
+  //     action: 'Leer más'
+  //   }
+  // ])
   
   const formatDate = (date) => {
     return new Intl.DateTimeFormat('es', { 
