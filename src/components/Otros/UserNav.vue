@@ -5,7 +5,7 @@
       <button @click="!openMenu"
         class="flex items-center space-x-2 border-2 shadow-md bg-gray-50 hover:bg-accent rounded-full hover:bg-gray-200">
         <div class="w-8 h-8 rounded-full flex items-center justify-center ">
-          <span class="text-md font-medium">U</span>
+          <span class="text-md font-bold text-blue-600">U</span>
         </div>
       </button>
     </DropdownMenuTrigger>

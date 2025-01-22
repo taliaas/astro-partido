@@ -119,7 +119,7 @@ import OrdinaryService from "@/services/OrdinaryService.ts";
 import {navigate} from "astro:transitions/client";
 
 const currentStep = ref(1);
-
+const { user } = defineProps<{ user: any }>();
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
 };
@@ -165,6 +165,7 @@ const submitForm = async (e: any) => {
       data[prop] = value;
     }
   }
+  data.user_create = user
   data.core = { id: data.nucleo };
 
   const service = new OrdinaryService();

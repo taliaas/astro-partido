@@ -142,7 +142,7 @@
       </div>
 
       <!-- Permisos y roles -->
-      <div v-if="activeTab === 'permisos'" class="space-y-6">
+      <div v-if="activeTab === 'permisos'" class="space-y-6 p-2">
         <h2 class="text-2xl font-semibold">Permisos y Roles</h2>
         <div class="w-3/4 space-y-4">
           <div v-for="role in roles" :key="role.id" class="border p-4 rounded">
@@ -166,11 +166,6 @@
             </div>
           </div>
         </div>
-        <button
-          class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 ease-in-out"
-        >
-          Actualizar Permisos
-        </button>
       </div>
 
       <!-- Configuración de documentos -->
@@ -183,7 +178,7 @@
             >
             <input
               type="text"
-              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              class="mt-1 p-2 border block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               placeholder="pdf, doc, docx, xls, xlsx"
             />
           </div>
@@ -192,16 +187,11 @@
               >Política de Retención de Documentos</label
             >
             <textarea
-              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              class="mt-1 block border w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               rows="4"
             ></textarea>
           </div>
         </div>
-        <button
-          class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 ease-in-out"
-        >
-          Guardar Configuración
-        </button>
       </div>
     </div>
     <div
@@ -411,10 +401,12 @@ const showNotification = (message, type = "success") => {
   }, 3000);
 };
 const handleAction = (action, user) => {
-  console.log(user);
   currentsUser.value = user;
   if (action === "eliminar") {
     showDelete.value = true;
+  }
+  else if(action === 'editar'){
+    showChangeModal.value = true
   }
 };
 

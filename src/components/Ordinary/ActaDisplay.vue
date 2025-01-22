@@ -112,17 +112,20 @@
                 Desarrollo de la reunión
               </h2>
               <Accordion type="single" collapsible class="text-xl">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>1. Chequeo de acuerdos</AccordionTrigger>
+                <AccordionItem value="item-1" v-if="acta.chequeo.length !== 0">
+                  <AccordionTrigger> Chequeo de acuerdos</AccordionTrigger>
                   <AccordionContent>
                     <h3 class="text-lg mb-2">
                       {{ acta.chequeo }}
                     </h3>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-2">
-                  <AccordionTrigger
-                    >2. Orientaciones del Organismo Superior
+                <AccordionItem
+                  value="item-2"
+                  v-if="acta.orientaciones.length !== 0"
+                >
+                  <AccordionTrigger>
+                    Orientaciones del Organismo Superior
                   </AccordionTrigger>
                   <AccordionContent>
                     <p class="text-lg">
@@ -130,14 +133,17 @@
                     </p>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-3">
-                  <AccordionTrigger>3. Análisis</AccordionTrigger>
+                <AccordionItem value="item-3" v-if="acta.analisis.length !== 0">
+                  <AccordionTrigger> Análisis</AccordionTrigger>
                   <AccordionContent>
                     <p class="text-lg">{{ acta.analisis }}</p>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-4">
-                  <AccordionTrigger>4. Acuerdos</AccordionTrigger>
+                <AccordionItem
+                  value="item-4"
+                  v-if="acta.agreements.length !== 0"
+                >
+                  <AccordionTrigger> Acuerdos</AccordionTrigger>
                   <AccordionContent>
                     <ul class="space-y-4">
                       <li
@@ -163,8 +169,11 @@
                     </ul>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-5">
-                  <AccordionTrigger> 5. Salidas al extranjero</AccordionTrigger>
+                <AccordionItem
+                  value="item-5"
+                  v-if="acta.extranjero.length !== 0"
+                >
+                  <AccordionTrigger> Salidas al extranjero</AccordionTrigger>
                   <AccordionContent>
                     <ul class="space-y-4">
                       <li
@@ -231,12 +240,14 @@
             <Button
               type="button"
               variant="ghost"
+              :disabled="isRechSubmitting"
               class="p-4 bg-gray-100 text-md font-medium text-gray-700 hover:bg-gray-200 hover:shadow-md"
               @click="updateStatus(Status.R)"
             >
-              {{ isSubmitting ? "Rechazando..." : "Rechazada" }}
+              {{ isRechSubmitting ? "Rechazando..." : "Rechazada" }}
             </Button>
             <button
+              type="button"
               class="bg-blue-600 text-white text-md font-medium px-4 rounded hover:bg-blue-700 hover:shadow-md"
               @click="updateStatus(Status.A)"
               :disabled="isSubmitting"
@@ -296,10 +307,11 @@ const { acta, existsCP } = defineProps<{
   acta: any;
   existsCP?: boolean;
 }>();
-console.log("Acta Ordinaria", existsCP)
+console.log("Acta Ordinaria", existsCP);
 defineEmits(["move"]);
 
 const isSubmitting = ref(false);
+const isRechSubmitting = ref( false)
 const infoActa = ref<HTMLElement | null>(null);
 const totalMilitantes = acta.militante.length || 0;
 const totalAusentes = acta.abscents.length || 0;

@@ -57,7 +57,7 @@
                   >Núcleo</label
                 >
                 <Input
-                  v-model="user.nucleo"
+                  v-model="user.core.name"
                   type="text"
                   readonly
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm bg-gray-50"
@@ -75,19 +75,6 @@
                   class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"
                 />
               </div>
-            </div>
-
-            <div class="space-y-2">
-              <label for="biografia" class="text-sm font-medium text-gray-700">
-                Biografía
-              </label>
-              <textarea
-                id="biografia"
-                v-model="biografia"
-                rows="4"
-                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                placeholder="Breve descripción de su trayectoria política..."
-              ></textarea>
             </div>
 
             <!-- Action Buttons -->
@@ -184,7 +171,6 @@ import UserService from "src/services/UserService.ts";
 const { user } = defineProps<{ user: any }>();
 
 const showPasswordModal = ref(false);
-const biografia = ref("");
 
 const openChangePasswordModal = () => {
   showPasswordModal.value = true;
@@ -198,12 +184,13 @@ const passwordForm = reactive({
 });
 
 const handleSubmit = () => {
-  // Update user data
+  const name = user.name
+  const correo = user.email
   const service = new UserService();
-
   try {
-    //const response = service.updateUser(formData.id, formData);
-    alert("Profile updated successfully!");
+    service.updateUser(user.id, {
+      name, correo
+    });
   } catch (error) {
     console.log(error);
   }
@@ -214,16 +201,16 @@ const handlePasswordChange = () => {
     alert("La nueva contraseña no coincide");
     return;
   }
-  // Handle password change logic here
+
   const service = new AuthService();
-  const id = "2"; //user.id;
+  const id = user.id;
   try {
     const response = service.updatePassword(
       id,
       passwordForm.new,
       passwordForm.confirm,
     );
-    alert("Password updated successfully!");
+
     showPasswordModal.value = false;
     passwordForm.current = "";
     passwordForm.new = "";

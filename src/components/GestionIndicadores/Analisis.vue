@@ -73,7 +73,10 @@
                 <span class="">
                   {{ nucleo.name }}
                 </span>
-                <span> Total: {{ getComputo(nucleo) }} </span>
+                <div class="flex gap-2">
+                  <span class="font-medium"> Total: </span>
+                  <p class="text-gray-600">{{ getComputo(nucleo) }} </p>
+                </div>
               </div>
             </div>
           </div>
@@ -97,8 +100,8 @@ const { comite, computo } = defineProps<{
 const indicators = [
   {
     key: "pto",
-    name: "Puntos del Orden del Día",
-    description: "Posición en el orden del día",
+    name: "Orden del Día",
+    description: "Puntos del orden del día",
   },
   {
     key: "totalDeAcuerdos",

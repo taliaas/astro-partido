@@ -12,9 +12,7 @@ if (!id) {
 async function getActa() {
     const services = new OrdinaryService()
     try {
-        const acta = services.getMinute(id!)
-        console.log(acta)
-        return acta
+        return services.getMinute(id!)
     } catch (e) {
         console.error(e)
     }

@@ -19,13 +19,10 @@
               }}</CardTitle>
               <component :is="icons[card.icon]" class="h-6 w-6 text-blue-500" />
             </CardHeader>
-            <CardContent class="flex items-baseline space-x-4">
+            <CardContent class="flex items-baseline space-x-4 text-center">
               <div class="text-3xl font-bold text-gray-900 dark:text-white">
                 {{ card.value }}
               </div>
-              <p class="text-sm font-medium" :class="card.subtext.color">
-                {{ card.subtext.text }}
-              </p>
             </CardContent>
           </Card>
         </div>

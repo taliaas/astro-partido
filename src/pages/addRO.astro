@@ -1,10 +1,23 @@
 ---
-import CoreService from "../services/CoreService";
+import {getSession} from "auth-astro/server";
+import UserService from "../services/UserService";import CoreService from "../services/CoreService";
 import RootLayout from "../layouts/RootLayout.astro";
 import MinutesOrdinary from "@/components/Ordinary/MinutesOrdinary.vue";
 import FirstStep from "src/components/Ordinary/FirstStep.vue";
 import SecondStep from "src/components/Ordinary/SecondStep.vue";
 import ThirdStep from "src/components/Ordinary/ThirdStep.vue";
+
+const session = await getSession(Astro.request)
+const n_user = session?.user
+
+async function getUser() {
+  const services = new UserService()
+  try {
+    return await services.getUserByEmail(n_user?.email ?? '')
+  } catch (e) {
+    console.error(e)
+  }
+}
 
 async function getCore() {
   const service = new CoreService();
@@ -15,10 +28,11 @@ async function getCore() {
   }
 }
 const cores = await getCore();
+const user = await getUser()
 ---
 
 <RootLayout>
-  <MinutesOrdinary client:load>
+  <MinutesOrdinary user={user} client:load>
     <FirstStep cores={cores} slot="first-step" client:load />
     <SecondStep slot="second-step" client:load />
     <ThirdStep slot="third-step" client:load />

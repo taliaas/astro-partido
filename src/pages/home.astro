@@ -96,35 +96,31 @@ async function getNegativeIndicator(): Promise<number | undefined>{
 }
 
 const documents = await getMinute()
-const kpis = await getKPIs();
-const totalDoc = await getDocument();
-const pending = await getCountMinutesPending();
-const procesada = await getCountMinutesProcesada();
+const kpis = await getKPIs()
+const totalDoc = await getDocument()
+const pending = await getCountMinutesPending()
+const procesada = await getCountMinutesProcesada()
 const negative = await getNegativeIndicator()
 
 const cards = [
     {
         title: 'Documentos Pendientes',
-        value: pending,
-        subtext: {text: '4 nuevos hoy', color: 'text-blue-500'},
+        value: pending ?? 0,
         icon: "FileText"
     },
     {
         title: 'Documentos Procesados',
-        value: procesada,
-        subtext: {text: '+15% este mes', color: 'text-green-500'},
+        value: procesada ?? 0,
         icon: "FileCheck2"
     },
     {
         title: 'Total de Documentos',
-        value: totalDoc,
-        subtext: {text: '+5% desde ayer', color: 'text-green-500'},
+        value: totalDoc ?? 0,
         icon: "Files"
     },
     {
         title: 'Indicadores Alertas',
-        value: negative,
-        subtext: {text: '+2 esta semana', color: 'text-blue-500'},
+        value: negative ?? 0,
         icon: "Activity"
     },
 ]
