@@ -71,6 +71,7 @@ export default class OrdinaryService {
   }
 
   async updateMinute(id: string, acta: any) {
+    console.log(acta)
     try {
       const response = await fetch(`${API_URL}/${id}`, {
         method: "PATCH",

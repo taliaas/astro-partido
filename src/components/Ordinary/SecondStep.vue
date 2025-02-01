@@ -82,7 +82,7 @@
         id="orient"
         name="orientaciones"
         v-model="formData.orientaciones"
-        rows="4"
+        rows="6"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         placeholder="Orientaciones del Organismo Superior"
       ></Textarea>
@@ -95,7 +95,7 @@
         id="analisis"
         name="analisis"
         v-model="formData.analisis"
-        rows="4"
+        rows="6"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         placeholder="Análisis y discusiones"
       ></Textarea>

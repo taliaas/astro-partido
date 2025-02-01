@@ -37,8 +37,8 @@
             @click="selectedIndicator = indicator.key"
             class="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
           >
-            <h3 class="font-medium">{{ indicator.name }}</h3>
-            <p class="text-sm text-gray-500">{{ indicator.description }}</p>
+            <h3 class="font-medium text-lg">{{ indicator.name }}</h3>
+            <p class="text-gray-500 text-md">{{ indicator.description }}</p>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@
             <h2 class="text-xl font-semibold">
               {{ getSelectedIndicator.name }}
             </h2>
-            <p class="text-gray-500">{{ getSelectedIndicator.description }}</p>
+            <p class="text-gray-500 text-lg">{{ getSelectedIndicator.description }}</p>
           </div>
           <button
             @click="selectedIndicator = ''"
@@ -99,6 +99,11 @@ const { comite, computo } = defineProps<{
 
 const indicators = [
   {
+    key: "asistencia",
+    name: "Asistencia",
+    description: "Relación de asistencia",
+  },
+  {
     key: "pto",
     name: "Orden del Día",
     description: "Puntos del orden del día",
@@ -113,8 +118,8 @@ const indicators = [
     name: "Particip. de Org. Superior",
     description: "Participantes de la organización superior",
   },
-  { key: "invitados", name: "Invitados", description: "Invitados" },
-  { key: "cp", name: "Círculo Político", description: "Círculo político" },
+  { key: "invitados", name: "Invitados", description: "Invitados a la reunión" },
+  { key: "cp", name: "Círculo Político", description: "Reunión de círculo de estudio" },
   {
     key: "cp_agree",
     name: "Acuerdos del Círculo Político",
@@ -164,12 +169,12 @@ const indicators = [
   {
     key: "atencionFEU",
     name: "Atención FEU",
-    description: "Atención a la FEU (Federación Estudiantil Universitaria)",
+    description: "Atención a la Federación Estudiantil Universitaria",
   },
   {
     key: "atencionUJC",
     name: "Atención UJC",
-    description: "Atención a la UJC (Unión de Jóvenes Comunistas)",
+    description: "Atención a la Unión de Jóvenes Comunistas",
   },
   {
     key: "funcionamientoSindicato",
@@ -245,7 +250,6 @@ const getComputo = (nucleo) => {
   const c = computo.find(
     (c) => c.mes == month && c.anno == year && c.nucleo.id === nucleo.id,
   );
-  console.log(year, month, indicator, nucleo)
   return c?.[indicator] ?? 0;
 };
 </script>

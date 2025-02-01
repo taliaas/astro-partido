@@ -15,20 +15,6 @@
         </option>
       </select>
     </div>
-    <!-- 2. Presidencia -->
-    <div class="mt-4">
-      <label class="block text-md font-medium text-gray-700"
-        >Nombre del Secretario General</label
-      >
-      <Input
-        type="text"
-        id="secretarioGeneral"
-        name="secretarioGeneral"
-        v-model="formData.secretario"
-        required
-        class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
-    </div>
 
     <div class="mt-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -266,7 +252,6 @@ const formData = reactive({
   hora: "",
   lugar: "",
   nucleo: "",
-  secretario: "",
 });
 const person = ref([{ nombre: "", cargo: "" }]);
 const estado = reactive([]);

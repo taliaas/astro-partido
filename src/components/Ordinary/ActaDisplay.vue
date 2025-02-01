@@ -274,8 +274,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { DownloadIcon, ArrowRight } from "lucide-vue-next";
-import { jsPDF } from "jspdf";
+import { ArrowRight, DownloadIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -302,6 +301,7 @@ import {
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import { Status } from "@/enum/Status.ts";
 import { navigate } from "astro:transitions/client";
+import { exportarRO } from "@/lib/export_ro.ts";
 
 const { acta, existsCP } = defineProps<{
   acta: any;
@@ -311,7 +311,7 @@ console.log("Acta Ordinaria", existsCP);
 defineEmits(["move"]);
 
 const isSubmitting = ref(false);
-const isRechSubmitting = ref( false)
+const isRechSubmitting = ref(false);
 const infoActa = ref<HTMLElement | null>(null);
 const totalMilitantes = acta.militante.length || 0;
 const totalAusentes = acta.abscents.length || 0;
@@ -319,106 +319,7 @@ const presente = totalMilitantes - totalAusentes;
 const porciento = totalMilitantes > 0 ? (presente * 100) / totalMilitantes : 0;
 
 const exportar = () => {
-  const pdf = new jsPDF();
-
-  // Título
-  pdf.setFontSize(18);
-  pdf.text(`Acta ${acta.name} ${acta.id}`, 14, 15);
-
-  // Información General
-  pdf.setFontSize(14);
-  pdf.text("Información General", 14, 25);
-  pdf.setFontSize(10);
-  pdf.text(`Núcleo: ${acta.core?.name}`, 14, 35);
-  pdf.text(`Secretario General: ${acta.secretarioGeneral}`, 14, 40);
-  pdf.text(`Fecha: ${acta.fecha}`, 14, 45);
-  pdf.text(`Lugar: ${acta.lugar}`, 14, 50);
-  pdf.text(`Hora: ${acta.hora}`, 14, 55);
-
-  // Asistencia
-  pdf.setFontSize(14);
-  pdf.text("Asistencia", 14, 65);
-  pdf.setFontSize(10);
-  pdf.text(`Presentes: ${acta.militante})`, 14, 75);
-
-  // Orden del día
-  //saltar un renglon
-  pdf.setFontSize(14);
-  pdf.text("Orden del día", 14, 15);
-  pdf.setFontSize(10);
-  acta.order.forEach((item, index) => {
-    pdf.text(`${index + 1}. ${item}`, 14, 25 + index * 5);
-  });
-
-  // Desarrollo de la reunión
-  pdf.setFontSize(14);
-  pdf.text("Desarrollo de la reunión", 14, 15);
-
-  // Chequeo de acuerdos
-  pdf.setFontSize(12);
-  pdf.text("1. Chequeo de acuerdos", 14, 25);
-  let yPos = 35;
-
-  // Orientaciones y Análisis
-  pdf.setFontSize(12);
-  pdf.text("2. Orientaciones del Organismo Superior", 14, 15);
-  pdf.setFontSize(10);
-  const splitOrientaciones = pdf.splitTextToSize(acta.orientaciones, 180);
-  pdf.text(splitOrientaciones, 14, 25);
-
-  pdf.setFontSize(12);
-  pdf.text("3. Análisis", 14, 25 + splitOrientaciones.length * 5 + 10);
-  pdf.setFontSize(10);
-
-  // Acuerdos
-  pdf.setFontSize(14);
-  pdf.text("4. Acuerdos", 14, 15);
-  yPos = 25;
-  acta.agreements.forEach((acuerdo, index) => {
-    pdf.setFontSize(11);
-    pdf.text(`Acuerdo ${index + 1}:`, 14, yPos);
-    pdf.setFontSize(10);
-    const splitAcuerdo = pdf.splitTextToSize(acuerdo, 180);
-    pdf.text(splitAcuerdo, 14, yPos + 5);
-    pdf.text(
-      `Responsable: ${acuerdo.responsable} | Fecha de cumplimiento: ${acuerdo.fecha}`,
-      14,
-      yPos + 10 + splitAcuerdo.length * 5,
-    );
-    yPos += 20 + splitAcuerdo.length * 5;
-  });
-
-  // Salidas al extranjero
-  pdf.setFontSize(14);
-  pdf.text("5. Salidas al extranjero", 14, 15);
-  yPos = 25;
-  acta.extranjero.forEach((salida, index) => {
-    pdf.setFontSize(11);
-    pdf.text(`Salida ${index + 1}:`, 14, yPos);
-    pdf.setFontSize(10);
-    pdf.text(`País: ${salida.pais} | Fecha: ${salida.fecha}`, 14, yPos + 5);
-    pdf.text(`Acuerdo: ${salida.acuerdo}`, 14, yPos + 10);
-    yPos += 20;
-  });
-
-  // Próximas fechas
-  pdf.setFontSize(14);
-  pdf.text("Próximas fechas", 14, 15);
-  pdf.setFontSize(10);
-  pdf.text(`Fecha de la Próxima Reunión Ordinaria: ${acta.fechaProx}`, 14, 25);
-  pdf.text(
-    `Fecha de la Preparación de la Próxima Reunión Ordinaria: ${acta.fechaPrep}`,
-    14,
-    30,
-  );
-  pdf.text(
-    `Fecha del Próximo Círculo de Estudios Políticos: ${acta.fechaCP}`,
-    14,
-    35,
-  );
-
-  // Guardar el PDF
-  pdf.save(`Acta ${acta.core?.name}-${acta.fecha}.pdf`);
+  exportarRO(acta);
 };
 
 const updateStatus = async (status) => {

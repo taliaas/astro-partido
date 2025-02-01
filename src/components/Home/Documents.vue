@@ -37,7 +37,7 @@
             >
           </div>
         </div>
-        <div v-if="documents.length === 0">
+        <div v-if="documents?.length === 0">
           <p class="text-gray-700 font-semibold">No hay documentos recientes</p>
         </div>
       </div>

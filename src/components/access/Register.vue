@@ -103,7 +103,7 @@ const handleSubmit = async () => {
   try {
     await service.register(form.email, form.name, form.password)
     await signIn("credentials", { email: form.email, password: form.password })
-    console.log(form.name)
+    console.log(form.email, form.name, form.password)
   } catch (error) {
     isLoading.value = false;
     console.error("Registration error:", error);
