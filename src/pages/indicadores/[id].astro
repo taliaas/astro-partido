@@ -48,7 +48,7 @@ const cp = await getActaPolitica()
 console.log(cp)
 const map = new Map()
 
-for (const {key, name} of indicadores) {
+for (const {key} of indicadores) {
     map.set(key, 0)
     if (key in ind) map.set(key, ind[key])
 }

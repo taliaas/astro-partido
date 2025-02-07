@@ -28,7 +28,7 @@ export function exportarRO(acta: any) {
   acta.order.forEach((item: any, index: number) => {
     pdf.setFontSize(10);
     const split = pdf.splitTextToSize(item, 180);
-    pdf.text(`${index + 1}. ${item}`, 14, yPos + 5);
+    pdf.text(`${index + 1}. ${split}`, 14, yPos + 5);
     yPos += 5;
   });
   pdf.addPage();

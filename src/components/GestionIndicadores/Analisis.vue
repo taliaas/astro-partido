@@ -50,7 +50,9 @@
             <h2 class="text-xl font-semibold">
               {{ getSelectedIndicator.name }}
             </h2>
-            <p class="text-gray-500 text-lg">{{ getSelectedIndicator.description }}</p>
+            <p class="text-gray-500 text-md">
+              {{ getSelectedIndicator.description }}
+            </p>
           </div>
           <button
             @click="selectedIndicator = ''"
@@ -60,8 +62,40 @@
           </button>
         </div>
 
+        <div class="flex justify-between" v-if="selectedIndicator === 'asistencia'">
+          <!--Asistencia -->
+          <div>
+            <table class="p-2">
+              <table-header  class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+                <tr>
+                  <th  class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Nucleo</th>
+                  <th  class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Fecha reunión</th>
+                  <th  class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Fecha entrega</th>
+                  <th  class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                  <th  class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Asistencia</th>
+                  <th  class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Porciento</th>
+                </tr>
+              </table-header>
+
+              <tbody>
+                <tr v-for="asis in attendance"
+                    :key="asis.id"
+                    class="hover:bg-gray-50/50 transition-colors duration-200">
+                  <th>
+
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+            <div v-if="attendance.length === 0">
+              <p>No hay asistencia</p>
+            </div>
+          </div>
+          <div class="text-lg bg-gray-50">Causas de ausencia</div>
+        </div>
+
         <!-- Nucleos List -->
-        <div class="space-y-2">
+        <div v-else class="space-y-2">
           <div v-for="category in comite" :key="category">
             <h3 class="font-medium text-gray-700 mb-2">{{ category.name }}</h3>
             <div class="space-y-2">
@@ -75,7 +109,7 @@
                 </span>
                 <div class="flex gap-2">
                   <span class="font-medium"> Total: </span>
-                  <p class="text-gray-600">{{ getComputo(nucleo) }} </p>
+                  <p class="text-gray-600">{{ getComputo(nucleo) }}</p>
                 </div>
               </div>
             </div>
@@ -89,6 +123,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { XIcon } from "lucide-vue-next";
+import {Table, TableHeader, TableRow} from "@/components/ui/table";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
@@ -118,8 +153,16 @@ const indicators = [
     name: "Particip. de Org. Superior",
     description: "Participantes de la organización superior",
   },
-  { key: "invitados", name: "Invitados", description: "Invitados a la reunión" },
-  { key: "cp", name: "Círculo Político", description: "Reunión de círculo de estudio" },
+  {
+    key: "invitados",
+    name: "Invitados",
+    description: "Invitados a la reunión",
+  },
+  {
+    key: "cp",
+    name: "Círculo Político",
+    description: "Reunión de círculo de estudio",
+  },
   {
     key: "cp_agree",
     name: "Acuerdos del Círculo Político",
@@ -237,7 +280,7 @@ const indicators = [
     description: "Registro de traslados e incorporaciones",
   },
 ];
-
+const attendance = ref([])
 const getSelectedIndicator = computed(() => {
   return indicators.find((i) => i.key === selectedIndicator.value) || {};
 });
