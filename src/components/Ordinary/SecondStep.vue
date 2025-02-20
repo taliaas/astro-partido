@@ -20,30 +20,26 @@
       <table class="w-full">
         <thead>
           <tr class="border-b bg-muted/50">
-            <th class="h-12 w-[100px] px-4 text-left align-middle font-medium">
-              No.
-            </th>
-            <th class="h-12 px-4 text-left align-middle font-medium">
-              Descripción
-            </th>
+            <th class="h-12 w-[100px] px-4 text-left align-middle font-medium">No.</th>
+            <th class="h-12 px-4 text-left align-middle font-medium">Descripción</th>
             <th class="h-12 w-[100px] px-4 align-middle"></th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(item, index) in agendaItems"
-            :key="index"
-            class="border-b"
-          >
+          <tr v-for="(item, index) in formData.order" :key="index" class="border-b">
             <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
             <td class="p-4 align-middle">
               <input
                 type="text"
                 v-model="item.description"
+                :class="{ 'border-red-500': errors.order?.[index]?.description }"
                 class="w-full bg-transparent focus:outline-none"
                 :name="'order.' + index"
                 placeholder="Descripción"
               />
+              <span v-if="errors.order?.[index]?.description" class="text-red-500 text-sm">
+                {{ errors.order[index].description }}
+              </span>
             </td>
             <td class="p-4 align-middle">
               <button
@@ -58,72 +54,93 @@
       </table>
     </div>
   </div>
+
   <div class="space-y-4">
     <h2 class="text-lg mt-8 mb-4 font-bold">Desarrollo</h2>
-    <div class="">
-      <label for="chequeo" class="block text-md font-medium text-gray-700"
-        >1. Chequeo de acuerdos</label
-      >
+    <div>
+      <label for="chequeo" class="block text-md font-medium text-gray-700">
+        1. Chequeo de acuerdos
+      </label>
       <Textarea
         id="chequeo"
         name="chequeo"
         v-model="formData.chequeo"
+        :class="{ 'border-red-500': errors.chequeo }"
         rows="4"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         placeholder="Chequeo de acuerdos"
-      >
-      </Textarea>
+      />
+      <span v-if="errors.chequeo" class="text-red-500 text-sm">{{ errors.chequeo }}</span>
     </div>
-    <div class="">
-      <label for="orient" class="block text-md font-medium text-gray-700"
-        >2. Orientaciones del Organismo Superior</label
-      >
+
+    <div>
+      <label for="orient" class="block text-md font-medium text-gray-700">
+        2. Orientaciones del Organismo Superior
+      </label>
       <Textarea
         id="orient"
         name="orientaciones"
         v-model="formData.orientaciones"
+        :class="{ 'border-red-500': errors.orientaciones }"
         rows="6"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         placeholder="Orientaciones del Organismo Superior"
-      ></Textarea>
+      />
+      <span v-if="errors.orientaciones" class="text-red-500 text-sm">{{ errors.orientaciones }}</span>
     </div>
+
     <div>
-      <label for="analisis" class="block text-md font-medium text-gray-700"
-        >3. Análisis y discusiones</label
-      >
+      <label for="analisis" class="block text-md font-medium text-gray-700">
+        3. Análisis y discusiones
+      </label>
       <Textarea
         id="analisis"
         name="analisis"
         v-model="formData.analisis"
+        :class="{ 'border-red-500': errors.analisis }"
         rows="6"
         class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         placeholder="Análisis y discusiones"
-      ></Textarea>
+      />
+      <span v-if="errors.analisis" class="text-red-500 text-sm">{{ errors.analisis }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-
-import { PlusIcon, TrashIcon } from "lucide-vue-next";
-import { Button } from "../ui/button";
+import { ref, watch } from "vue"
+import { PlusIcon, TrashIcon } from "lucide-vue-next"
+import { Button } from "../ui/button"
+import Textarea from "../ui/textarea/Textarea.vue"
+import { secondStepSchema } from "@/schemas/secondStep"
 import { Input } from "../ui/input";
-import Textarea from "../ui/textarea/Textarea.vue";
+import { reactive, ref } from "vue"; 
 
-const formData = reactive({
-  ordenDelDia: "",
+const errors = ref({})
+
+const formData = ref({
+  order: [{ description: "" }],
   orientaciones: "",
   chequeo: "",
   analisis: "",
-});
-const agendaItems = ref([{ description: "" }]);
+})
+
+watch(() => formData.value, (newValue) => {
+  try {
+    secondStepSchema.parse(newValue)
+    errors.value = {}
+  } catch (err) {
+    errors.value = err.formErrors?.fieldErrors || {}
+  }
+}, { deep: true })
 
 const addAgendaItem = () => {
-  agendaItems.value.push({ description: "" });
-};
+  formData.value.order.push({ description: "" })
+}
 
-const removeAgendaItem = (index) => {
-  agendaItems.value.splice(index, 1);
-};
+const removeAgendaItem = (index: number) => {
+  formData.value.order.splice(index, 1)
+}
+
+defineEmits(["update"])
 </script>
