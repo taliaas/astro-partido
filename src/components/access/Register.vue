@@ -18,6 +18,7 @@
           <Input id="name" v-model="form.name" type="text" required
             class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
             placeholder="Juan" />
+          <p v-if="errors.name" class="text-sm text-red-500">{{ errors.name }}</p>
         </div>
 
         <!-- Email -->
@@ -29,6 +30,7 @@
           <Input id="email" v-model="form.email" type="email" required
             class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
             placeholder="juan@cujae.edu.cu" />
+          <p v-if="errors.email" class="text-sm text-red-500">{{ errors.email }}</p>
         </div>
 
         <!-- Password -->
@@ -39,7 +41,7 @@
           </label>
           <div class="relative">
             <Input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'" required
-              maxlength="8"
+              maxlength="16"
               class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
               placeholder="••••••••" />
             <button type="button" @click="showPassword = !showPassword"
@@ -47,6 +49,7 @@
               <component :is="showPassword ? 'EyeOffIcon' : 'EyeIcon'" class="h-4 w-4" />
             </button>
           </div>
+          <p v-if="errors.password" class="text-sm text-red-500">{{ errors.password }}</p>
         </div>
         <!-- Terms -->
         <div class="flex items-center space-x-2">
@@ -57,6 +60,7 @@
             <a href="/condition" class="text-primary hover:text-blue-500 hover:underline">términos y condiciones</a>
           </label>
         </div>
+        <p v-if="errors.acceptTerms" class="text-sm text-red-500">{{ errors.acceptTerms }}</p>
 
         <!-- Submit Button -->
         <Button type="submit"
@@ -84,11 +88,27 @@ import { reactive, ref } from "vue";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import AuthService from "@/services/AuthService";
-import { navigate } from "astro:transitions/client";
+import { z } from "zod";
 import { signIn } from "auth-astro/client"
 
 const isLoading = ref(false);
 const showPassword = ref(false);
+let errors = reactive<Record<string, string>>({});
+
+const schema = z.object({
+  name: z.string()
+      .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
+      .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
+  email: z.string()
+      .email({ message: "Ingresa un correo electrónico válido." }),
+  password: z.string()
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres." })
+      .max(16, { message: "La contraseña no puede exceder los 16 caracteres." })
+      .regex(/[A-Z]/, { message: "La contraseña debe contener al menos una letra mayúscula." })
+      .regex(/[0-9]/, { message: "La contraseña debe contener al menos un número." }),
+  acceptTerms: z.boolean()
+      .refine((val) => val, { message: "Debes aceptar los términos y condiciones." }),
+});
 
 const form = reactive({
   name: "",
@@ -99,14 +119,24 @@ const form = reactive({
 
 const handleSubmit = async () => {
   isLoading.value = true;
-  const service = new AuthService()
+
   try {
+    errors = {};
+    schema.parse(form);
+
+    const service = new AuthService()
     await service.register(form.email, form.name, form.password)
     await signIn("credentials", { email: form.email, password: form.password })
-    console.log(form.email, form.name, form.password)
-  } catch (error) {
+    } catch (error) {
+    if (error instanceof z.ZodError) {
+      error.errors.forEach((err) => {
+        errors[err.path[0]] = err.message;
+      });
+    } else {
+      console.error("Registration error:", error);
+    }
+  } finally {
     isLoading.value = false;
-    console.error("Registration error:", error);
   }
 };
 </script>

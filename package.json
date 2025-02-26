@@ -40,7 +40,8 @@
     "vue-chartjs": "^5.3.2",
     "vue-i18n": "^10.0.5",
     "vue-router": "^4.5.0",
-    "vue-sonner": "^1.3.0"
+    "vue-sonner": "^1.3.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@astrojs/vercel": "^8.0.1",

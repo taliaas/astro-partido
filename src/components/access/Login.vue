@@ -104,15 +104,15 @@ const userSchema = z.object({
 });
 
 const handleSubmit = async () => {
-
-  const result = userSchema.safeParse({
-    email: email.value,
-    password: password.value,
-  });
-
-  if (!result.success) {
-    errors.value = result.error.format();
-    return;
+  try {
+    const validatedData = userSchema.parse({
+      email: email.value,
+      password: password.value,
+    });
+    console.log("Datos válidos:", validatedData);
+  } catch (error) {
+    errors.value = "Error de validación";
+    console.error("Error de validación:", error);
   }
 
   loading.value = true;
