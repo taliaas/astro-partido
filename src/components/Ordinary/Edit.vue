@@ -106,7 +106,7 @@
 
           <AccordionItem value="item-2">
             <AccordionTrigger>4. Desarrollo</AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent class="p-2">
               <div class="">
                 <label
                   for="chequeo"
@@ -124,44 +124,48 @@
                 </Textarea>
               </div>
               <div class="">
-                <label for="orient" class="block text-md font-medium text-gray-700"
-                >2. Orientaciones del Organismo Superior</label
+                <label
+                  for="orient"
+                  class="block text-md font-medium text-gray-700"
+                  >2. Orientaciones del Organismo Superior</label
                 >
                 <Textarea
-                    id="orient"
-                    name="orientaciones"
-                    v-model="acta.orientaciones"
-                    rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    placeholder="Orientaciones del Organismo Superior"
+                  id="orient"
+                  name="orientaciones"
+                  v-model="acta.orientaciones"
+                  rows="4"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  placeholder="Orientaciones del Organismo Superior"
                 ></Textarea>
               </div>
               <div>
-                <label for="analisis" class="block text-md font-medium text-gray-700"
-                >3. Análisis y discusiones</label
+                <label
+                  for="analisis"
+                  class="block text-md font-medium text-gray-700"
+                  >3. Análisis y discusiones</label
                 >
                 <Textarea
-                    id="analisis"
-                    name="analisis"
-                    v-model="acta.analisis"
-                    rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    placeholder="Análisis y discusiones"
+                  id="analisis"
+                  name="analisis"
+                  v-model="acta.analisis"
+                  rows="4"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  placeholder="Análisis y discusiones"
                 ></Textarea>
               </div>
               <div class="space-y-2">
                 <label
-                    for="observaciones"
-                    class="block text-md font-medium text-gray-700"
+                  for="observaciones"
+                  class="block text-md font-medium text-gray-700"
                 >
                   Observaciones generales
                 </label>
                 <Textarea
-                    id="observaciones"
-                    name="observaciones"
-                    v-model="acta.observaciones"
-                    rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  id="observaciones"
+                  name="observaciones"
+                  v-model="acta.observaciones"
+                  rows="4"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 ></Textarea>
               </div>
             </AccordionContent>
@@ -171,45 +175,51 @@
             <AccordionContent>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div class="w-3/4 space-y-2">
-                  <label for="proxima" class="block text-md font-medium text-gray-700">
+                  <label
+                    for="proxima"
+                    class="block text-md font-medium text-gray-700"
+                  >
                     Próxima reunión
                   </label>
                   <Input
-                      type="date"
-                      required
-                      id="proxima"
-                      name="fechaProx"
-                      v-model="acta.fechaProx"
-                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    type="date"
+                    required
+                    id="proxima"
+                    name="fechaProx"
+                    v-model="acta.fechaProx"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   />
                 </div>
                 <div class="w-3/4 space-y-2">
                   <label
-                      for="preparacion"
-                      class="block text-md font-medium text-gray-700"
+                    for="preparacion"
+                    class="block text-md font-medium text-gray-700"
                   >
                     Preparación próxima reunión
                   </label>
                   <Input
-                      type="date"
-                      required
-                      id="preparacion"
-                      name="fechaPrep"
-                      v-model="acta.fechaPrep"
-                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    type="date"
+                    required
+                    id="preparacion"
+                    name="fechaPrep"
+                    v-model="acta.fechaPrep"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   />
                 </div>
                 <div class="w-3/4 space-y-2">
-                  <label for="circulo" class="block text-md font-medium text-gray-700">
+                  <label
+                    for="circulo"
+                    class="block text-md font-medium text-gray-700"
+                  >
                     Próximo círculo de estudios políticos
                   </label>
                   <Input
-                      type="date"
-                      required
-                      id="circulo"
-                      name="fechaCP"
-                      v-model="acta.fechaCP"
-                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    type="date"
+                    required
+                    id="circulo"
+                    name="fechaCP"
+                    v-model="acta.fechaCP"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   />
                 </div>
               </div>
@@ -240,7 +250,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, TrashIcon } from "lucide-vue-next";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import Textarea from "../ui/textarea/Textarea.vue";
 
