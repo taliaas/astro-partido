@@ -24,6 +24,10 @@ export default class AuthService {
   }
 
   async register(email: string, name: string, password: string) {
+
+    //encriptar contraseña para enviarla
+    // const hashedPassword = await bcrypt.hash(password, 10)
+    // console.log(hashedPassword)
     try {
       const response = await fetch(
         `https://part-back.onrender.com/auth/register`,
@@ -50,7 +54,6 @@ export default class AuthService {
   }
 
   async profile(token?: string) {
-    //const value = token; ?? getAccessToken(); analizar
     try {
       const response = await fetch(
         `https://part-back.onrender.com/auth/verify`,
