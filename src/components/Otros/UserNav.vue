@@ -89,7 +89,7 @@ const handleSesion = () => {
 };
 
 const profileOpen = () => {
-  navigate('/perfil')
+  navigate('/profile')
 }
 const helpOpen = () => {
   navigate('/help')

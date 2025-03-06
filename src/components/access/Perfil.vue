@@ -38,7 +38,6 @@
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-
               <!-- Email -->
               <div>
                 <label class="block text-sm font-medium text-gray-700"
@@ -50,7 +49,6 @@
                   class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-
               <!-- Nucleo -->
               <div>
                 <label class="block text-sm font-medium text-gray-700"
@@ -142,7 +140,6 @@
           </div>
           <div class="flex justify-end space-x-3">
             <button
-              type="reset"
               @click="showPasswordModal = false"
               class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
@@ -171,8 +168,9 @@ import UserService from "src/services/UserService.ts";
 const { user } = defineProps<{ user: any }>();
 
 const showPasswordModal = ref(false);
-
+const message = ref("");
 const openChangePasswordModal = () => {
+  console.log(true)
   showPasswordModal.value = true;
 };
 
@@ -184,12 +182,13 @@ const passwordForm = reactive({
 });
 
 const handleSubmit = () => {
-  const name = user.name
-  const correo = user.email
+  const name = user.name;
+  const email = user.email;
   const service = new UserService();
   try {
     service.updateUser(user.id, {
-      name, correo
+      name,
+      email,
     });
   } catch (error) {
     console.log(error);
@@ -198,25 +197,20 @@ const handleSubmit = () => {
 
 const handlePasswordChange = () => {
   if (passwordForm.new !== passwordForm.confirm) {
-    alert("La nueva contraseña no coincide");
+    message.value = "La nueva contraseña no coincide";
     return;
   }
 
   const service = new AuthService();
-  const id = user.id;
   try {
-    const response = service.updatePassword(
-      id,
-      passwordForm.new,
-      passwordForm.confirm,
-    );
-
+    service.updatePassword(user.id, passwordForm.current, passwordForm.new);
     showPasswordModal.value = false;
     passwordForm.current = "";
     passwordForm.new = "";
     passwordForm.confirm = "";
   } catch (error) {
-    alert("Error");
+    console.log("Error", error);
+    throw error;
   }
 };
 </script>

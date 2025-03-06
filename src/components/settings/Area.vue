@@ -39,7 +39,6 @@
 import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { TrashIcon } from "lucide-vue-next";
 
 interface Area {
@@ -60,14 +59,3 @@ const removeArea = (index: number) => {
 };
 </script>
 
-<style scoped>
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-</style>

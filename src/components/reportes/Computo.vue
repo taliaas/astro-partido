@@ -124,10 +124,10 @@
 
 <script setup lang="ts">
 import ComputoService from "@/services/Computo";
-import { DownloadIcon, SearchIcon } from "lucide-vue-next";
+import type {Indicadores} from "@/interface/Indicadores.ts";
+import { DownloadIcon } from "lucide-vue-next";
 import { computed, watch, ref, onMounted } from "vue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type {Indicadores} from "@/interface/Indicadores.ts";
 
 const selectedMonth = ref("2025-01");
 const selectedNucleo = ref("");

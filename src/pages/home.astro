@@ -47,7 +47,6 @@ async function getKPIs() {
         return data.map(item => {
             const diference = kpis.difference[item.name];
             const current = kpis.currentInfo[item.name]
-            console.log(diference, current)
             if (diference !== undefined || current !== undefined) {
                 return {...item, trend: diference, porcen: current};
             }

@@ -131,7 +131,7 @@ import {
 } from "chart.js";
 import { Line as LineChart } from "vue-chartjs";
 import { ChevronDownIcon } from "lucide-vue-next";
-import EstadoService from "@/services/EstadoService.ts";
+import StatusService from "@/services/StatusService.ts";
 
 ChartJS.register(
   CategoryScale,
@@ -315,7 +315,7 @@ const fetchData = async () => {
     selectedPeriod.value === "1"
       ? ["Ene", "Feb", "Mar", "Abr", "May", "Jun"]
       : ["Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-  const service = new EstadoService();
+  const service = new StatusService();
   try {
     const { data: indData } = await service.getYear(selectedYear.value);
     const yearData = indData[selectedIndicator.value];

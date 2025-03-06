@@ -15,20 +15,6 @@
         </option>
       </select>
     </div>
-    <!-- 2. Presidencia -->
-    <div class="mt-4">
-      <label class="block text-md font-medium text-gray-700"
-        >Nombre del Secretario General</label
-      >
-      <Input
-        type="text"
-        id="secretarioGeneral"
-        name="secretarioGeneral"
-        v-model="formData.secretario"
-        required
-        class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
-    </div>
 
     <div class="mt-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -252,7 +238,7 @@ import { reactive } from "vue";
 import Input from "../ui/input/Input.vue";
 import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import MilitanteService from "@/services/MilitanteService.ts";
+import MilitantService from "@/services/MilitantService.ts";
 import { Cargo } from "@/enum/Cargo.ts";
 
 defineEmits(["update"]);
@@ -266,7 +252,6 @@ const formData = reactive({
   hora: "",
   lugar: "",
   nucleo: "",
-  secretario: "",
 });
 const person = ref([{ nombre: "", cargo: "" }]);
 const estado = reactive([]);
@@ -283,7 +268,7 @@ const cargos: Cargo[] = [
 const militantes = ref([]);
 
 async function getMilitantes() {
-  const service = new MilitanteService();
+  const service = new MilitantService();
   try {
     const core = selectedNucleo.value as any;
     militantes.value = await service.getMilitantesByCore(core ?? 1);
