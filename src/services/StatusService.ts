@@ -1,4 +1,4 @@
-export default class EstadoService {
+export default class StatusService {
     async getYear(anno: number) {
         try {
             const response = await fetch(`https://part-back.onrender.com/computo/calcular_estado/${anno}`, {

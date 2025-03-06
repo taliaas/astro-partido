@@ -1,6 +1,6 @@
 const API_URL = 'https://part-back.onrender.com/militantes';
 
-export default class MilitanteService {
+export default class MilitantService {
     async getAll(){
         try {
             const response = await fetch(`${API_URL}/`, {
