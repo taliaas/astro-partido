@@ -3,6 +3,7 @@ import Header from "@/components/layout/Header.vue";
 import { ClientRouter } from "astro:transitions";
 import "../globals.css";
 import Navigation from "@/components/layout/Navigation.vue";
+import LoadingIndicator from "astro-loading-indicator/component"
 
 const pathName = Astro.originPathname;
 ---
@@ -16,6 +17,7 @@ const pathName = Astro.originPathname;
     <meta name="generator" content={Astro.generator} />
     <title>Motor</title>
     <ClientRouter />
+    <LoadingIndicator color="blue" height="3px"/>
   </head>
   <body>
     <div class="min-h-screen bg-gray-50">
