@@ -175,14 +175,14 @@ export default class OrdinaryService {
     }
   }
 
-  async uploadMinutes(file: any) {
-    const formData = new FormData();
-    formData.append("file", file);
+  async uploadMinutes(files: any) {
+    const file = new FormData();
+    file.append("file", files);
 
     try {
-      const response = await fetch(`${API_URL}/upload`, {
+      const response = await fetch(`https://part-back.onrender.com/minutes/upload`, {
         method: "POST",
-        body: formData
+        body: file
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

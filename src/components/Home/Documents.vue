@@ -1,5 +1,5 @@
 <template>
-  <Card>
+  <Card class="bg-secondary">
     <CardHeader>
       <CardTitle>Documentos Recientes</CardTitle>
       <CardDescription

@@ -19,10 +19,8 @@
     <!-- Right Section -->
     <div class="flex items-center space-x-4">
       <!-- Search -->
-      <div class="relative hidden sm:block">
-        <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground dark:text-gray-400" />
-        <input type="search" placeholder="Buscar..."
-          class="w-64 pl-10 pr-4 py-2 text-sm bg-muted dark:bg-zinc-700 rounded-full border dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-gray-400" />
+      <div>
+        <SearchHome class="w-full"/>
       </div>
 
       <!-- Action Buttons -->
@@ -49,12 +47,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import {
-  SearchIcon,
   BellIcon,
   MessageSquareIcon,
   SunIcon,
   MoonIcon
 } from 'lucide-vue-next'
+import SearchHome from '../layout/SearchHome.vue'
 import UserNav from '../Otros/UserNav.vue';
 
 const isDark = ref(false)

@@ -54,14 +54,14 @@
               <div class="flex gap-3">
                 <a
                   href="/addRO"
-                  class="px-4 py-2 mr-4 bg-blue-600 flex gap-2 text-white rounded text-sm font-medium hover:bg-blue-700"
+                  class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button hover:bg-button/90"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />
                   Ordinaria</a
                 >
                 <a
                   href="/addCP"
-                  class="px-4 py-2 mr-4 flex bg-blue-600 gap-2 text-white rounded text-sm font-medium hover:bg-blue-700"
+                  class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />
                   C. Político</a
