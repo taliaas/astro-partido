@@ -54,7 +54,7 @@
               <div class="flex gap-3">
                 <a
                   href="/addRO"
-                  class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button hover:bg-button/90"
+                  class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />
                   Ordinaria</a

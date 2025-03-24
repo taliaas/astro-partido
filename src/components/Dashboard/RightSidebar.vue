@@ -11,7 +11,7 @@
           <ChevronDownIcon class="h-4 w-4"/>
         </CollapsibleTrigger>
         <CollapsibleContent class="space-y-3 pt-3">
-          <Calendar v-model="value" :weekday-format="'short'" class="rounded border" colo/>
+          <Calendar v-model="value" :weekday-format="'short'" class="rounded border"/>
         </CollapsibleContent>
       </Collapsible>
 
@@ -66,6 +66,9 @@
           </div>
         </div>
       </div>
+      <div v-if="!pendingTasks" class="font-medium">
+        No hay tareas pendientes
+      </div>
     </div>
   </div>
 </template>
@@ -89,26 +92,14 @@ const newEvent = ref({
   type: ''
 })
 
-const pendingTasks = ref([
-  {
-    id: '1',
-    title: 'Revisar documentación',
-    dueDate: 'Hoy',
-    completed: false
-  },
-  {
-    id: '2',
-    title: 'Actualizar registros',
-    dueDate: 'Mañana',
-    completed: false
-  },
-  {
-    id: '3',
-    title: 'Preparar informe',
-    dueDate: 'En 2 días',
-    completed: false
-  }
-])
+interface DataPending {
+  id: number,
+  title: string,
+  dueDate: Date,
+  completed: boolean
+}
+
+const pendingTasks: DataPending = ref([])
 
 const addEvent = () => {
   // Add event logic here
