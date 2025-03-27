@@ -45,32 +45,6 @@
       </p>
     </div>
   </div>
-  <div class="w-80 p-4 space-y-6 bg-white border rounded shadow-md">
-    <!-- Pending Tasks Section -->
-    <div class="space-y-4">
-      <h2 class="text-2xl font-semibold">Tareas Pendientes</h2>
-      <div class="space-y-2">
-        <div v-for="task in pendingTasks" :key="task.id" class="flex items-start space-x-2">
-          <input type="checkbox" v-model="task.completed"
-                 class="rounded border-gray-200 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:focus:ring-blue-600"/>
-          <div class="grid gap-1.5 leading-none">
-            <label
-                :for="task.id"
-                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              {{ task.title }}
-            </label>
-            <p class="text-sm text-gray-500">
-              {{ task.dueDate }}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div v-if="!pendingTasks" class="font-medium">
-        No hay tareas pendientes
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">

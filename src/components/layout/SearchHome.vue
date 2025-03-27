@@ -36,6 +36,26 @@
           <div class="h-px bg-gray-200"></div>
 
           <div class="grid gap-3">
+            <div class="grid gap-1.5">
+              <label class="text-sm font-medium">Núcleos</label>
+              <Select
+                  v-model="filters.nucleos"
+                  class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Todos los núcleos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="core">
+                      Núcleo 1
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div class="grid gap-3">
             <!-- Document Type -->
             <div class="grid gap-1.5">
               <label class="text-sm font-medium">Tipo de documento</label>
@@ -49,13 +69,13 @@
                   <SelectContent>
                     <SelectGroup>
                       <SelectItem value="acta">
-                        Actas
+                        Acta Ordinarias
                       </SelectItem>
                       <SelectItem value="informe">
-                        Informes
+                        Actas de C. Político
                       </SelectItem>
                       <SelectItem value="reporte">
-                        Reportes
+                        Informes
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -186,6 +206,7 @@ const filters = reactive({
   documentType: "",
   status: "",
   dateFrom: "",
+  nucleos: "",
   dateTo: "",
   keywords: "",
   includeArchived: false,
