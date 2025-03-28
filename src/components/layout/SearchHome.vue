@@ -1,18 +1,8 @@
 <template>
-  <main>
-    <div class="search-container">
-      <!-- Botón de búsqueda que siempre está visible -->
-      <button
-          @click="toggleSearchPanel"
-          class="search-button flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-sm"
-      >
-        <SearchIcon class="h-4 w-4" />
-        <span>Buscar...</span>
-      </button>
-
+    <div>
       <!-- Panel lateral de búsqueda -->
       <Transition name="slide-left">
-        <div v-if="searchStore.showSidePanel" class="search-side-panel mt-28">
+        <div v-if="searchStore.showSidePanel" class="fixed top-0 left-0 w-[330px] h-screen bg-white shadow-md z-50 flex flex-col mt-24">
           <div class="search-panel-header flex items-center justify-between p-4 border-b">
             <h4 class="font-medium">Búsqueda avanzada</h4>
             <button
@@ -23,7 +13,7 @@
             </button>
           </div>
 
-          <div class="search-panel-content p-4 space-y-4">
+          <div class="p-4 space-y-4">
             <!-- Núcleos -->
             <div class="grid gap-1.5">
               <label class="text-sm font-medium">Núcleos</label>
@@ -117,21 +107,6 @@
               />
             </div>
           </div>
-
-          <div class="search-panel-footer p-4 border-t flex justify-between">
-            <button
-                @click="resetFilters"
-                class="px-4 py-2 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-sm"
-            >
-              Limpiar
-            </button>
-            <button
-                @click="applyFilters"
-                class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm"
-            >
-              Aplicar filtros
-            </button>
-          </div>
         </div>
       </Transition>
 
@@ -168,7 +143,6 @@
         </button>
       </div>
     </div>
-  </main>
 
 </template>
 
@@ -176,14 +150,10 @@
 import { ref, reactive } from "vue";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Input } from "../ui/input";
-import { XIcon, SearchIcon } from "lucide-vue-next";
+import { XIcon } from "lucide-vue-next";
 import { useSearchStore } from "@/utils/store.ts";
 
 const searchStore = useSearchStore();
-
-const toggleSearchPanel = () => {
-  searchStore.showSidePanel = !searchStore.showSidePanel;
-};
 
 const closePanel = () => {
   searchStore.showSidePanel = false;
@@ -361,66 +331,3 @@ defineExpose({
   clearAllFilters,
 });
 </script>
-
-<style scoped>
-.search-container {
-  position: relative;
-  width: 100%;
-}
-
-.search-side-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 100vh;
-  background-color: white;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-}
-
-.search-panel-content {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.search-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: 40;
-}
-
-/* Animaciones */
-.slide-left-enter-active,
-.slide-left-leave-active {
-  transition: transform 0.3s ease;
-}
-
-.slide-left-enter-from,
-.slide-left-leave-to {
-  transform: translateX(-100%);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* Responsive */
-@media (min-width: 768px) {
-  .search-side-panel {
-    width: 320px;
-  }
-}
-</style>

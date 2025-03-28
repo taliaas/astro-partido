@@ -34,33 +34,12 @@
               placeholder="Buscar..."
               @keyup.enter="search"
             />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <button
-                      @click="toggleSearchPanel"
-                    class="h-7 w-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500"
-                  >
-                    <FilterIcon class="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent
-                  align="center"
-                  side="left"
-                  align-offset=""
-                  avoid-collisions="avoid-collisions"
-                  collision-boundary=""
-                  collision-padding="collision-padding"
-                  arrow-padding=""
-                  sticky="always"
-                  hide-when-detached="hide-when-detached"
-                  position-strategy="absolute"
-                  update-position-strategy="always"
-                >
-                  Filtrar
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <button
+              @click="toggleSearchPanel"
+              class="h-7 w-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500"
+            >
+              <FilterIcon class="h-4 w-4" />
+            </button>
           </div>
         </div>
       </div>
@@ -149,6 +128,7 @@ const searchQuery = ref("");
 const searchStore = useSearchStore();
 
 const toggleSearchPanel = () => {
+  console.log("Estado: ",searchStore.showSidePanel)
   searchStore.showSidePanel = !searchStore.showSidePanel;
 };
 
@@ -159,7 +139,6 @@ const toggleTheme = () => {
 };
 
 onMounted(() => {
-  // Check for saved theme preference or system preference
   const savedTheme = localStorage.getItem("theme");
   const systemPrefersDark = window.matchMedia(
     "(prefers-color-scheme: dark)",

@@ -1,7 +1,7 @@
 <template>
-  <div class="w-80 p-4 space-y-6 bg-white border rounded shadow-md">
+  <div class="w-80 p-4 space-y-8 mt-2.5 bg-white border rounded shadow-md">
     <!-- Calendar and Events Section -->
-    <div class="space-y-4 ">
+    <div class="space-y-4">
       <h2 class="text-2xl font-semibold">Calendario y Eventos</h2>
 
       <!-- Calendar Select -->
