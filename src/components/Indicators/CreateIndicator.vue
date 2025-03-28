@@ -8,8 +8,8 @@
       </div>
       <div class="space-y-4 py-4">
         <h2 class="p-2 w-full text-xl font-medium">Nuevo indicador</h2>
-        <form class="space-y-2 ">
-          <div class="flex ">
+        <form class="space-y-2">
+          <div class="flex">
             <div class="space-y-2 p-2 flex-1">
               <Label class="py-2">Nombre</Label>
               <Input class="flex"></Input>
@@ -38,23 +38,18 @@
             <Textarea class="w-full" v-model="keyboards"></Textarea>
           </div>
           <div class="p-4 flex justify-end space-x-4">
-            <Button class=" border basis-36" variant="secondary">
+            <Button class="border basis-36" variant="secondary">
               Cancelar
             </Button>
             <Button class="bg-button basis-36"> Guardar</Button>
           </div>
         </form>
-        <Collapsible>
-          <CollapsibleTrigger
-            class="flex p-2 items-center w-full justify-between text-lg font-medium"
-          >
-            Modificar indicador
-            <ChevronDownIcon class="h-4 w-4" />
-          </CollapsibleTrigger>
-          <CollapsibleContent class="space-y-3 pt-3 p-2">
-            Listado de indicadores, seleccionar indicador
-          </CollapsibleContent>
-        </Collapsible>
+
+        <div
+          class="flex p-2 items-center w-full justify-between text-lg font-medium"
+        >
+          Modificar indicador
+        </div>
       </div>
     </div>
   </div>
@@ -81,6 +76,6 @@ import {
 import { ref } from "vue";
 
 const typeData = ref();
-const descriptions = ref('')
-const keyboards = ref('')
+const descriptions = ref("");
+const keyboards = ref("");
 </script>
