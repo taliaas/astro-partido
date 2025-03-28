@@ -1,24 +1,6 @@
 <template>
-  <div class="w-full">
-    <!-- Search Bar with Filter Button -->
-    <div class="relative">
-      <div class="flex items-center gap-2 border px-3 py-2 rounded-md w-full">
-        <SearchIcon class="h-4 w-4 text-gray-400" />
-        <input
-          v-model="searchQuery"
-          class="flex-1 border-0 outline-none bg-transparent placeholder:text-gray-400"
-          placeholder="Buscar..."
-          @keyup.enter="search"
-        />
-        <button
-          @click="isAdvancedSearchOpen = !isAdvancedSearchOpen"
-          class="h-7 w-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500"
-        >
-          <FilterIcon class="h-4 w-4" />
-        </button>
-      </div>
-
-      <!-- Advanced Search Popover -->
+  <div>
+  <!-- Advanced Search Popover -->
       <div
         v-if="isAdvancedSearchOpen"
         class="absolute right-0 z-10 mt-2 w-[400px] rounded-md border bg-white p-4 shadow-md"
@@ -27,13 +9,12 @@
           <div class="flex items-center justify-between">
             <h4 class="font-medium leading-none">Búsqueda avanzada</h4>
             <button
-              @click="isAdvancedSearchOpen = false"
+              @click="closePanel"
               class="h-6 w-6 flex items-center justify-center rounded-md hover:bg-gray-100"
             >
               <XIcon class="h-4 w-4" />
             </button>
           </div>
-          <div class="h-px bg-gray-200"></div>
 
           <div class="grid gap-3">
             <div class="grid gap-1.5">
@@ -183,23 +164,31 @@
           Limpiar todos
         </button>
       </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import {useSearchStore} from "@/utils/store.ts";
+import {ref, reactive} from "vue";
+import { computed } from 'vue'
 import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue } from "../ui/select";
 import { Input } from "../ui/input"
-import { SearchIcon, FilterIcon, XIcon } from "lucide-vue-next";
+import { XIcon } from "lucide-vue-next";
 
 // Search query
 const searchQuery = ref("");
-const isAdvancedSearchOpen = ref(false);
+
+const searchStore = useSearchStore()
+
+const isAdvancedSearchOpen = computed(() => searchStore.showSidePanel)
+
+const closePanel = () => {
+  searchStore.showSidePanel = false
+}
 
 // Filter state
 const filters = reactive({
@@ -384,7 +373,3 @@ defineExpose({
   clearAllFilters,
 });
 </script>
-
-<style scoped>
-/* Additional custom styles can be added here if needed */
-</style>

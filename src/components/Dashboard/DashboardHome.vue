@@ -5,6 +5,9 @@
         <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">
           Panel de Control de KPIs
         </h1>
+        <div class="space-y-6 w-full md:w-[300px] mt-12">
+          <SearchHome />
+        </div>
         <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
           <Card
             v-for="(card, index) in cards"
@@ -26,6 +29,7 @@
             </CardContent>
           </Card>
         </div>
+
         <Tabs v-model="activeTab" class="space-y-4">
           <TabsList class="grid w-full grid-cols-1 md:grid-cols-2 h-auto">
             <TabsTrigger
@@ -61,6 +65,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Documents from "../Home/Documents.vue";
 import KPIs from "../Home/KPIs.vue";
 import RightSidebar from "./RightSidebar.vue";
+import SearchHome from "@/components/layout/SearchHome.vue";
 
 const icons = { Activity, FileCheck2, Files, FileText };
 

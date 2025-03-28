@@ -30,7 +30,7 @@
               <ChevronDownIcon class="h-4 w-4" />
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
                 <div v-for="indicator in getIndicatorsByCategory(category)" :key="indicator.key"
                   @click="selectIndicator(indicator.key)"
                   class="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
@@ -38,7 +38,7 @@
                     <Checkbox v-model="checked_indicator" class="mt-2"></Checkbox>
                     <h3 class="font-medium text-xl">{{ indicator.name }}</h3>
                   </div>
-                  <p class="text-gray-500 text-lg">
+                  <p class="text-gray-500 text-md">
                     {{ indicator.description }}
                   </p>
                 </div>
