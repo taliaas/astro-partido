@@ -34,25 +34,65 @@
               placeholder="Buscar..."
               @keyup.enter="search"
             />
-            <button
-              @click="toggleSidePanel"
-              class="h-7 w-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500"
-            >
-              <FilterIcon class="h-4 w-4" />
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <button
+                      @click="toggleSearchPanel"
+                    class="h-7 w-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500"
+                  >
+                    <FilterIcon class="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent
+                  align="center"
+                  side="left"
+                  align-offset=""
+                  avoid-collisions="avoid-collisions"
+                  collision-boundary=""
+                  collision-padding="collision-padding"
+                  arrow-padding=""
+                  sticky="always"
+                  hide-when-detached="hide-when-detached"
+                  position-strategy="absolute"
+                  update-position-strategy="always"
+                >
+                  Filtrar
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>
 
+      <TooltipProvider>
+        <Tooltip class="hover:bg-muted dark:hover:bg-gray-700 rounded-full">
+          <TooltipTrigger>
+            <a href="/notification" class="p-2">
+              <BellIcon
+                class="h-5 w-5 text-muted-foreground dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              />
+            </a>
+          </TooltipTrigger>
+          <TooltipContent
+            align="center"
+            side="left"
+            align-offset=""
+            avoid-collisions="avoid-collisions"
+            collision-boundary=""
+            collision-padding="collision-padding"
+            arrow-padding=""
+            sticky="always"
+            hide-when-detached="hide-when-detached"
+            position-strategy="absolute"
+            update-position-strategy="always"
+          >
+            <p>Notificaciones</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <!-- Action Buttons -->
-      <a
-        href="/notification"
-        class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full"
-      >
-        <BellIcon
-          class="h-5 w-5 text-muted-foreground dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-        />
-      </a>
+
       <a
         href="/chat"
         class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full"
@@ -95,16 +135,22 @@ import {
 } from "lucide-vue-next";
 import UserNav from "../Otros/UserNav.vue";
 import { Input } from "@/components/ui/input";
-import {useSearchStore} from "@/utils/store.ts";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useSearchStore } from "@/utils/store.ts";
 
 const isDark = ref(false);
 const searchQuery = ref("");
 
-const searchStore = useSearchStore()
+const searchStore = useSearchStore();
 
-const toggleSidePanel = () => {
-  searchStore.toggleSidePanel()
-}
+const toggleSearchPanel = () => {
+  searchStore.showSidePanel = !searchStore.showSidePanel;
+};
 
 const toggleTheme = () => {
   isDark.value = !isDark.value;

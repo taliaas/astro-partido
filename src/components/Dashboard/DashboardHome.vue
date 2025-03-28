@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">
           Panel de Control de KPIs
         </h1>
-        <div class="space-y-6 w-full md:w-[300px] mt-12">
+        <div v-if="!isLeftSide">
           <SearchHome />
         </div>
         <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
@@ -66,6 +66,7 @@ import Documents from "../Home/Documents.vue";
 import KPIs from "../Home/KPIs.vue";
 import RightSidebar from "./RightSidebar.vue";
 import SearchHome from "@/components/layout/SearchHome.vue";
+import {useSearchStore} from "@/utils/store.ts";
 
 const icons = { Activity, FileCheck2, Files, FileText };
 
@@ -75,6 +76,8 @@ const { documents, kpis, cards } = defineProps<{
   cards: any;
 }>();
 
+const searchStore = useSearchStore()
+const isLeftSide = searchStore.showSidePanel
 const activeTab = ref("documents");
 const updatedData = ref([]);
 

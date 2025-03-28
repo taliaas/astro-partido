@@ -1,196 +1,195 @@
 <template>
-  <div>
-  <!-- Advanced Search Popover -->
-      <div
-        v-if="isAdvancedSearchOpen"
-        class="absolute right-0 z-10 mt-2 w-[400px] rounded-md border bg-white p-4 shadow-md"
+  <main>
+    <div class="search-container">
+      <!-- Botón de búsqueda que siempre está visible -->
+      <button
+          @click="toggleSearchPanel"
+          class="search-button flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-sm"
       >
-        <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <h4 class="font-medium leading-none">Búsqueda avanzada</h4>
+        <SearchIcon class="h-4 w-4" />
+        <span>Buscar...</span>
+      </button>
+
+      <!-- Panel lateral de búsqueda -->
+      <Transition name="slide-left">
+        <div v-if="searchStore.showSidePanel" class="search-side-panel mt-28">
+          <div class="search-panel-header flex items-center justify-between p-4 border-b">
+            <h4 class="font-medium">Búsqueda avanzada</h4>
             <button
-              @click="closePanel"
-              class="h-6 w-6 flex items-center justify-center rounded-md hover:bg-gray-100"
+                @click="closePanel"
+                class="h-6 w-6 flex items-center justify-center rounded-md hover:bg-gray-100"
             >
               <XIcon class="h-4 w-4" />
             </button>
           </div>
 
-          <div class="grid gap-3">
+          <div class="search-panel-content p-4 space-y-4">
+            <!-- Núcleos -->
             <div class="grid gap-1.5">
               <label class="text-sm font-medium">Núcleos</label>
               <Select
                   v-model="filters.nucleos"
-                  class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
+                  class="w-full"
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Todos los núcleos" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="core">
-                      Núcleo 1
-                    </SelectItem>
+                    <SelectItem value="core">Núcleo 1</SelectItem>
+                    <SelectItem value="core2">Núcleo 2</SelectItem>
+                    <SelectItem value="core3">Núcleo 3</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div class="grid gap-3">
-            <!-- Document Type -->
+
+            <!-- Tipo de documento -->
             <div class="grid gap-1.5">
               <label class="text-sm font-medium">Tipo de documento</label>
               <Select
-                v-model="filters.documentType"
-                class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
+                  v-model="filters.documentType"
+                  class="w-full"
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Todos los documentos" />
                 </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="acta">
-                        Acta Ordinarias
-                      </SelectItem>
-                      <SelectItem value="informe">
-                        Actas de C. Político
-                      </SelectItem>
-                      <SelectItem value="reporte">
-                        Informes
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="acta">Acta Ordinarias</SelectItem>
+                    <SelectItem value="informe">Actas de C. Político</SelectItem>
+                    <SelectItem value="reporte">Informes</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
               </Select>
             </div>
 
-            <!-- Status -->
+            <!-- Estado -->
             <div class="grid gap-1.5">
               <label class="text-sm font-medium">Estado</label>
               <Select
-                v-model="filters.status"
-                class="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
+                  v-model="filters.status"
+                  class="w-full"
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Cualquier estado" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="pending">
-                      Pendiente
-                    </SelectItem>
-                    <SelectItem value="processed">
-                      Procesado
-                    </SelectItem>
-                    <SelectItem value="valid">
-                      Aprobada
-                    </SelectItem>
+                    <SelectItem value="pending">Pendiente</SelectItem>
+                    <SelectItem value="processed">Procesado</SelectItem>
+                    <SelectItem value="valid">Aprobada</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            <!-- Date Range -->
+            <!-- Periodo -->
             <div class="grid gap-1.5">
               <label class="text-sm font-medium">Periodo</label>
               <div class="flex gap-2">
                 <div class="flex-1">
                   <label class="text-xs text-gray-500">Desde</label>
                   <Input
-                    v-model="filters.dateFrom"
-                    type="date"
-                    class="flex h-10 w-full rounded-md bg-white px-3 py-2 text-sm file:text-sm file:font-medium"
+                      v-model="filters.dateFrom"
+                      type="date"
+                      class="w-full"
                   />
                 </div>
                 <div class="flex-1">
                   <label class="text-xs text-gray-500">Hasta</label>
                   <Input
-                    v-model="filters.dateTo"
-                    type="date"
-                    class="flex h-10 w-full rounded-md bg-white px-3 py-2 text-sm file:text-sm file:font-medium"
+                      v-model="filters.dateTo"
+                      type="date"
+                      class="w-full"
                   />
                 </div>
               </div>
             </div>
 
-            <!-- Keywords -->
+            <!-- Palabras clave -->
             <div class="grid gap-1.5">
               <label class="text-sm font-medium">Palabras clave</label>
               <Input
-                v-model="filters.keywords"
-                class="flex h-10 w-full rounded-md bg-white px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
-                placeholder="Ej: guardia, crecimiento, sanción"
+                  v-model="filters.keywords"
+                  class="w-full"
+                  placeholder="Ej: guardia, crecimiento, sanción"
               />
             </div>
+          </div>
 
-            <!-- Action Buttons -->
-            <div class="flex justify-between mt-2">
-              <button
+          <div class="search-panel-footer p-4 border-t flex justify-between">
+            <button
                 @click="resetFilters"
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 border border-gray-200 bg-white hover:bg-gray-100 h-10 px-4 py-2"
-              >
-                Limpiar
-              </button>
-              <button
+                class="px-4 py-2 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-sm"
+            >
+              Limpiar
+            </button>
+            <button
                 @click="applyFilters"
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 bg-button hover:bg-button-foreground text-gray-50 h-10 px-4 py-2"
-              >
-                Aplicar filtros
-              </button>
-            </div>
+                class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm"
+            >
+              Aplicar filtros
+            </button>
           </div>
         </div>
-      </div>
+      </Transition>
 
-      <!-- Active Filters -->
-      <div v-if="activeFilters.length > 0" class="flex flex-wrap gap-2 mt-2">
+      <!-- Overlay para cerrar el panel en dispositivos móviles -->
+      <Transition name="fade">
         <div
-          v-for="(filter, index) in activeFilters"
-          :key="index"
-          class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+            v-if="searchStore.showSidePanel"
+            class="search-overlay md:hidden"
+            @click="closePanel"
+        ></div>
+      </Transition>
+
+      <!-- Filtros activos -->
+      <div v-if="activeFilters.length > 0" class="active-filters mt-3 flex flex-wrap gap-2">
+        <div
+            v-for="(filter, index) in activeFilters"
+            :key="index"
+            class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-0.5 text-xs font-semibold"
         >
           {{ filter.label }}
           <button
-            @click="removeFilter(index)"
-            class="ml-1 h-3.5 w-3.5 rounded-full hover:bg-gray-100 inline-flex items-center justify-center"
+              @click="removeFilter(index)"
+              class="ml-1 h-3.5 w-3.5 rounded-full hover:bg-gray-100 inline-flex items-center justify-center"
           >
             <XIcon class="h-3 w-3" />
           </button>
         </div>
         <button
-          v-if="activeFilters.length > 0"
-          @click="clearAllFilters"
-          class="text-xs text-gray-500 hover:text-gray-900"
+            v-if="activeFilters.length > 0"
+            @click="clearAllFilters"
+            class="text-xs text-gray-500 hover:text-gray-900"
         >
           Limpiar todos
         </button>
       </div>
-  </div>
+    </div>
+  </main>
+
 </template>
 
 <script setup lang="ts">
-import {useSearchStore} from "@/utils/store.ts";
-import {ref, reactive} from "vue";
-import { computed } from 'vue'
-import { Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue } from "../ui/select";
-import { Input } from "../ui/input"
-import { XIcon } from "lucide-vue-next";
+import { ref, reactive } from "vue";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Input } from "../ui/input";
+import { XIcon, SearchIcon } from "lucide-vue-next";
+import { useSearchStore } from "@/utils/store.ts";
 
-// Search query
-const searchQuery = ref("");
+const searchStore = useSearchStore();
 
-const searchStore = useSearchStore()
-
-const isAdvancedSearchOpen = computed(() => searchStore.showSidePanel)
+const toggleSearchPanel = () => {
+  searchStore.showSidePanel = !searchStore.showSidePanel;
+};
 
 const closePanel = () => {
-  searchStore.showSidePanel = false
-}
+  searchStore.showSidePanel = false;
+};
 
-// Filter state
+// Estado de los filtros
 const filters = reactive({
   documentType: "",
   status: "",
@@ -201,15 +200,15 @@ const filters = reactive({
   includeArchived: false,
 });
 
-// Active filters
+// Filtros activos
 const activeFilters = ref([]);
 
-// Apply filters
+// Aplicar filtros
 const applyFilters = () => {
-  // Clear existing filters
+  // Limpiar filtros existentes
   activeFilters.value = [];
 
-  // Add document type filter if selected
+  // Añadir filtro de tipo de documento si está seleccionado
   if (filters.documentType) {
     const documentTypeLabels = {
       acta: "Actas",
@@ -223,12 +222,12 @@ const applyFilters = () => {
     });
   }
 
-  // Add status filter if selected
+  // Añadir filtro de estado si está seleccionado
   if (filters.status) {
     const statusLabels = {
       pending: "Pendiente",
       processed: "Procesado",
-      alert: "Con alertas",
+      valid: "Aprobada",
     };
     activeFilters.value.push({
       type: "status",
@@ -237,7 +236,7 @@ const applyFilters = () => {
     });
   }
 
-  // Add date range filter if selected
+  // Añadir filtro de rango de fechas si está seleccionado
   if (filters.dateFrom && filters.dateTo) {
     activeFilters.value.push({
       type: "dateRange",
@@ -258,7 +257,7 @@ const applyFilters = () => {
     });
   }
 
-  // Add keywords filter if entered
+  // Añadir filtro de palabras clave si se ingresaron
   if (filters.keywords) {
     activeFilters.value.push({
       type: "keywords",
@@ -267,23 +266,14 @@ const applyFilters = () => {
     });
   }
 
-  // Add archived filter if checked
-  if (filters.includeArchived) {
-    activeFilters.value.push({
-      type: "includeArchived",
-      value: true,
-      label: "Incluye archivados",
-    });
-  }
+  // Cerrar el panel de búsqueda avanzada
+  closePanel();
 
-  // Close the advanced search panel
-  isAdvancedSearchOpen.value = false;
-
-  // Perform the search
+  // Realizar la búsqueda
   search();
 };
 
-// Format date for display
+// Formatear fecha para mostrar
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("es-ES", {
@@ -293,11 +283,11 @@ const formatDate = (dateString) => {
   });
 };
 
-// Remove a specific filter
+// Eliminar un filtro específico
 const removeFilter = (index) => {
   const filter = activeFilters.value[index];
 
-  // Reset the corresponding filter in the form
+  // Restablecer el filtro correspondiente en el formulario
   switch (filter.type) {
     case "documentType":
       filters.documentType = "";
@@ -323,21 +313,21 @@ const removeFilter = (index) => {
       break;
   }
 
-  // Remove the filter from active filters
+  // Eliminar el filtro de los filtros activos
   activeFilters.value.splice(index, 1);
 
-  // Perform the search again with updated filters
+  // Realizar la búsqueda nuevamente con los filtros actualizados
   search();
 };
 
-// Clear all filters
+// Limpiar todos los filtros
 const clearAllFilters = () => {
   activeFilters.value = [];
   resetFilters();
   search();
 };
 
-// Reset filter form
+// Restablecer formulario de filtros
 const resetFilters = () => {
   filters.documentType = "";
   filters.status = "";
@@ -347,29 +337,90 @@ const resetFilters = () => {
   filters.includeArchived = false;
 };
 
-// Perform search with current query and filters
+// Realizar búsqueda con la consulta y filtros actuales
 const search = () => {
-  // Here you would implement the actual search functionality
-  // For example, emit an event with search parameters
+  // Aquí implementarías la funcionalidad de búsqueda real
   const searchParams = {
-    query: searchQuery.value,
     filters: activeFilters.value.reduce((acc, filter) => {
       acc[filter.type] = filter.value;
       return acc;
     }, {}),
   };
 
-  console.log("Searching with params:", searchParams);
+  console.log("Buscando con parámetros:", searchParams);
   emit("search", searchParams);
 };
 
-// Define emits
+// Definir emits
 const emit = defineEmits(["search"]);
 
-// Expose component methods
+// Exponer métodos del componente
 defineExpose({
   search,
   resetFilters,
   clearAllFilters,
 });
 </script>
+
+<style scoped>
+.search-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-side-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100vh;
+  background-color: white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-panel-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 40;
+}
+
+/* Animaciones */
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+  transform: translateX(-100%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .search-side-panel {
+    width: 320px;
+  }
+}
+</style>
