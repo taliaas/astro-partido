@@ -13,6 +13,6 @@ import auth from "auth-astro";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  integrations: [vue(), tailwind(), auth()],
+  integrations: [vue({ appEntrypoint: "/src/main.ts" }), tailwind(), auth()],
   adapter: vercel({ imageService: true, maxDuration: 60 }),
 });
