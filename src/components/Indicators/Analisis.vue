@@ -31,10 +31,10 @@
         </div>
       </div>
 
-      <div class="space-y-2">
+      <div class="space-y-2" v-if="!selectedIndicator">
         <!-- Indicators List with Collapsible Sections -->
         <div v-for="category in Object.keys(categories)" class="overflow-hidden"
-             v-if="!selectedIndicator" :key="category">
+              :key="category">
           <div class="p-2">
             <Collapsible>
               <CollapsibleTrigger class="flex items-center group w-full justify-between bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-lg font-medium">
@@ -44,7 +44,7 @@
               <CollapsibleContent>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
                   <div v-for="indicator in getIndicatorsByCategory(category)" :key="indicator.key"
-                       @click="selectIndicator(indicator.key)"
+                       @click="selectedIndicator = indicator.key"
                        class="p-4 border rounded-lg cursor-pointer hover:shadow-md transition-colors">
                     <div class="flex space-x-2">
                       <Checkbox v-model="checked_indicator" class="mt-2"></Checkbox>
@@ -60,6 +60,25 @@
           </div>
         </div>
       </div>
+      <!-- Selected Indicator Analysis -->
+      <div v-else class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-xl font-semibold">
+              {{ getSelectedIndicator.name }}
+            </h2>
+            <p class="text-gray-500 text-lg">
+              {{ getSelectedIndicator.description }}
+            </p>
+          </div>
+          <button
+              @click="selectedIndicator = ''"
+              class="text-gray-500 hover:text-gray-700"
+          >
+            <XIcon class="h-5 w-5"/>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -73,7 +92,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import OrdinaryService from "@/services/OrdinaryService.ts";
-import {BellIcon, ChevronDownIcon, Search} from "lucide-vue-next";
+import {BellIcon, ChevronDownIcon, Search, XIcon} from "lucide-vue-next";
 import { computed, ref, watch } from "vue";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
