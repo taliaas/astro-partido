@@ -19,6 +19,7 @@
               <label class="text-sm font-medium">Núcleos</label>
               <Select
                   v-model="filters.nucleos"
+                  multiple
                   class="w-full"
               >
                 <SelectTrigger>

@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header Banner -->
     <div
-      class="max-w-6xl mx-auto mt-5 rounded bg-gradient-to-r from-blue-600 to-blue-800 text-white p-8"
+      class="max-w-4xl mx-auto mt-5 text-foreground p-8"
     >
       <div class="max-w-4xl mx-auto flex items-center gap-6">
         <div
@@ -14,7 +14,7 @@
           <h1 class="text-3xl font-bold">{{ user.name }}</h1>
           <div class="flex items-center gap-2 mt-2 text-gray-300">
             <ShieldCheckIcon class="h-4 w-4" />
-            <span class="text-lg">{{ user.rol || "Militante" }}</span>
+            <span class="text-lg text-foreground">{{ user.rol || "Militante" }}</span>
           </div>
         </div>
       </div>
