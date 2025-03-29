@@ -1,8 +1,8 @@
 <template>
-  <Card class="bg-secondary">
+  <Card class="bg-card">
     <CardHeader>
-      <CardTitle>KPIs Principales</CardTitle>
-      <CardDescription>Indicadores clave de rendimiento del mes actual y comparación con el anterior mes</CardDescription>
+      <CardTitle>Métricas de desempeño</CardTitle>
+      <CardDescription class="text-md">Comparativo mensual (vs mes anterior)</CardDescription>
     </CardHeader>
     <CardContent>
       <div class="space-y-4">

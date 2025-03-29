@@ -15,7 +15,7 @@
             <Card
               v-for="(card, index) in cards"
               :key="index"
-              class="bg-secondary rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 ease-in-out"
+              class="bg-secondary rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 ease-in-out hover:border-blue-200 "
             >
               <CardHeader
                 class="flex flex-row items-center justify-between space-y-0 pb-2"
@@ -90,7 +90,7 @@ const updatedData = ref([]);
 
 const tabs = [
   { value: "documents", label: "Documentos", component: Documents },
-  { value: "kpis", label: "Análisis de Desempeño", component: KPIs },
+  { value: "kpis", label: "Desempeño", component: KPIs },
 ];
 
 watch(

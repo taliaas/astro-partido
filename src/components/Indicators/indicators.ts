@@ -1,33 +1,28 @@
 export const categories = {
-    "Asistencia": ["asistencia", "reason"],
-    "Gestión": ["pto", "totalDeAcuerdos", "participacionOrgSup", "invitados"],
-    "Acuerdos": ["cp", "cp_agree", "acuerdosSalidasExternas"],
+    "Asistencia": ["asistencia", "reason", "analisisAusenciasRO", "invitados", "participacionOrgSup"],
+    "Gestión": ["pto", "implOrtcsOrgSup", "politicaDeCuadros", "sanciones",
+        "planDeTrabajo", "reglamentosEstatutos"],
+    "Acuerdos": ["totalDeAcuerdos",  "acuerdosSalidasExternas"],
     "Política": [
-        "politicaDeCuadros",
-        "atencionFEU",
-        "atencionUJC",
-        "funcionamientoSindicato",
-        "reglamentosEstatutos",
+        "cp", "cp_agree",  "discusionDelitoCorrupcion"
     ],
     "Evaluación": [
         "rendicionMilitante",
         "rendicionDirigente",
         "analisisActFtal",
-        "discusionDelitoCorrupcion",
         "analisisObjs",
         "otrosAnalisisDisciplinarios",
         "evaluacion",
-        "analisisAusenciasRO",
     ],
     "Organización": [
-        "planDeTrabajo",
-        "sanciones",
+        "usoComisiones",
+        "atencionFEU",
+        "atencionUJC",
+        "funcionamientoSindicato",
         "crecimiento",
         "desactivacion",
         "guardiaPCC",
         "trasladosIncorporaciones",
-        "implOrtcsOrgSup",
-        "usoComisiones",
     ],
 };
 
@@ -57,13 +52,13 @@ export const indicators = [
         description: "Total de acuerdos tomados",
     },
     {
-        category: "",
+        category: "asistencia",
         key: "participacionOrgSup",
         name: "Particip. de Org. Superior",
         description: "Participantes de la organización superior",
     },
     {
-        category: "",
+        category: "asistencia",
         key: "invitados",
         name: "Invitados",
         description: "Invitados a la reunión",
@@ -154,7 +149,7 @@ export const indicators = [
         description: "Revisión y aplicación de reglamentos y estatutos",
     },
     {
-        category: "",
+        category: "asistencia",
         key: "analisisAusenciasRO",
         name: "Análisis de Ausencias RO",
         description: "Evaluación de ausencias en reuniones oficiales",

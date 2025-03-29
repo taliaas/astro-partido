@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 p-6">
     <div class="max-w-[1600px] mx-auto space-y-6">
       <!-- Header and Selector -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
+      <div class=" p-6">
         <div class="flex justify-between p-2">
           <h1 class="text-2xl font-bold mb-6">Análisis por Indicador</h1>
           <a href="/parte" class="px-2 p-2 rounded text-lg font-semibold flex">
@@ -20,31 +20,33 @@
         </div>
       </div>
 
-      <!-- Indicators List with Collapsible Sections -->
-      <div v-for="category in Object.keys(categories)" class="bg-white border border-gray-200 rounded-lg shadow-sm"
-        v-if="!selectedIndicator" :key="category">
-        <div class="p-4">
-          <Collapsible>
-            <CollapsibleTrigger class="flex items-center w-full justify-between text-lg font-medium">
-              {{ category }}
-              <ChevronDownIcon class="h-4 w-4" />
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-                <div v-for="indicator in getIndicatorsByCategory(category)" :key="indicator.key"
-                  @click="selectIndicator(indicator.key)"
-                  class="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                  <div class="flex space-x-2">
-                    <Checkbox v-model="checked_indicator" class="mt-2"></Checkbox>
-                    <h3 class="font-medium text-xl">{{ indicator.name }}</h3>
+      <div class="space-y-2">
+        <!-- Indicators List with Collapsible Sections -->
+        <div v-for="category in Object.keys(categories)" class="overflow-hidden"
+             v-if="!selectedIndicator" :key="category">
+          <div class="p-2">
+            <Collapsible>
+              <CollapsibleTrigger class="flex items-center w-full justify-between bg-white rounded-lg shadow-md border border-gray-100 p-4 text-lg font-medium">
+                {{ category }}
+                <ChevronDownIcon class="h-4 w-4" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+                  <div v-for="indicator in getIndicatorsByCategory(category)" :key="indicator.key"
+                       @click="selectIndicator(indicator.key)"
+                       class="p-4 border rounded-lg cursor-pointer hover:shadow-md transition-colors">
+                    <div class="flex space-x-2">
+                      <Checkbox v-model="checked_indicator" class="mt-2"></Checkbox>
+                      <h3 class="font-medium text-xl ml-4">{{ indicator.name }}</h3>
+                    </div>
+                    <p class="text-gray-500 text-md mt-2">
+                      {{ indicator.description }}
+                    </p>
                   </div>
-                  <p class="text-gray-500 text-md">
-                    {{ indicator.description }}
-                  </p>
                 </div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
         </div>
       </div>
     </div>

@@ -86,7 +86,7 @@
             <h3 class="text-lg font-semibold">Comportamiento de Indicadores</h3>
             <button
               @click="exportToPDF"
-              class="inline-flex items-center rounded-md bg-gray-700 dark:bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+              class="inline-flex items-center rounded-md bg-button px-4 py-2 text-sm font-medium text-white "
             >
               Exportar
             </button>
