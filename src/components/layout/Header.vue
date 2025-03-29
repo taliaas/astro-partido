@@ -71,7 +71,6 @@
         </Tooltip>
       </TooltipProvider>
       <!-- Action Buttons -->
-
       <a
         href="/chat"
         class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full"

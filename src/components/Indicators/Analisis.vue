@@ -5,8 +5,19 @@
       <div class=" p-6">
         <div class="flex justify-between p-2">
           <h1 class="text-2xl font-bold mb-6">Análisis por Indicador</h1>
-          <a href="/parte" class="px-2 p-2 rounded text-lg font-semibold flex">
-            Parte Municipio</a>
+
+          <TooltipProvider>
+            <Tooltip class="hover:bg-muted dark:hover:bg-gray-700 rounded-full">
+              <TooltipTrigger>
+                <a href="/parte" class="px-2 p-2 rounded text-lg font-semibold flex">
+                  Parte Municipio</a>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Resumen Parte Municipio PCC</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
         </div>
 
         <div class="flex gap-4">
@@ -26,9 +37,9 @@
              v-if="!selectedIndicator" :key="category">
           <div class="p-2">
             <Collapsible>
-              <CollapsibleTrigger class="flex items-center w-full justify-between bg-white rounded-lg shadow-md border border-gray-100 p-4 text-lg font-medium">
+              <CollapsibleTrigger class="flex items-center group w-full justify-between bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-lg font-medium">
                 {{ category }}
-                <ChevronDownIcon class="h-4 w-4" />
+                <ChevronDownIcon class="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
@@ -62,8 +73,9 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import OrdinaryService from "@/services/OrdinaryService.ts";
-import { ChevronDownIcon, Search } from "lucide-vue-next";
+import {BellIcon, ChevronDownIcon, Search} from "lucide-vue-next";
 import { computed, ref, watch } from "vue";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
