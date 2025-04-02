@@ -1,170 +1,103 @@
 <template>
-  <div
-      class="flex justify-between"
-      v-if="selectedIndicator === 'asistencia'"
-  >
-    <!--Asistencia -->
-    <div class="w-full">
-      <table class="p-2 w-full border border-gray-300">
-        <table-header
-            class="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider bg-gray-50"
-        >
-          <tr>
-            <th
-                class="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Núcleo
-            </th>
-            <th
-                class="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Fecha reunión
-            </th>
-            <th
-                class="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Fecha entrega
-            </th>
-            <th
-                class="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Total
-            </th>
-            <th
-                class="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Asistencia
-            </th>
-            <th
-                class="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Ausente
-            </th>
-            <th
-                class="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Porciento
-            </th>
-          </tr>
-        </table-header>
+  <div>
+    <!-- Leyenda de columnas (discreta, no como tabla) -->
+    <div
+      class="grid grid-cols-7 gap-4 px-4 mb-2 text-sm font-medium text-gray-500"
+    >
+      <div>NÚCLEO</div>
+      <div>FECHA REUNIÓN</div>
+      <div>FECHA ENTREGA</div>
+      <div class="text-center">TOTAL</div>
+      <div class="text-center">ASISTENCIA</div>
+      <div class="text-center">AUSENTE</div>
+      <div class="text-center">PORCIENTO</div>
+    </div>
 
-        <tbody>
-        <tr
-            v-for="asis in attendance.attendances"
-            :key="asis"
-            class="hover:bg-gray-50/50 transition-colors duration-200"
+    <div
+      v-for="com in comite"
+      class="overflow-hidden space-y-2 divide-y"
+      :key="com"
+    >
+      <Collapsible>
+        <CollapsibleTrigger
+          class="flex justify-between items-center group w-full p-2 text-lg font-medium hover:bg-gray-200 bg-gray-100 border border-gray-300 rounded-md group transition-colors"
         >
-          <th class="p-2 text-left font-normal px-4">
-            {{ asis.core }}
-          </th>
-          <th class="p-2 text-left font-normal px-4">
-            {{ asis.creationDate }}
-          </th>
-          <th class="p-2 text-left font-normal px-4">
-            {{ asis.deliveryDate }}
-          </th>
-          <th class="p-2 text-center font-normal px-4">
-            {{ asis.total }}
-          </th>
-          <th class="p-2 text-center font-normal">
-            {{ asis.attendance }}
-          </th>
-          <th class="p-2 text-center font-normal">
-            {{ asis.absents }}
-          </th>
-          <th class="p-2 text-center font-normal px-4">
-            {{ asis.percent }}%
-          </th>
-        </tr>
-        </tbody>
-      </table>
-      <div
-          v-if="attendance.attendances.length === 0"
-          class="p-4 border border-gray-300 text-md flex flex-col items-center justify-center"
-      >
-        <ClipboardIcon class="h-8 w-8 text-gray-400" />
-        <h2 class="text-gray-500 font-medium">No hay asistencias</h2>
-        <p class="text-gray-400">
-          Los datos aparecerán aquí cuando estén disponibles
-        </p>
+          {{ com.name }}
+          <div class="flex items-center gap-2">
+            <div
+              class="group-data-[state=closed]:hidden px-3 bg-green-100 rounded-full"
+            >
+              <span class="text-green-700 text-sm"
+                >Total: {{ setTotal(com) }}</span
+              >
+            </div>
+            <ChevronDownIcon
+              class="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform"
+            />
+          </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
+
+    <!-- Resumen general -->
+    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+      <div class="flex justify-between items-center">
+        <h3 class="font-medium">Resumen General</h3>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center">
+            <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+            <span class="text-sm">Asistencia: {{ getTotalAsistenciaGeneral() }}</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+            <span class="text-sm">Ausencias: {{ getTotalAusenciasGeneral() }}</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 rounded-full bg-gray-500 mr-2"></div>
+            <span class="text-sm">Total: {{ getTotalMiembrosGeneral() }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <!-- Reason - Table Container with Horizontal Scroll -->
-  <div
-      v-else-if="selectedIndicator === 'reason'"
-      class="w-full overflow-x-auto"
-  >
-    <table class="w-full min-w-[1200px]">
-      <thead class="bg-gray-50 sticky top-0 border border-gray-300">
-      <tr>
-        <th
-            v-for="header in headers"
-            :key="header.id"
-            class="p-3 text-md font-medium text-gray-700 hover:bg-gray-100"
-        >
-          {{ header.name }}
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <template v-if="attendance.reasons.length">
-        <tr
-            v-for="(row, index) in attendance.reasons"
-            :key="index"
-            class="hover:bg-gray-50 transition-colors"
-        >
-          <td
-              v-for="header in headers"
-              :key="header.id"
-              class="p-3 text-sm text-center border-b first:pl-4 last:pr-4"
-          >
-            {{ row || "—" }}
-          </td>
-        </tr>
-      </template>
-
-      <!-- Empty State -->
-      <tr v-else>
-        <td :colspan="headers.length" class="text-center">
-          <div
-              class="flex flex-col items-center justify-center border border-gray-300 p-4"
-          >
-            <ClipboardIcon class="h-8 w-8 text-gray-400" />
-            <p class="text-gray-500 text-md">
-              No hay causas de ausencias
-            </p>
-            <p class="text-gray-400 text-sm">
-              Los datos aparecerán aquí cuando estén disponibles
-            </p>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
 </template>
 
-
 <script setup lang="ts">
-import {ClipboardIcon} from "lucide-vue-next";
-import {Table, TableHeader} from "@/components/ui/table";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDownIcon } from "lucide-vue-next";
 
-const headers = [
-  { id: 1, name: "Núcleo" },
-  { id: 2, name: "Enfermedad" },
-  { id: 3, name: "Extranjero" },
-  { id: 4, name: "Trabajo" },
-  { id: 5, name: "Fuera de Provincia" },
-  { id: 6, name: "Vacaciones" },
-  { id: 7, name: "Lic. de Maternidad" },
-  { id: 8, name: "Problemas Personales" },
-  { id: 9, name: "Problemas Familiares" },
-  { id: 10, name: "Movilizado" },
-  { id: 11, name: "Injustificado" },
-  { id: 12, name: "Otros" },
-];
+const { comite } = defineProps<{
+  comite: any[];
+}>();
 
+function getTotalAsistenciaGeneral() {
+  let total = 0
+  Object.keys(nucleos.value).forEach(comite => {
+    total += getTotalAsistencia(comite)
+  })
+  return total
+}
+
+function getTotalAusenciasGeneral() {
+  let total = 0
+  Object.keys(nucleos.value).forEach(comite => {
+    total += nucleos.value[comite].reduce((sum, nucleo) => sum + nucleo.ausente, 0)
+  })
+  return total
+}
+
+function getTotalMiembrosGeneral() {
+  let total = 0
+  Object.keys(nucleos.value).forEach(comite => {
+    total += getTotalMiembros(comite)
+  })
+  return total
+}
 </script>
-
-

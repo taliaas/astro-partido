@@ -106,7 +106,10 @@
             <XIcon class="h-5 w-5" />
           </button>
         </div>
-        <div class="space-y-3">
+        <div v-if="selectedIndicator === 'asistencia'">
+          <Asistencia :comite />
+        </div>
+        <div v-else class="space-y-3">
           <div
             v-for="com in comite"
             class="overflow-hidden space-y-2 divide-y"
@@ -289,6 +292,7 @@ import {
   Search,
   XIcon,
 } from "lucide-vue-next";
+import Asistencia from "@/components/Indicators/Asistencia.vue";
 import OrdinaryService from "@/services/OrdinaryService.ts";
 import { computed, ref, watch } from "vue";
 import { Separator } from "@/components/ui/separator";
@@ -317,7 +321,6 @@ const { comite, computo } = defineProps<{
 const attendance = ref([]);
 const search = ref("");
 const checked_indicator = ref("");
-const openDetails = ref(false);
 
 // Función para obtener indicadores por categoría
 const getIndicatorsByCategory = (category: string) => {
