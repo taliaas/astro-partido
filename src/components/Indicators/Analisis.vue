@@ -109,6 +109,9 @@
         <div v-if="selectedIndicator === 'asistencia'">
           <Asistencia :comite />
         </div>
+        <div v-else-if="selectedIndicator === 'reason'">
+          <ReasonAttendance />
+        </div>
         <div v-else class="space-y-3">
           <div
             v-for="com in comite"
@@ -293,7 +296,6 @@ import {
   XIcon,
 } from "lucide-vue-next";
 import Asistencia from "@/components/Indicators/Asistencia.vue";
-import OrdinaryService from "@/services/OrdinaryService.ts";
 import { computed, ref, watch } from "vue";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -310,6 +312,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
@@ -318,7 +321,6 @@ const { comite, computo } = defineProps<{
   computo: any;
 }>();
 
-const attendance = ref([]);
 const search = ref("");
 const checked_indicator = ref("");
 
@@ -350,20 +352,6 @@ const filteredIndicators = computed(() => {
   );
 });
 
-const headers = [
-  { id: 1, name: "Núcleo" },
-  { id: 2, name: "Enfermedad" },
-  { id: 3, name: "Extranjero" },
-  { id: 4, name: "Trabajo" },
-  { id: 5, name: "Fuera de Provincia" },
-  { id: 6, name: "Vacaciones" },
-  { id: 7, name: "Lic. de Maternidad" },
-  { id: 8, name: "Problemas Personales" },
-  { id: 9, name: "Problemas Familiares" },
-  { id: 10, name: "Movilizado" },
-  { id: 11, name: "Injustificado" },
-  { id: 12, name: "Otros" },
-];
 const getComputo = (nucleo) => {
   const value = selectedMonth.value;
   const [year, month] = value.split("-");
@@ -384,325 +372,6 @@ const setTotal = (comite) => {
 
   return total;
 };
-
-async function getAttendance() {
-  const service = new OrdinaryService();
-  const value = selectedMonth.value;
-  const [year, month] = value.split("-");
-  try {
-    attendance.value = await service.getAttendance(month, year);
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-// Datos de ejemplo
-const items = ref({
-  independientes: [
-    {
-      id: 1,
-      name: "CEIS",
-      value: 5,
-      trend: "up",
-      description: "Centro de Estudios e Investigaciones Sociales",
-      details: [
-        {
-          title: "Responsable",
-          value: "Juan Pérez",
-          description: "Director del centro desde 2020",
-        },
-        {
-          title: "Última actualización",
-          value: "15/03/2023",
-          description: "Actualizado por el equipo de coordinación",
-        },
-        {
-          title: "Estado",
-          value: "Activo",
-          description: "Proyecto en desarrollo continuo",
-        },
-      ],
-      history: [
-        {
-          date: "15/03/2023",
-          action: "Actualización",
-          description: "Se actualizaron los datos del proyecto",
-        },
-        {
-          date: "10/01/2023",
-          action: "Revisión",
-          description: "Revisión trimestral del avance",
-        },
-        {
-          date: "05/12/2022",
-          action: "Inicio",
-          description: "Inicio del proyecto actual",
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Arquitectura",
-      value: 0,
-      trend: "neutral",
-      description: "Departamento de Arquitectura y Diseño Urbano",
-      details: [
-        {
-          title: "Responsable",
-          value: "María González",
-          description: "Coordinadora del departamento",
-        },
-        {
-          title: "Última actualización",
-          value: "20/02/2023",
-          description: "Actualizado por el equipo técnico",
-        },
-        {
-          title: "Estado",
-          value: "En espera",
-          description: "Pendiente de aprobación",
-        },
-      ],
-      history: [
-        {
-          date: "20/02/2023",
-          action: "Propuesta",
-          description: "Se presentó propuesta de proyecto",
-        },
-        {
-          date: "15/01/2023",
-          action: "Planificación",
-          description: "Reunión de planificación inicial",
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "CIPEL",
-      value: 0,
-      trend: "neutral",
-      description: "Centro de Investigación de Políticas Económicas Locales",
-      details: [
-        {
-          title: "Responsable",
-          value: "Carlos Rodríguez",
-          description: "Investigador principal",
-        },
-        {
-          title: "Última actualización",
-          value: "05/03/2023",
-          description: "Actualizado por el comité de investigación",
-        },
-        {
-          title: "Estado",
-          value: "En revisión",
-          description: "En proceso de evaluación",
-        },
-      ],
-      history: [
-        {
-          date: "05/03/2023",
-          action: "Evaluación",
-          description: "Evaluación de viabilidad del proyecto",
-        },
-        {
-          date: "20/01/2023",
-          action: "Presentación",
-          description: "Presentación inicial de la propuesta",
-        },
-      ],
-    },
-    {
-      id: 4,
-      name: "VREAS",
-      value: 0,
-      trend: "neutral",
-      description: "Vicerrectoría de Estudios Avanzados y Sostenibilidad",
-      details: [
-        {
-          title: "Responsable",
-          value: "Ana Martínez",
-          description: "Vicerrectora",
-        },
-        {
-          title: "Última actualización",
-          value: "10/03/2023",
-          description: "Actualizado por secretaría académica",
-        },
-        {
-          title: "Estado",
-          value: "Pendiente",
-          description: "Pendiente de asignación de recursos",
-        },
-      ],
-      history: [
-        {
-          date: "10/03/2023",
-          action: "Revisión",
-          description: "Revisión de presupuesto",
-        },
-        {
-          date: "25/02/2023",
-          action: "Solicitud",
-          description: "Solicitud de inclusión en agenda",
-        },
-      ],
-    },
-  ],
-  mixtos: [
-    {
-      id: 5,
-      name: "Proyecto A",
-      value: 3,
-      trend: "up",
-      description: "Proyecto de colaboración interdisciplinaria",
-      details: [
-        {
-          title: "Responsable",
-          value: "Luis Sánchez",
-          description: "Coordinador de proyectos mixtos",
-        },
-        {
-          title: "Última actualización",
-          value: "12/03/2023",
-          description: "Actualizado por el equipo de coordinación",
-        },
-        {
-          title: "Estado",
-          value: "En progreso",
-          description: "Avance según cronograma",
-        },
-      ],
-      history: [
-        {
-          date: "12/03/2023",
-          action: "Avance",
-          description: "Reporte de avance trimestral",
-        },
-        {
-          date: "05/02/2023",
-          action: "Inicio",
-          description: "Inicio de la fase de implementación",
-        },
-      ],
-    },
-    {
-      id: 6,
-      name: "Proyecto B",
-      value: 0,
-      trend: "neutral",
-      description: "Iniciativa de investigación colaborativa",
-      details: [
-        {
-          title: "Responsable",
-          value: "Carmen Díaz",
-          description: "Investigadora principal",
-        },
-        {
-          title: "Última actualización",
-          value: "08/03/2023",
-          description: "Actualizado por el comité científico",
-        },
-        {
-          title: "Estado",
-          value: "En evaluación",
-          description: "Pendiente de aprobación final",
-        },
-      ],
-      history: [
-        {
-          date: "08/03/2023",
-          action: "Evaluación",
-          description: "Evaluación de resultados preliminares",
-        },
-        {
-          date: "15/01/2023",
-          action: "Propuesta",
-          description: "Presentación de propuesta de investigación",
-        },
-      ],
-    },
-  ],
-  quimica: [
-    {
-      id: 7,
-      name: "Laboratorio A",
-      value: 2,
-      trend: "up",
-      description: "Investigación en química orgánica",
-      details: [
-        {
-          title: "Responsable",
-          value: "Roberto Gómez",
-          description: "Director de laboratorio",
-        },
-        {
-          title: "Última actualización",
-          value: "18/03/2023",
-          description: "Actualizado por el equipo de investigación",
-        },
-        {
-          title: "Estado",
-          value: "Activo",
-          description: "Investigación en curso",
-        },
-      ],
-      history: [
-        {
-          date: "18/03/2023",
-          action: "Resultados",
-          description: "Presentación de resultados parciales",
-        },
-        {
-          date: "10/02/2023",
-          action: "Experimento",
-          description: "Inicio de nueva fase experimental",
-        },
-        {
-          date: "05/01/2023",
-          action: "Planificación",
-          description: "Planificación anual de investigación",
-        },
-      ],
-    },
-    {
-      id: 8,
-      name: "Proyecto Síntesis",
-      value: 0,
-      trend: "neutral",
-      description: "Desarrollo de nuevos compuestos químicos",
-      details: [
-        {
-          title: "Responsable",
-          value: "Elena Torres",
-          description: "Investigadora química",
-        },
-        {
-          title: "Última actualización",
-          value: "05/03/2023",
-          description: "Actualizado por el departamento de química",
-        },
-        {
-          title: "Estado",
-          value: "En pausa",
-          description: "Esperando nuevos equipos",
-        },
-      ],
-      history: [
-        {
-          date: "05/03/2023",
-          action: "Pausa",
-          description: "Pausa temporal por falta de equipamiento",
-        },
-        {
-          date: "20/01/2023",
-          action: "Inicio",
-          description: "Inicio del proyecto de síntesis",
-        },
-      ],
-    },
-  ],
-});
 
 const details = (nucleo) => {
   return "Centro de Estudios e Investigaciones Sociales";
@@ -739,7 +408,4 @@ const history = ref([
   },
 ]);
 
-watch(() => {
-  getAttendance();
-});
 </script>
