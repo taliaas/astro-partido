@@ -108,36 +108,40 @@
         </div>
         <div class="space-y-3">
           <div
-              v-for="com in comite"
-              class="overflow-hidden space-y-2 divide-y"
-              :key="com"
+            v-for="com in comite"
+            class="overflow-hidden space-y-2 divide-y"
+            :key="com"
           >
             <Collapsible>
               <CollapsibleTrigger
-                  class="flex justify-between items-center group w-full p-2 text-lg font-medium hover:bg-gray-200 bg-gray-100 border border-gray-300 rounded-md group transition-colors"
+                class="flex justify-between items-center group w-full p-2 text-lg font-medium hover:bg-gray-200 bg-gray-100 border border-gray-300 rounded-md group transition-colors"
               >
                 {{ com.name }}
                 <div class="flex items-center gap-2">
-                  <div class="group-data-[state=closed]:hidden px-3 bg-green-100 rounded-full">
-                    <span class="text-green-700 text-sm">Total: {{total}}</span>
+                  <div
+                    class="group-data-[state=closed]:hidden px-3 bg-green-100 rounded-full"
+                  >
+                    <span class="text-green-700 text-sm"
+                      >Total: {{ setTotal(com) }}</span
+                    >
                   </div>
                   <ChevronDownIcon
-                      class="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform"
+                    class="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform"
                   />
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div
-                    v-if="com?.core?.length === 0"
-                    class="flex justify-between px-4 text-muted-foreground italic"
+                  v-if="com?.core?.length === 0"
+                  class="flex justify-between px-4 text-muted-foreground italic"
                 >
                   <p class="py-2">No hay núcleos en este cómite</p>
                 </div>
                 <div
-                    v-else
-                    v-for="nucleo in com?.core"
-                    :key="nucleo.name"
-                    class="flex justify-between px-4 space-y-2 py-2 border border-gray-200 rounded-md hover:bg-gray-50"
+                  v-else
+                  v-for="nucleo in com?.core"
+                  :key="nucleo.name"
+                  class="flex justify-between px-4 space-y-2 py-2 border border-gray-200 rounded-md hover:bg-gray-50"
                 >
                   <div class="flex gap-2">
                     <div class="rounded-full mt-2 w-2 h-2 bg-primary"></div>
@@ -145,15 +149,119 @@
                   </div>
                   <div class="flex space-x-2">
                     <p class="text-gray-600">{{ getComputo(nucleo) }}</p>
-                    <div v-if="getComputo(nucleo) > 2 " class="p-1 bg-green-100 rounded-full" >
+                    <div
+                      v-if="getComputo(nucleo) > 2"
+                      class="p-1 bg-green-100 rounded-full"
+                    >
                       <ArrowUpIcon class="h-4 w-4 text-green-600" />
                     </div>
-                    <div v-else-if="getComputo(nucleo) === 0" class="flex items-center justify-center p-2 rounded-full bg-gray-100">
-                      <Separator class="h-0.5 w-3 bg-gray-400"/>
+                    <div
+                      v-else-if="getComputo(nucleo) === 0"
+                      class="flex items-center justify-center p-2 rounded-full bg-gray-100"
+                    >
+                      <Separator class="h-0.5 w-3 bg-gray-400" />
                     </div>
-                    <div v-else-if="getComputo(nucleo) < 2" class="bg-red-100 rounded-full p-1">
-                      <ArrowDownIcon  class="h-4 w-4 text-red-600 " />
+                    <div
+                      v-else-if="getComputo(nucleo) < 2"
+                      class="bg-red-100 rounded-full p-1"
+                    >
+                      <ArrowDownIcon class="h-4 w-4 text-red-600" />
                     </div>
+                    <Sheet>
+                      <SheetTrigger>
+                        <EyeIcon class="h-4 w-4 text-gray-500" />
+                      </SheetTrigger>
+                      <SheetContent class="space-y-4">
+                        <SheetHeader class="space-y-2">
+                          <SheetTitle class="text-2xl">Detalles</SheetTitle>
+                          <div class="py-2">
+                            <h2 class="font-medium text-lg">
+                              {{ nucleo.name }}
+                            </h2>
+                            <div class="flex">
+                              <p class="font-medium text-xl mr-2">
+                                {{ getComputo(nucleo) }}
+                              </p>
+                              <div
+                                v-if="getComputo(nucleo) > 2"
+                                class="flex items-center justify-center space-x-1"
+                              >
+                                <ArrowUpIcon class="h-4 w-4 text-green-600" />
+                                <p class="text-green-600">Incremento</p>
+                              </div>
+                              <div
+                                v-else-if="getComputo(nucleo) === 0"
+                                class="flex items-center justify-center space-x-1"
+                              >
+                                <Separator class="h-0.5 w-3 bg-gray-400" />
+                                <p class="text-gray-600">Sin cambios</p>
+                              </div>
+                              <div
+                                v-else-if="getComputo(nucleo) < 2"
+                                class="flex items-center justify-center space-x-1"
+                              >
+                                <ArrowDownIcon class="h-4 w-4 text-red-600" />
+                                <p class="text-red-600">Disminución</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <SheetDescription
+                            class="bg-gray-100 rounded-md p-2 text-md"
+                          >
+                            <h2 class="font-medium text-lg text-foreground">
+                              Descripción
+                            </h2>
+                            {{ details(nucleo.name) }}
+                          </SheetDescription>
+                        </SheetHeader>
+
+                        <div class="pt-8">
+                          <div
+                            v-for="(detail, index) in tasks"
+                            :key="index"
+                            class="border-b pb-4"
+                          >
+                            <div class="flex justify-between mb-1">
+                              <span class="font-medium text-lg">{{
+                                detail.title
+                              }}</span>
+                              <span>{{ detail.value }}</span>
+                            </div>
+                            <p class="text-sm text-gray-600">
+                              {{ detail.description }}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="pt-6">
+                          <h4 class="font-medium mb-3 text-xl">Historial</h4>
+                          <div class="space-y-2">
+                            <div
+                              v-for="(event, index) in history"
+                              :key="index"
+                              class="flex items-start"
+                            >
+                              <div
+                                class="h-2 w-2 rounded-full bg-gray-900 mt-2 mr-3 flex-shrink-0"
+                              ></div>
+                              <div>
+                                <div class="flex items-center">
+                                  <span class="text-md">{{ event.date }}</span>
+                                  <span class="mx-2 text-gray-400">•</span>
+                                  <span class="text-md text-blue-600">{{
+                                    event.action
+                                  }}</span>
+                                </div>
+                                <p class="text-md text-gray-500 mt-1">
+                                  {{ event.description }}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </SheetContent>
+                    </Sheet>
                   </div>
                 </div>
               </CollapsibleContent>
@@ -173,17 +281,31 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  EyeIcon,
+  ChevronDownIcon,
+  Search,
+  XIcon,
+} from "lucide-vue-next";
 import OrdinaryService from "@/services/OrdinaryService.ts";
-import { ChevronDownIcon, Search, XIcon } from "lucide-vue-next";
 import { computed, ref, watch } from "vue";
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Sheet,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
@@ -195,6 +317,7 @@ const { comite, computo } = defineProps<{
 const attendance = ref([]);
 const search = ref("");
 const checked_indicator = ref("");
+const openDetails = ref(false);
 
 // Función para obtener indicadores por categoría
 const getIndicatorsByCategory = (category: string) => {
@@ -249,6 +372,16 @@ const getComputo = (nucleo) => {
   return c?.[indicator] ?? 0;
 };
 
+const setTotal = (comite) => {
+  let total = 0;
+
+  for (const nucleo of comite.core) {
+    total += getComputo(nucleo);
+  }
+
+  return total;
+};
+
 async function getAttendance() {
   const service = new OrdinaryService();
   const value = selectedMonth.value;
@@ -259,6 +392,349 @@ async function getAttendance() {
     console.log(e);
   }
 }
+
+// Datos de ejemplo
+const items = ref({
+  independientes: [
+    {
+      id: 1,
+      name: "CEIS",
+      value: 5,
+      trend: "up",
+      description: "Centro de Estudios e Investigaciones Sociales",
+      details: [
+        {
+          title: "Responsable",
+          value: "Juan Pérez",
+          description: "Director del centro desde 2020",
+        },
+        {
+          title: "Última actualización",
+          value: "15/03/2023",
+          description: "Actualizado por el equipo de coordinación",
+        },
+        {
+          title: "Estado",
+          value: "Activo",
+          description: "Proyecto en desarrollo continuo",
+        },
+      ],
+      history: [
+        {
+          date: "15/03/2023",
+          action: "Actualización",
+          description: "Se actualizaron los datos del proyecto",
+        },
+        {
+          date: "10/01/2023",
+          action: "Revisión",
+          description: "Revisión trimestral del avance",
+        },
+        {
+          date: "05/12/2022",
+          action: "Inicio",
+          description: "Inicio del proyecto actual",
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: "Arquitectura",
+      value: 0,
+      trend: "neutral",
+      description: "Departamento de Arquitectura y Diseño Urbano",
+      details: [
+        {
+          title: "Responsable",
+          value: "María González",
+          description: "Coordinadora del departamento",
+        },
+        {
+          title: "Última actualización",
+          value: "20/02/2023",
+          description: "Actualizado por el equipo técnico",
+        },
+        {
+          title: "Estado",
+          value: "En espera",
+          description: "Pendiente de aprobación",
+        },
+      ],
+      history: [
+        {
+          date: "20/02/2023",
+          action: "Propuesta",
+          description: "Se presentó propuesta de proyecto",
+        },
+        {
+          date: "15/01/2023",
+          action: "Planificación",
+          description: "Reunión de planificación inicial",
+        },
+      ],
+    },
+    {
+      id: 3,
+      name: "CIPEL",
+      value: 0,
+      trend: "neutral",
+      description: "Centro de Investigación de Políticas Económicas Locales",
+      details: [
+        {
+          title: "Responsable",
+          value: "Carlos Rodríguez",
+          description: "Investigador principal",
+        },
+        {
+          title: "Última actualización",
+          value: "05/03/2023",
+          description: "Actualizado por el comité de investigación",
+        },
+        {
+          title: "Estado",
+          value: "En revisión",
+          description: "En proceso de evaluación",
+        },
+      ],
+      history: [
+        {
+          date: "05/03/2023",
+          action: "Evaluación",
+          description: "Evaluación de viabilidad del proyecto",
+        },
+        {
+          date: "20/01/2023",
+          action: "Presentación",
+          description: "Presentación inicial de la propuesta",
+        },
+      ],
+    },
+    {
+      id: 4,
+      name: "VREAS",
+      value: 0,
+      trend: "neutral",
+      description: "Vicerrectoría de Estudios Avanzados y Sostenibilidad",
+      details: [
+        {
+          title: "Responsable",
+          value: "Ana Martínez",
+          description: "Vicerrectora",
+        },
+        {
+          title: "Última actualización",
+          value: "10/03/2023",
+          description: "Actualizado por secretaría académica",
+        },
+        {
+          title: "Estado",
+          value: "Pendiente",
+          description: "Pendiente de asignación de recursos",
+        },
+      ],
+      history: [
+        {
+          date: "10/03/2023",
+          action: "Revisión",
+          description: "Revisión de presupuesto",
+        },
+        {
+          date: "25/02/2023",
+          action: "Solicitud",
+          description: "Solicitud de inclusión en agenda",
+        },
+      ],
+    },
+  ],
+  mixtos: [
+    {
+      id: 5,
+      name: "Proyecto A",
+      value: 3,
+      trend: "up",
+      description: "Proyecto de colaboración interdisciplinaria",
+      details: [
+        {
+          title: "Responsable",
+          value: "Luis Sánchez",
+          description: "Coordinador de proyectos mixtos",
+        },
+        {
+          title: "Última actualización",
+          value: "12/03/2023",
+          description: "Actualizado por el equipo de coordinación",
+        },
+        {
+          title: "Estado",
+          value: "En progreso",
+          description: "Avance según cronograma",
+        },
+      ],
+      history: [
+        {
+          date: "12/03/2023",
+          action: "Avance",
+          description: "Reporte de avance trimestral",
+        },
+        {
+          date: "05/02/2023",
+          action: "Inicio",
+          description: "Inicio de la fase de implementación",
+        },
+      ],
+    },
+    {
+      id: 6,
+      name: "Proyecto B",
+      value: 0,
+      trend: "neutral",
+      description: "Iniciativa de investigación colaborativa",
+      details: [
+        {
+          title: "Responsable",
+          value: "Carmen Díaz",
+          description: "Investigadora principal",
+        },
+        {
+          title: "Última actualización",
+          value: "08/03/2023",
+          description: "Actualizado por el comité científico",
+        },
+        {
+          title: "Estado",
+          value: "En evaluación",
+          description: "Pendiente de aprobación final",
+        },
+      ],
+      history: [
+        {
+          date: "08/03/2023",
+          action: "Evaluación",
+          description: "Evaluación de resultados preliminares",
+        },
+        {
+          date: "15/01/2023",
+          action: "Propuesta",
+          description: "Presentación de propuesta de investigación",
+        },
+      ],
+    },
+  ],
+  quimica: [
+    {
+      id: 7,
+      name: "Laboratorio A",
+      value: 2,
+      trend: "up",
+      description: "Investigación en química orgánica",
+      details: [
+        {
+          title: "Responsable",
+          value: "Roberto Gómez",
+          description: "Director de laboratorio",
+        },
+        {
+          title: "Última actualización",
+          value: "18/03/2023",
+          description: "Actualizado por el equipo de investigación",
+        },
+        {
+          title: "Estado",
+          value: "Activo",
+          description: "Investigación en curso",
+        },
+      ],
+      history: [
+        {
+          date: "18/03/2023",
+          action: "Resultados",
+          description: "Presentación de resultados parciales",
+        },
+        {
+          date: "10/02/2023",
+          action: "Experimento",
+          description: "Inicio de nueva fase experimental",
+        },
+        {
+          date: "05/01/2023",
+          action: "Planificación",
+          description: "Planificación anual de investigación",
+        },
+      ],
+    },
+    {
+      id: 8,
+      name: "Proyecto Síntesis",
+      value: 0,
+      trend: "neutral",
+      description: "Desarrollo de nuevos compuestos químicos",
+      details: [
+        {
+          title: "Responsable",
+          value: "Elena Torres",
+          description: "Investigadora química",
+        },
+        {
+          title: "Última actualización",
+          value: "05/03/2023",
+          description: "Actualizado por el departamento de química",
+        },
+        {
+          title: "Estado",
+          value: "En pausa",
+          description: "Esperando nuevos equipos",
+        },
+      ],
+      history: [
+        {
+          date: "05/03/2023",
+          action: "Pausa",
+          description: "Pausa temporal por falta de equipamiento",
+        },
+        {
+          date: "20/01/2023",
+          action: "Inicio",
+          description: "Inicio del proyecto de síntesis",
+        },
+      ],
+    },
+  ],
+});
+
+const details = (nucleo) => {
+  return "Centro de Estudios e Investigaciones Sociales";
+};
+const tasks = ref([
+  {
+    title: "Responsable",
+    value: "Juan Pérez",
+    description: "Director del centro desde 2020",
+  },
+  {
+    title: "Última actualización",
+    value: "15/03/2023",
+    description: "Actualizado por el equipo de coordinación",
+  },
+  {
+    title: "Estado",
+    value: "Activo",
+    description: "Proyecto en desarrollo continuo",
+  },
+]);
+
+const history = ref([
+  {
+    date: "20/02/2023",
+    action: "Agregación",
+    description: "Se presentó propuesta de proyecto",
+  },
+  {
+    date: "15/01/2023",
+    action: "Cambio",
+    description:
+      'De "Reunión de planificación final" a "Reunión de planificación inicial"',
+  },
+]);
 
 watch(() => {
   getAttendance();
