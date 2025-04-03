@@ -296,7 +296,7 @@ import {
   XIcon,
 } from "lucide-vue-next";
 import Asistencia from "@/components/Indicators/Asistencia.vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -313,6 +313,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
+import ReasonAbsent from "@/components/Indicators/ReasonAbsent.vue";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
