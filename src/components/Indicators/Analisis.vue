@@ -69,11 +69,7 @@
                     class="p-4 border rounded-lg cursor-pointer hover:shadow-md transition-colors"
                   >
                     <div class="flex space-x-2">
-                      <Checkbox
-                        v-model="checked_indicator"
-                        class="mt-2"
-                      ></Checkbox>
-                      <h3 class="font-medium text-xl ml-4">
+                      <h3 class="font-medium text-xl">
                         {{ indicator.name }}
                       </h3>
                     </div>
@@ -90,21 +86,34 @@
 
       <!-- Selected Indicator Analysis -->
       <div v-else class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-xl font-semibold">
-              {{ getSelectedIndicator.name }}
-            </h2>
-            <p class="text-gray-500 text-lg">
-              {{ getSelectedIndicator.description }}
-            </p>
-          </div>
+        <div class="flex justify-end">
           <button
-            @click="selectedIndicator = ''"
-            class="text-gray-500 hover:text-gray-700"
+              @click="selectedIndicator = ''"
+              class="text-gray-500 hover:text-gray-700 "
           >
             <XIcon class="h-5 w-5" />
           </button>
+        </div>
+        <div class="flex items-center justify-between mb-6">
+          <div class="w-full pt-6">
+            <Select
+              :default-value="selectedIndicator"
+              v-model="selectedIndicator"
+            >
+              <SelectTrigger>
+                <SelectValue class="text-xl font-semibold focus:ring-offset-blue-50" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="indicator of indicators"
+                    :value="indicator.key"
+                    >{{ indicator.name }}</SelectItem
+                  >
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div v-if="selectedIndicator === 'asistencia'">
           <Asistencia :comite />
@@ -118,7 +127,7 @@
             class="overflow-hidden space-y-2 divide-y"
             :key="com"
           >
-            <Collapsible>
+            <Collapsible default-open>
               <CollapsibleTrigger
                 class="flex justify-between items-center group w-full p-2 text-lg font-medium hover:bg-gray-200 bg-gray-100 border border-gray-300 rounded-md group transition-colors"
               >
@@ -281,7 +290,6 @@
 
 <script setup lang="ts">
 import { categories, indicators } from "@/components/Indicators/indicators";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
   CollapsibleContent,
@@ -313,7 +321,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
-import ReasonAbsent from "@/components/Indicators/ReasonAbsent.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
@@ -323,7 +338,6 @@ const { comite, computo } = defineProps<{
 }>();
 
 const search = ref("");
-const checked_indicator = ref("");
 
 // Función para obtener indicadores por categoría
 const getIndicatorsByCategory = (category: string) => {
@@ -408,5 +422,4 @@ const history = ref([
       'De "Reunión de planificación final" a "Reunión de planificación inicial"',
   },
 ]);
-
 </script>

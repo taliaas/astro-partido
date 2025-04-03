@@ -100,16 +100,6 @@
                     {{ nucleo }}
                   </option>
                 </select>
-                <select v-model="selectFecha" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
-                  <option value="">Todos los meses</option>
-                  <option
-                      v-for="mes in meses"
-                      :key="mes"
-                      :value="mes"
-                  >
-                    {{ mes }}
-                  </option>
-                </select>
                 <select
                   v-model="selectedStatus"
                   class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full"
