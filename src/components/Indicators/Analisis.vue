@@ -368,7 +368,7 @@ const filteredIndicators = computed(() => {
   );
 });
 
-const getComputo = (nucleo) => {
+const getComputo = (nucleo: { id: string }) => {
   const value = selectedMonth.value;
   const [year, month] = value.split("-");
   const indicator = selectedIndicator.value;
@@ -379,7 +379,7 @@ const getComputo = (nucleo) => {
   return c?.[indicator] ?? 0;
 };
 
-const setTotal = (comite) => {
+const setTotal = (comite: { core: { id: string }[] }) => {
   let total = 0;
 
   for (const nucleo of comite.core) {
@@ -389,7 +389,7 @@ const setTotal = (comite) => {
   return total;
 };
 
-const details = (nucleo) => {
+const details = (nucleo: { name: string }) => {
   return "Centro de Estudios e Investigaciones Sociales";
 };
 const tasks = ref([
