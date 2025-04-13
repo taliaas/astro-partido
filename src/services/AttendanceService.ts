@@ -2,9 +2,9 @@ import type {AttendanceResponse} from "@/interface/Absent.ts";
 
 const API_URL = 'https://part-back.onrender.com/minutes-ordinary/attendance';
 
-export default class AbsentService {
+export default class AttendanceService {
 
-    async getByDate(month: number, year: number) {
+    async getAttendance(month: number, year: number) {
         try {
             const response = await fetch(`${API_URL}/${month}/${year}`);
             if (!response.ok) {
@@ -16,4 +16,6 @@ export default class AbsentService {
             throw error;
         }
     }
+
+
 }

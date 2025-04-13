@@ -66,7 +66,7 @@
                     v-for="indicator in getIndicatorsByCategory(category)"
                     :key="indicator.key"
                     @click="selectedIndicator = indicator.key"
-                    class="p-4 border rounded-lg cursor-pointer hover:shadow-md transition-colors"
+                    class="p-4 bg-white shadow-sm border rounded-lg cursor-pointer hover:shadow-md transition-colors"
                   >
                     <div class="flex space-x-2">
                       <h3 class="font-medium text-xl">
@@ -119,7 +119,7 @@
           <Asistencia :comite />
         </div>
         <div v-else-if="selectedIndicator === 'reason'">
-          <ReasonAttendance />
+          <ReasonAttendance :selectedMonth="selectedMonth"/>
         </div>
         <div v-else class="space-y-3">
           <div
@@ -329,6 +329,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import MilitantService from "@/services/MilitantService.ts";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");

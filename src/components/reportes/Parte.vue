@@ -144,14 +144,14 @@ const Categories = ref<ColumnData[]>([
       "Total Justificados",
       "De ellos: Problemas Personales, otros",
       "Enfermos/ Licencias",
-      "Trabajando",
-      "Reuniones en las que se cumple con el Art. 22",
-      "% del total de reuniones"
+      "Trabajando"
     ]
   },
   {
     name: "Invitados a reuniones de Núcleos del Partido",
     sectors: [
+      "Reuniones en las que se cumple con el Art. 22",
+      "% del total de reuniones",
       "Invitados de la UJC",
       "Inv. Trabaj",
       "Invitados S. Sindical",
