@@ -16,5 +16,5 @@ const users = await obtenerUsuarios()
 ---
 
 <RootLayout>
-    <SettingsUser client:load/>
+    <SettingsUser users={users} client:load/>
 </RootLayout>
