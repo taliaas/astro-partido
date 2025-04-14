@@ -118,10 +118,7 @@ const handleSubmit = async () => {
   loading.value = true;
   errors.value = {};
   try {
-    await signIn("credentials", {
-      email: email.value,
-      password: password.value,
-    }).catch((e) => console.log(e));
+    await signIn("credentials", {email: email.value,password: password.value,}).catch((e) => console.log(e));
   } catch (error) {
     showSuccessMessage.value = true;
     mensaje.value = "Error";
