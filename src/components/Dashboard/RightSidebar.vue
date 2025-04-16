@@ -2,10 +2,8 @@
   <div class="w-80 p-4 space-y-8 mt-2.5 bg-white border rounded shadow-md">
     <!-- Calendar and Events Section -->
     <div class="space-y-4">
-      <h2 class="text-2xl font-semibold">Calendario y Eventos</h2>
-
       <!-- Calendar Select -->
-      <Collapsible>
+      <Collapsible default-open>
         <CollapsibleTrigger
           class="flex items-center w-full justify-between text-lg font-medium"
         >
@@ -22,7 +20,7 @@
       </Collapsible>
 
       <!-- Add Event Form -->
-      <Collapsible>
+      <Collapsible default-open>
         <CollapsibleTrigger
           class="flex items-center w-full justify-between text-lg font-medium"
         >
