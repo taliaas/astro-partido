@@ -396,7 +396,6 @@ const { actas, type } = defineProps<{
   type: string;
 }>();
 
-
 const currentTab = ref(type);
 const showUploadDialog = ref(false);
 const uploadedFiles = ref([]);
