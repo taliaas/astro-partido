@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:bg-zinc-800">
+  <div
+    class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:bg-zinc-800"
+  >
     <div class="max-w-[1600px] mx-auto p-6">
       <!-- Main Card -->
       <div
@@ -135,7 +137,7 @@
                     {{ tableHeaders[1] }}
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[2] }}
                   </th>
@@ -167,13 +169,13 @@
               </TableHeader>
               <TableBody>
                 <TableRow
-                  v-for="acta in filteredActas"
+                  v-for="(acta, index) in filteredActas"
                   :key="acta.id"
                   class="hover:bg-gray-50/50 transition-colors duration-200"
                 >
-                  <TableCell class="font-medium pl-8">{{ acta.id }}</TableCell>
-                  <TableCell class="pl-6">{{ acta.name }} {{ acta.id }}</TableCell>
-                  <TableCell class="text-left">{{ acta.core?.name }}</TableCell>
+                  <TableCell class="font-medium pl-8">{{index + 1 }}</TableCell>
+                  <TableCell class="pl-6">{{ acta.name }}</TableCell>
+                  <TableCell class=" pl-6 text-left">  {{ acta.core?.name }}</TableCell>
                   <TableCell class="text-left">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-left">
                     <Badge :class="getStatusClass(acta.status)">
@@ -201,7 +203,10 @@
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          v-if="acta.name === 'Acta Ordinaria' && acta.status === 'Aprobada'"
+                          v-if="
+                            acta.name === 'Acta Ordinaria' &&
+                            acta.status === 'Aprobada'
+                          "
                           @click="handleAction('procesar', acta)"
                         >
                           <Edit class="h-4 w-4" />
@@ -433,32 +438,31 @@ const nucleos = computed(() => {
   return [...new Set(actas.map((item) => item.core?.name))];
 });
 
-const meses = [
-    "Enero",
-    "Febrero",
-    "Marzo"
-]
+const meses = ["Enero", "Febrero", "Marzo"];
 
 const statuses = computed(() => {
   return [...new Set(actas.map((item) => item.status))];
 });
 
 const filteredActas = computed(() => {
-  return actas.filter((item) => {
-    if ((selectedNucleo.value && item.core.name !== selectedNucleo.value) || (selectedStatus.value && item.status !== selectedStatus.value))
-      return false;
-    return true;
-  }).sort((a,b)=>{
-    if (sort.value === 'DESC'){
-      return new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
-    }
-    else if (sort.value === 'ASC'){
-      return new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-    }
-    else {
-      return a.id - b.id
-    }
-  });
+  return actas
+    .filter((item) => {
+      if (
+        (selectedNucleo.value && item.core.name !== selectedNucleo.value) ||
+        (selectedStatus.value && item.status !== selectedStatus.value)
+      )
+        return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sort.value === "DESC") {
+        return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
+      } else if (sort.value === "ASC") {
+        return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
+      } else {
+        return a.id - b.id;
+      }
+    });
 });
 
 const selectFecha = ref("");
@@ -540,17 +544,17 @@ function handleTab(tab) {
 //cargar acta
 const handleDrop = async (event) => {
   isDragging.value = false;
-  const files = uploadedFiles.value//Array.from(event.dataTransfer.files);
-  const service = new OrdinaryService()
-  try{
-    await service.uploadMinutes(files[0])
-    alert('Se guardo el documento')
+  const files = uploadedFiles.value; //Array.from(event.dataTransfer.files);
+  const service = new OrdinaryService();
+  try {
+    await service.uploadMinutes(files[0]);
+    alert("Se guardo el documento");
     showUploadDialog.value = false;
     uploadedFiles.value = [];
-  }
-  catch (e) {
-    alert(e)
-    throw new Error(e)
+    navigate('/minutes');
+  } catch (e) {
+    alert(e);
+    throw new Error(e);
   }
 };
 
@@ -558,5 +562,4 @@ const handleFileSelect = (event) => {
   const files = Array.from(event.target.files);
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 };
-
 </script>
