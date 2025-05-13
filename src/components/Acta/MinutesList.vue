@@ -258,6 +258,51 @@
             Seleccione o arrastre los archivos que desea cargar
           </DialogDescription>
         </DialogHeader>
+
+        <!-- Selector de tipo de acta (obligatorio) -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Tipo de acta <span class="text-red-500">*</span>
+          </label>
+          <div class="flex gap-2">
+            <label
+                :class="[
+              'flex items-center justify-center px-4 py-2 border rounded-md cursor-pointer flex-1',
+              tipoActa === 'ordinaria'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+            ]"
+            >
+              <input
+                  type="radio"
+                  name="tipoActa"
+                  value="ordinaria"
+                  v-model="tipoActa"
+                  class="sr-only"
+              />
+              Acta Ordinaria
+            </label>
+            <label
+                :class="[
+              'flex items-center justify-center px-4 py-2 border rounded-md cursor-pointer flex-1',
+              tipoActa === 'circulo'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+            ]"
+            >
+              <input
+                  type="radio"
+                  name="tipoActa"
+                  value="circulo"
+                  v-model="tipoActa"
+                  class="sr-only"
+              />
+              Círculo Político
+            </label>
+          </div>
+        </div>
+
+        <!-- Área de arrastre de archivos -->
         <div
           class="mt-6 border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
           :class="{ 'border-blue-500 bg-blue-50': isDragging }"
