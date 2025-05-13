@@ -175,25 +175,6 @@ export default class OrdinaryService {
     }
   }
 
-  async uploadMinutes(files: any) {
-    const file = new FormData();
-    file.append("file", files);
-
-    try {
-      const response = await fetch(`https://part-back.onrender.com/minutes/upload`, {
-        method: "POST",
-        body: file
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    }
-    catch (e) {
-      console.error(e)
-    }
-  }
-
   async getAttendance(month: number, year: number){
     try {
       const response = await fetch(`${API_URL}/attendance/${month}/${year}`, {

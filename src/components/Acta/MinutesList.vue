@@ -264,19 +264,19 @@
           <label class="block text-sm font-medium text-gray-700 mb-2">
             Tipo de acta <span class="text-red-500">*</span>
           </label>
-          <div class="flex gap-2">
+          <div class="flex gap-3">
             <label
                 :class="[
               'flex items-center justify-center px-4 py-2 border rounded-md cursor-pointer flex-1',
-              tipoActa === 'ordinaria'
-                ? 'bg-primary text-primary-foreground border-primary'
+              tipoActa === 'ro'
+                ? 'bg-button text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]"
             >
               <input
                   type="radio"
                   name="tipoActa"
-                  value="ordinaria"
+                  value="ro"
                   v-model="tipoActa"
                   class="sr-only"
               />
@@ -285,15 +285,15 @@
             <label
                 :class="[
               'flex items-center justify-center px-4 py-2 border rounded-md cursor-pointer flex-1',
-              tipoActa === 'circulo'
-                ? 'bg-primary text-primary-foreground border-primary'
+              tipoActa === 'cp'
+                ? 'bg-button text-primary-foreground '
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]"
             >
               <input
                   type="radio"
                   name="tipoActa"
-                  value="circulo"
+                  value="cp"
                   v-model="tipoActa"
                   class="sr-only"
               />
@@ -420,7 +420,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "../ui/table";
@@ -439,13 +438,13 @@ import PoliticalService from "@/services/PoliticalService.ts";
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import Minutes from "@/services/Minutes.ts";
-import MinutesService from "@/services/Minutes.ts";
 
 const { actas, type } = defineProps<{
   actas: any[];
   type: string;
 }>();
 
+const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
 const currentTab = ref(type);
 const showUploadDialog = ref(false);
 const uploadedFiles = ref([]);
@@ -590,9 +589,9 @@ function handleTab(tab) {
 const handleDrop = async (event) => {
   isDragging.value = false;
   const files = uploadedFiles.value; //Array.from(event.dataTransfer.files);
-  const service = new OrdinaryService();
+  const service = new Minutes();
   try {
-    await service.uploadMinutes(files[0]);
+    await service.uploadMinutes(files[0], tipoActa.value);
     alert("Se guardo el documento");
     showUploadDialog.value = false;
     uploadedFiles.value = [];

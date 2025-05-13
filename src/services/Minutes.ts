@@ -3,21 +3,22 @@ const API_URL = "https://part-back.onrender.com/minutes";
 export default class MinutesService{
 
     //cargar acta
-    async upload(files: any[]){
+    async uploadMinutes(files: any, tipo: string) {
+        const file = new FormData();
+        file.append("file", files);
+
         try {
-            const response = await fetch(`${API_URL}/upload`, {
+            const response = await fetch(`https://part-back.onrender.com/minutes/upload?type=${tipo}`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                body: file
             });
-            console.log(files)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return await response.json();
-        } catch (error) {
-            console.error(error);
+        }
+        catch (e) {
+            console.error(e)
         }
     }
 
