@@ -23,8 +23,9 @@ export default class MinutesService{
     }
 
     async getAllMinutes(type: string){
+        console.log("Actas", type)
         try {
-            const response = await fetch(`${API_URL}?type=${type}`, {
+            const response = await fetch(`${API_URL}/?type=${type}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
