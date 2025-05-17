@@ -12,15 +12,6 @@
       </div>
 
       <div class="flex p-2 gap-4">
-        <div class="flex-1">
-          <Editar v-if="isOrdinay" :acta @move="isOrdinay = false" :existsCP="!!cp" />
-          <Display
-            v-if="!isOrdinay && cp"
-            :acta="cp"
-            @move="isOrdinay = true"
-          />
-        </div>
-
         <aside class="py-10">
           <h2 class="font-medium text-2xl px-4">Indicadores</h2>
           <!-- Form -->

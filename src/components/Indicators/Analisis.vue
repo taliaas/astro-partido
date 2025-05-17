@@ -15,7 +15,7 @@
                   Parte Municipio</a
                 >
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent align="center" align-offset="0" arrow-padding="0" avoid-collisions collision-boundary="0">
                 <p>Resumen Parte Municipio PCC</p>
               </TooltipContent>
             </Tooltip>
@@ -88,8 +88,8 @@
       <div v-else class="bg-white rounded-lg shadow-sm p-6">
         <div class="flex justify-end">
           <button
-              @click="selectedIndicator = ''"
-              class="text-gray-500 hover:text-gray-700 "
+            @click="selectedIndicator = ''"
+            class="text-gray-500 hover:text-gray-700"
           >
             <XIcon class="h-5 w-5" />
           </button>
@@ -101,7 +101,9 @@
               v-model="selectedIndicator"
             >
               <SelectTrigger>
-                <SelectValue class="text-xl font-semibold focus:ring-offset-blue-50" />
+                <SelectValue
+                  class="text-xl font-semibold focus:ring-offset-blue-50"
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -119,7 +121,7 @@
           <Asistencia :comite />
         </div>
         <div v-else-if="selectedIndicator === 'reason'">
-          <ReasonAttendance :selectedMonth="selectedMonth"/>
+          <ReasonAttendance :selectedMonth="selectedMonth" />
         </div>
         <div v-else class="space-y-3">
           <div

@@ -86,7 +86,7 @@
             <h3 class="text-lg font-semibold">Comportamiento de Indicadores</h3>
             <button
               @click="exportToPDF"
-              class="inline-flex items-center rounded-md bg-button px-4 py-2 text-sm font-medium text-white "
+              class="inline-flex items-center rounded-md bg-button px-4 py-2 text-sm font-medium text-white"
             >
               Exportar
             </button>
@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, effect, onMounted, reactive, ref, watch } from "vue";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import type { ChartData } from "chart.js";
@@ -309,12 +309,33 @@ const showNotification = (message, type = "success") => {
   }, 3000);
 };
 
+const colors = [
+  { border: "#3b82f6", bg: "rgba(59, 130, 246, 0.1)" },
+  { border: "#ae3bf6", bg: "rgba(149,59,246,0.1)" },
+  { border: "#3bf67c", bg: "rgba(59,246,90,0.1)" },
+];
+
 //limpiar el grafico si da error y notificar
 const fetchData = async () => {
   const months =
     selectedPeriod.value === "1"
       ? ["Ene", "Feb", "Mar", "Abr", "May", "Jun"]
-      : ["Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+      : selectedPeriod.value === "2"
+        ? ["Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        : [
+            "Ene",
+            "Feb",
+            "Mar",
+            "Abr",
+            "May",
+            "Jun",
+            "Jul",
+            "Ago",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dic",
+          ];
   const service = new StatusService();
   try {
     const { data: indData } = await service.getYear(selectedYear.value);
@@ -323,20 +344,53 @@ const fetchData = async () => {
     const semesterData =
       selectedPeriod.value === "1"
         ? yearData.slice(0, 6)
-        : yearData.slice(6, 12);
+        : selectedPeriod.value === "2"
+          ? yearData.slice(6, 12)
+          : yearData;
 
     chartData.value = {
       labels: months,
       datasets: [
-        {
-          label: selectedIndicatorText.value,
-          data: semesterData,
-          borderColor: "#3b82f6", // Blue
-          backgroundColor: "rgba(59, 130, 246, 0.1)",
-          tension: 0.4,
-          fill: true,
-        },
-      ],
+        "atencionFEU",
+        "atencionUJC",
+        "funcionamientoSindicato",
+      ].includes(selectedIndicator.value)
+        ? [
+            {
+              label: "Atención FEU",
+              data: indData["atencionFEU"],
+              borderColor: colors[0].border,
+              backgroundColor: colors[0].bg,
+              tension: 0.4,
+              fill: true,
+            },
+            {
+              label: "Atención UJC",
+              data: indData["atencionUJC"],
+              borderColor: colors[1].border,
+              backgroundColor: colors[1].bg,
+              tension: 0.4,
+              fill: true,
+            },
+            {
+              label: "Funcionamiento del Sindicato",
+              data: indData["funcionamientoSindicato"],
+              borderColor: colors[2].border,
+              backgroundColor: colors[2].bg,
+              tension: 0.4,
+              fill: true,
+            },
+          ]
+        : [
+            {
+              label: selectedIndicatorText.value,
+              data: semesterData,
+              borderColor: colors[0].border,
+              backgroundColor: colors[0].bg,
+              tension: 0.4,
+              fill: true,
+            },
+          ],
     };
   } catch (error) {
     console.log(error);
@@ -363,7 +417,7 @@ const chartOptions = {
   scales: {
     y: {
       beginAtZero: true,
-      max: 20,
+
       ticks: {
         stepSize: 2,
       },

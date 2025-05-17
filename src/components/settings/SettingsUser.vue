@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-7xl mx-auto p-4 space-y-6">
+  <form class="max-w-7xl mx-auto p-4 space-y-6" @submit.prevent="saveSettings">
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-semibold">Configuración</h1>
@@ -15,7 +15,7 @@
 
     <div class="bg-white rounded-lg border shadow-sm">
       <Tabs default-value="indicators" class="w-full">
-        <TabsList class="grid grid-cols-4 w-full">
+        <TabsList class="grFid grid-cols-4 w-full">
           <TabsTrigger
             value="indicators"
             class="flex data-[state=active]:bg-blue-50"
@@ -72,9 +72,8 @@
                   <CardHeader>
                     <CardTitle>Visualización</CardTitle>
                     <CardDescription
-                      >Configure cómo se muestran los
-                      indicadores</CardDescription
-                    >
+                      >Configure cómo se muestran los indicadores
+                    </CardDescription>
                   </CardHeader>
                   <CardContent class="space-y-4">
                     <div class="space-y-2">
@@ -126,9 +125,8 @@
                   <CardHeader>
                     <CardTitle>Cálculo</CardTitle>
                     <CardDescription
-                      >Configure cómo se calculan los
-                      indicadores</CardDescription
-                    >
+                      >Configure cómo se calculan los indicadores
+                    </CardDescription>
                   </CardHeader>
                   <CardContent class="space-y-4">
                     <div class="space-y-2">
@@ -187,9 +185,8 @@
                 <CardHeader>
                   <CardTitle>Categorías de Indicadores</CardTitle>
                   <CardDescription
-                    >Gestione las categorías de indicadores
-                    disponibles</CardDescription
-                  >
+                    >Gestione las categorías de indicadores disponibles
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div class="space-y-4">
@@ -241,14 +238,13 @@
                 <CardHeader>
                   <CardTitle>Roles y Permisos</CardTitle>
                   <CardDescription
-                    >Configure los roles disponibles y sus
-                    permisos</CardDescription
-                  >
+                    >Configure los roles disponibles y sus permisos
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div class="space-y-4">
                     <div
-                      v-for="(role, index) in settings.users.roles"
+                      v-for="(role, index) in $props.roles"
                       :key="index"
                       class="border rounded-md"
                     >
@@ -257,9 +253,9 @@
                           class="flex items-center justify-between w-full p-4 text-left"
                         >
                           <div class="flex items-center">
-                            <Badge :class="getRoleBadgeClass(role.name)">{{
-                              role.name
-                            }}</Badge>
+                            <Badge :class="getRoleBadgeClass(role.name)"
+                              >{{ role.name }}
+                            </Badge>
                             <span class="ml-2 text-sm text-gray-500"
                               >{{ role.users }} usuarios</span
                             >
@@ -306,71 +302,6 @@
                   </div>
                 </CardContent>
               </Card>
-
-              <!-- Configuración de autenticación -->
-              <Card>
-                <CardHeader>
-                  <CardTitle>Configuración de Autenticación</CardTitle>
-                  <CardDescription
-                    >Configure los métodos de autenticación y
-                    seguridad</CardDescription
-                  >
-                </CardHeader>
-                <CardContent class="space-y-4">
-                  <div class="space-y-2">
-                    <div class="flex items-center justify-between">
-                      <Label for="two-factor"
-                        >Autenticación de dos factores</Label
-                      >
-                      <Switch
-                        id="two-factor"
-                        v-model:checked="settings.users.twoFactorAuth"
-                      />
-                    </div>
-                    <div class="flex items-center justify-between">
-                      <Label for="password-expiry"
-                        >Expiración de contraseñas</Label
-                      >
-                      <Switch
-                        id="password-expiry"
-                        v-model:checked="settings.users.passwordExpiry"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="space-y-2">
-                    <Label for="password-policy">Política de contraseñas</Label>
-                    <Select v-model="settings.users.passwordPolicy">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccione una política" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="basic"
-                          >Básica (mínimo 8 caracteres)</SelectItem
-                        >
-                        <SelectItem value="standard"
-                          >Estándar (letras, números y símbolos)</SelectItem
-                        >
-                        <SelectItem value="strict"
-                          >Estricta (mayúsculas, minúsculas, números y
-                          símbolos)</SelectItem
-                        >
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div class="space-y-2">
-                    <Label for="session-timeout"
-                      >Tiempo de inactividad (minutos)</Label
-                    >
-                    <Input
-                      id="session-timeout"
-                      type="number"
-                      v-model="settings.users.sessionTimeout"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </TabsContent>
@@ -391,9 +322,8 @@
                 <CardHeader>
                   <CardTitle>Almacenamiento</CardTitle>
                   <CardDescription
-                    >Configure las opciones de almacenamiento de
-                    documentos</CardDescription
-                  >
+                    >Configure las opciones de almacenamiento de documentos
+                  </CardDescription>
                 </CardHeader>
                 <CardContent class="space-y-4">
                   <div class="space-y-2">
@@ -406,8 +336,8 @@
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="local"
-                          >Almacenamiento local</SelectItem
-                        >
+                          >Almacenamiento local
+                        </SelectItem>
                         <SelectItem value="cloud">Nube</SelectItem>
                         <SelectItem value="hybrid">Híbrido</SelectItem>
                       </SelectContent>
@@ -451,9 +381,8 @@
                 <CardHeader>
                   <CardTitle>Retención de Documentos</CardTitle>
                   <CardDescription
-                    >Configure las políticas de retención de
-                    documentos</CardDescription
-                  >
+                    >Configure las políticas de retención de documentos
+                  </CardDescription>
                 </CardHeader>
                 <CardContent class="space-y-4">
                   <div class="space-y-2">
@@ -505,9 +434,8 @@
                 <CardHeader>
                   <CardTitle>Plantillas de Documentos</CardTitle>
                   <CardDescription
-                    >Gestione las plantillas disponibles para
-                    documentos</CardDescription
-                  >
+                    >Gestione las plantillas disponibles para documentos
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div class="space-y-4">
@@ -555,9 +483,8 @@
                 <CardHeader>
                   <CardTitle>Notificaciones</CardTitle>
                   <CardDescription
-                    >Configure las preferencias de
-                    notificaciones</CardDescription
-                  >
+                    >Configure las preferencias de notificaciones
+                  </CardDescription>
                 </CardHeader>
                 <CardContent class="space-y-4">
                   <div class="space-y-2">
@@ -619,9 +546,8 @@
                 <CardHeader>
                   <CardTitle>Menú de Navegación</CardTitle>
                   <CardDescription
-                    >Configure los elementos del menú de
-                    navegación</CardDescription
-                  >
+                    >Configure los elementos del menú de navegación
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div class="space-y-4">
@@ -658,9 +584,8 @@
                 <CardHeader>
                   <CardTitle>Preferencias de Interfaz</CardTitle>
                   <CardDescription
-                    >Configure las preferencias visuales de la
-                    interfaz</CardDescription
-                  >
+                    >Configure las preferencias visuales de la interfaz
+                  </CardDescription>
                 </CardHeader>
                 <CardContent class="space-y-4">
                   <div class="space-y-2">
@@ -712,7 +637,7 @@
         </TabsContent>
       </Tabs>
     </div>
-  </div>
+  </form>
 </template>
 
 <script setup lang="ts">
@@ -763,6 +688,10 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+
+const { roles } = defineProps<{
+  roles: { id: string; name: string }[];
+}>();
 
 // Configuración inicial
 const settings = ref({
@@ -952,7 +881,9 @@ const getIconComponent = (iconName: string) => {
   return icons[iconName] || HomeIcon;
 };
 
-const saveSettings = () => {
+const saveSettings = (e) => {
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
   // Aquí iría la lógica para guardar la configuración
   console.log("Guardando configuración:", settings.value);
   // Mostrar notificación de éxito
