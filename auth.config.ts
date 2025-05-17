@@ -34,15 +34,18 @@ export default defineConfig({
     }),
   ],
   callbacks: {
-    jwt({ user: any, token: any, account }) {
+    jwt({ user, token }) {
       if (user) {
         token.user = user;
       }
       return token;
     },
-    session({ token: any, session }) {
-      session.jwt = token.user.jwt;
-      session.user = token.user;
+    session({ token, session }) {
+      const user = token.user as any;
+      Object.defineProperties(session, {
+        jwt: user.jwt,
+        user,
+      });
       return session;
     },
   },
