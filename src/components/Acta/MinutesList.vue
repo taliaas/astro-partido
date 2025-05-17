@@ -498,7 +498,7 @@ const filteredActas = computed(() => {
         } else {
           return a.id - b.id;
         }
-      });
+      }) ?? [];
 });
 
 const filters = ref({
