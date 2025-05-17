@@ -34,13 +34,13 @@ export default defineConfig({
     }),
   ],
   callbacks: {
-    jwt({ user, token, account }) {
+    jwt({ user: any, token: any, account }) {
       if (user) {
         token.user = user;
       }
       return token;
     },
-    session({ token, session }) {
+    session({ token: any, session }) {
       session.jwt = token.user.jwt;
       session.user = token.user;
       return session;
