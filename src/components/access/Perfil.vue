@@ -14,7 +14,7 @@
           <h1 class="text-3xl font-bold">{{ user.name }}</h1>
           <div class="flex items-center gap-2 mt-2 text-gray-300">
             <ShieldCheckIcon class="h-4 w-4" />
-            <span class="text-lg text-foreground">{{ user.rol || "Militante" }}</span>
+            <span class="text-lg text-foreground">{{ user.role?.name || "Militante" }}</span>
           </div>
         </div>
       </div>
@@ -67,7 +67,6 @@
                   >Rol</label
                 >
                 <Input
-                  v-model="user.rol"
                   type="text"
                   readonly
                   class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm"

@@ -42,11 +42,11 @@ export default defineConfig({
     },
     session({ token, session }) {
       const user = token.user as any;
-      Object.defineProperties(session, {
+      return {
+        ...session,
         jwt: user.jwt,
         user,
-      });
-      return session;
+      };
     },
   },
 });
