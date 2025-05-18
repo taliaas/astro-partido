@@ -222,7 +222,7 @@
             </Table>
 
             <!-- Empty State -->
-            <div v-if="filteredActas.length === 0" class="text-center py-16">
+            <div v-if="filteredActas?.length === 0" class="text-center py-16">
               <div
                   class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
               >

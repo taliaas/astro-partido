@@ -1,7 +1,6 @@
 ---
-import SettingsUser from "../components/settings/SettingsUser.vue"
+import SettingsUser from "../components/settings/Settings.vue"
 import RootLayout from "../layouts/RootLayout.astro";
-import UserService from "../services/UserService";
 import RoleService from "../services/RoleService";
 
 const roles = await RoleService.find()

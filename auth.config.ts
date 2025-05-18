@@ -34,7 +34,7 @@ export default defineConfig({
     }),
   ],
   callbacks: {
-    jwt({ user, token }) {
+    jwt({ user, token }: { user?: any; token: any }) {
       if (user) {
         token.user = user;
       }
