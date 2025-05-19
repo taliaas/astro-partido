@@ -4,58 +4,40 @@
     <div class="space-y-4">
       <!-- Calendar Select -->
       <Collapsible default-open>
-        <CollapsibleTrigger
-          class="flex items-center w-full justify-between text-lg font-medium"
-        >
+        <CollapsibleTrigger class="flex items-center w-full justify-between text-lg font-medium">
           Calendario
           <ChevronDownIcon class="h-4 w-4" />
         </CollapsibleTrigger>
         <CollapsibleContent class="space-y-3 pt-3">
-          <Calendar
-            v-model="currentDate"
-            :weekday-format="'short'"
-            class="rounded border"
-          />
+          <Calendar v-model="currentDate" :weekday-format="'short'" class="rounded border" />
         </CollapsibleContent>
       </Collapsible>
 
       <!-- Add Event Form -->
       <Collapsible default-open>
-        <CollapsibleTrigger
-          class="flex items-center w-full justify-between text-lg font-medium"
-        >
+        <CollapsibleTrigger class="flex items-center w-full justify-between text-lg font-medium">
           Añadir Evento
           <ChevronDownIcon class="h-4 w-4" />
         </CollapsibleTrigger>
         <CollapsibleContent class="space-y-3 p-3">
-          <Input
-            v-model="newEvent.title"
-            class="rounded hover:outline-none border-gray-300 text-gray-700"
-            placeholder="Añadir tarea o evento"
-          />
+          <Input v-model="newEvent.title" class="rounded hover:outline-none border-gray-300 text-gray-700"
+            placeholder="Añadir tarea o evento" />
           <Select v-model="newEvent.type" class="w-full">
             <SelectTrigger class="border-gray-300 rounded">
               <SelectValue placeholder="Tipo" class="text-gray-700" />
             </SelectTrigger>
             <SelectContent class="bg-white">
-              <SelectItem class="hover:bg-gray-100" value="tarea"
-                >Tarea
+              <SelectItem class="hover:bg-gray-100" value="tarea">Tarea
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="evento"
-                >Evento
+              <SelectItem class="hover:bg-gray-100" value="evento">Evento
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="reunion"
-              >Reunión
+              <SelectItem class="hover:bg-gray-100" value="reunion">Reunión
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="otro"
-              >Otro
+              <SelectItem class="hover:bg-gray-100" value="otro">Otro
               </SelectItem>
             </SelectContent>
           </Select>
-          <Button
-            @click="addEvent"
-            class="w-full bg-blue-600 text-white rounded"
-            >Añadir
+          <Button @click="addEvent" :disabled="!currentDate" class="w-full bg-blue-600 text-white rounded">Añadir
           </Button>
 
           <!-- No Events Message -->
@@ -76,11 +58,9 @@
       </Collapsible>
     </div>
 
-    <div
-        v-if="notification.show"
-        class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
-        :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
-    >
+    <div v-if="notification.show"
+      class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
+      :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'">
       {{ notification.message }}
     </div>
   </div>
@@ -93,7 +73,7 @@ import {
   today,
 } from "@internationalized/date";
 import { ChevronDownIcon } from "lucide-vue-next";
-import {reactive, ref, type Ref} from "vue";
+import { effect, reactive, ref, type Ref } from "vue";
 import Button from "../ui/button/Button.vue";
 import Calendar from "../ui/calendar/Calendar.vue";
 import {
@@ -138,12 +118,12 @@ const showNotification = (message, type = "success") => {
   }, 3000);
 };
 
-async function addEvent () {
+async function addEvent() {
   const service = new EventServices()
-  const fecha = currentDate.value
+  const fecha = currentDate.value.toString()
   try {
     await service.createEventF(fecha)
-    //notiicar que se creo
+    //notificar que se creo
     showNotification('Se creó un evento')
     newEvent.value = {
       title: "",
@@ -155,13 +135,13 @@ async function addEvent () {
   }
 }
 
-async function getAllEvent(fecha: any){
+async function getAllEvent(fecha: any) {
   const service = new EventServices()
-  try{
-     pendingTasks.value = await service.getAllEventDate(fecha);
-     return pendingTasks
+  try {
+    pendingTasks.value = await service.getAllEventDate(fecha);
+    return pendingTasks
   }
-  catch(e){
+  catch (e) {
     console.error(e)
   }
 }
