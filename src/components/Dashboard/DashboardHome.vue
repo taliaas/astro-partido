@@ -12,21 +12,12 @@
           </h1>
 
           <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
-            <Card
-              v-for="(card, index) in cards"
-              :key="index"
-              class="bg-secondary rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 ease-in-out hover:border-blue-200 "
-            >
-              <CardHeader
-                class="flex flex-row items-center justify-between space-y-0 pb-2"
-              >
-                <CardTitle class="text-md font-semibold"
-                  >{{ card.title }}
+            <Card v-for="(card, index) in cards" :key="index"
+              class="bg-secondary rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 ease-in-out hover:border-blue-200 ">
+              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle class="text-md font-semibold">{{ card.title }}
                 </CardTitle>
-                <component
-                  :is="icons[card.icon]"
-                  class="h-6 w-6 text-blue-500"
-                />
+                <component :is="icons[card.icon]" class="h-6 w-6 text-blue-500" />
               </CardHeader>
               <CardContent class="flex items-baseline space-x-4 text-center">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -38,26 +29,17 @@
 
           <Tabs v-model="activeTab" class="space-y-4">
             <TabsList class="grid w-full grid-cols-1 md:grid-cols-2 h-auto">
-              <TabsTrigger
-                v-for="tab in tabs"
-                :key="tab.value"
-                :value="tab.value"
-              >
+              <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
                 {{ tab.label }}
               </TabsTrigger>
             </TabsList>
-            <TabsContent
-              v-for="tab in tabs"
-              :key="tab.value"
-              :value="tab.value"
-              class="space-y-4"
-            >
+            <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" class="space-y-4">
               <component :is="tab.component" :documents :kpis />
             </TabsContent>
           </Tabs>
         </div>
         <div class="space-y-6 w-full md:w-[300px] mt-12">
-          <RightSidebar :user/>
+          <RightSidebar />
         </div>
       </div>
     </div>
@@ -65,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import {watch, ref} from "vue";
+import { watch, ref } from "vue";
 import { Activity, FileCheck2, Files, FileText } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -77,11 +59,10 @@ import { useSearchStore } from "@/utils/store.ts";
 
 const icons = { Activity, FileCheck2, Files, FileText };
 
-const { documents, kpis, cards, user } = defineProps<{
+const { documents, kpis, card } = defineProps<{
   documents: any[];
   kpis: any[];
   cards: any;
-  user: any;
 }>();
 
 const searchStore = useSearchStore();
@@ -95,11 +76,11 @@ const tabs = [
 ];
 
 watch(
-    () => searchStore.showSidePanel,
-    (newVal) => {
-      console.log('showSidePanel cambió:', newVal);
-      isVisible = newVal;
-    },
-    { immediate: true } // Para obtener el valor inicial
+  () => searchStore.showSidePanel,
+  (newVal) => {
+    console.log('showSidePanel cambió:', newVal);
+    isVisible = newVal;
+  },
+  { immediate: true } // Para obtener el valor inicial
 );
 </script>

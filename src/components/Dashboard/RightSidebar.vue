@@ -27,17 +27,18 @@
               <SelectValue placeholder="Tipo" class="text-gray-700" />
             </SelectTrigger>
             <SelectContent class="bg-white">
-              <SelectItem class="hover:bg-gray-100" value="tarea">Tarea
+              <SelectItem class="hover:bg-gray-100" value="Tarea">Tarea
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="evento">Evento
+              <SelectItem class="hover:bg-gray-100" value="Evento">Evento
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="reunion">Reunión
+              <SelectItem class="hover:bg-gray-100" value="Reunion">Reunión
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="otro">Otro
+              <SelectItem class="hover:bg-gray-100" value="Otro">Otro
               </SelectItem>
             </SelectContent>
           </Select>
-          <Button @click="addEvent" :disabled="!currentDate" class="w-full bg-blue-600 text-white rounded">Añadir
+          <Button @click="addEvent" :disabled="!currentDate || !newEvent.title || !newEvent.type"
+            class="w-full bg-blue-600 text-white rounded">Añadir
           </Button>
 
           <!-- No Events Message -->
@@ -88,9 +89,8 @@ import SelectItem from "../ui/select/SelectItem.vue";
 import SelectTrigger from "../ui/select/SelectTrigger.vue";
 import SelectValue from "../ui/select/SelectValue.vue";
 import EventServices from "@/services/EventServices.ts";
-import {navigate} from "astro:transitions/client";
-
-const { user } = defineProps<{ user: any }>();
+import { navigate } from "astro:transitions/client";
+import { actions } from "astro:actions";
 
 const notification = reactive({
   show: false,
@@ -98,7 +98,7 @@ const notification = reactive({
   type: "success",
 });
 
-const newEvent = ref({
+const newEvent = reactive({
   title: "",
   type: "",
 });
@@ -120,15 +120,14 @@ async function addEvent() {
   const fecha = currentDate.value.toString()
 
   try {
-    await service.createEventF({...newEvent, fecha}, user)
+    await actions.events.createEvent({ ...newEvent, date: fecha })
     showNotification('Se creó un evento')
-    newEvent.value = {
-      title: "",
-      type: "",
-    };
+    newEvent.title = ""
+    newEvent.type = ""
     navigate('/home')
   }
   catch (e) {
+    console.error(e)
     throw new Error("Ocurrio un error al crear el evento")
   }
 }

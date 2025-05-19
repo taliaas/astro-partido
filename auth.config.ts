@@ -29,7 +29,7 @@ export default defineConfig({
           throw new Error("Unauthorized");
         }
         const data = await res.json();
-        return data.user;
+        return { ...data.user, jwt: data.token };
       },
     }),
   ],

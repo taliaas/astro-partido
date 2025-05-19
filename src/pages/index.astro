@@ -1,10 +1,6 @@
 ---
 import AboutContainer from "../components/access/About.vue";
 import AuthLayout from "@/layouts/AuthLayout.astro";
-import {getSession} from "auth-astro/server";
-
-const session = await getSession(Astro.request)
-console.log(session)
 ---
 
 <AuthLayout>

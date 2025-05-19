@@ -1,13 +1,9 @@
 ---
-import {getSession} from "auth-astro/server";
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
+import { default as Computo, default as ComputoService } from "../services/Computo";
 import OrdinaryService from "../services/OrdinaryService";
-import Computo from "../services/Computo";
-import ComputoService from "../services/Computo";
 
-const session: any = await getSession(Astro.request)
-const user = session?.jwt
 
 async function getMinute() {
     const service = new OrdinaryService()
@@ -123,5 +119,5 @@ const cards = [
 ---
 
 <RootLayout>
-    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards} user={user}/>
+    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards}/>
 </RootLayout>

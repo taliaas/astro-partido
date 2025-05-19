@@ -2,19 +2,20 @@
 import ComiteService from "../../services/ComiteService";
 import CoreContainer from "../../components/Core/Core.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
+import { actions } from "astro:actions";
 
 async function getArea() {
-    const services = new ComiteService()
-    try {
-        return services.getAllComite()
-    } catch (e) {
-        console.error(e)
-    }
+  const services = new ComiteService();
+  try {
+    return services.getAllComite();
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-const area = await getArea()
+const area = await getArea();
 ---
 
 <RootLayout>
-    <CoreContainer areas={area} client:load />
+  <CoreContainer areas={area} client:load />
 </RootLayout>
