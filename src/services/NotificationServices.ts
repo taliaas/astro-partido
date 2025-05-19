@@ -1,9 +1,8 @@
 const API_URL = 'https://part-back.onrender.com/notification';
 
 export default class NotificationService {
-    async getAll() {
+    async getAll(email: any) {
         try {
-            const email = 'marta0000@cujae.edu.cu'//localStorage.getItem('userEmail'); //tomar el email del localStorage
             const response = await fetch(`${API_URL}/user/${email}`, {
                 method: 'GET',
                 headers: {

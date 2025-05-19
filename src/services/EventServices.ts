@@ -4,7 +4,7 @@ const API_URL = 'https://part-back.onrender.com/event';
 
 export default class EventServices {
 
-    async createEventF(createEvent) {
+    async createEventF(createEvent: any) {
         try {
             const response = await fetch(`${API_URL}/`, {
               method: "POST",
@@ -20,7 +20,7 @@ export default class EventServices {
         }
     }
 
-    async getAllEventDate(fecha){
+    async getAllEventDate(fecha: any){
         try {
             const response = await fetch(`${API_URL}/date/${fecha}`, {
                 method: "GET",
