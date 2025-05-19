@@ -73,6 +73,8 @@ import {
   getLocalTimeZone,
   today,
 } from "@internationalized/date";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
 import { ChevronDownIcon } from "lucide-vue-next";
 import { reactive, ref, type Ref } from "vue";
 import Button from "../ui/button/Button.vue";
@@ -88,9 +90,6 @@ import SelectContent from "../ui/select/SelectContent.vue";
 import SelectItem from "../ui/select/SelectItem.vue";
 import SelectTrigger from "../ui/select/SelectTrigger.vue";
 import SelectValue from "../ui/select/SelectValue.vue";
-import EventServices from "@/services/EventServices.ts";
-import { navigate } from "astro:transitions/client";
-import { actions } from "astro:actions";
 
 const notification = reactive({
   show: false,
@@ -106,7 +105,7 @@ const newEvent = reactive({
 const currentDate = ref(today(getLocalTimeZone())) as Ref<DateValue>;
 const pendingTasks = ref([]);
 
-const showNotification = (message, type = "success") => {
+const showNotification = (message: string, type = "success") => {
   notification.show = true;
   notification.message = message;
   notification.type = type;
@@ -116,7 +115,6 @@ const showNotification = (message, type = "success") => {
 };
 
 async function addEvent() {
-  const service = new EventServices()
   const fecha = currentDate.value.toString()
 
   try {
@@ -132,10 +130,9 @@ async function addEvent() {
   }
 }
 
-async function getAllEvent(fecha: any) {
-  const service = new EventServices()
+async function getAllEvent(date: any) {
   try {
-    pendingTasks.value = await service.getAllEventDate(fecha);
+    pendingTasks.value = await actions.events.getEvents.orThrow({ date })
     return pendingTasks
   }
   catch (e) {

@@ -384,52 +384,32 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {exportar} from "@/lib/export_cp.ts";
+import {exportarRO} from "@/lib/export_ro.ts";
+import {actions} from "astro:actions";
+import {navigate} from "astro:transitions/client";
 import {
+  ArrowDown,
+  ArrowUp,
+  Download,
   Edit,
   Eye,
   MoreVerticalIcon,
+  Pencil,
   PlusIcon,
   SearchIcon,
   TrashIcon,
   UploadCloudIcon,
-  Download,
-  ArrowUp,
-  ArrowDown,
-  Pencil,
 } from "lucide-vue-next";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import {Button} from "../ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+import {computed, ref} from "vue";
 import {Badge} from "../ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import {Button} from "../ui/button";
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,} from "../ui/dialog";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "../ui/dropdown-menu";
 import {Input} from "../ui/input";
-import {navigate} from "astro:transitions/client";
-import OrdinaryService from "@/services/OrdinaryService.ts";
-import PoliticalService from "@/services/PoliticalService.ts";
-import {exportar} from "@/lib/export_cp.ts";
-import {exportarRO} from "@/lib/export_ro.ts";
-import Minutes from "@/services/Minutes.ts";
+import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
 
-const {actas, type} = defineProps<{
+const {actas} = defineProps<{
   actas: any[];
   type: string;
 }>();
@@ -481,10 +461,10 @@ const statuses = computed(() => {
 const filteredActas = computed(() => {
   const [year, month] = selectFecha.value.split('-');
   return actas?.filter((item) => {
-        return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
-            (selectedStatus.value && item.status !== selectedStatus.value) ||
-            (selectType.value && item.type !== selectType.value))
-      })
+    return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
+        (selectedStatus.value && item.status !== selectedStatus.value) ||
+        (selectType.value && item.type !== selectType.value))
+  })
       .filter(item => {
         const date = new Date(item.fecha);
         return !selectFecha.value || (date.getFullYear() === Number(year) &&
@@ -550,18 +530,15 @@ const handleDelete = () => {
 
 async function eliminarActa() {
   const acta = currentsMinute.value;
-  const id = acta.id;
-  const tipo = acta.type;
-
-  const ro = new OrdinaryService();
-  const cp = new PoliticalService();
+  const id = acta?.id ?? "";
+  const tipo = acta?.type ?? "";
 
   try {
     if (tipo === "ro") {
-      await ro.deleteMinute(id);
+      await actions.ordinary.deleteMinute(id)
       menssage.value = "Se eliminó correctamente el acta";
     } else if (tipo === "cp") {
-      await cp.deleteMinute(id);
+      await actions.political.deleteMinute(id)
       menssage.value = "Se eliminó correctamente el acta";
     }
   } catch (e) {
@@ -570,12 +547,14 @@ async function eliminarActa() {
 }
 
 //cargar acta
-const handleDrop = async (event) => {
+const handleDrop = async () => {
   isDragging.value = false;
-  const files = uploadedFiles.value; //Array.from(event.dataTransfer.files);
-  const service = new Minutes();
+  const files = Array.from(uploadedFiles.value);
+  const formData = new FormData();
+  formData.append("type",tipoActa.value)
+  for (const f of files) formData.append("files", f);
   try {
-    await service.uploadMinutes(Array.from(files), tipoActa.value);
+    await actions.minute.uploadMinutes(formData)
     showUploadDialog.value = false;
     uploadedFiles.value = [];
     navigate('/minutes');

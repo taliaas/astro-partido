@@ -265,14 +265,13 @@
 </template>
 
 <script setup lang="ts">
-import Input from "../ui/input/Input.vue";
-import { PlusIcon, TrashIcon } from "lucide-vue-next";
-import Textarea from "../ui/textarea/Textarea.vue";
-import { ref } from "vue";
 import { Button } from "@/components/ui/button";
+import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { Label } from "@/components/ui/label";
-import PoliticalService from "@/services/PoliticalService.ts";
+import { PlusIcon, TrashIcon } from "lucide-vue-next";
+import { ref } from "vue";
+import Input from "../ui/input/Input.vue";
+import Textarea from "../ui/textarea/Textarea.vue";
 
 const selectedNucleo = ref(null);
 const { cores } = defineProps<{ cores: any[] }>();
@@ -284,9 +283,9 @@ const formData = ref({
   total_organismo: 0,
   total_trabajador: 0,
   ausentes: 0,
-  causa: [],
+  causa: [] as { nombre: string, motivo: string }[],
   tema: "",
-  planteamientos: [],
+  planteamientos: "",
   valoracion: "",
   name_orientador: "",
   name_secretario: "",
@@ -301,17 +300,17 @@ const addAusencia = () => {
   formData.value.causa.push({ nombre: "", motivo: "" });
 };
 
-const removeAusencia = (index) => {
+const removeAusencia = (index: number) => {
   formData.value.causa.splice(index, 1);
 };
 
 const submitForm = async () => {
-  const service = new PoliticalService();
   try {
-    await service.createMinute({
+    await actions.political.createMinute({
       ...formData.value,
       core: selectedNucleo.value,
-    });
+    }
+    )
     alert('Se ha creado el acta política correctamente!')
     await navigate('/minutes')
   } catch (e) {

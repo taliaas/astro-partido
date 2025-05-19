@@ -273,35 +273,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { ArrowRight, DownloadIcon } from "lucide-vue-next";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
-import OrdinaryService from "@/services/OrdinaryService.ts";
-import { Status } from "@/enum/Status.ts";
-import { navigate } from "astro:transitions/client";
-import { exportarRO } from "@/lib/export_ro.ts";
+import {ref} from "vue";
+import {ArrowRight, DownloadIcon} from "lucide-vue-next";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
+import {Badge} from "@/components/ui/badge";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "../ui/accordion";
+import {Status} from "@/enum/Status.ts";
+import {navigate} from "astro:transitions/client";
+import {exportarRO} from "@/lib/export_ro.ts";
+import {actions} from "astro:actions";
 
 const { acta, existsCP } = defineProps<{
   acta: any;
@@ -323,10 +305,9 @@ const exportar = () => {
 };
 
 const updateStatus = async (status) => {
-  const service = new OrdinaryService();
   isSubmitting.value = true;
   try {
-    await service.updateStatusMinutes(acta.id, status);
+    await actions.ordinary.updateStatusMinutes({id:acta.id,status})
     await navigate("/minutes");
   } catch (e) {
     throw new Error(e);

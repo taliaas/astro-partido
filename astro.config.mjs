@@ -1,6 +1,6 @@
 // @ts-check
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 import vue from "@astrojs/vue";
 
@@ -15,4 +15,13 @@ export default defineConfig({
   output: "server",
   integrations: [vue({ appEntrypoint: "/src/main.ts" }), tailwind(), auth()],
   adapter: vercel({ imageService: true, maxDuration: 60 }),
+  env: {
+    schema: {
+      API_URL: envField.string({
+        access: "secret",
+        context: "server",
+        url: true,
+      }),
+    },
+  },
 });

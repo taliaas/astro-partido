@@ -1,5 +1,5 @@
-import EventServices from "@/services/EventServices";
 import { ActionError, defineAction } from "astro:actions";
+import { API_URL } from "astro:env/server";
 import { z } from "astro:schema";
 import { getSession } from "auth-astro/server";
 
@@ -15,7 +15,30 @@ export const createEvent = defineAction({
   async handler(input, context) {
     const session = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    const service = new EventServices();
-    return service.createEventF(input, session.jwt);
+    const res = await fetch(`${API_URL}/event`, {
+      method: "POST",
+      body: JSON.stringify(input),
+      headers: {
+        Authorization: `Bearer ${session.jwt}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return res.json();
+  },
+});
+
+export const getEvents = defineAction({
+  input: z.object({
+    date: z.coerce.date(),
+  }),
+  async handler({ date }, context) {
+    const response = await fetch(`${API_URL}/event/date/${date}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
   },
 });

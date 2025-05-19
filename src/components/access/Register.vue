@@ -83,13 +83,13 @@
 </template>
 
 <script setup lang="ts">
+import { actions } from "astro:actions";
+import { signIn } from "auth-astro/client";
 import { Loader2Icon } from "lucide-vue-next";
 import { reactive, ref } from "vue";
+import { z } from "zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import AuthService from "@/services/AuthService";
-import { z } from "zod";
-import { signIn } from "auth-astro/client"
 
 const isLoading = ref(false);
 const showPassword = ref(false);
@@ -97,17 +97,17 @@ let errors = reactive<Record<string, string>>({});
 
 const schema = z.object({
   name: z.string()
-      .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
-      .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
+    .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
+    .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
   email: z.string()
-      .email({ message: "Ingresa un correo electrónico válido." }),
+    .email({ message: "Ingresa un correo electrónico válido." }),
   password: z.string()
-      .min(8, { message: "La contraseña debe tener al menos 8 caracteres." })
-      .max(16, { message: "La contraseña no puede exceder los 16 caracteres." })
-      .regex(/[A-Z]/, { message: "La contraseña debe contener al menos una letra mayúscula." })
-      .regex(/[0-9]/, { message: "La contraseña debe contener al menos un número." }),
+    .min(8, { message: "La contraseña debe tener al menos 8 caracteres." })
+    .max(16, { message: "La contraseña no puede exceder los 16 caracteres." })
+    .regex(/[A-Z]/, { message: "La contraseña debe contener al menos una letra mayúscula." })
+    .regex(/[0-9]/, { message: "La contraseña debe contener al menos un número." }),
   acceptTerms: z.boolean()
-      .refine((val) => val, { message: "Debes aceptar los términos y condiciones." }),
+    .refine((val) => val, { message: "Debes aceptar los términos y condiciones." }),
 });
 
 const form = reactive({
@@ -123,11 +123,9 @@ const handleSubmit = async () => {
   try {
     errors = {};
     schema.parse(form);
-
-    const service = new AuthService()
-    await service.register(form.email, form.name, form.password)
-    await signIn("credentials", { email: form.email, password: form.password })
-    } catch (error) {
+    await actions.auth.register(form)
+    await signIn("credentials", { email: form.email, password: form.password } as any)
+  } catch (error) {
     if (error instanceof z.ZodError) {
       error.errors.forEach((err) => {
         errors[err.path[0]] = err.message;

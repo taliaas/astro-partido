@@ -215,27 +215,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import Input from "../ui/input/Input.vue";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import Textarea from "../ui/textarea/Textarea.vue";
-import { Label } from "@/components/ui/label";
-import PoliticalService from "@/services/PoliticalService.ts";
+import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
+import { ref } from "vue";
+import Input from "../ui/input/Input.vue";
+import Textarea from "../ui/textarea/Textarea.vue";
 
 const { cores, acta } = defineProps<{ cores: any[]; acta: any }>();
 
 const isSubmitting = ref(false);
 async function update() {
-  const service = new PoliticalService();
   try {
-    return await service.updateMinute(acta.id, acta);
+    return await actions.political.updateMinute({
+      id: acta.id,
+      data: acta
+    })
   } catch (e) {
     console.error(e);
   }

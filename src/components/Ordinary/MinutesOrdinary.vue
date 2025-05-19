@@ -113,10 +113,10 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight } from "lucide-vue-next";
+import {ArrowLeft, ArrowRight} from "lucide-vue-next";
 import {computed, reactive, ref} from "vue";
-import OrdinaryService from "@/services/OrdinaryService.ts";
 import {navigate} from "astro:transitions/client";
+import {actions} from "astro:actions";
 
 const currentStep = ref(1);
 const { user } = defineProps<{ user: any }>();
@@ -137,7 +137,7 @@ const notification = reactive({
   message: '',
   type: 'success'
 })
-const showNotification = (message, type = 'success') => {
+const showNotification = (message: string, type = 'success') => {
   notification.show = true
   notification.message = message
   notification.type = type
@@ -168,15 +168,14 @@ const submitForm = async (e: any) => {
   data.user_create = user
   data.core = { id: data.nucleo };
 
-  const service = new OrdinaryService();
   try {
-    await service.createMinute(
-        data,
-      data.militante.filter(m=>m.estado==="ausente"),
-      data.invitados ?? [],
-      data.agreements ?? [],
-      data.extranjero ?? [],
-    );
+    await actions.ordinary.createMinute({
+      data,
+      abscents: data.militante.filter(m=>m.estado==="ausente"),
+    invitados: data.invitados ?? [],
+    agreements: data.agreements ?? [],
+    extranjero: data.extranjero ?? [],
+    })
     showNotification('Se creó el acta correctamente')
     await navigate("/minutes/");
   } catch (error) {

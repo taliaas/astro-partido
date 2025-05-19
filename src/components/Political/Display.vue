@@ -7,7 +7,7 @@
             <CardTitle class="text-3xl font-bold">
               {{ acta.name }} {{ acta.id }}
             </CardTitle>
-            <Button variant="outline" @click="exportar">
+            <Button variant="outline" @click="exportarActa">
               <DownloadIcon class="w-4 h-4 mr-2" />
               Exportar PDF
             </Button>
@@ -158,20 +158,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { ArrowLeft, DownloadIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
-import { jsPDF } from "jspdf";
 import { Status } from "@/enum/Status.ts";
+import { exportar } from "@/lib/export_cp";
+import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import PoliticalService from "@/services/PoliticalService.ts";
+import { ArrowLeft, DownloadIcon } from "lucide-vue-next";
+import { ref } from "vue";
 
 const { acta } = defineProps<{
   acta: any;
@@ -180,19 +180,21 @@ const { acta } = defineProps<{
 defineEmits(["move"]);
 
 const infoActa = ref<HTMLElement | null>(null);
-const updateStatus = async (status) => {
-  const service = new PoliticalService();
+const isSubmitting = ref(false)
+const updateStatus = async (status: string) => {
+  
   isSubmitting.value = true;
   try {
-    await service.updateStatusMinutes(acta.id, status);
+    await actions.political.updateStatusMinutes({id:acta.id,status})
+    
     await navigate("/minutes");
   } catch (e) {
-    throw new Error(e);
+    console.error(e)
   } finally {
     isSubmitting.value = false;
   }
 };
-const exportar = () => {
+const exportarActa = () => {
   exportar(acta)
 };
 </script>
