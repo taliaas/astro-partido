@@ -12,7 +12,7 @@
         </CollapsibleTrigger>
         <CollapsibleContent class="space-y-3 pt-3">
           <Calendar
-            v-model="value"
+            v-model="currentDate"
             :weekday-format="'short'"
             class="rounded border"
           />
@@ -44,6 +44,12 @@
               <SelectItem class="hover:bg-gray-100" value="evento"
                 >Evento
               </SelectItem>
+              <SelectItem class="hover:bg-gray-100" value="reunion"
+              >Reunión
+              </SelectItem>
+              <SelectItem class="hover:bg-gray-100" value="otro"
+              >Otro
+              </SelectItem>
             </SelectContent>
           </Select>
           <Button
@@ -70,6 +76,14 @@
         </CollapsibleContent>
       </Collapsible>
     </div>
+
+    <div
+        v-if="notification.show"
+        class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
+        :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
+    >
+      {{ notification.message }}
+    </div>
   </div>
 </template>
 
@@ -80,7 +94,7 @@ import {
   today,
 } from "@internationalized/date";
 import { ChevronDownIcon } from "lucide-vue-next";
-import { ref, type Ref } from "vue";
+import {reactive, ref, type Ref} from "vue";
 import Button from "../ui/button/Button.vue";
 import Calendar from "../ui/calendar/Calendar.vue";
 import {
@@ -94,6 +108,13 @@ import SelectContent from "../ui/select/SelectContent.vue";
 import SelectItem from "../ui/select/SelectItem.vue";
 import SelectTrigger from "../ui/select/SelectTrigger.vue";
 import SelectValue from "../ui/select/SelectValue.vue";
+import EventServices from "@/services/EventServices.ts";
+
+const notification = reactive({
+  show: false,
+  message: "",
+  type: "success",
+});
 
 const newEvent = ref({
   title: "",
@@ -106,15 +127,34 @@ interface DataPending {
   dueDate: Date;
   completed: boolean;
 }
-
+const currentDate = ref(today(getLocalTimeZone())) as Ref<DateValue>;
 const pendingTasks: DataPending = ref([]);
 
-const addEvent = () => {
-  // Add event logic here
-  newEvent.value = {
-    title: "",
-    type: "",
-  };
+const showNotification = (message, type = "success") => {
+  notification.show = true;
+  notification.message = message;
+  notification.type = type;
+  setTimeout(() => {
+    notification.show = false;
+  }, 3000);
 };
-const value = ref(today(getLocalTimeZone())) as Ref<DateValue>;
+
+async function addEvent () {
+  const service = new EventServices()
+  const fecha = currentDate.value
+  try {
+    await service.createEventF(fecha)
+    //notiicar que se creo
+    showNotification('Se creó un evento')
+    newEvent.value = {
+      title: "",
+      type: "",
+    };
+  }
+  catch (e) {
+    throw new Error("Ocurrio un error al crear el evento")
+  }
+
+};
+
 </script>

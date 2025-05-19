@@ -670,6 +670,9 @@
             </div>
           </div>
         </div>
+
+        <!-- Gestión de Comites y Nucleos -->
+
       </div>
     </div>
   </div>
@@ -693,6 +696,7 @@ const navigationItems = [
   { id: 'roles', title: 'Roles' },
   { id: 'permissions', title: 'Permisos'},
   { id: 'notifications', title: 'Notificaciones' },
+  { id: 'comites', title: 'Cómite CUJAE'},
 ]
 
 // Pestañas

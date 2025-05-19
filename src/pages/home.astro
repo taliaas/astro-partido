@@ -6,6 +6,7 @@ import RootLayout from "../layouts/RootLayout.astro";
 import OrdinaryService from "../services/OrdinaryService";
 import Computo from "../services/Computo";
 import ComputoService from "../services/Computo";
+import EventServices from "../services/EventServices";
 
 async function getMinute() {
     const service = new OrdinaryService()
@@ -90,6 +91,15 @@ async function getNegativeIndicator(): Promise<number | undefined>{
         console.error(e)
     }
 }
+async function getAllEvent(fecha: any){
+    const service = new EventServices()
+    try{
+        return await service.getAllEventDate(fecha);
+    }
+    catch(e){
+        console.error(e)
+    }
+}
 
 const documents = await getMinute()
 const kpis = await getKPIs()
@@ -97,6 +107,7 @@ const totalDoc = await getDocument()
 const pending = await getCountMinutesPending()
 const procesada = await getCountMinutesProcesada()
 const negative = await getNegativeIndicator()
+const eventos = await getAllEvent(new Date)
 
 const cards = [
     {
@@ -123,5 +134,5 @@ const cards = [
 ---
 
 <RootLayout>
-    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards}/>
+    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards} eventos={eventos}/>
 </RootLayout>
