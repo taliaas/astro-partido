@@ -3,7 +3,6 @@
     <div class="mb-6 flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold tracking-tight">Configuración</h1>
-        <p class="text-muted-foreground">Administre la configuración del sistema, usuarios, roles y permisos</p>
       </div>
     </div>
 
@@ -30,14 +29,9 @@
       </aside>
 
       <!-- Contenido principal -->
-      <div class="flex-1 md:max-w-3xl">
+      <div class="flex-1 md:max-w-6xl">
         <!-- Vista General -->
         <div v-if="activeSection === 'general'" class="space-y-6">
-          <div>
-            <h3 class="text-lg font-medium">Panel de Configuración</h3>
-            <p class="text-sm text-muted-foreground">Configure su sistema de gestión de documentos</p>
-          </div>
-
           <!-- Pestañas -->
           <div class="space-y-4">
             <div class="flex space-x-1 rounded-lg bg-muted p-1">
@@ -229,286 +223,17 @@
 
         <!-- Gestión de Usuarios -->
         <div v-if="activeSection === 'users'" class="space-y-6">
-          <div>
-            <h3 class="text-lg font-medium">Gestión de Usuarios</h3>
-            <p class="text-sm text-muted-foreground">Añada, edite y gestione usuarios en su sistema</p>
-          </div>
-
-          <div class="rounded-lg border bg-card shadow-sm">
-            <div class="p-6">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                <div class="relative w-full sm:max-w-xs">
-                  <span class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                  </span>
-                  <input
-                      type="search"
-                      placeholder="Buscar usuarios..."
-                      class="w-full rounded-md border pl-8 py-2 bg-background"
-                      v-model="searchQuery"
-                  />
-                </div>
-                <div class="flex items-center gap-2">
-                  <button class="rounded-md bg-muted px-3 py-2 text-sm font-medium flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
-                    <span>Filtrar</span>
-                  </button>
-                  <button class="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M16 11h6"/></svg>
-                    <span>Añadir Usuario</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="rounded-md border">
-                <table class="w-full text-sm">
-                  <thead>
-                  <tr class="border-b bg-muted/50 font-medium">
-                    <th class="h-10 px-4 text-left">Nombre</th>
-                    <th class="h-10 px-4 text-left">Email</th>
-                    <th class="h-10 px-4 text-left">Rol</th>
-                    <th class="h-10 px-4 text-left">Estado</th>
-                    <th class="h-10 px-4 text-left">Último Acceso</th>
-                    <th class="h-10 px-4 text-left w-[50px]"></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-if="filteredUsers.length === 0">
-                    <td colspan="6" class="text-center py-6 text-muted-foreground">
-                      No se encontraron usuarios que coincidan con su criterio de búsqueda
-                    </td>
-                  </tr>
-                  <tr
-                      v-for="user in filteredUsers"
-                      :key="user.id"
-                      class="border-b transition-colors hover:bg-muted/50"
-                  >
-                    <td class="p-4">{{ user.name }}</td>
-                    <td class="p-4">{{ user.email }}</td>
-                    <td class="p-4">
-                        <span
-                            :class="[
-                            'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                            user.role === 'Administrador' ? 'bg-red-100 text-red-800' :
-                            user.role === 'Gestor' ? 'bg-amber-100 text-amber-800' :
-                            user.role === 'Editor' ? 'bg-green-100 text-green-800' :
-                            user.role === 'Visualizador' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          ]"
-                        >
-                          {{ user.role }}
-                        </span>
-                    </td>
-                    <td class="p-4">
-                        <span
-                            :class="[
-                            'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                            user.status === 'Activo' ? 'bg-green-100 text-green-800' :
-                            user.status === 'Inactivo' ? 'bg-gray-100 text-gray-800' :
-                            'bg-amber-100 text-amber-800'
-                          ]"
-                        >
-                          {{ user.status }}
-                        </span>
-                    </td>
-                    <td class="p-4">{{ user.lastLogin }}</td>
-                    <td class="p-4">
-                      <div class="relative">
-                        <button
-                            @click="toggleDropdown(user.id)"
-                            class="rounded-md p-1 hover:bg-muted"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-                        </button>
-                        <div
-                            v-if="activeDropdown === user.id"
-                            class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
-                        >
-                          <div class="py-1 px-2 text-sm font-medium text-muted-foreground">Acciones</div>
-                          <div class="py-1">
-                            <a href="#" class="block px-4 py-2 text-sm hover:bg-muted">Editar usuario</a>
-                            <a href="#" class="block px-4 py-2 text-sm hover:bg-muted">Gestionar permisos</a>
-                            <div class="border-t my-1"></div>
-                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-muted">Desactivar usuario</a>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="flex items-center justify-between mt-4">
-                <div class="text-xs text-muted-foreground">
-                  Mostrando {{ filteredUsers.length }} de {{ users.length }} usuarios
-                </div>
-                <div class="flex items-center gap-2">
-                  <button class="rounded-md border px-3 py-1 text-sm" disabled>
-                    Anterior
-                  </button>
-                  <button class="rounded-md border px-3 py-1 text-sm">
-                    Siguiente
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <UserManage :users/>
         </div>
 
         <!-- Gestión de Roles -->
         <div v-if="activeSection === 'roles'" class="space-y-6">
-          <div>
-            <h3 class="text-lg font-medium">Gestión de Roles</h3>
-            <p class="text-sm text-muted-foreground">Cree y gestione roles para definir niveles de acceso</p>
-          </div>
-
-          <div class="rounded-lg border bg-card shadow-sm">
-            <div class="p-6">
-              <div class="flex flex-row items-center justify-between mb-4">
-                <div>
-                  <h4 class="text-lg font-semibold">Roles del Sistema</h4>
-                  <p class="text-sm text-muted-foreground">Defina roles y sus permisos asociados</p>
-                </div>
-                <button class="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                  Añadir Rol
-                </button>
-              </div>
-
-              <div class="rounded-md border">
-                <table class="w-full text-sm">
-                  <thead>
-                  <tr class="border-b bg-muted/50 font-medium">
-                    <th class="h-10 px-4 text-left">Nombre del Rol</th>
-                    <th class="h-10 px-4 text-left">Descripción</th>
-                    <th class="h-10 px-4 text-left">Usuarios</th>
-                    <th class="h-10 px-4 text-left">Permisos</th>
-                    <th class="h-10 px-4 text-left">Creado</th>
-                    <th class="h-10 px-4 text-left w-[50px]"></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="role in roles" :key="role.id" class="border-b transition-colors hover:bg-muted/50">
-                    <td class="p-4 font-medium">{{ role.name }}</td>
-                    <td class="p-4 text-muted-foreground">{{ role.description }}</td>
-                    <td class="p-4">{{ role.users }}</td>
-                    <td class="p-4">{{ role.permissions }}</td>
-                    <td class="p-4">{{ role.createdAt }}</td>
-                    <td class="p-4">
-                      <div class="relative">
-                        <button
-                            @click="toggleRoleDropdown(role.id)"
-                            class="rounded-md p-1 hover:bg-muted"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-                        </button>
-                        <div
-                            v-if="activeRoleDropdown === role.id"
-                            class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
-                        >
-                          <div class="py-1 px-2 text-sm font-medium text-muted-foreground">Acciones</div>
-                          <div class="py-1">
-                            <a href="#" class="block px-4 py-2 text-sm hover:bg-muted flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                              Editar Rol
-                            </a>
-                            <a href="#" class="block px-4 py-2 text-sm hover:bg-muted flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 9h1"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
-                              Editar Permisos
-                            </a>
-                            <div class="border-t my-1"></div>
-                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                              Eliminar Rol
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="mt-4 text-xs text-muted-foreground">
-                Total de roles: {{ roles.length }}
-              </div>
-            </div>
-          </div>
+          <RolesManage :roles/>
         </div>
 
         <!-- Gestión de Permisos -->
         <div v-if="activeSection === 'permissions'" class="space-y-6">
-          <div>
-            <h3 class="text-lg font-medium">Gestión de Permisos</h3>
-            <p class="text-sm text-muted-foreground">Configure permisos basados en roles para recursos del sistema</p>
-          </div>
-
-          <div class="rounded-lg border bg-card shadow-sm">
-            <div class="p-6">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                <div>
-                  <h4 class="text-lg font-semibold">Matriz de Permisos</h4>
-                  <p class="text-sm text-muted-foreground">Defina qué puede hacer cada rol dentro del sistema</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <select class="rounded-md border px-3 py-2 bg-background">
-                    <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
-                  </select>
-                  <button class="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                    Guardar Cambios
-                  </button>
-                </div>
-              </div>
-
-              <div class="rounded-md border overflow-x-auto">
-                <table class="w-full text-sm">
-                  <thead>
-                  <tr class="border-b bg-muted/50">
-                    <th class="h-10 w-[200px] px-4 text-left font-medium">Recurso</th>
-                    <th v-for="action in permissionActions" :key="action.id" class="h-10 px-4 text-center font-medium">
-                      {{ action.name }}
-                    </th>
-                    <th class="h-10 w-[50px]"></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="resource in permissionResources" :key="resource.id" class="border-b transition-colors hover:bg-muted/50">
-                    <td class="p-4">
-                      <div class="flex items-center gap-2">
-                        <component :is="resource.icon" class="h-4 w-4 text-muted-foreground" />
-                        <span class="font-medium">{{ resource.name }}</span>
-                      </div>
-                    </td>
-                    <td v-for="action in permissionActions" :key="action.id" class="p-4 text-center">
-                      <input
-                          type="checkbox"
-                          :id="`${resource.id}-${action.id}`"
-                          class="rounded border-gray-300"
-                          :checked="isPermissionChecked(resource.id, action.id)"
-                      />
-                    </td>
-                    <td class="p-4">
-                      <button class="rounded-md p-1 hover:bg-muted">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                      </button>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="flex items-center justify-between mt-4">
-                <div class="text-xs text-muted-foreground flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                  Editando permisos para: <span class="font-medium">Administrador</span>
-                </div>
-                <div class="text-xs text-amber-500">Tiene cambios sin guardar</div>
-              </div>
-            </div>
-          </div>
+          <ClaimsManage :roles/>
         </div>
 
         <!-- Gestión de Notificaciones -->
@@ -672,6 +397,9 @@
         </div>
 
         <!-- Gestión de Comites y Nucleos -->
+        <div v-if="activeSection === 'comites'" class="space-y-6">
+          <CoreManage />
+        </div>
 
       </div>
     </div>
@@ -679,15 +407,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import UserManage from "@/components/settings/UserManage.vue";
+import RolesManage from "@/components/settings/RolesManage.vue";
+import ClaimsManage from "@/components/settings/ClaimsManage.vue";
+import CoreManage from "@/components/settings/CoreManage.vue";
+
+const {users, roles} = defineProps<{
+  users: any,
+  roles: any,
+}>();
 
 // Estado de la aplicación
 const activeSection = ref('general')
 const activeTab = ref('overview')
 const activeNotificationTab = ref('settings')
-const searchQuery = ref('')
-const activeDropdown = ref(null)
-const activeRoleDropdown = ref(null)
 
 // Elementos de navegación
 const navigationItems = [
@@ -715,10 +449,10 @@ const notificationTabs = [
 
 // Datos de estadísticas del sistema
 const systemStats = [
-  { title: 'Usuarios Activos', value: '243' },
+  { title: 'Usuarios Activos', value: users.length },
   { title: 'Actas RO', value: '568' },
   { title: 'Actas CP', value: '456' },
-  { title: 'Roles', value: '5' },
+  { title: 'Roles', value: roles.length },
   { title: 'Conjuntos de Permisos', value: '12' },
   { title: 'Tiempo de Actividad', value: '99.8%' },
 ]
@@ -781,111 +515,6 @@ const securityTraces = [
   },
 ]
 
-// Usuarios
-const users = [
-  {
-    id: '1',
-    name: 'Juan Pérez',
-    email: 'juan.perez@ejemplo.com',
-    role: 'Administrador',
-    status: 'Activo',
-    lastLogin: 'Hoy a las 14:34',
-  },
-  {
-    id: '2',
-    name: 'María García',
-    email: 'maria.garcia@ejemplo.com',
-    role: 'Gestor',
-    status: 'Activo',
-    lastLogin: 'Ayer a las 11:20',
-  },
-  {
-    id: '3',
-    name: 'Miguel Rodríguez',
-    email: 'miguel.rodriguez@ejemplo.com',
-    role: 'Editor',
-    status: 'Inactivo',
-    lastLogin: '4 de mayo, 2023',
-  },
-  {
-    id: '4',
-    name: 'Sara Martínez',
-    email: 'sara.martinez@ejemplo.com',
-    role: 'Visualizador',
-    status: 'Activo',
-    lastLogin: 'Hoy a las 9:15',
-  },
-  {
-    id: '5',
-    name: 'David López',
-    email: 'david.lopez@ejemplo.com',
-    role: 'Invitado',
-    status: 'Pendiente',
-    lastLogin: 'Nunca',
-  },
-]
-
-// Roles
-const roles = [
-  {
-    id: '1',
-    name: 'Administrador',
-    description: 'Acceso completo al sistema con todos los permisos',
-    users: 2,
-    permissions: 'Todos los permisos (32)',
-    createdAt: '15 de enero, 2023',
-  },
-  {
-    id: '2',
-    name: 'Gestor',
-    description: 'Puede gestionar contenido y usuarios pero no modificar configuraciones del sistema',
-    users: 5,
-    permissions: 'Permisos limitados (24)',
-    createdAt: '3 de febrero, 2023',
-  },
-  {
-    id: '3',
-    name: 'Editor',
-    description: 'Puede crear y editar documentos pero no eliminarlos',
-    users: 12,
-    permissions: 'Permisos de edición de contenido (16)',
-    createdAt: '20 de marzo, 2023',
-  },
-  {
-    id: '4',
-    name: 'Visualizador',
-    description: 'Acceso de solo lectura a documentos y contenido',
-    users: 28,
-    permissions: 'Permisos de solo vista (8)',
-    createdAt: '5 de abril, 2023',
-  },
-  {
-    id: '5',
-    name: 'Invitado',
-    description: 'Acceso limitado solo a documentos compartidos',
-    users: 7,
-    permissions: 'Permisos mínimos (4)',
-    createdAt: '12 de mayo, 2023',
-  },
-]
-
-// Recursos de permisos
-const permissionResources = [
-  { id: 'documents', name: 'Documentos' },
-  { id: 'folders', name: 'Carpetas' },
-  { id: 'templates', name: 'Plantillas' },
-  { id: 'sharing', name: 'Compartir' },
-]
-
-// Acciones de permisos
-const permissionActions = [
-  { id: 'view', name: 'Ver' },
-  { id: 'create', name: 'Crear' },
-  { id: 'edit', name: 'Editar' },
-  { id: 'delete', name: 'Eliminar' },
-  { id: 'share', name: 'Compartir' },
-  { id: 'export', name: 'Exportar' },
-]
 
 // Configuración de notificaciones por email
 const emailSettings = [
@@ -962,39 +591,5 @@ const notifications = [
   },
 ]
 
-// Filtrar usuarios basado en la búsqueda
-const filteredUsers = computed(() => {
-  if (!searchQuery.value) return users
-  return users.filter(
-      user =>
-          user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
 
-// Verificar si un permiso está marcado
-const isPermissionChecked = (resourceId, actionId) => {
-  // Simulación - en una aplicación real, esto vendría de los datos del backend
-  const adminPermissions = {
-    documents: ['view', 'create', 'edit', 'delete', 'share', 'export'],
-    folders: ['view', 'create', 'edit', 'delete', 'share'],
-    templates: ['view', 'create', 'edit', 'delete', 'share', 'export'],
-    sharing: ['view', 'create', 'edit', 'delete'],
-  }
-
-  return adminPermissions[resourceId]?.includes(actionId) || false
-}
-
-// Funciones para manejar dropdowns
-const toggleDropdown = (id) => {
-  activeDropdown.value = activeDropdown.value === id ? null : id
-}
-
-const toggleRoleDropdown = (id) => {
-  activeRoleDropdown.value = activeRoleDropdown.value === id ? null : id
-}
 </script>
-
-<style>
-/* Estilos adicionales si son necesarios */
-</style>

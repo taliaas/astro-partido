@@ -73,7 +73,7 @@ import {
   today,
 } from "@internationalized/date";
 import { ChevronDownIcon } from "lucide-vue-next";
-import { effect, reactive, ref, type Ref } from "vue";
+import { reactive, ref, type Ref } from "vue";
 import Button from "../ui/button/Button.vue";
 import Calendar from "../ui/calendar/Calendar.vue";
 import {
@@ -88,6 +88,7 @@ import SelectItem from "../ui/select/SelectItem.vue";
 import SelectTrigger from "../ui/select/SelectTrigger.vue";
 import SelectValue from "../ui/select/SelectValue.vue";
 import EventServices from "@/services/EventServices.ts";
+import {navigate} from "astro:transitions/client";
 
 const notification = reactive({
   show: false,
@@ -100,12 +101,6 @@ const newEvent = ref({
   type: "",
 });
 
-interface DataPending {
-  id: number;
-  title: string;
-  dueDate: Date;
-  completed: boolean;
-}
 const currentDate = ref(today(getLocalTimeZone())) as Ref<DateValue>;
 const pendingTasks = ref([]);
 
@@ -121,14 +116,16 @@ const showNotification = (message, type = "success") => {
 async function addEvent() {
   const service = new EventServices()
   const fecha = currentDate.value.toString()
+  console.log(fecha)
   try {
-    await service.createEventF(fecha)
+    await service.createEventF({...newEvent, fecha})//espera la fecha y user
     //notificar que se creo
     showNotification('Se creó un evento')
     newEvent.value = {
       title: "",
       type: "",
     };
+    navigate('/home')
   }
   catch (e) {
     throw new Error("Ocurrio un error al crear el evento")

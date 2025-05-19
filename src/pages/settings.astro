@@ -2,10 +2,21 @@
 import SettingsUser from "../components/settings/Settings.vue"
 import RootLayout from "../layouts/RootLayout.astro";
 import RoleService from "../services/RoleService";
+import UserService from "../services/UserService";
+
+async function getAllUsers() {
+    const service = new UserService()
+    try {
+        return service.getAllUser()
+    } catch (e) {
+        console.error(e)
+    }
+}
 
 const roles = await RoleService.find()
+const users = await getAllUsers()
 ---
 
 <RootLayout>
-    <SettingsUser roles={roles} client:load/>
+    <SettingsUser roles={roles} users={users} client:load/>
 </RootLayout>
