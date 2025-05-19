@@ -1,9 +1,13 @@
 const API_URL = 'https://part-back.onrender.com/notification';
 
-export default class NotificationService{
-    async getAll(email: string) {
+export default class NotificationService {
+    async getAll() {
         try {
-            const response = await fetch(`${API_URL}/user/${email}`,{
+            const email = localStorage.getItem('userEmail'); //tomar el email del localStorage
+            if (!email) {
+                throw new Error('No user email found');
+            }
+            const response = await fetch(`${API_URL}/user/${email}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -14,8 +18,9 @@ export default class NotificationService{
             }
             return await response.json();
         } catch (error) {
-            console.error('Fetch error:', error);
+            console.error('Error loading notifications for logged user:', error);
             throw error;
         }
     }
+
 }
