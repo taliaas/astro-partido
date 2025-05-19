@@ -8,9 +8,9 @@
       </div>
 
       <div class="rounded-md border">
-        <table class="w-full text-sm">
+        <table class="w-full ">
           <thead>
-          <tr class="border-b bg-muted/50 font-medium">
+          <tr class="border-b bg-muted/50 text-muted-foreground">
             <th class="h-10 px-4 text-left">Nombre del Rol</th>
             <th class="h-10 px-4 text-left">Descripción</th>
             <th class="h-10 px-4 text-left">Usuarios</th>

@@ -515,7 +515,6 @@ const securityTraces = [
   },
 ]
 
-
 // Configuración de notificaciones por email
 const emailSettings = [
   {
