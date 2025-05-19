@@ -81,7 +81,6 @@ const { documents, kpis, cards } = defineProps<{
   documents: any[];
   kpis: any[];
   cards: any;
-  eventos: any[]
 }>();
 
 const searchStore = useSearchStore();

@@ -16,7 +16,6 @@ async function getMinute() {
         console.error(e)
     }
 }
-
 const data = [
     {
         id: 1,
@@ -37,7 +36,6 @@ const data = [
     {id: 3, title: 'Invitados', name: 'invitados', description: 'Asistencia de invitados', porcen: 0, trend: 0},
     {id: 4, title: 'Rendición', name: 'rendicion', description: 'Rendición de cuentas', porcen: 0, trend: 0},
 ]
-
 async function getKPIs() {
     const services = new Computo()
     try {
@@ -91,15 +89,6 @@ async function getNegativeIndicator(): Promise<number | undefined>{
         console.error(e)
     }
 }
-async function getAllEvent(fecha: any){
-    const service = new EventServices()
-    try{
-        return await service.getAllEventDate(fecha);
-    }
-    catch(e){
-        console.error(e)
-    }
-}
 
 const documents = await getMinute()
 const kpis = await getKPIs()
@@ -107,7 +96,6 @@ const totalDoc = await getDocument()
 const pending = await getCountMinutesPending()
 const procesada = await getCountMinutesProcesada()
 const negative = await getNegativeIndicator()
-const eventos = await getAllEvent(new Date)
 
 const cards = [
     {
@@ -134,5 +122,5 @@ const cards = [
 ---
 
 <RootLayout>
-    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards} eventos={eventos}/>
+    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards}/>
 </RootLayout>

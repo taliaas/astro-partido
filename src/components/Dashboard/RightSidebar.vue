@@ -67,10 +67,9 @@
 
           <div v-else class="border-t">
             <h2 class="font-medium text-lg mt-2">Eventos</h2>
-            <div v-for="ev in pendingTasks" :key="ev.id">
+            <div v-for="ev in pendingTasks" :key="ev.id" class="flex">
+              <p class="text-button px-4 font-medium">{{ ev.type }}</p>
               <h3>{{ ev.title }}</h3>
-              <p>{{ ev.dueDate }}</p>
-              <p v-if="ev.completed" class="bg-accent">{{ Listo }}</p>
             </div>
           </div>
         </CollapsibleContent>
@@ -128,7 +127,7 @@ interface DataPending {
   completed: boolean;
 }
 const currentDate = ref(today(getLocalTimeZone())) as Ref<DateValue>;
-const pendingTasks: DataPending = ref([]);
+const pendingTasks = ref([]);
 
 const showNotification = (message, type = "success") => {
   notification.show = true;
@@ -154,7 +153,17 @@ async function addEvent () {
   catch (e) {
     throw new Error("Ocurrio un error al crear el evento")
   }
+}
 
-};
+async function getAllEvent(fecha: any){
+  const service = new EventServices()
+  try{
+     pendingTasks.value = await service.getAllEventDate(fecha);
+     return pendingTasks
+  }
+  catch(e){
+    console.error(e)
+  }
+}
 
 </script>
