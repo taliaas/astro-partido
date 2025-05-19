@@ -1,14 +1,16 @@
-import type {AttendanceResponse} from "@/interface/Absent.ts";
-
 const API_URL = 'https://part-back.onrender.com/event';
 
 export default class EventServices {
 
-    async createEventF(createEvent: any) {
+    async createEventF(createEvent: any, token: string) {
         try {
             const response = await fetch(`${API_URL}/`, {
               method: "POST",
               body: createEvent,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');

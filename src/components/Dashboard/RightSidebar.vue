@@ -90,6 +90,8 @@ import SelectValue from "../ui/select/SelectValue.vue";
 import EventServices from "@/services/EventServices.ts";
 import {navigate} from "astro:transitions/client";
 
+const { user } = defineProps<{ user: any }>();
+
 const notification = reactive({
   show: false,
   message: "",
@@ -116,10 +118,9 @@ const showNotification = (message, type = "success") => {
 async function addEvent() {
   const service = new EventServices()
   const fecha = currentDate.value.toString()
-  console.log(fecha)
+
   try {
-    await service.createEventF({...newEvent, fecha})//espera la fecha y user
-    //notificar que se creo
+    await service.createEventF({...newEvent, fecha}, user)
     showNotification('Se creó un evento')
     newEvent.value = {
       title: "",

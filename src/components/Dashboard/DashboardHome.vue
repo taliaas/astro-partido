@@ -57,7 +57,7 @@
           </Tabs>
         </div>
         <div class="space-y-6 w-full md:w-[300px] mt-12">
-          <RightSidebar />
+          <RightSidebar :user/>
         </div>
       </div>
     </div>
@@ -77,10 +77,11 @@ import { useSearchStore } from "@/utils/store.ts";
 
 const icons = { Activity, FileCheck2, Files, FileText };
 
-const { documents, kpis, cards } = defineProps<{
+const { documents, kpis, cards, user } = defineProps<{
   documents: any[];
   kpis: any[];
   cards: any;
+  user: any;
 }>();
 
 const searchStore = useSearchStore();
