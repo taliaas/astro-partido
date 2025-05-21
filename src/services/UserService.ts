@@ -1,4 +1,4 @@
-const API_URL = "http://104.225.141.171:2002/user";
+const API_URL = "https://part-back.onrender.com/user";
 
 export default class UserService {
   async getAllUser() {

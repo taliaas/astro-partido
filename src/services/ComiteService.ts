@@ -1,7 +1,9 @@
+const API_URL = "https://part-back.onrender.com/comite";
+
 export default class ComiteService {
     async createCore(areaData: { name: string }) {
         try {
-            const response = await fetch(`http://104.225.141.171:2002/comite`, {
+            const response = await fetch(`${API_URL}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -19,7 +21,7 @@ export default class ComiteService {
 
     async getAllComite() {
         try {
-            const response = await fetch(`http://104.225.141.171:2002/comite`, {
+            const response = await fetch(`${API_URL}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

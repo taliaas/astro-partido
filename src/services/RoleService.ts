@@ -1,7 +1,7 @@
-const API_URL = "http://104.225.141.171:2002/roles";
+const API_URL = "https://part-back.onrender.com/roles";
 
 export default class RoleService {
-  static async find() {
+  async getRoles() {
     try {
       const response = await fetch(`${API_URL}`, {
         method: "GET",
@@ -12,6 +12,7 @@ export default class RoleService {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log("Entro")
       return await response.json();
     } catch (error) {
       console.error(error);

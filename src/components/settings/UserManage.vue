@@ -28,10 +28,10 @@
             </option>
           </select>
           <button
-            @click="createUser"
+            @click="createUser = true"
             class="rounded-md bg-button px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1"
           >
-            <span>Añadir Usuario</span>
+            <span>Añadir</span>
           </button>
         </div>
       </div>
@@ -68,9 +68,9 @@
                 <span
                   :class="[
                     'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                    user.status === 'Activo'
+                    user.status === 'ACTIVO'
                       ? 'bg-green-100 text-green-800'
-                      : user.status === 'Inactivo'
+                      : user.status === 'INACTIVO'
                         ? 'bg-gray-100 text-gray-800'
                         : 'bg-amber-100 text-amber-800',
                   ]"
@@ -78,13 +78,18 @@
                   {{ user.status }}
                 </span>
               </td>
-              <td class="p-4">{{ user.lastLogin }}</td>
+              <td class="p-4">
+                <span v-if="user.lastLogin === null"> Nunca </span>
+                <span v-else>{{ user.lastLogin }}</span>
+              </td>
               <td class="p-4">
                 <div class="relative">
                   <button
                     @click="toggleDropdown(user.id)"
                     class="rounded-md p-1 hover:bg-muted"
-                  ><MoreVerticalIcon class="h-4 w-4"/></button>
+                  >
+                    <MoreVerticalIcon class="h-4 w-4" />
+                  </button>
                   <div
                     v-if="activeDropdown === user.id"
                     class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
@@ -121,20 +126,113 @@
           Mostrando {{ filteredUsers.length }} de {{ users.length }} usuarios
         </div>
         <div class="flex items-center gap-2">
-          <button class="rounded-md border px-3 py-1 text-sm" disabled>
+          <button
+            class="rounded-md border px-3 py-1 text-sm"
+            disabled
+            @click="previous"
+          >
             Anterior
           </button>
-          <button class="rounded-md border px-3 py-1 text-sm">Siguiente</button>
+          <button class="rounded-md border px-3 py-1 text-sm" @click="next">
+            Siguiente
+          </button>
         </div>
       </div>
     </div>
+    <!-- Create Dialog -->
+    <Dialog :open="createUser" @update:open="createUser = $event">
+      <DialogContent class="font-medium">
+        <DialogHeader>
+          <DialogTitle class="text-xl">Crear Nuevo Usuario</DialogTitle>
+          <DialogDescription>
+            Complete los datos del usuario para crear una nueva cuenta.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div class="grid gap-4 py-4">
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label class="text-right">Nombre</Label>
+            <Input
+              id="name"
+              v-model="user.name"
+              class="col-span-3"
+              placeholder="Nombre"
+            />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label class="text-right"> Email </Label>
+            <Input
+              id="email"
+              type="email"
+              v-model="user.email"
+              class="col-span-3"
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label class="text-right"> Contraseña </Label>
+            <Input
+              id="password"
+              type="password"
+              v-model="user.password"
+              class="col-span-3"
+              placeholder="********"
+              maxlength="8"
+            />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label class="text-right"> Rol </Label>
+            <Select v-model="user.role">
+              <SelectTrigger class="col-span-3">
+                <SelectValue placeholder="Seleccionar rol" />
+              </SelectTrigger>
+              <SelectContent v-for="role in roles">
+                <SelectItem value="role.id">{{ role.name }}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button type="reset" variant="outline" @click="createUser = false">
+            Cancelar
+          </Button>
+          <Button
+            @click="handleUser"
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Guardar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import {MoreVerticalIcon, SearchIcon} from "lucide-vue-next";
+import { computed, reactive, ref } from "vue";
+import { MoreVerticalIcon, SearchIcon } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import UserService from "@/services/UserService.ts";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import RoleService from "@/services/RoleService.ts";
 
 interface User {
   id: string;
@@ -149,9 +247,30 @@ interface User {
 const { users } = defineProps<{ users: User[] }>();
 const searchQuery = ref("");
 const activeDropdown = ref(null);
+const createUser = ref(false);
+const user = reactive({
+  name: "",
+  email: "",
+  password: "",
+  role: "",
+});
+
+const roles = computed(() => {
+  try {
+    const service = new RoleService()
+    if (!service) {
+      throw new Error('Error al leer');
+    }
+    return service.getRoles();
+  } catch (error) {
+    console.error('Error fetching actas:', error);
+    throw error;
+  }
+});
 
 // Filtrar usuarios basado en la búsqueda
 const filteredUsers = computed(() => {
+  console.log(roles);
   if (!searchQuery.value) return users;
   return users.filter(
     (user) =>
@@ -173,5 +292,19 @@ const toggleDropdown = (id) => {
   activeDropdown.value = activeDropdown.value === id ? null : id;
 };
 
-async function createUser() {}
+async function handleUser() {
+  const service = new UserService();
+  try {
+    const create = service.createUser();
+    show();
+    //navigate("/se");
+  } catch (e) {
+    console.log(e);
+    throw new Error(e);
+  }
+}
+
+//hacer paginado desde backend q mande usuarios de 10 en 10
+async function previous() {}
+async function next() {}
 </script>

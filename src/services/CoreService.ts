@@ -1,7 +1,9 @@
+const API_URL = "https://part-back.onrender.com/core";
+
 export default class CoreService {
   async createCore(coreData: { name: string }, areaData: any[]) {
     try {
-      const response = await fetch(`http://104.225.141.171:2002/core`, {
+      const response = await fetch(`${API_URL}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +21,7 @@ export default class CoreService {
 
   async getAllCore() {
     try {
-      const response = await fetch(`http://104.225.141.171:2002/core`, {
+      const response = await fetch(`${API_URL}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +38,7 @@ export default class CoreService {
 
   async getCore(id: string) {
     try {
-      const response = await fetch(`http://104.225.141.171:2002/core/${id}`, {
+      const response = await fetch(`${API_URL}/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +55,7 @@ export default class CoreService {
 
   async updateCore(id: string) {
     try {
-      const response = await fetch(`http://104.225.141.171:2002/core/${id}`, {
+      const response = await fetch(`${API_URL}/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +72,7 @@ export default class CoreService {
   
   async deleteCore(id: string) {
     try {
-      const response = await fetch(`http://104.225.141.171:2002/core/${id}`, {
+      const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

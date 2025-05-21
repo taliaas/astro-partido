@@ -12,8 +12,16 @@ async function getAllUsers() {
         console.error(e)
     }
 }
+async function getAllRoles() {
+    const service = new RoleService()
+    try {
+        return service.getRoles()
+    } catch (e) {
+        console.error(e)
+    }
+}
 
-const roles = await RoleService.find()
+const roles = await getAllRoles()
 const users = await getAllUsers()
 ---
 
