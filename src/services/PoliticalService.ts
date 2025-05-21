@@ -1,5 +1,5 @@
 
-const API_URL = "https://part-back.onrender.com/minutes-political";
+const API_URL = "http://104.225.141.171:2002/minutes-political";
 
 export default class PoliticalService {
   async getMinute(id: string) {

@@ -1,4 +1,4 @@
-const API_URL = "https://part-back.onrender.com/user";
+const API_URL = "http://104.225.141.171:2002/user";
 
 export default class UserService {
   async getAllUser() {
@@ -22,7 +22,7 @@ export default class UserService {
   async getUser(id: string) {
     try {
       const response = await fetch(
-        `https://part-back.onrender.com/user/${id}`,
+          `${API_URL}/${id}`,
         {
           method: "GET",
           headers: {
@@ -44,7 +44,7 @@ export default class UserService {
     console.log(email);
     try {
       const response = await fetch(
-        `https://part-back.onrender.com/user/data/${email}`,
+        `${API_URL}/data/${email}`,
         {
           method: "GET",
           headers: {
@@ -66,7 +66,7 @@ export default class UserService {
     console.log(id);
     try {
       const response = await fetch(
-        `https://part-back.onrender.com/user/${id}`,
+        `${API_URL}/${id}`,
         {
           method: "DELETE",
           headers: {

@@ -1,4 +1,4 @@
-const API_URL = "https://part-back.onrender.com/minutes-ordinary";
+const API_URL = "http://104.225.141.171:2002/minutes-ordinary";
 
 export default class OrdinaryService {
 

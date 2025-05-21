@@ -1,4 +1,4 @@
-const API_URL = "https://part-back.onrender.com/minutes";
+const API_URL = "http://104.225.141.171:2002/minutes";
 
 export default class MinutesService {
   async getAllMinutes(type: string) {

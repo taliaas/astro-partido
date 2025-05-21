@@ -2,7 +2,7 @@ export default class StatusService {
   async getYear(anno: number) {
     try {
       const response = await fetch(
-        `https://part-back.onrender.com/computo/calcular_estado/${anno}`,
+        `http://104.225.141.171:2002/computo/calcular_estado/${anno}`,
         {
           method: "GET",
           headers: {

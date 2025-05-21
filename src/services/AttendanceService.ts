@@ -1,6 +1,6 @@
 import type { AttendanceResponse } from "@/interface/Absent.ts";
 
-const API_URL = "https://part-back.onrender.com/minutes-ordinary/attendance";
+const API_URL = "http://104.225.141.171:2002/minutes-ordinary/attendance";
 
 export default class AttendanceService {
   async getAttendance(month: number, year: number) {

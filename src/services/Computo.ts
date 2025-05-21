@@ -1,6 +1,6 @@
 import type {Indicadores} from "@/interface/Indicadores.ts";
 
-const API_URL = 'https://part-back.onrender.com/computo';
+const API_URL = 'http://104.225.141.171:2002/computo';
 
 export default class ComputoService {
     async getAll() {

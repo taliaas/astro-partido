@@ -1,6 +1,6 @@
 import type { AbsentCausesWithMilitante } from "@/interface/AbsentCausesWithMilitante";
 
-const API_URL = 'https://part-back.onrender.com/militantes';
+const API_URL = 'http://104.225.141.171:2002/militantes';
 
 export default class MilitantService {
     async getAll() {

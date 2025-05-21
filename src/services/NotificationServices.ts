@@ -1,4 +1,4 @@
-const API_URL = 'https://part-back.onrender.com/notification';
+const API_URL = 'http://104.225.141.171:2002/notification';
 
 export default class NotificationService {
     async getAll(email: any) {
