@@ -23,17 +23,21 @@ export default defineConfig({
       }),
     },
   },
-  // vite: {
-  //   resolve: {
-  //     alias: [
-  //       {
-  //         find: "node:path",
-  //         replacement: "path-browserify",
-  //         customResolver: (source) => {
-  //           return source.includes("auth-astro") ? "path-browserify" : source;
-  //         },
-  //       },
-  //     ],
-  //   },
-  // },
+  vite: {
+    logLevel: "info",
+    // resolve: {
+    //   alias: [
+    //     {
+    //       find: "node:path",
+    //       replacement: "path-browserify",
+    //       async customResolver(source, importer) {
+    //         if (!importer?.includes("auth-astro/src/integration.ts"))
+    //           return "node:path";
+    //         console.log(source, importer);
+    //         return "path-browserify";
+    //       },
+    //     },
+    //   ],
+    // },
+  },
 });

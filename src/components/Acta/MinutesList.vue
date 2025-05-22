@@ -408,7 +408,6 @@ import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Di
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "../ui/dropdown-menu";
 import {Input} from "../ui/input";
 import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
-import {deleteMinute} from "@/actions/minute.ts";
 
 const {actas} = defineProps<{
   actas: any[];
