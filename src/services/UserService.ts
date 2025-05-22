@@ -1,9 +1,9 @@
 const API_URL = "https://part-back.onrender.com/user";
 
 export default class UserService {
-  async getAllUser() {
+  async getAllUser(page: number) {
     try {
-      const response = await fetch(`${API_URL}`, {
+      const response = await fetch(`${API_URL}/${page}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
