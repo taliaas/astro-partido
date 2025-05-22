@@ -5,7 +5,7 @@
         <!-- Sección de Comités -->
         <div class="flex flex-row items-center justify-between mb-4">
           <h2 class="font-medium text-xl text-foreground">Cómites</h2>
-          <Button @click="handleAddComite" class="flex items-center gap-1">
+          <Button @click="handleAddComite" class="flex items-center gap-1 bg-button">
             <PlusIcon class="h-4 w-4 mr-1" />
             Añadir
           </Button>
@@ -42,7 +42,7 @@
                   </div>
                 </td>
                 <td class="p-4 text-center">
-                  <Badge variant="secondary">{{ comite.core?.length }}</Badge>
+                {{ comite.core?.length }}
                 </td>
                 <td class="p-4">
                   <div class="relative">
@@ -301,7 +301,6 @@ import {
   Trash2Icon,
 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -367,6 +366,7 @@ const nucleoForm = reactive({
 
 // Funciones para manejar la expansión de comités
 const toggleComiteExpansion = (comiteId: string) => {
+  console.log(comiteId)
   if (expandedComites.value.includes(comiteId)) {
     expandedComites.value = expandedComites.value.filter(id => id !== comiteId)
   } else {
@@ -377,7 +377,6 @@ const toggleComiteExpansion = (comiteId: string) => {
 // Funciones para manejar dropdowns
 const toggleComiteDropdown = (comiteId: string) => {
   activeComiteDropdown.value = activeComiteDropdown.value === comiteId ? null : comiteId
-  // Cerrar el otro dropdown si está abierto
   if (activeNucleoDropdown.value) {
     activeNucleoDropdown.value = null
   }

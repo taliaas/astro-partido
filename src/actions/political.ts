@@ -62,26 +62,6 @@ export const updateMinute = defineAction({
   },
 });
 
-export const deleteMinute = defineAction({
-  input: z.string(),
-  async handler(id, context) {
-    const session = await getSession(context.request);
-    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
-    const res = await fetch(`${API_URL}/minutes-political/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.jwt}`,
-      },
-    });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
-  },
-});
-
 export const updateStatusMinutes = defineAction({
   input: z.object({
     id: z.string(),

@@ -408,6 +408,7 @@ import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Di
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "../ui/dropdown-menu";
 import {Input} from "../ui/input";
 import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
+import {deleteMinute} from "@/actions/minute.ts";
 
 const {actas} = defineProps<{
   actas: any[];
@@ -534,13 +535,8 @@ async function eliminarActa() {
   const tipo = acta?.type ?? "";
 
   try {
-    if (tipo === "ro") {
-      await actions.ordinary.deleteMinute(id)
+      await actions.minute.deleteMinute(id, tipo)
       menssage.value = "Se eliminó correctamente el acta";
-    } else if (tipo === "cp") {
-      await actions.political.deleteMinute(id)
-      menssage.value = "Se eliminó correctamente el acta";
-    }
   } catch (e) {
     console.error(e);
   }

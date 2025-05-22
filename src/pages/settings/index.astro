@@ -1,5 +1,5 @@
 ---
-import General from "@/components/settings/General.vue";
+import UserManage from "@/components/settings/UserManage.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import RoleService from "@/services/RoleService";
@@ -31,6 +31,6 @@ const users = await getAllUsers();
 
 <RootLayout>
   <SettingsLayout>
-    <General roles={roles} users={users} />
+    <UserManage users={users} roles={roles} :client:load />
   </SettingsLayout>
 </RootLayout>

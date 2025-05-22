@@ -30,11 +30,6 @@
 
       <!-- Contenido principal -->
       <div class="flex-1 max-w-7xl">
-        <!-- Vista General -->
-        <div v-if="activeSection === 'general'" class="space-y-6">
-          <General :users :roles />
-        </div>
-
         <!-- Gestión de Usuarios -->
         <div v-if="activeSection === 'users'" class="space-y-6">
           <UserManage :users :roles />
@@ -65,13 +60,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue";
+import { ref } from "vue";
 import UserManage from "@/components/settings/UserManage.vue";
 import RolesManage from "@/components/settings/RolesManage.vue";
 import ClaimsManage from "@/components/settings/ClaimsManage.vue";
 import CoreManage from "@/components/settings/CoreManage.vue";
 import Notification from "@/components/settings/Notification.vue";
-import General from "@/components/settings/General.vue";
 
 const { users, roles, claims, comites, cores } = defineProps<{
   users: any;
@@ -82,24 +76,15 @@ const { users, roles, claims, comites, cores } = defineProps<{
 }>();
 
 // Estado de la aplicación
-const activeSection = ref("general");
+const activeSection = ref("users");
 
 // Elementos de navegación
 const navigationItems = [
-  { id: "general", title: "General" },
   { id: "users", title: "Gestión de Usuarios" },
   { id: "roles", title: "Roles" },
   { id: "permissions", title: "Permisos" },
   { id: "notifications", title: "Notificaciones" },
   { id: "comites", title: "Cómite CUJAE" },
-];
-
-// Pestañas
-const tabs = [
-  { id: "overview", name: "Resumen" },
-  { id: "security", name: "Seguridad" },
-  { id: "appearance", name: "Apariencia" },
-  { id: "advanced", name: "Avanzado" },
 ];
 
 </script>
