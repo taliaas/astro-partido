@@ -1,0 +1,11 @@
+---
+import Militantes from "../../components/settings/Militantes.vue"
+import SettingsLayout from "../../layouts/SettingsLayout.astro";
+import RootLayout from "../../layouts/RootLayout.astro";
+---
+
+<RootLayout>
+    <SettingsLayout>
+        <Militantes militantes={militantes} client:load />
+    </SettingsLayout>
+</RootLayout>

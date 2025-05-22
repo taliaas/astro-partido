@@ -54,6 +54,10 @@
         <div v-if="activeSection === 'comites'" class="space-y-6">
           <CoreManage :comites :cores />
         </div>
+
+        <div v-if="activeSection === 'militantes'" class="space-y-6">
+          <Militantes :militantes />
+        </div>
       </div>
     </div>
   </div>
@@ -66,13 +70,15 @@ import RolesManage from "@/components/settings/RolesManage.vue";
 import ClaimsManage from "@/components/settings/ClaimsManage.vue";
 import CoreManage from "@/components/settings/CoreManage.vue";
 import Notification from "@/components/settings/Notification.vue";
+import Militantes from "@/components/settings/Militantes.vue";
 
-const { users, roles, claims, comites, cores } = defineProps<{
+const { users, roles, claims, comites, cores, militantes } = defineProps<{
   users: any;
   roles: any;
   claims: any;
   comites: any;
   cores: any;
+  militantes: any;
 }>();
 
 // Estado de la aplicación
@@ -85,6 +91,7 @@ const navigationItems = [
   { id: "permissions", title: "Permisos" },
   { id: "notifications", title: "Notificaciones" },
   { id: "comites", title: "Cómite CUJAE" },
+  {id: "militantes", title: "Militantes"}
 ];
 
 </script>
