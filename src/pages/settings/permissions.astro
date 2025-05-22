@@ -5,7 +5,6 @@ import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import ClaimService from "@/services/ClaimService";
 import RoleService from "@/services/RoleService";
 
-
 async function getAllRoles() {
   const service = new RoleService();
   try {
@@ -30,6 +29,6 @@ const claims = await getClaims();
 
 <RootLayout>
   <SettingsLayout>
-    <ClaimsManage claims={claims} roles={roles} :client:load />
+    <ClaimsManage claims={claims} roles={roles} client:load />
   </SettingsLayout>
 </RootLayout>

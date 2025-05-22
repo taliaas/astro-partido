@@ -63,7 +63,7 @@
             >
               <td class="p-4">{{ user.name }}</td>
               <td class="p-4">{{ user.email }}</td>
-              <td class="p-4">{{ user.role.name }}</td>
+              <td class="p-4">{{ user.role?.name }}</td>
               <td class="p-4">
                 <span
                   :class="[

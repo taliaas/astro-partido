@@ -136,4 +136,9 @@ function saveClaims() {
     throw new Error(e as any);
   }
 }
+
+// Al cambiar de rol, filtrar los claims editables para ese rol
+watch(selectRole, (newRole) => {
+  // Opcional: podrías recargar editableClaims desde claims si quieres descartar cambios no guardados
+});
 </script>
