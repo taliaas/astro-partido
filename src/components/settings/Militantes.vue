@@ -1,11 +1,5 @@
 <template>
   <div class="container mx-auto py-8 px-4">
-    <!-- Header -->
-    <div class="mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Members Management</h1>
-      <p class="text-muted-foreground mt-1">Manage your organization members and their information</p>
-    </div>
-
     <!-- Search and Add -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <div class="relative w-full sm:w-80">
@@ -13,16 +7,16 @@
         <input
             v-model="searchQuery"
             type="search"
-            placeholder="Search members..."
+            placeholder="Buscar miembros..."
             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-8 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
       <button
           @click="openAddMemberModal"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+          class="inline-flex items-center justify-center bg-button rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground hover:bg-button/90 h-10 px-4 py-2"
       >
         <PlusCircle class="mr-2 h-4 w-4" />
-        Add Member
+        Añadir
       </button>
     </div>
 
@@ -31,12 +25,11 @@
       <table class="w-full caption-bottom text-sm">
         <thead class="[&_tr]:border-b">
         <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
-          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Email</th>
-          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Organization</th>
-          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Core</th>
-          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
-          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Nombre</th>
+          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Correo</th>
+          <th class="h-12 px-4 text-center align-middle font-medium text-muted-foreground">Organización</th>
+          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Estado</th>
+          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></th>
         </tr>
         </thead>
         <tbody class="[&_tr:last-child]:border-0">
@@ -57,8 +50,7 @@
             </div>
           </td>
           <td class="p-4 align-middle">{{ member.email }}</td>
-          <td class="p-4 align-middle capitalize">{{ member.organization }}</td>
-          <td class="p-4 align-middle">{{ member.core.name }}</td>
+          <td class="p-4 align-middle text-center capitalize">{{ member.organization }}</td>
           <td class="p-4 align-middle">
               <span
                   :class="[
@@ -99,7 +91,7 @@
         </tr>
         <tr v-if="filteredMembers.length === 0">
           <td colspan="6" class="p-4 text-center text-muted-foreground">
-            No members found.
+            No hay militantes.
           </td>
         </tr>
         </tbody>
@@ -417,11 +409,11 @@ const currentMember = reactive({
 // Computed properties
 const filteredMembers = computed(() => {
   if (!searchQuery.value) {
-    return members.value
+    return militantes.data
   }
-
+  if (!Array.isArray(militantes.data)) return [];
   const query = searchQuery.value.toLowerCase()
-  return members.value.filter(member =>
+  return militantes.data.filter(member =>
       member.firstname.toLowerCase().includes(query) ||
       member.lastname.toLowerCase().includes(query) ||
       member.email.toLowerCase().includes(query) ||
@@ -430,9 +422,7 @@ const filteredMembers = computed(() => {
   )
 })
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredMembers.value.length / itemsPerPage.value)
-})
+const totalPages = militantes.total
 
 // Methods
 const getInitials = (member) => {
