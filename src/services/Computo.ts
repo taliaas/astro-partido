@@ -1,11 +1,10 @@
 import type {Indicadores} from "@/interface/Indicadores.ts";
-
-const API_URL = 'http://104.225.141.171:2002/computo';
+import { API_URL } from "astro:env/client";
 
 export default class ComputoService {
     async getAll() {
         try {
-            const response = await fetch(`${API_URL}`,{
+            const response = await fetch(`${API_URL}/computo`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,7 +22,7 @@ export default class ComputoService {
 
     async getCalcularComputo(id: string) {
         try {
-            const response = await fetch(`${API_URL}/calcular_computo/${id}`,{
+            const response = await fetch(`${API_URL}/computo/calcular_computo/${id}`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +40,7 @@ export default class ComputoService {
 
     async getByDate(month: number, year: number) {
         try {
-            const response = await fetch(`${API_URL}/find/${month}/${year}`,{
+            const response = await fetch(`${API_URL}/computo/find/${month}/${year}`,{
                 method: 'GET',
                     headers: {
                     'Content-Type': 'application/json',
@@ -59,7 +58,7 @@ export default class ComputoService {
 
     async getCompare(){
         try {
-            const response = await fetch(`${API_URL}/compare`,{
+            const response = await fetch(`${API_URL}/computo/compare`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +77,7 @@ export default class ComputoService {
 
     async create(data: Indicadores){
         try {
-            const response = await fetch(`${API_URL}`,{
+            const response = await fetch(`${API_URL}/computo`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -97,7 +96,7 @@ export default class ComputoService {
 
     async getNegativeIndicator(){
         try {
-            const response = await fetch(`${API_URL}/indicadores_alert`,{
+            const response = await fetch(`${API_URL}/computo/indicadores_alert`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import {ActionError, defineAction} from "astro:actions"
 import {z} from "astro:schema";
 import {getSession} from "auth-astro/server.ts";
-import {API_URL} from "astro:env/server";
+import {API_URL} from "astro:env/client";
 
 export const uploadMinutes = defineAction({
     accept: "form",
