@@ -1,7 +1,6 @@
 import Credentials from "@auth/core/providers/credentials";
+import { API_URL } from "astro:env/client";
 import { defineConfig } from "auth-astro";
-
-const API_URL = "https://part-back.onrender.com/auth/login";
 
 export default defineConfig({
   trustHost: true,
@@ -18,7 +17,7 @@ export default defineConfig({
         password: {},
       },
       async authorize(credentials) {
-        const res = await fetch(API_URL, {
+        const res = await fetch(`${API_URL}/auth/login`, {
           method: "POST",
           headers: {
             "content-type": "application/json",

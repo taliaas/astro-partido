@@ -1,10 +1,9 @@
-
-const API_URL = "http://104.225.141.171:2002/minutes-political";
+import { API_URL } from "astro:env/client";
 
 export default class PoliticalService {
   async getMinute(id: string) {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_URL}/minutes-political/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -21,7 +20,7 @@ export default class PoliticalService {
 
   async getAll() {
     try {
-      const response = await fetch(`${API_URL}`, {
+      const response = await fetch(`${API_URL}/minutes-political`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -38,12 +37,15 @@ export default class PoliticalService {
 
   async getMinutesByCore(core: any, fecha: any) {
     try {
-      const response = await fetch(`${API_URL}/${core}/${fecha}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/minutes-political/${core}/${fecha}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

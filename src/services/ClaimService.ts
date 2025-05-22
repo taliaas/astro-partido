@@ -1,9 +1,9 @@
-const API_URL = "https://part-back.onrender.com/claims";
+import { API_URL } from 'astro:env/client';
 
 export default class ClaimService {
     async getAllClaims() {
         try {
-            const response = await fetch(`${API_URL}`, {
+            const response = await fetch(`${API_URL}/claims`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

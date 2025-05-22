@@ -12,7 +12,7 @@ export const register = defineAction({
   }),
   async handler(input, context) {
     console.log(`${API_URL}/auth/register`)
-    const res = await fetch(`http://localhost:5000/auth/register`, {
+    const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export const updatePassword = defineAction({
     const session = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
     const res = await fetch(
-      `https://part-back.onrender.com/auth/${session?.user?.id}/change-password`,
+      `${API_URL}/auth/${session?.user?.id}/change-password`,
       {
         method: "POST",
         headers: {

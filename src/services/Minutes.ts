@@ -1,9 +1,9 @@
-const API_URL = "https://part-back.onrender.com/minutes";
+import { API_URL } from "astro:env/client";
 
 export default class MinutesService {
   async getAllMinutes(type: string) {
     try {
-      const response = await fetch(`${API_URL}/?type=${type}`, {
+      const response = await fetch(`${API_URL}/minutes/?type=${type}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -1,11 +1,11 @@
 import type { AbsentCausesWithMilitante } from "@/interface/AbsentCausesWithMilitante";
+import { API_URL } from "astro:env/client";
 
-const API_URL = 'http://104.225.141.171:2002/militantes';
 
 export default class MilitantService {
     async getAll() {
         try {
-            const response = await fetch(`${API_URL}/`, {
+            const response = await fetch(`${API_URL}/militantes/`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export default class MilitantService {
 
     async getMilitantesByCore(id: number) {
         try {
-            const response = await fetch(`${API_URL}/core/${id}`, {
+            const response = await fetch(`${API_URL}/militantes/core/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export default class MilitantService {
 
     async getAbsentCausesWithMilitante(month: number, year: number): Promise<AbsentCausesWithMilitante> {
         try {
-            const response = await fetch(`${API_URL}/absent-causes/${month}/${year}`, {
+            const response = await fetch(`${API_URL}/militantes/absent-causes/${month}/${year}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

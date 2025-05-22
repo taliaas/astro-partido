@@ -1,10 +1,11 @@
-const API_URL = "http://104.225.141.171:2002/minutes-ordinary";
+import { API_URL } from "astro:env/client";
+
 
 export default class OrdinaryService {
 
   async getMinute(id: string) {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_URL}/minutes-ordinary/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -21,7 +22,7 @@ export default class OrdinaryService {
 
   async getAll() {
     try {
-      const response = await fetch(`${API_URL}`, {
+      const response = await fetch(`${API_URL}/minutes-ordinary`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +40,7 @@ export default class OrdinaryService {
   //obtener las actas recientes
   async getLatestMinute() {
     try {
-      const response = await fetch(`${API_URL}/latest`, {
+      const response = await fetch(`${API_URL}/minutes-ordinary/latest`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +57,7 @@ export default class OrdinaryService {
 
   async getMinutesByCurrentMonth() {
     try {
-      const response = await fetch(`${API_URL}/byMonth`, {
+      const response = await fetch(`${API_URL}/minutes-ordinary/byMonth`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +74,7 @@ export default class OrdinaryService {
 
   async getMinutesByStatus(status: any) {
     try {
-      const response = await fetch(`${API_URL}/pending/${status}`, {
+      const response = await fetch(`${API_URL}/minutes-ordinary/pending/${status}`, {
         method: "GET",
         headers: {
           "Content-Type": "aplication/json",
@@ -90,7 +91,7 @@ export default class OrdinaryService {
 
   async getAttendance(month: number, year: number){
     try {
-      const response = await fetch(`${API_URL}/attendance/${month}/${year}`, {
+      const response = await fetch(`${API_URL}/minutes-ordinary/attendance/${month}/${year}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

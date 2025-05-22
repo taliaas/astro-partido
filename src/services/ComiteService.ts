@@ -1,9 +1,9 @@
-const API_URL = "https://part-back.onrender.com/comite";
+import { API_URL } from "astro:env/client";
 
 export default class ComiteService {
     async createCore(areaData: { name: string }) {
         try {
-            const response = await fetch(`${API_URL}`, {
+            const response = await fetch(`${API_URL}/comite`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ export default class ComiteService {
 
     async getAllComite() {
         try {
-            const response = await fetch(`${API_URL}`, {
+            const response = await fetch(`${API_URL}/comite`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

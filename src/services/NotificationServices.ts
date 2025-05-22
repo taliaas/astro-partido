@@ -1,9 +1,9 @@
-const API_URL = 'https://part-back.onrender.com/notification';
+import { API_URL } from 'astro:env/client';
 
 export default class NotificationService {
     async getAll(email: any) {
         try {
-            const response = await fetch(`${API_URL}/user/${email}`, {
+            const response = await fetch(`${API_URL}/notification/user/${email}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,9 +1,9 @@
-const API_URL = "https://part-back.onrender.com/user";
+import { API_URL } from 'astro:env/client';
 
 export default class UserService {
   async getAllUser(page: number) {
     try {
-      const response = await fetch(`${API_URL}/${page}`, {
+      const response = await fetch(`${API_URL}/user/${page}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export default class UserService {
   async getUser(id: string) {
     try {
       const response = await fetch(
-          `${API_URL}/${id}`,
+          `${API_URL}/user/${id}`,
         {
           method: "GET",
           headers: {
@@ -44,7 +44,7 @@ export default class UserService {
     console.log(email);
     try {
       const response = await fetch(
-        `${API_URL}/data/${email}`,
+        `${API_URL}/user/data/${email}`,
         {
           method: "GET",
           headers: {
@@ -66,7 +66,7 @@ export default class UserService {
     console.log(id);
     try {
       const response = await fetch(
-        `${API_URL}/${id}`,
+        `${API_URL}/user/${id}`,
         {
           method: "DELETE",
           headers: {

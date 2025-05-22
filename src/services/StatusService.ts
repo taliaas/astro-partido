@@ -1,8 +1,10 @@
+import { API_URL } from "astro:env/client";
+
 export default class StatusService {
   async getYear(anno: number) {
     try {
       const response = await fetch(
-        `http://104.225.141.171:2002/computo/calcular_estado/${anno}`,
+        `${API_URL}/computo/calcular_estado/${anno}`,
         {
           method: "GET",
           headers: {

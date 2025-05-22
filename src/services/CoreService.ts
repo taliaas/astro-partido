@@ -1,9 +1,9 @@
-const API_URL = "https://part-back.onrender.com/core";
+import { API_URL } from 'astro:env/client';
 
 export default class CoreService {
   async createCore(coreData: { name: string }, areaData: any[]) {
     try {
-      const response = await fetch(`${API_URL}`, {
+      const response = await fetch(`${API_URL}/core`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ export default class CoreService {
 
   async getAllCore() {
     try {
-      const response = await fetch(`${API_URL}`, {
+      const response = await fetch(`${API_URL}/core`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export default class CoreService {
 
   async getCore(id: string) {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_URL}/core/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export default class CoreService {
 
   async updateCore(id: string) {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_URL}/core/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export default class CoreService {
   
   async deleteCore(id: string) {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_URL}/core/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
