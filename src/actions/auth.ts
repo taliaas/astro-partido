@@ -8,9 +8,11 @@ export const register = defineAction({
     email: z.string().email(),
     name: z.string(),
     password: z.string(),
+    role: z.string().optional(),
   }),
   async handler(input, context) {
-    const res = await fetch(`${API_URL}/auth/register`, {
+    console.log(`${API_URL}/auth/register`)
+    const res = await fetch(`http://localhost:5000/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
