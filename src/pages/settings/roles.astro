@@ -1,0 +1,23 @@
+---
+import RolesManage from "@/components/settings/RolesManage.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import SettingsLayout from "@/layouts/SettingsLayout.astro";
+import RoleService from "@/services/RoleService";
+
+async function getAllRoles() {
+  const service = new RoleService();
+  try {
+    return service.getRoles();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const roles = await getAllRoles();
+---
+
+<RootLayout>
+  <SettingsLayout>
+    <RolesManage roles={roles} :client:load />
+  </SettingsLayout>
+</RootLayout>

@@ -1,0 +1,33 @@
+---
+import CoreManage from "@/components/settings/CoreManage.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import SettingsLayout from "@/layouts/SettingsLayout.astro";
+import ComiteService from "@/services/ComiteService";
+import CoreService from "@/services/CoreService";
+
+async function getComites() {
+  const service = new ComiteService();
+  try {
+    return service.getAllComite();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function nucleos() {
+  const service = new CoreService();
+  try {
+    return service.getAllCore();
+  } catch (e) {
+    console.error(e);
+  }
+}
+const cores = await nucleos();
+const comites = await getComites();
+---
+
+<RootLayout>
+  <SettingsLayout>
+    <CoreManage comites={comites} cores={cores} :client:load />
+  </SettingsLayout>
+</RootLayout>

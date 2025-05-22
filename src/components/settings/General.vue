@@ -191,6 +191,8 @@
 import {ref} from "vue";
 
 const { users, roles } = defineProps<{ users: any[], roles: any[] }>();
+console.log(users);
+
 const activeTab = ref('overview')
 
 // Datos de estadísticas del sistema

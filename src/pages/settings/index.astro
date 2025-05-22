@@ -1,0 +1,36 @@
+---
+import General from "@/components/settings/General.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import SettingsLayout from "@/layouts/SettingsLayout.astro";
+import RoleService from "@/services/RoleService";
+import UserService from "@/services/UserService";
+
+const searchParams = Astro.url.searchParams;
+const page = Number(searchParams.get("page") ?? 1);
+
+async function getAllUsers() {
+  const service = new UserService();
+  try {
+    return service.getAllUser(page);
+  } catch (e) {
+    console.error(e);
+  }
+}
+async function getAllRoles() {
+  const service = new RoleService();
+  try {
+    return service.getRoles();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const roles = await getAllRoles();
+const users = await getAllUsers();
+---
+
+<RootLayout>
+  <SettingsLayout>
+    <General roles={roles} users={users} />
+  </SettingsLayout>
+</RootLayout>

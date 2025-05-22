@@ -1,29 +1,29 @@
 ---
 import AuthHeader from "@/components/layout/AuthHeader.vue";
 import { ClientRouter } from "astro:transitions";
-import LoadingIndicator from "astro-loading-indicator/component"
+import LoadingIndicator from "astro-loading-indicator/component";
 import "../globals.css";
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="generator" content={Astro.generator} />
-        <title>Motor</title>
-        <ClientRouter />
-        <LoadingIndicator color="blue" height="3px"/>
-    </head>
-    <body>
-        <div class="min-h-screen bg-gray-50">
-            <!-- Header <AuthHeader />-->
-            <AuthHeader />
-            <!-- Main Content -->
-            <main class="flex-1">
-                <slot />
-            </main>
-        </div>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Motor</title>
+    <ClientRouter />
+    <LoadingIndicator color="blue" height="3px" />
+  </head>
+  <body>
+    <div class="min-h-screen bg-gray-50">
+      <!-- Header <AuthHeader />-->
+      <AuthHeader />
+      <!-- Main Content -->
+      <main class="flex-1">
+        <slot />
+      </main>
+    </div>
+  </body>
 </html>

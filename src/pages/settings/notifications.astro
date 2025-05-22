@@ -1,0 +1,11 @@
+---
+import Notification from "@/components/settings/Notification.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import SettingsLayout from "@/layouts/SettingsLayout.astro";
+---
+
+<RootLayout>
+  <SettingsLayout>
+    <Notification :client:load />
+  </SettingsLayout>
+</RootLayout>

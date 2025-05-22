@@ -1,25 +1,18 @@
 <template>
   <div class="rounded-lg border bg-card shadow-sm">
     <div class="p-6">
-      <div
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4"
-      >
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div>
           <h4 class="text-lg font-semibold">Matriz de Permisos</h4>
         </div>
         <div class="flex items-center gap-2">
-          <select
-            class="rounded-md border px-3 py-2 bg-background"
-            v-model="selectRole"
-          >
+          <select class="rounded-md border px-3 py-2 bg-background" v-model="selectRole">
             <option v-for="role in roles" :key="role.id" :value="role.id">
               {{ role.name }}
             </option>
           </select>
-          <button
-            @click="saveClaims"
-            class="rounded-md bg-button px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1"
-          >
+          <button @click="saveClaims"
+            class="rounded-md bg-button px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1">
             Guardar
           </button>
         </div>
@@ -32,38 +25,22 @@
               <th class="h-10 w-[200px] px-4 py-4 text-left font-medium">
                 Recurso
               </th>
-              <th
-                v-for="action in permissionActions"
-                :key="action.id"
-                class="h-10 px-2 text-center font-medium"
-              >
+              <th v-for="action in permissionActions" :key="action.id" class="h-10 px-2 text-center font-medium">
                 {{ action.name }}
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="resource in permissionResources"
-              :key="resource"
-              class="border-b transition-colors hover:bg-muted/50"
-            >
+            <tr v-for="resource in permissionResources" :key="resource"
+              class="border-b transition-colors hover:bg-muted/50">
               <td class="px-4">
                 <div class="flex items-center gap-2">
                   <span class="font-medium">{{ resource }}</span>
                 </div>
               </td>
-              <td
-                v-for="action in permissionActions"
-                :key="action.id"
-                class="p-4 text-center"
-              >
-                <input
-                  type="checkbox"
-                  :id="`${resource}-${action.id}`"
-                  class="rounded border-gray-300"
-                  :checked="isPermissionChecked(resource, action.id)"
-                  @change="togglePermission(resource, action.id)"
-                />
+              <td v-for="action in permissionActions" :key="action.id" class="p-4 text-center">
+                <input type="checkbox" :id="`${resource}-${action.id}`" class="rounded border-gray-300"
+                  :checked="isPermissionChecked(resource, action.id)" @change="togglePermission(resource, action.id)" />
               </td>
             </tr>
           </tbody>
@@ -74,7 +51,7 @@
         <div class="text-xs text-muted-foreground flex items-center gap-1">
           <AlertCircle class="w-4 h-4 bg-secondary" />
           Editando permisos para:
-          <span class="font-medium">{{ roles.find(r => r.id === selectRole).name }}</span>
+          <span class="font-medium">{{roles.find(r => r.id === selectRole).name}}</span>
         </div>
       </div>
     </div>
@@ -82,11 +59,11 @@
 </template>
 
 <script setup lang="ts">
-import { AlertCircle } from "lucide-vue-next";
-import { computed, ref, watch } from "vue";
 import type { Claims } from "@/interface/Claims.ts";
 import type { Role } from "@/interface/Roles.ts";
 import { actions } from "astro:actions";
+import { AlertCircle } from "lucide-vue-next";
+import { computed, ref, watch } from "vue";
 
 const { claims, roles } = defineProps<{ claims: Claims[]; roles: Role[] }>();
 const selectRole = ref(claims[0]?.role?.id ?? null);
