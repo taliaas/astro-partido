@@ -1,123 +1,143 @@
 ---
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
-import { default as Computo, default as ComputoService } from "../services/Computo";
+import {
+  default as Computo,
+  default as ComputoService,
+} from "../services/Computo";
 import OrdinaryService from "../services/OrdinaryService";
 
-
 async function getMinute() {
-    const service = new OrdinaryService()
-    try {
-        return service.getLatestMinute()
-    } catch (e) {
-        console.error(e)
-    }
+  const service = new OrdinaryService();
+  try {
+    return service.getLatestMinute();
+  } catch (e) {
+    console.error(e);
+  }
 }
 const data = [
-    {
-        id: 1,
-        title: 'Acuerdos',
-        name: 'acuerdos',
-        description: 'Comportamiento de acuerdos en el último mes',
-        porcen: 2,
-        trend: 0
-    },
-    {
-        id: 2,
-        title: 'Participantes',
-        name: 'participantes',
-        description: 'Asistencia de participantes',
-        porcen: 3,
-        trend: 0
-    },
-    {id: 3, title: 'Invitados', name: 'invitados', description: 'Asistencia de invitados', porcen: 0, trend: 0},
-    {id: 4, title: 'Rendición', name: 'rendicion', description: 'Rendición de cuentas', porcen: 0, trend: 0},
-]
+  {
+    id: 1,
+    title: "Acuerdos",
+    name: "acuerdos",
+    description: "Comportamiento de acuerdos en el último mes",
+    porcen: 2,
+    trend: 0,
+  },
+  {
+    id: 2,
+    title: "Participantes",
+    name: "participantes",
+    description: "Asistencia de participantes",
+    porcen: 3,
+    trend: 0,
+  },
+  {
+    id: 3,
+    title: "Invitados",
+    name: "invitados",
+    description: "Asistencia de invitados",
+    porcen: 0,
+    trend: 0,
+  },
+  {
+    id: 4,
+    title: "Rendición",
+    name: "rendicion",
+    description: "Rendición de cuentas",
+    porcen: 0,
+    trend: 0,
+  },
+];
 async function getKPIs() {
-    const services = new Computo()
-    try {
-        const kpis = await services.getCompare();
-        return data.map(item => {
-            const diference = kpis.difference[item.name];
-            const current = kpis.currentInfo[item.name]
-            if (diference !== undefined || current !== undefined) {
-                return {...item, trend: diference, porcen: current};
-            }
+  const services = new Computo();
+  try {
+    const kpis = await services.getCompare();
+    return data.map((item) => {
+      const diference = kpis.difference[item.name];
+      const current = kpis.currentInfo[item.name];
+      if (diference !== undefined || current !== undefined) {
+        return { ...item, trend: diference, porcen: current };
+      }
 
-            return item;
-        });
-    } catch (e) {
-        console.error(e)
-    }
+      return item;
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
-async function getDocument(): Promise<number | undefined>{
-    const service = new OrdinaryService()
-    try{
-        return await service.getMinutesByCurrentMonth()
-    }
-    catch (e) {
-        console.error(e)
-    }
+async function getDocument(): Promise<number | undefined> {
+  const service = new OrdinaryService();
+  try {
+    return await service.getMinutesByCurrentMonth();
+  } catch (e) {
+    console.error(e);
+  }
 }
-async function getCountMinutesPending(): Promise<number | undefined>{
-    const service = new OrdinaryService()
-    try{
-        return await service.getMinutesByStatus('Pendiente');
-    }
-    catch(e){
-        console.error(e)
-    }
+async function getCountMinutesPending(): Promise<number | undefined> {
+  const service = new OrdinaryService();
+  try {
+    return await service.getMinutesByStatus("Pendiente");
+  } catch (e) {
+    console.error(e);
+  }
 }
-async function getCountMinutesProcesada(): Promise<number | undefined>{
-    const service = new OrdinaryService()
-    try{
-        return await service.getMinutesByStatus('Procesada');
-    }
-    catch(e){
-        console.error(e)
-    }
+async function getCountMinutesProcesada(): Promise<number | undefined> {
+  const service = new OrdinaryService();
+  try {
+    return await service.getMinutesByStatus("Procesada");
+  } catch (e) {
+    console.error(e);
+  }
 }
-async function getNegativeIndicator(): Promise<number | undefined>{
-    const service = new ComputoService()
-    try{
-        return await service.getNegativeIndicator();
-    }
-    catch(e){
-        console.error(e)
-    }
+async function getNegativeIndicator(): Promise<number | undefined> {
+  const service = new ComputoService();
+  try {
+    return await service.getNegativeIndicator();
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-const documents = await getMinute()
-const kpis = await getKPIs()
-const totalDoc = await getDocument()
-const pending = await getCountMinutesPending()
-const procesada = await getCountMinutesProcesada()
-const negative = await getNegativeIndicator()
+const [documents, kpis, totalDoc, pending, procesada, negative] =
+  await Promise.all([
+    getMinute(),
+    getKPIs(),
+    getDocument(),
+    getCountMinutesPending(),
+    getCountMinutesProcesada(),
+    getNegativeIndicator(),
+  ]);
 
 const cards = [
-    {
-        title: 'Documentos Pendientes',
-        value: pending ?? 0,
-        icon: "FileText"
-    },
-    {
-        title: 'Documentos Procesados',
-        value: procesada ?? 0,
-        icon: "FileCheck2"
-    },
-    {
-        title: 'Total de Documentos',
-        value: totalDoc ?? 0,
-        icon: "Files"
-    },
-    {
-        title: 'Indicadores Alertas',
-        value: negative ?? 0,
-        icon: "Activity"
-    },
-]
+  {
+    title: "Documentos Pendientes",
+    value: pending ?? 0,
+    icon: "FileText",
+  },
+  {
+    title: "Documentos Procesados",
+    value: procesada ?? 0,
+    icon: "FileCheck2",
+  },
+  {
+    title: "Total de Documentos",
+    value: totalDoc ?? 0,
+    icon: "Files",
+  },
+  {
+    title: "Indicadores Alertas",
+    value: negative ?? 0,
+    icon: "Activity",
+  },
+];
 ---
 
 <RootLayout>
-    <DashboardHome client:load documents={documents!} kpis={kpis!} cards={cards}/>
+  <DashboardHome
+    client:load
+    documents={documents!}
+    kpis={kpis!}
+    cards={cards}
+  />
 </RootLayout>
