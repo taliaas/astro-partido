@@ -17,7 +17,7 @@ export default defineConfig({
         password: {},
       },
       async authorize(credentials) {
-        const res = await fetch(`${API_URL}/auth/login`, {
+        const res = await fetch(`${process.env.API_URL}/auth/login`, {
           method: "POST",
           headers: {
             "content-type": "application/json",

@@ -24,4 +24,11 @@ export default defineConfig({
       }),
     },
   },
+  vite: {
+    resolve: {
+      alias: {
+        "node:path": "path-browserify",
+      },
+    },
+  },
 });
