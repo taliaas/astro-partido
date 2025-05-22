@@ -35,4 +35,21 @@ export default class MinutesService {
       console.error(error);
     }
   }
+
+  async getMinutes() {
+    try {
+      const response = await fetch(`${API_URL}/minutes/dash`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

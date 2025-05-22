@@ -69,25 +69,9 @@ async function getKPIs() {
   }
 }
 async function getDocument(): Promise<number | undefined> {
-  const service = new OrdinaryService();
+  const service = new MinutesService();
   try {
-    return await service.getMinutesByCurrentMonth();
-  } catch (e) {
-    console.error(e);
-  }
-}
-async function getCountMinutesPending(): Promise<number | undefined> {
-  const service = new OrdinaryService();
-  try {
-    return await service.getMinutesByStatus("Pendiente");
-  } catch (e) {
-    console.error(e);
-  }
-}
-async function getCountMinutesProcesada(): Promise<number | undefined> {
-  const service = new OrdinaryService();
-  try {
-    return await service.getMinutesByStatus("Procesada");
+    return await service.getMinutes();
   } catch (e) {
     console.error(e);
   }
@@ -101,30 +85,28 @@ async function getNegativeIndicator(): Promise<number | undefined> {
   }
 }
 
-const [documents, kpis, totalDoc, pending, procesada, negative] =
+const [documents, kpis, list, negative] =
   await Promise.all([
     getMinute(),
     getKPIs(),
     getDocument(),
-    getCountMinutesPending(),
-    getCountMinutesProcesada(),
     getNegativeIndicator(),
   ]);
 
 const cards = [
   {
     title: "Documentos Pendientes",
-    value: pending ?? 0,
+    value: list?.pending ?? 0,
     icon: "FileText",
   },
   {
     title: "Documentos Procesados",
-    value: procesada ?? 0,
+    value: list?.proccesing ?? 0,
     icon: "FileCheck2",
   },
   {
     title: "Total de Documentos",
-    value: totalDoc ?? 0,
+    value: list?.documents ?? 0,
     icon: "Files",
   },
   {
@@ -133,7 +115,6 @@ const cards = [
     icon: "Activity",
   },
 ];
-console.log(documents)
 ---
 
 <RootLayout>
