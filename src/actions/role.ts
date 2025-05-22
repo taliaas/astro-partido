@@ -1,5 +1,5 @@
 import { ActionError, defineAction } from "astro:actions";
-import { API_URL } from "astro:env/server";
+import { API_URL } from "astro:env/client";
 import { z } from "astro:schema";
 import { getSession } from "auth-astro/server";
 
