@@ -1,5 +1,4 @@
 // @ts-check
-// @ts-check
 import { defineConfig, envField } from "astro/config";
 
 import vue from "@astrojs/vue";
@@ -24,11 +23,17 @@ export default defineConfig({
       }),
     },
   },
-  vite: {
-    resolve: {
-      alias: {
-        "node:path": "path-browserify",
-      },
-    },
-  },
+  // vite: {
+  //   resolve: {
+  //     alias: [
+  //       {
+  //         find: "node:path",
+  //         replacement: "path-browserify",
+  //         customResolver: (source) => {
+  //           return source.includes("auth-astro") ? "path-browserify" : source;
+  //         },
+  //       },
+  //     ],
+  //   },
+  // },
 });

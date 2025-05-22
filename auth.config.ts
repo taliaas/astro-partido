@@ -1,5 +1,4 @@
 import Credentials from "@auth/core/providers/credentials";
-import { API_URL } from "astro:env/client";
 import { defineConfig } from "auth-astro";
 
 export default defineConfig({
@@ -17,7 +16,7 @@ export default defineConfig({
         password: {},
       },
       async authorize(credentials) {
-        const res = await fetch(`${API_URL}/auth/login`, {
+        const res = await fetch(`${import.meta.env.API_URL}/auth/login`, {
           method: "POST",
           headers: {
             "content-type": "application/json",
