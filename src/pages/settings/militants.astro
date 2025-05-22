@@ -2,10 +2,25 @@
 import Militantes from "../../components/settings/Militantes.vue"
 import SettingsLayout from "../../layouts/SettingsLayout.astro";
 import RootLayout from "../../layouts/RootLayout.astro";
+import MilitantService from "../../services/MilitantService";
+
+const searchParams = Astro.url.searchParams;
+const core = Number(searchParams.get("core") ?? 1);
+const page = Number(searchParams.get("page") ?? 1);
+
+async function getMilitantes() {
+    const service = new MilitantService();
+    try {
+        return service.getMilitantesByCore(core, page);
+    } catch (e) {
+        console.error(e);
+    }
+}
+const militantes = await getMilitantes();
 ---
 
 <RootLayout>
     <SettingsLayout>
-        <Militantes militantes={militantes} client:load />
+        <Militantes militantes={militantes} page={page} client:load />
     </SettingsLayout>
 </RootLayout>
