@@ -68,7 +68,6 @@ const { documents, kpis, card } = defineProps<{
 const searchStore = useSearchStore();
 let isVisible = ref(false)
 const activeTab = ref("documents");
-const updatedData = ref([]);
 
 const tabs = [
   { value: "documents", label: "Documentos", component: Documents },

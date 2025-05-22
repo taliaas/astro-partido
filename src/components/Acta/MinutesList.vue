@@ -537,6 +537,7 @@ async function eliminarActa() {
   try {
       await actions.minute.deleteMinute(id, tipo)
       menssage.value = "Se eliminó correctamente el acta";
+      navigate('/minutes')
   } catch (e) {
     console.error(e);
   }

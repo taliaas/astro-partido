@@ -6,9 +6,10 @@ import {
   default as ComputoService,
 } from "../services/Computo";
 import OrdinaryService from "../services/OrdinaryService";
+import MinutesService from "../services/Minutes";
 
 async function getMinute() {
-  const service = new OrdinaryService();
+  const service = new MinutesService();
   try {
     return service.getLatestMinute();
   } catch (e) {

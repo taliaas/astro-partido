@@ -89,7 +89,7 @@ export default class OrdinaryService {
     }
   }
 
-  async getAttendance(month: number, year: number){
+  async getAttendance(month: number, year: number) {
     try {
       const response = await fetch(`${API_URL}/minutes-ordinary/attendance/${month}/${year}`, {
         method: "GET",
