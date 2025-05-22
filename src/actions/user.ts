@@ -11,7 +11,7 @@ export const deactiveUser = defineAction({
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer "+ session.jwt
+                "Authorization": "Bearer "+ session?.jwt
             },
         });
         if (!res.ok) {

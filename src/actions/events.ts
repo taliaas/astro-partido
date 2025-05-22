@@ -19,7 +19,7 @@ export const createEvent = defineAction({
       method: "POST",
       body: JSON.stringify(input),
       headers: {
-        Authorization: `Bearer ${session.jwt}`,
+        Authorization: `Bearer ${session?.jwt}`,
         "Content-Type": "application/json",
       },
     });
