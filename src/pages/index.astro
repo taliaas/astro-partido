@@ -1,8 +1,10 @@
 ---
 import AboutContainer from "../components/access/About.vue";
 import AuthLayout from "@/layouts/AuthLayout.astro";
+
+export const prerender = true;
 ---
 
 <AuthLayout>
-    <AboutContainer client:load/>
+  <AboutContainer />
 </AuthLayout>
