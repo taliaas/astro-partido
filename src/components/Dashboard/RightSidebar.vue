@@ -139,5 +139,4 @@ async function getAllEvent(date: any) {
     console.error(e)
   }
 }
-
 </script>

@@ -2,9 +2,9 @@
   <div class="rounded-lg border bg-card shadow-sm">
     <div class="p-6">
       <div
-        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4"
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4"
       >
-        <div class="relative">
+        <div class="relative flex-1">
           <div
             class="flex items-center gap-2 border px-3 py-2 rounded-md w-full"
           >
@@ -78,21 +78,21 @@
                   {{ user.status }}
                 </span>
               </td>
-              <td class="p-4">
+              <td class="p-4 text-center">
                 <span v-if="user.lastLogin === null"> Nunca </span>
                 <span v-else>{{ user.lastLogin }}</span>
               </td>
               <td class="p-4">
                 <div class="relative">
                   <button
-                    @click="toggleDropdown(user.id)"
+                    @click="toggleDropdown(user)"
                     class="rounded-md p-1 hover:bg-muted"
                   >
                     <MoreVerticalIcon class="h-4 w-4" />
                   </button>
                   <div
-                    v-if="activeDropdown === user.id"
-                    class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
+                    v-if="activeDropdown?.id === user.id"
+                    class="absolute right-0 z-10 mt-2 w-40 rounded-md border bg-background shadow-lg"
                   >
                     <div
                       class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
@@ -100,18 +100,16 @@
                       Acciones
                     </div>
                     <div class="py-1">
-                      <a href="#" class="block px-4 py-2 text-sm hover:bg-muted"
-                        >Editar usuario</a
-                      >
-                      <a href="#" class="block px-4 py-2 text-sm hover:bg-muted"
-                        >Gestionar permisos</a
-                      >
+                      <button class="px-4 py-2 text-sm hover:bg-muted w-full">
+                        Editar usuario
+                      </button>
                       <div class="border-t my-1"></div>
-                      <a
-                        href="#"
-                        class="block px-4 py-2 text-sm text-red-600 hover:bg-muted"
-                        >Desactivar usuario</a
+                      <button
+                        @click="showSesionModal = true"
+                        class="block px-4 py-2 text-sm text-red-600 hover:bg-muted w-full"
                       >
+                        Desactivar usuario
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -128,12 +126,14 @@
         <div class="flex items-center gap-2">
           <button
             class="rounded-md border px-3 py-1 text-sm"
-            disabled
-            @click="previous"
+            @click="currentPage--"
           >
             Anterior
           </button>
-          <button class="rounded-md border px-3 py-1 text-sm" @click="next">
+          <button
+            class="rounded-md border px-3 py-1 text-sm"
+            @click="currentPage++"
+          >
             Siguiente
           </button>
         </div>
@@ -186,8 +186,10 @@
               <SelectTrigger class="col-span-3">
                 <SelectValue placeholder="Seleccionar rol" />
               </SelectTrigger>
-              <SelectContent v-for="role in roles">
-                <SelectItem value="role.id">{{ role.name }}</SelectItem>
+              <SelectContent>
+                <SelectItem v-for="role in roles" :value="role.name">{{
+                  role.name
+                }}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -207,11 +209,44 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    <div
+      v-if="showSesionModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    >
+      <div class="bg-white rounded p-6 w-full max-w-md">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">
+          Desactivar usuario
+        </h3>
+        <form @submit.prevent="handleDesactivation" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >¿Estás seguro que desea desactivar al usuario
+              {{ activeDropdown?.name }}?</label
+            >
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button
+              type="submit"
+              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+              @click="desactivation"
+            >
+              OK
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
+import { computed, effect, reactive, ref } from "vue";
 import { MoreVerticalIcon, SearchIcon } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -222,7 +257,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import UserService from "@/services/UserService.ts";
+//import Auth from "@/actions/auth.ts";
 import {
   Dialog,
   DialogContent,
@@ -232,7 +267,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import RoleService from "@/services/RoleService.ts";
+import { actions } from "astro:actions";
+// import { navigate } from "astro:transitions/client";
+import type { Role } from "@/interface/Roles.ts";
 
 interface User {
   id: string;
@@ -243,10 +280,11 @@ interface User {
   lastLogin: string;
   core?: any;
 }
-
-const { users } = defineProps<{ users: User[] }>();
+const currentPage = ref("1");
+const { users, roles } = defineProps<{ users: User[]; roles: Role[] }>();
 const searchQuery = ref("");
 const activeDropdown = ref(null);
+const showSesionModal = ref(false);
 const createUser = ref(false);
 const user = reactive({
   name: "",
@@ -254,23 +292,23 @@ const user = reactive({
   password: "",
   role: "",
 });
-
-const roles = computed(() => {
-  try {
-    const service = new RoleService()
-    if (!service) {
-      throw new Error('Error al leer');
-    }
-    return service.getRoles();
-  } catch (error) {
-    console.error('Error fetching actas:', error);
-    throw error;
-  }
+const notification = reactive({
+  show: false,
+  message: "",
+  type: "success",
 });
 
+const showNotification = (message: string, type = "success") => {
+  notification.show = true;
+  notification.message = message;
+  notification.type = type;
+  setTimeout(() => {
+    notification.show = false;
+  }, 3000);
+};
 // Filtrar usuarios basado en la búsqueda
 const filteredUsers = computed(() => {
-  console.log(roles);
+  console.log(currentPage.value);
   if (!searchQuery.value) return users;
   return users.filter(
     (user) =>
@@ -288,23 +326,29 @@ const nucleos = computed(() => {
 const selectCore = ref(nucleos.value[0]);
 
 // Funciones para manejar dropdowns
-const toggleDropdown = (id) => {
-  activeDropdown.value = activeDropdown.value === id ? null : id;
+const toggleDropdown = (user) => {
+  activeDropdown.value = activeDropdown.value?.id === user.id ? null : user;
 };
 
 async function handleUser() {
-  const service = new UserService();
   try {
-    const create = service.createUser();
-    show();
-    //navigate("/se");
+    actions.auth.register(user);
+    showNotification("Se creó el nuevo usuario");
+    window.location.href = "/settings";
   } catch (e) {
     console.log(e);
+    showNotification("Hubo problemas al crear un usuario");
     throw new Error(e);
   }
 }
 
-//hacer paginado desde backend q mande usuarios de 10 en 10
-async function previous() {}
-async function next() {}
+async function handleDesactivation() {
+  showSesionModal.value = false;
+}
+
+async function desactivation() {
+  await actions.user.deactiveUser(activeDropdown.value);
+}
+
+effect(() => {});
 </script>
