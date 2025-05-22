@@ -121,18 +121,18 @@
 
       <div class="flex items-center justify-between mt-4">
         <div class="text-xs text-muted-foreground">
-          Mostrando {{ filteredUsers.length }} de {{ users.data.length }} usuarios
+          Mostrando {{ filteredUsers.length }} de {{ users.data?.length }} usuarios
         </div>
         <div class="flex items-center gap-2">
           <button
             class="rounded-md border px-3 py-1 text-sm"
-            @click="currentPage--"
+            @click=""
           >
             Anterior
           </button>
           <button
             class="rounded-md border px-3 py-1 text-sm"
-            @click="currentPage++"
+            @click=""
           >
             Siguiente
           </button>

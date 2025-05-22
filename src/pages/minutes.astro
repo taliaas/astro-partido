@@ -25,5 +25,5 @@ const actas = await getActas(type ?? "all", page ?? 1)
 ---
 
 <RootLayout>
-    <List actas={actas} type={type ?? "all"} client:load/>
+    <List actas={actas} type={type ?? "all"} page={Number(page || 1)} client:load/>
 </RootLayout>

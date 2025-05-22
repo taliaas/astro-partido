@@ -221,26 +221,29 @@
               </TableBody>
             </Table>
 
+            <div class="flex justify-between">
+              <div>
+
+              </div>
               <div class="flex justify-end gap-4 p-4">
                 <button
-                  class="rounded-md border px-3 py-1"
-                  :disabled="currentPage === 1"
-                  :class="{'bg-muted': currentPage === 1}"
-                  @click="goToPreviousPage"
+                    class="rounded-md border px-3 py-1"
+                    :disabled="currentPage === 1"
+                    :class="{'bg-muted': currentPage === 1}"
+                    @click="goToPreviousPage"
                 >
                   Anterior
                 </button>
                 <button
-                  class="rounded-md border px-3 py-1"
-                  :disabled="currentPage >= hasNextPage"
-                  :class="{'bg-muted': currentPage >= hasNextPage}"
-                  @click="goToNextPage"
+                    class="rounded-md border px-3 py-1"
+                    :disabled="currentPage >= hasNextPage"
+                    :class="{'bg-muted': currentPage >= hasNextPage}"
+                    @click="goToNextPage"
                 >
                   Siguiente
                 </button>
-                {{currentPage}}
               </div>
-
+            </div>
             <!-- Empty State -->
             <div v-if="filteredActas?.length === 0" class="text-center py-16">
               <div
@@ -430,9 +433,10 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Input} from "../ui/input";
 import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
 
-const {actas} = defineProps<{
+const {actas, page} = defineProps<{
   actas: any[];
   type: string;
+  page: number;
 }>();
 
 const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
@@ -440,7 +444,7 @@ const showUploadDialog = ref(false);
 const uploadedFiles = ref([]);
 const isDragging = ref(false);
 const showDelete = ref(false);
-const currentPage = ref('')
+const currentPage = ref(page)
 const hasNextPage = ref(actas.total)
 
 const tableHeaders = [
