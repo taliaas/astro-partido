@@ -3,7 +3,7 @@ import { API_URL } from 'astro:env/client';
 export default class UserService {
   async getAllUser(page: number) {
     try {
-      const response = await fetch(`${API_URL}/user/${page}`, {
+      const response = await fetch(`${API_URL}/user?page=${page}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

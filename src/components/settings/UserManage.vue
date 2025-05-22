@@ -121,19 +121,19 @@
 
       <div class="flex items-center justify-between mt-4">
         <div class="text-xs text-muted-foreground">
-          Mostrando {{ filteredUsers.length }} de {{ users.data?.length }} usuarios
+          Mostrando {{ filteredUsers.length }} de
+          {{ users.data?.length }} usuarios
         </div>
         <div class="flex items-center gap-2">
-          <button
-            class="rounded-md border px-3 py-1 text-sm"
-            @click=""
-          >
+          <button class="rounded-md border px-3 py-1" :disabled="currentPage === 1"
+                  :class="{'bg-muted': currentPage === 1}"
+                  @click="goToPreviousPage">
             Anterior
           </button>
-          <button
-            class="rounded-md border px-3 py-1 text-sm"
-            @click=""
-          >
+          <button class="rounded-md border px-3 py-1"
+                  :disabled="currentPage >= hasNextPage"
+                  :class="{'bg-muted': currentPage >= hasNextPage}"
+                  @click="goToNextPage">
             Siguiente
           </button>
         </div>
@@ -268,6 +268,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { actions } from "astro:actions";
 import type { Role } from "@/interface/Roles.ts";
+import {navigate} from "astro:transitions/client";
 
 interface User {
   id: string;
@@ -278,8 +279,10 @@ interface User {
   lastLogin: string;
   core?: any;
 }
-const currentPage = ref("1");
-const { users, roles } = defineProps<{ users: User[]; roles: Role[] }>();
+
+const { users, roles, page } = defineProps<{ users: User[]; roles: Role[], page: number }>();
+const hasNextPage = ref(users.total)
+const currentPage = ref(page);
 const searchQuery = ref("");
 const activeDropdown = ref(null);
 const showSesionModal = ref(false);
@@ -306,13 +309,17 @@ const showNotification = (message: string, type = "success") => {
 };
 // Filtrar usuarios basado en la búsqueda
 const filteredUsers = computed(() => {
-  if (!searchQuery.value) return users;
-  return users.data?.filter(
-    (user) =>
-      (selectCore.value && user.core?.name !== selectCore.value) ||
+  if (!Array.isArray(users.data)) return [];
+  return users.data.filter((user) => {
+    const matchesCore = selectCore.value
+      ? user.core?.name === selectCore.value
+      : true;
+    const matchesSearch =
+      !searchQuery.value ||
       user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  );
+      user.email.toLowerCase().includes(searchQuery.value.toLowerCase());
+    return matchesCore && matchesSearch;
+  });
 });
 
 const nucleos = computed(() => {
@@ -347,5 +354,17 @@ async function desactivation() {
   await actions.user.deactiveUser(activeDropdown.value);
 }
 
-effect(() => {});
+function goToNextPage() {
+  if (users.total > currentPage.value) {
+    currentPage.value ++;
+    navigate(`/settings?page=${currentPage.value}`)
+  }
+}
+
+function goToPreviousPage() {
+  if (currentPage.value > 1) {
+    currentPage.value --;
+    navigate(`/settings?page=${currentPage.value}`)
+  }
+}
 </script>
