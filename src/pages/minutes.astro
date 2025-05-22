@@ -5,22 +5,23 @@ import MinutesService from "../services/Minutes";
 
 const searchParams = Astro.url.searchParams
 const type = searchParams.get("type")
+const page = searchParams.get("page")
 
-async function getActas(tipo: string) {
+async function getActas(tipo: string, page: any) {
     try {
         const service = new MinutesService()
         if (!service) {
             throw new Error('Error al leer');
         }
 
-        return service.getAllMinutes(tipo);
+        return service.getAllMinutes(tipo, page);
     } catch (error) {
         console.error('Error fetching actas:', error);
         throw error;
     }
 }
 
-const actas = await getActas(type ?? "all")
+const actas = await getActas(type ?? "all", page ?? 1)
 ---
 
 <RootLayout>

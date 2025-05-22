@@ -121,7 +121,7 @@
 
       <div class="flex items-center justify-between mt-4">
         <div class="text-xs text-muted-foreground">
-          Mostrando {{ filteredUsers.length }} de {{ users.length }} usuarios
+          Mostrando {{ filteredUsers.length }} de {{ users.data.length }} usuarios
         </div>
         <div class="flex items-center gap-2">
           <button
@@ -257,7 +257,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-//import Auth from "@/actions/auth.ts";
 import {
   Dialog,
   DialogContent,
@@ -268,7 +267,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { actions } from "astro:actions";
-// import { navigate } from "astro:transitions/client";
 import type { Role } from "@/interface/Roles.ts";
 
 interface User {
@@ -308,9 +306,8 @@ const showNotification = (message: string, type = "success") => {
 };
 // Filtrar usuarios basado en la búsqueda
 const filteredUsers = computed(() => {
-  console.log(currentPage.value);
   if (!searchQuery.value) return users;
-  return users.filter(
+  return users.data?.filter(
     (user) =>
       (selectCore.value && user.core?.name !== selectCore.value) ||
       user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
@@ -319,7 +316,7 @@ const filteredUsers = computed(() => {
 });
 
 const nucleos = computed(() => {
-  const userList = Array.isArray(users) ? users : [];
+  const userList = Array.isArray(users.data) ? users.data : [];
   return [...new Set(userList.map((item) => item.core?.name).filter(Boolean))];
 });
 

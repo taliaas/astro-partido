@@ -116,7 +116,6 @@ const showNotification = (message: string, type = "success") => {
 
 async function addEvent() {
   const fecha = currentDate.value.toString()
-
   try {
     await actions.events.createEvent({ ...newEvent, date: fecha })
     showNotification('Se creó un evento')
@@ -131,6 +130,7 @@ async function addEvent() {
 }
 
 async function getAllEvent(date: any) {
+  console.log(date)
   try {
     pendingTasks.value = await actions.events.getEvents.orThrow({ date })
     return pendingTasks
@@ -139,4 +139,5 @@ async function getAllEvent(date: any) {
     console.error(e)
   }
 }
+getAllEvent(currentDate.value.toString());
 </script>

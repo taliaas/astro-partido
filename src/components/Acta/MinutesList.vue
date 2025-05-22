@@ -221,6 +221,26 @@
               </TableBody>
             </Table>
 
+              <div class="flex justify-end gap-4 p-4">
+                <button
+                  class="rounded-md border px-3 py-1"
+                  :disabled="currentPage === 1"
+                  :class="{'bg-muted': currentPage === 1}"
+                  @click="goToPreviousPage"
+                >
+                  Anterior
+                </button>
+                <button
+                  class="rounded-md border px-3 py-1"
+                  :disabled="currentPage >= hasNextPage"
+                  :class="{'bg-muted': currentPage >= hasNextPage}"
+                  @click="goToNextPage"
+                >
+                  Siguiente
+                </button>
+                {{currentPage}}
+              </div>
+
             <!-- Empty State -->
             <div v-if="filteredActas?.length === 0" class="text-center py-16">
               <div
@@ -359,10 +379,11 @@
         v-if="showDelete"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
     >
-      <div class="bg-white rounded p-6 w-full max-w-md">
+      <div class="bg-white rounded p-4 w-full max-w-md">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
         <form @submit.prevent="handleDelete" class="space-y-4 p-4">
-          <div>¿Estás seguro que desea eliminar el acta?</div>
+          <div>¿Estás seguro que desea eliminar el acta?
+            <p class="font-semibold">{{currentsMinute.name}}</p></div>
           <div class="flex justify-end space-x-3">
             <button
                 type="submit"
@@ -419,6 +440,8 @@ const showUploadDialog = ref(false);
 const uploadedFiles = ref([]);
 const isDragging = ref(false);
 const showDelete = ref(false);
+const currentPage = ref('')
+const hasNextPage = ref(actas.total)
 
 const tableHeaders = [
   "No.",
@@ -448,19 +471,19 @@ function handleSort() {
 }
 
 const nucleos = computed(() => {
-  return [...new Set(actas?.map((item) => item.core?.name))];
+  return [...new Set(actas.data?.map((item) => item.core?.name))];
 });
 const typeMinutes = computed(() => {
-  return [...new Set(actas?.map((item) => item.type))];
+  return [...new Set(actas.data?.map((item) => item.type))];
 });
 
 const statuses = computed(() => {
-  return [...new Set(actas?.map((item) => item.status))];
+  return [...new Set(actas.data?.map((item) => item.status))];
 });
 
 const filteredActas = computed(() => {
   const [year, month] = selectFecha.value.split('-');
-  return actas?.filter((item) => {
+  return actas.data?.filter((item) => {
     return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
         (selectedStatus.value && item.status !== selectedStatus.value) ||
         (selectType.value && item.type !== selectType.value))
@@ -564,4 +587,18 @@ const handleFileSelect = (event) => {
   const files = Array.from(event.target.files);
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 };
+
+function goToNextPage() {
+  if (actas.total > currentPage.value) {
+    currentPage.value ++;
+    navigate(`/minutes?type=all&page=${currentPage.value}`)
+  }
+}
+
+function goToPreviousPage() {
+  if (currentPage.value > 1) {
+    currentPage.value --;
+    navigate(`/minutes?type=all&page=${currentPage.value}`)
+  }
+}
 </script>

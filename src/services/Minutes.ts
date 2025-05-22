@@ -1,9 +1,9 @@
 import { API_URL } from "astro:env/client";
 
 export default class MinutesService {
-  async getAllMinutes(type: string) {
+  async getAllMinutes(type: string, page: number) {
     try {
-      const response = await fetch(`${API_URL}/minutes/?type=${type}`, {
+      const response = await fetch(`${API_URL}/minutes/?type=${type}&page=${page}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
