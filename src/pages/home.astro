@@ -68,7 +68,7 @@ async function getKPIs() {
     console.error(e);
   }
 }
-async function getDocument(): Promise<number | undefined> {
+async function getDocument() {
   const service = new MinutesService();
   try {
     return await service.getMinutes();
@@ -85,13 +85,13 @@ async function getNegativeIndicator(): Promise<number | undefined> {
   }
 }
 
-const [documents, kpis, list, negative] =
-  await Promise.all([
-    getMinute(),
-    getKPIs(),
-    getDocument(),
-    getNegativeIndicator(),
-  ]);
+const [documents, kpis, list, negative] = await Promise.all([
+  getMinute(),
+  getKPIs(),
+  getDocument(),
+  getNegativeIndicator(),
+]);
+console.log(documents, kpis, list, negative);
 
 const cards = [
   {
