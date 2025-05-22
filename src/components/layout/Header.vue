@@ -41,9 +41,8 @@
                 class="h-5 w-5 text-muted-foreground dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
             </a>
           </TooltipTrigger>
-          <TooltipContent align="center" side="left" align-offset="" avoid-collisions="avoid-collisions"
-            collision-boundary="" collision-padding="collision-padding" arrow-padding="" sticky="always"
-            hide-when-detached="hide-when-detached" position-strategy="absolute" update-position-strategy="always">
+          <TooltipContent align="center" side="left" :align-offset="0" :collision-padding="0" :arrow-padding="0"
+            sticky="always">
             <p>Notificaciones</p>
           </TooltipContent>
         </Tooltip>
@@ -118,4 +117,6 @@ onMounted(() => {
     document.documentElement.classList.add("dark");
   }
 });
+
+function search() {}
 </script>

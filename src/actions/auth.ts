@@ -11,7 +11,6 @@ export const register = defineAction({
     role: z.string().optional(),
   }),
   async handler(input, context) {
-    console.log(`${API_URL}/auth/register`)
     const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
