@@ -5,6 +5,7 @@ import * as ordinary from "./ordinary";
 import * as minute from "./minute";
 import * as user from "./user.ts"
 import * as role from "./role";
+import * as militants from "./militants";
 
 export const server = {
   events,
@@ -14,4 +15,5 @@ export const server = {
   minute,
   user,
   role,
+  militants,
 };

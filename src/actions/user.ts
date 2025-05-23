@@ -6,8 +6,8 @@ import { getSession } from "auth-astro/server.ts";
 export const deactiveUser = defineAction({
   input: z.number(),
   handler: async (input, context) => {
-    const session = await getSession(context.request);
-    const res = await fetch(`${API_URL}/deactivate/${input}`, {
+    const session:any = await getSession(context.request);
+    const res = await fetch(`${API_URL}/user/deactivate/${input}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

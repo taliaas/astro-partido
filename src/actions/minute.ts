@@ -10,7 +10,7 @@ export const uploadMinutes = defineAction({
     type: z.string().refine((val) => ["ro", "cp"].includes(val)),
   }),
   async handler({ files, type }, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(`${API_URL}/minutes/upload?type=${type}`, {
@@ -33,7 +33,7 @@ export const deleteMinute = defineAction({
     type: z.string().refine((val) => ["ro", "cp"].includes(val)),
   }),
   async handler({ id, type }, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(`${API_URL}/minutes/delete/${id}?type=${type}`, {

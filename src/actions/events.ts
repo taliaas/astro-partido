@@ -13,7 +13,7 @@ export const createEvent = defineAction({
     date: z.string().date(),
   }),
   async handler(input, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
     const res = await fetch(`${API_URL}/event`, {
       method: "POST",

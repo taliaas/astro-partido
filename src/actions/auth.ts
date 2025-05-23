@@ -36,7 +36,7 @@ export const register = defineAction({
 
 export const profile = defineAction({
   async handler(_, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
     const res = await fetch(`${API_URL}/auth/verify`, {
       method: "GET",
@@ -63,7 +63,7 @@ export const updatePassword = defineAction({
       message: "New password must be different from the previous one",
     }),
   async handler(input, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
     const res = await fetch(
       `${API_URL}/auth/${session?.user?.id}/change-password`,
@@ -88,7 +88,7 @@ export const updateProfile = defineAction({
     name: z.string().optional(),
   }),
   async handler(input, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(`${API_URL}/user/${session.user?.id}`, {
@@ -102,5 +102,13 @@ export const updateProfile = defineAction({
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     return await res.json();
+  },
+});
+
+export const me = defineAction({
+  async handler(_, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    return session.user;
   },
 });

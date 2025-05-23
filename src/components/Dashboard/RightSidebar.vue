@@ -4,59 +4,41 @@
     <div class="space-y-4">
       <!-- Calendar Select -->
       <Collapsible default-open>
-        <CollapsibleTrigger
-          class="flex items-center w-full justify-between text-lg font-medium"
-        >
+        <CollapsibleTrigger class="flex items-center w-full justify-between text-lg font-medium">
           Calendario
           <ChevronDownIcon class="h-4 w-4" />
         </CollapsibleTrigger>
         <CollapsibleContent class="space-y-3 pt-3">
-          <Calendar
-            v-model="currentDate"
-            :weekday-format="'short'"
-            class="rounded border"
-          />
+          <Calendar v-model="currentDate" :weekday-format="'short'" class="rounded border" />
         </CollapsibleContent>
       </Collapsible>
 
       <!-- Add Event Form -->
       <Collapsible default-open>
-        <CollapsibleTrigger
-          class="flex items-center w-full justify-between text-lg font-medium"
-        >
+        <CollapsibleTrigger class="flex items-center w-full justify-between text-lg font-medium">
           Añadir Evento
           <ChevronDownIcon class="h-4 w-4" />
         </CollapsibleTrigger>
         <CollapsibleContent class="space-y-3 p-3">
-          <Input
-            v-model="newEvent.title"
-            class="rounded hover:outline-none border-gray-300 text-gray-700"
-            placeholder="Añadir tarea o evento"
-          />
+          <Input v-model="newEvent.title" class="rounded hover:outline-none border-gray-300 text-gray-700"
+            placeholder="Añadir tarea o evento" />
           <Select v-model="newEvent.type" class="w-full">
             <SelectTrigger class="border-gray-300 rounded">
               <SelectValue placeholder="Tipo" class="text-gray-700" />
             </SelectTrigger>
             <SelectContent class="bg-white">
-              <SelectItem class="hover:bg-gray-100" value="Tarea"
-                >Tarea
+              <SelectItem class="hover:bg-gray-100" value="Tarea">Tarea
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="Evento"
-                >Evento
+              <SelectItem class="hover:bg-gray-100" value="Evento">Evento
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="Reunion"
-                >Reunión
+              <SelectItem class="hover:bg-gray-100" value="Reunion">Reunión
               </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="Otro"
-                >Otro
+              <SelectItem class="hover:bg-gray-100" value="Otro">Otro
               </SelectItem>
             </SelectContent>
           </Select>
-          <Button
-            @click="addEvent"
-            :disabled="!currentDate || !newEvent.title || !newEvent.type"
-            class="w-full bg-blue-600 text-white rounded"
-            >Añadir
+          <Button @click="addEvent" :disabled="!currentDate || !newEvent.title || !newEvent.type"
+            class="w-full bg-blue-600 text-white rounded">Añadir
           </Button>
 
           <!-- No Events Message -->
@@ -77,11 +59,9 @@
       </Collapsible>
     </div>
 
-    <div
-      v-if="notification.show"
+    <div v-if="notification.show"
       class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
-      :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
-    >
+      :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'">
       {{ notification.message }}
     </div>
   </div>
@@ -96,7 +76,7 @@ import {
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { ChevronDownIcon } from "lucide-vue-next";
-import { reactive, ref, type Ref, watch } from "vue";
+import { onMounted, reactive, ref, type Ref, watch } from "vue";
 import Button from "../ui/button/Button.vue";
 import Calendar from "../ui/calendar/Calendar.vue";
 import {
@@ -156,7 +136,8 @@ async function getAllEvent(date: any) {
     console.error(e);
   }
 }
-getAllEvent(currentDate.value.toString());
+
+onMounted(() => getAllEvent(currentDate.value.toString()))
 
 watch(currentDate, (newDate) => {
   getAllEvent(newDate.toString());

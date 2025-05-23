@@ -12,7 +12,7 @@ export const createMinute = defineAction({
     extranjero: z.any().array(),
   }),
   async handler(input, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(`${API_URL}/minutes-ordinary`, {
@@ -36,7 +36,7 @@ export const updateMinute = defineAction({
     data: z.any(),
   }),
   async handler({ id, data }, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(`${API_URL}/minutes-ordinary/${id}`, {
@@ -57,7 +57,7 @@ export const updateMinute = defineAction({
 export const deleteMinute = defineAction({
   input: z.string(),
   async handler(id, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(`${API_URL}/minutes-ordinary/${id}`, {
@@ -80,7 +80,7 @@ export const updateStatusMinutes = defineAction({
     status: z.string(),
   }),
   async handler({ id, status }, context) {
-    const session = await getSession(context.request);
+    const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const response = await fetch(

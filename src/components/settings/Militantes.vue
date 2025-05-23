@@ -2,7 +2,7 @@
   <div class="container mx-auto py-8 px-4">
     <!-- Search and Add -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-      <div class="relative w-full sm:w-80">
+      <div class="flex-1 relative w-full sm:w-80">
         <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <input
             v-model="searchQuery"
@@ -11,11 +11,17 @@
             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-8 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
+      <select
+          v-model="selectCore"
+          class=" rounded-md border px-3 py-2 mx-1.5 text-sm"
+      >
+        <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
+          {{ nucleo }}
+        </option>
+      </select>
       <button
           @click="openAddMemberModal"
-          class="inline-flex items-center justify-center bg-button rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground hover:bg-button/90 h-10 px-4 py-2"
-      >
-        <PlusCircle class="mr-2 h-4 w-4" />
+          class="inline-flex items-center justify-center bg-button rounded-md text-white h-10 px-4 py-2">
         Añadir
       </button>
     </div>
@@ -60,7 +66,7 @@
                     : 'bg-red-50 text-red-700 border border-red-300'
                 ]"
               >
-                {{ member.estado ? 'Active' : 'Inactive' }}
+                {{ member.estado ? 'Activo' : 'Inactivo' }}
               </span>
           </td>
           <td class="p-4 align-middle">
@@ -69,21 +75,14 @@
                   @click="openEditMemberModal(member)"
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
               >
-                <span class="sr-only">Edit</span>
+                <span class="sr-only">Editar</span>
                 <Pencil class="h-4 w-4" />
               </button>
               <button
-                  @click="toggleMemberStatus(member)"
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
-              >
-                <span class="sr-only">Toggle Status</span>
-                <component :is="member.estado ? UserX : UserCheck" class="h-4 w-4" />
-              </button>
-              <button
-                  @click="confirmDeleteMember(member)"
+                  @click="confirmDeleteMember(member.id)"
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 text-destructive hover:text-destructive"
               >
-                <span class="sr-only">Delete</span>
+                <span class="sr-only">Desactivar</span>
                 <Trash class="h-4 w-4" />
               </button>
             </div>
@@ -101,24 +100,24 @@
     <!-- Pagination -->
     <div class="flex items-center justify-between py-4">
       <div class="text-sm text-muted-foreground">
-        Showing <span class="font-medium">{{ filteredMembers.length }}</span> of <span class="font-medium">{{ members.length }}</span> members
+        Mostrando <span class="font-medium">{{ page }}</span> de <span class="font-medium">{{ militantes.total }}</span> páginas
       </div>
       <div class="flex items-center space-x-2">
         <button
-            @click="currentPage > 1 ? currentPage-- : null"
+            @click="previousPage"
             :disabled="currentPage === 1"
             class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
             :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
         >
-          Previous
+          Anterior
         </button>
         <button
-            @click="currentPage < totalPages ? currentPage++ : null"
+            @click="nextPage"
             :disabled="currentPage === totalPages"
             class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
             :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }"
         >
-          Next
+          Siguiente
         </button>
       </div>
     </div>
@@ -270,9 +269,9 @@
     <div v-if="showDeleteModal" class="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
       <div class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
         <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-          <h2 class="text-lg font-semibold leading-none tracking-tight">Delete Member</h2>
-          <p class="text-sm text-muted-foreground">
-            Are you sure you want to delete this member? This action cannot be undone.
+          <h2 class="text-lg font-semibold leading-none tracking-tight">Desactivar militante</h2>
+          <p class="text-md text-muted-foreground">
+            ¿Estás seguro que quieres desactivar este militante?
           </p>
         </div>
         <div class="flex justify-end gap-2">
@@ -288,7 +287,7 @@
               @click="deleteMember"
               class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
           >
-            Delete
+            Desactivar
           </button>
         </div>
       </div>
@@ -304,83 +303,15 @@ import {
   Pencil,
   Trash,
   UserX,
-  UserCheck
+  UserCheck, MoreVerticalIcon
 } from 'lucide-vue-next'
-
-
-// Sample data
-const members = ref([
-  {
-    id: 1,
-    firstname: "John",
-    lastname: "Doe",
-    email: "john.doe@example.com",
-    organization: "pcc",
-    estado: true,
-    address: "123 Main St",
-    phone: "555-1234",
-    core: {
-      name: "CEIS",
-    },
-  },
-  {
-    id: 2,
-    firstname: "Talia",
-    lastname: "Arrue",
-    email: "taliasalasarrue@gmail.com",
-    organization: "pcc",
-    estado: true,
-    address: "ave 41 e/ 16 y 18",
-    phone: "52332232",
-    core: {
-      name: "CEIS",
-    },
-  },
-  {
-    id: 3,
-    firstname: "Maria",
-    lastname: "Rodriguez",
-    email: "maria.rodriguez@example.com",
-    organization: "ujc",
-    estado: true,
-    address: "456 Oak Ave",
-    phone: "555-5678",
-    core: {
-      name: "CEIGE",
-    },
-  },
-  {
-    id: 4,
-    firstname: "Carlos",
-    lastname: "Perez",
-    email: "carlos.perez@example.com",
-    organization: "pcc",
-    estado: false,
-    address: "789 Pine St",
-    phone: "555-9012",
-    core: {
-      name: "CEIM",
-    },
-  },
-  {
-    id: 5,
-    firstname: "Ana",
-    lastname: "Martinez",
-    email: "ana.martinez@example.com",
-    organization: "ujc",
-    estado: true,
-    address: "321 Elm St",
-    phone: "555-3456",
-    core: {
-      name: "CEIS",
-    },
-  },
-])
+import {Select} from "@/components/ui/select";
+import {Button} from "@/components/ui/button";
+import {actions} from "astro:actions";
+import {navigate} from "astro:transitions/client";
 
 // UI state
 const searchQuery = ref('')
-const currentPage = ref(1)
-const itemsPerPage = ref(5)
 const showMemberModal = ref(false)
 const showDeleteModal = ref(false)
 const isEditing = ref(false)
@@ -391,7 +322,7 @@ const { militantes, page } = defineProps<{
   page: number
 }>();
 
-// Current member being edited or added
+const currentPage = ref(page)
 const currentMember = reactive({
   id: 0,
   firstname: '',
@@ -406,6 +337,13 @@ const currentMember = reactive({
   }
 })
 
+const nucleos = computed(() => {
+  const userList = Array.isArray(militantes.data) ? militantes.data : [];
+  console.log(userList)
+  return [...new Set(userList.map((item) => item.core?.name).filter(Boolean))];
+});
+
+const selectCore = ref(nucleos.value[0]);
 // Computed properties
 const filteredMembers = computed(() => {
   if (!searchQuery.value) {
@@ -475,23 +413,25 @@ const saveMember = () => {
   closeMemberModal()
 }
 
-const toggleMemberStatus = (member) => {
-  const index = members.value.findIndex(m => m.id === member.id)
-  if (index !== -1) {
-    members.value[index].estado = !members.value[index].estado
-  }
-}
-
 const confirmDeleteMember = (member) => {
   memberToDelete.value = member
   showDeleteModal.value = true
 }
 
-const deleteMember = () => {
-  if (memberToDelete.value) {
-    members.value = members.value.filter(m => m.id !== memberToDelete.value.id)
-    memberToDelete.value = null
-    showDeleteModal.value = false
+async function deleteMember() {
+  await actions.militants.deactiveMili(memberToDelete.value);
+}
+
+function nextPage(){
+  if(currentPage.value < totalPages) {
+    currentPage.value++
+    navigate(`/settings/militants?core=${selectCore.value}&page=${currentPage.value}`)
+  }
+}
+function previousPage(){
+  if(currentPage > 1) {
+    currentPage.value--
+    navigate(`/settings/militants?core=${selectCore.value}&page=${currentPage.value}`)
   }
 }
 </script>

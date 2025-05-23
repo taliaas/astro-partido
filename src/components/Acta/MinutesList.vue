@@ -222,8 +222,8 @@
             </Table>
 
             <div class="flex justify-between">
-              <div>
-
+              <div class="text-md text-muted-foreground p-4">
+                Mostrando <span class="font-medium">{{ page }}</span> de <span class="font-medium">{{ actas.total }}</span> páginas
               </div>
               <div class="flex justify-end gap-4 p-4">
                 <button

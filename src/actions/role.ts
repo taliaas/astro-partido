@@ -5,13 +5,13 @@ import { getSession } from "auth-astro/server";
 
 export const updateRole = defineAction({
     input: z.object({
-        id: z.string(), data: z.any()
+        id: z.number(), data: z.any()
     }),
     handler: async ({ id, data }, context) => {
-        const session = await getSession(context.request);
+        const session: any = await getSession(context.request);
         if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
+            const response = await fetch(`${API_URL}/roles/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
