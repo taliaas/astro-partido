@@ -1,4 +1,4 @@
-import { authMiddleware } from "@/middlewares/auth";
+import { routesMiddleware } from "@/middlewares/routes";
 import { sequence } from "astro:middleware";
 
-export const onRequest = sequence(authMiddleware)
+export const onRequest = sequence(routesMiddleware)

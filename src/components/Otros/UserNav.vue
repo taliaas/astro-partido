@@ -34,28 +34,28 @@
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
-
-  <div v-if="showSesionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white rounded p-6 w-full max-w-md">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Cerrar Sesión</h3>
-      <form @submit.prevent="handleSesion" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">¿Estás seguro que desea cerrar sesión?</label>
-        </div>
-        <div class="flex justify-end space-x-3">
-          <button type="submit"
-            class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
+  <Dialog v-bind:open="showSesionModal" @update:open="(value) => showSesionModal = value">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>
+          Cerrar Sesión
+        </DialogTitle>
+        <DialogDescription>
+          ¿Estás seguro que desea cerrar sesión?
+        </DialogDescription>
+      </DialogHeader>
+      <DialogFooter class="flex justify-end space-x-3">
+        <DialogClose>
+          <Button variant="ghost">
             Cancel
-          </button>
-
-          <button class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-            @click="out">
-            OK
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+          </Button>
+        </DialogClose>
+        <Button @click="out" variant="destructive" type="button">
+          Aceptar
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -76,6 +76,8 @@ import {
 
 import { ref } from "vue";
 import { signOut } from "auth-astro/client"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const showSesionModal = ref(false);
 const openMenu = ref(false)

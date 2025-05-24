@@ -6,9 +6,9 @@
           <h4 class="text-lg font-semibold">Matriz de Permisos</h4>
         </div>
         <div class="flex items-center gap-2">
-          <Select v-model="selectRole" >
+          <Select v-model="selectRole">
             <SelectTrigger>
-              <SelectValue class="min-w-48"/>
+              <SelectValue class="min-w-48" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -19,7 +19,7 @@
           </Select>
           <Button @click="saveClaims"
             class="rounded-md bg-button px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1"
-            :disabled="!hasChanges">
+            :disabled="!hasChanges" :loading="saving">
             Guardar
           </Button>
         </div>
@@ -89,6 +89,8 @@ const permissionActions = [
 // Obtener los módulos únicos de los claims
 const permissionResources = ["Documentos", "Análisis", "Reportes", "Usuarios"];
 
+const saving = ref(false)
+
 // Estado local editable de los permisos por rol
 const editableClaims = ref<Claims[]>([...claims]);
 const originalClaims = ref(JSON.stringify(claims));
@@ -146,6 +148,7 @@ function isPermissionChecked(resource: string, actionId: string) {
 
 // Guardar cambios (ejemplo: emitir evento o llamar API)
 async function saveClaims() {
+  saving.value = true
   try {
     // Para cada rol, agrupar sus claims y preparar el objeto para guardar
     const rolesToSave = roles.map((role) => {
@@ -164,15 +167,17 @@ async function saveClaims() {
     });
 
     // Llamar a la acción para cada rol
-    rolesToSave.forEach((roleData) => {
-      actions.role.updateRole(roleData);
-    });
+    await Promise.all([rolesToSave.map((roleData) =>
+      actions.role.updateRole(roleData)
+    )])
 
     // Actualiza el estado original tras guardar
     originalClaims.value = JSON.stringify(editableClaims.value);
   } catch (e) {
     console.log(e);
     throw new Error(e as any);
+  } finally {
+    saving.value = false
   }
 }
 

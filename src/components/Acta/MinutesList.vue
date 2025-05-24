@@ -434,7 +434,7 @@ import {Input} from "../ui/input";
 import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
 
 const {actas, page} = defineProps<{
-  actas: any[];
+  actas: any;
   type: string;
   page: number;
 }>();
