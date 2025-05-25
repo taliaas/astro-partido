@@ -27,4 +27,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     ssr: { external: true },
   },
+  experimental: {
+    clientPrerender: true
+  }
 });
