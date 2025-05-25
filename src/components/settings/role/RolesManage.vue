@@ -57,7 +57,7 @@
                         <AlertDialogCancel>
                           Cancelar
                         </AlertDialogCancel>
-                        <Button @click="handleDelete(role.id)" variant="destructive">Eliminar</Button>
+                        <Button :disabled="deleting" :loading="deleting" @click="handleDelete(role.id)" variant="destructive">Eliminar</Button>
                       </AlertDialogFooter>
                     </AlertDialogContent>
 
