@@ -23,26 +23,46 @@
               <td class="p-4 text-center">{{ role.users?.length }}</td>
               <td class="p-4 text-center">{{ role.claims?.length }}</td>
               <td class="p-4">
-                <div class="relative">
-                  <button @click="toggleRoleDropdown(role.id)" class="rounded-md p-1 hover:bg-muted">
-                    <MoreVerticalIcon class="h-4 w-4" />
-                  </button>
-                  <div v-if="activeRoleDropdown === role.id"
-                    class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg">
-                    <div class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted">
-                      Acciones
-                    </div>
-                    <div class="py-1">
-                      <a href="#edit" class="block px-4 py-2 text-sm hover:bg-muted flex items-center gap-2">
-                        Editar
-                      </a>
-                      <div class="border-t my-1"></div>
-                      <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2">
-                        Eliminar
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                <AlertDialog>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <button class="rounded-md p-1 hover:bg-muted">
+                        <MoreVerticalIcon class="size-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent>
+                      <DropdownMenuGroup>
+                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          Editar
+                        </DropdownMenuItem>
+
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem variant="destructive">
+                            Eliminar
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Eliminar rol</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          ¿Está seguro que desea eliminar el rol {{ role.name }}?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>
+                          Cancelar
+                        </AlertDialogCancel>
+                        <Button @click="handleDelete(role.id)" variant="destructive">Eliminar</Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+
+                  </DropdownMenu>
+                </AlertDialog>
               </td>
             </tr>
           </tbody>
@@ -62,10 +82,30 @@ import { ref } from "vue";
 import { MoreVerticalIcon } from "lucide-vue-next";
 import type { Role } from "@/interface/Roles.ts";
 import CreateRoleButton from "@/components/settings/role/CreateRoleButton.vue"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { actions } from "astro:actions";
+import { toast } from "vue-sonner";
+import { navigate } from "astro/virtual-modules/transitions-router.js";
 
 const { roles } = defineProps<{ roles: Role[] }>();
 const activeRoleDropdown = ref(null);
 const toggleRoleDropdown = (id) => {
   activeRoleDropdown.value = activeRoleDropdown.value === id ? null : id;
 };
+
+const deleting = ref(false)
+
+async function handleDelete(id: number) {
+  deleting.value = true
+  const { error, data } = await actions.role.deleteRole(id)
+  if (error) {
+    console.error(data)
+    toast.error("Ha ocurrido un error al tratar de eliminar el role")
+  }
+  await navigate("")
+  setTimeout(() => toast.success("Rol eliminado de forma exitosa"), 1000)
+}
+
 </script>

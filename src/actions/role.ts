@@ -58,3 +58,27 @@ export const createRole = defineAction({
     }
   },
 });
+
+export const deleteRole = defineAction({
+  input: z.coerce.number(),
+  handler: async (id, context) => {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    try {
+      const response = await fetch(`${API_URL}/roles/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.jwt}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+});
