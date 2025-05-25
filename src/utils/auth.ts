@@ -2,22 +2,40 @@ import { actions } from "astro:actions";
 import { getSession } from "auth-astro/server";
 import { onBeforeMount, ref, computed, onMounted } from "vue";
 
+export const modules = [
+  "Documentos",
+  "Análisis",
+  "Reportes",
+  "Usuarios",
+  "Militantes",
+  "Núcleos"
+
+] as const;
+export type Module = (typeof modules)[number];
+
+export type PermissionAction = (typeof permissionActions)[number]["id"];
+export const permissionActions = [
+  { id: "create", name: "Crear" },
+  { id: "update", name: "Editar" },
+  { id: "delete", name: "Eliminar" },
+  { id: "read", name: "Ver" },
+  { id: "export", name: "Exportar" },
+] as const;
+
 function hasPermissions(module: string, action: string, claims: any[]) {
   const check = claims.some(
     (claim: any) =>
       claim.module === module &&
       Array.isArray(claim.actions) &&
-      claim.actions.includes(action)
-  );
-  console.log(check, module, action, claims);
-
+      claim.actions.includes(action),
+  )
   return check;
 }
 
 export async function hasServerPermissions(
-  module: string,
-  action: string,
-  request: Request
+  module: Module,
+  action: PermissionAction,
+  request: Request,
 ) {
   const session = await getSession(request);
   if (!session) return false;
@@ -32,8 +50,8 @@ export function usePermissions() {
       user.value = data;
     }
   });
-  return function check(module: string, action: string) {
+  return function check(module: Module, action: PermissionAction) {
     if (!user.value) return false;
-    return hasPermissions(module, action, user.value.role.claims ?? []);
+    return hasPermissions(module, action, user.value.role?.claims ?? []);
   };
 }

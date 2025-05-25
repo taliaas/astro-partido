@@ -7,7 +7,7 @@
           <h2 class="font-medium text-xl text-foreground">Cómites</h2>
           <Button
             @click="handleAddComite"
-            class="flex items-center gap-1 bg-button"
+            class="flex items-center gap-1"
           >
             <PlusIcon class="h-4 w-4 mr-1" />
             Añadir
@@ -15,7 +15,7 @@
         </div>
 
         <div class="rounded-md border">
-          <table class="w-full text-sm">
+          <table class="w-full text-lg">
             <thead>
               <tr class="border-b bg-muted/50 font-medium">
                 <th class="h-10 px-4 text-left">Nombre</th>
@@ -34,7 +34,7 @@
 
               <template v-for="comite in comites" :key="comite.id">
                 <!-- Fila del comité -->
-                <tr class="border-b transition-colors hover:bg-muted/50">
+                <tr class="text-lg border-b transition-colors hover:bg-muted/50">
                   <td class="p-4">
                     <div
                       class="flex items-center cursor-pointer"
@@ -52,7 +52,7 @@
                     </div>
                   </td>
                   <td class="p-4 text-center">
-                    <Badge>{{ comite.core?.length }}</Badge>
+                    <Badge variant="outline">{{ comite.core?.length }}</Badge>
                   </td>
                   <td class="p-4">
                     <div class="relative">
@@ -127,7 +127,7 @@
 
                       <template v-else>
                         <div
-                          class="grid grid-cols-12 p-2 font-medium text-sm text-muted-foreground"
+                          class="grid grid-cols-12 p-2 font-bold text-sm text-muted-foreground"
                         >
                           <div class="col-span-3">Nombre</div>
                           <div class="col-span-3">Secretario General</div>

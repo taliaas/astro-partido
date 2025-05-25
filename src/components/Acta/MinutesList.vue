@@ -20,7 +20,7 @@
         <!-- Content Area -->
         <div class="divide-y divide-gray-100">
           <!-- Actions Bar -->
-          <div class="p-6">
+          <div class="p-6" v-if="hasPermission('Documentos','create')">
             <div class="flex justify-between items-center">
               <div class="flex gap-3">
                 <Button variant="outline" @click="showUploadDialog = true">
@@ -189,25 +189,28 @@
                           <Eye class="h-4 w-4"/>
                           Ver
                         </DropdownMenuItem>
-                        <DropdownMenuItem @click="handleAction('editar', acta)">
+                        <DropdownMenuItem @click="handleAction('editar', acta)"
+                                          v-if="hasPermission('Documentos','update')">
                           <Pencil class="h-4 w-4"/>
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             v-if="
                             acta.name === 'Acta Ordinaria' &&
-                            acta.status === 'Aprobada'
+                            acta.status === 'Aprobada' &&
+                            hasPermission('Documentos','update')
                           "
                             @click="handleAction('procesar', acta)"
                         >
                           <Edit class="h-4 w-4"/>
                           Procesar
                         </DropdownMenuItem>
-                        <DropdownMenuItem @click="handleAction('export', acta)">
+                        <DropdownMenuItem @click="handleAction('export', acta)" v-if="hasPermission('Documentos','export')">
                           <Download class="h-4 w-4"/>
                           Exportar
                         </DropdownMenuItem>
                         <DropdownMenuItem
+                            v-if="hasPermission('Documentos','delete')"
                             @click="handleAction('eliminar', acta)"
                             class="text-red-600 border-t focus:text-red-600"
                         >
@@ -223,7 +226,9 @@
 
             <div class="flex justify-between">
               <div class="text-md text-muted-foreground p-4">
-                Mostrando <span class="font-medium">{{ page }}</span> de <span class="font-medium">{{ actas.total }}</span> páginas
+                Mostrando <span class="font-medium">{{ page }}</span> de <span class="font-medium">{{
+                  actas.total
+                }}</span> páginas
               </div>
               <div class="flex justify-end gap-4 p-4">
                 <button
@@ -386,7 +391,7 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
         <form @submit.prevent="handleDelete" class="space-y-4 p-4">
           <div>¿Estás seguro que desea eliminar el acta?
-            <p class="font-semibold">{{currentsMinute.name}}</p></div>
+            <p class="font-semibold">{{ currentsMinute.name }}</p></div>
           <div class="flex justify-end space-x-3">
             <button
                 type="submit"
@@ -432,12 +437,15 @@ import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Di
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "../ui/dropdown-menu";
 import {Input} from "../ui/input";
 import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
+import {usePermissions} from "@/utils/auth.ts";
 
 const {actas, page} = defineProps<{
   actas: any;
   type: string;
   page: number;
 }>();
+
+const hasPermission = usePermissions()
 
 const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
 const showUploadDialog = ref(false);
@@ -561,9 +569,9 @@ async function eliminarActa() {
   const tipo = acta?.type ?? "";
 
   try {
-      await actions.minute.deleteMinute(id, tipo)
-      menssage.value = "Se eliminó correctamente el acta";
-      navigate('/minutes')
+    await actions.minute.deleteMinute(id, tipo)
+    menssage.value = "Se eliminó correctamente el acta";
+    navigate('/minutes')
   } catch (e) {
     console.error(e);
   }
@@ -574,7 +582,7 @@ const handleDrop = async () => {
   isDragging.value = false;
   const files = Array.from(uploadedFiles.value);
   const formData = new FormData();
-  formData.append("type",tipoActa.value)
+  formData.append("type", tipoActa.value)
   for (const f of files) formData.append("files", f);
   try {
     await actions.minute.uploadMinutes(formData)
@@ -594,14 +602,14 @@ const handleFileSelect = (event) => {
 
 function goToNextPage() {
   if (actas.total > currentPage.value) {
-    currentPage.value ++;
+    currentPage.value++;
     navigate(`/minutes?type=all&page=${currentPage.value}`)
   }
 }
 
 function goToPreviousPage() {
   if (currentPage.value > 1) {
-    currentPage.value --;
+    currentPage.value--;
     navigate(`/minutes?type=all&page=${currentPage.value}`)
   }
 }
