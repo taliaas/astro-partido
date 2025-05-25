@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-[100rem] mx-auto">
+    <div class="max-w-400 mx-auto">
       <Card class="w-full bg-background p-6 shadow-md">
         <CardHeader>
           <div class="flex justify-between items-center">
@@ -331,9 +331,7 @@ const list = () => {
 </script>
 
 <style scoped>
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@reference "tailwindcss";
 
 @layer components {
   .card {

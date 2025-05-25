@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
+import { Primitive, type PrimitiveProps } from 'reka-ui'
 import { cn } from '@/lib/utils'
-import { Primitive, type PrimitiveProps } from 'radix-vue'
 import { type ButtonVariants, buttonVariants } from '.'
 import { Loader2Icon } from 'lucide-vue-next'
 
@@ -18,8 +18,9 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <Primitive :as="as" :as-child="asChild" :class="cn(buttonVariants({ variant, size }), props.class)">
-    <Loader2Icon class="w-4 h-4 mr-2 animate-spin" v-if="loading" />
+  <Primitive data-slot="button" :as="as" :as-child="asChild"
+    :class="cn(buttonVariants({ variant, size }), props.class)">
+    <Loader2Icon v-if="props.loading" class="size-4 mr-2 animate-spin" />
     <slot />
   </Primitive>
 </template>

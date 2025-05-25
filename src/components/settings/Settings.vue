@@ -65,8 +65,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import UserManage from "@/components/settings/UserManage.vue";
-import RolesManage from "@/components/settings/RolesManage.vue";
+import UserManage from "@/components/settings/user/UserManage.vue";
+import RolesManage from "@/components/settings/role/RolesManage.vue";
 import ClaimsManage from "@/components/settings/ClaimsManage.vue";
 import CoreManage from "@/components/settings/CoreManage.vue";
 import Notification from "@/components/settings/Notification.vue";

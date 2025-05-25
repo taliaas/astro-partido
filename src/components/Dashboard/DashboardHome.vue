@@ -77,7 +77,6 @@ const tabs = [
 watch(
   () => searchStore.showSidePanel,
   (newVal) => {
-    console.log('showSidePanel cambió:', newVal);
     isVisible = newVal;
   },
   { immediate: true } // Para obtener el valor inicial

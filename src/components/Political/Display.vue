@@ -200,9 +200,7 @@ const exportarActa = () => {
 </script>
 
 <style scoped>
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@reference "tailwindcss";
 
 @layer components {
   .card {

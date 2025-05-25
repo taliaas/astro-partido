@@ -17,9 +17,7 @@
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button @click="saveClaims"
-            class="rounded-md bg-button px-3 py-2 text-sm font-medium text-primary-foreground flex items-center gap-1"
-            :disabled="!hasChanges" :loading="saving">
+          <Button @click="saveClaims" :disabled="!hasChanges || saving" :loading="saving" class="min-w-30">
             Guardar
           </Button>
         </div>
@@ -66,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Claims } from "@/interface/Claims.ts";
@@ -73,6 +72,7 @@ import type { Role } from "@/interface/Roles.ts";
 import { actions } from "astro:actions";
 import { AlertCircle } from "lucide-vue-next";
 import { computed, ref, watch } from "vue";
+import { toast } from "vue-sonner";
 
 const { claims, roles } = defineProps<{ claims: Claims[]; roles: Role[] }>();
 const selectRole = ref(claims[0]?.role?.id ?? null);
@@ -167,18 +167,16 @@ async function saveClaims() {
     });
 
     // Llamar a la acción para cada rol
-    await Promise.all([rolesToSave.map((roleData) =>
-      actions.role.updateRole(roleData)
-    )])
-
-    // Actualiza el estado original tras guardar
+    await Promise.all(rolesToSave.map((roleData) => actions.role.updateRole(roleData)))
+    toast.success("Permisos actualizados con éxito")
     originalClaims.value = JSON.stringify(editableClaims.value);
   } catch (e) {
     console.log(e);
-    throw new Error(e as any);
+    toast.success("Ha ocurrido un error al tratar de actualizar los permisos")
   } finally {
     saving.value = false
   }
+
 }
 
 // Al cambiar de rol, filtrar los claims editables para ese rol

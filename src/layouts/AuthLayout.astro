@@ -1,12 +1,13 @@
 ---
+import "../globals.css";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
 import { ClientRouter } from "astro:transitions";
 import LoadingIndicator from "astro-loading-indicator/component";
-import "../globals.css";
+import { Toaster } from "@/components/ui/sonner";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -17,13 +18,12 @@ import "../globals.css";
     <LoadingIndicator color="blue" height="3px" />
   </head>
   <body>
-    <div class="min-h-screen bg-gray-50">
+    <Toaster client:idle />
+    <div class="min-h-screen bg-gray-50 flex flex-col items-center">
       <!-- Header <AuthHeader />-->
       <AuthHeader />
       <!-- Main Content -->
-      <main class="flex-1">
-        <slot />
-      </main>
+      <slot />
     </div>
   </body>
 </html>

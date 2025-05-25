@@ -1,6 +1,6 @@
 <template>
   <div
-      class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:bg-zinc-800"
+      class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:bg-zinc-800"
   >
     <div class="max-w-[1600px] mx-auto p-6">
       <!-- Main Card -->

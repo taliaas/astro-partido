@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen p-6 bg-gradient-to-b from-gray-50 to-white">
+  <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
     <div
       class="max-w-7xl container p-6 shadow-md border rounded-lg border-gray-300"
     >

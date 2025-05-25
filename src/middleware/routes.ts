@@ -1,11 +1,19 @@
 import { defineMiddleware } from "astro:middleware";
 import { getSession } from "auth-astro/server";
 
-const bypassProtection = ["/", "/login", "/register", "/password"];
+const bypassProtection = [
+  "/login",
+  "/register",
+  "/password",
+  "/",
+  "/help",
+  "/condition",
+];
 
 const authRoutes = ["/login", "/register"];
 
 export const routesMiddleware = defineMiddleware(async (ctx, next) => {
+  if (ctx.url.pathname.startsWith("/api")) return next();
   const session = await getSession(ctx.request);
   if (session && authRoutes.some((route) => ctx.url.pathname === route)) {
     return ctx.redirect("/home");

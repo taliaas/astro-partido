@@ -3,7 +3,7 @@
     <div>
       <h2 class="text-2xl font-semibold text-center mb-4">Parte Municipio PCC Marianao</h2>
       <div class="flex flex-col sm:flex-row gap-2 mb-6">
-        <div class="relative flex-grow">
+        <div class="relative grow">
           <Search class="left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 absolute" />
           <input
               v-model="search"

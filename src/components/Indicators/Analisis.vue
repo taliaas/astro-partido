@@ -181,7 +181,7 @@
                           <h4 class="font-medium mb-3 text-xl">Historial</h4>
                           <div class="space-y-2">
                             <div v-for="(event, index) in history" :key="index" class="flex items-start">
-                              <div class="h-2 w-2 rounded-full bg-gray-900 mt-2 mr-3 flex-shrink-0"></div>
+                              <div class="h-2 w-2 rounded-full bg-gray-900 mt-2 mr-3 shrink-0"></div>
                               <div>
                                 <div class="flex items-center">
                                   <span class="text-md">{{ event.date }}</span>

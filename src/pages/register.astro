@@ -1,8 +1,10 @@
 ---
 import RegisterContainer from "@/components/access/Register.vue";
 import AuthLayout from "@/layouts/AuthLayout.astro";
+
+const acceptTerms = Astro.url.searchParams.get("acceptTerms");
 ---
 
 <AuthLayout>
-    <RegisterContainer client:load />
+  <RegisterContainer acceptTerms={acceptTerms === "true"} client:only="vue" />
 </AuthLayout>

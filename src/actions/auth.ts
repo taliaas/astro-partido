@@ -1,6 +1,6 @@
 import { ActionError, defineAction } from "astro:actions";
 import { API_URL } from "astro:env/client";
-import { z } from "astro:schema";
+import { z } from "zod";
 import { getSession } from "auth-astro/server";
 
 export const register = defineAction({

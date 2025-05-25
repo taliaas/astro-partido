@@ -34,28 +34,24 @@
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
-  <Dialog v-bind:open="showSesionModal" @update:open="(value) => showSesionModal = value">
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>
+  <AlertDialog v-bind:open="showSesionModal" @update:open="(value) => showSesionModal = value">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
           Cerrar Sesión
-        </DialogTitle>
-        <DialogDescription>
+        </AlertDialogTitle>
+        <AlertDialogDescription>
           ¿Estás seguro que desea cerrar sesión?
-        </DialogDescription>
-      </DialogHeader>
-      <DialogFooter class="flex justify-end space-x-3">
-        <DialogClose>
-          <Button variant="ghost">
-            Cancel
-          </Button>
-        </DialogClose>
-        <Button @click="out" variant="destructive" type="button">
-          Aceptar
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter class="flex justify-end space-x-3">
+        <AlertDialogCancel>
+            Cancelar
+        </AlertDialogCancel>
+        <Button @click="out" variant="destructive">Aceptar</Button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script setup lang="ts">
@@ -76,7 +72,7 @@ import {
 
 import { ref } from "vue";
 import { signOut } from "auth-astro/client"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogCancel,AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
 const showSesionModal = ref(false);

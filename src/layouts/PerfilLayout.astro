@@ -1,9 +1,10 @@
 ---
-import Header from "@/components/layout/Header.vue";
-import { ClientRouter } from "astro:transitions";
 import "../globals.css";
+import { ClientRouter } from "astro:transitions";
+import Header from "@/components/layout/Header.vue";
 import Navigation from "@/components/layout/Navigation.vue";
 import LoadingIndicator from "astro-loading-indicator/component"
+import { Toaster } from "@/components/ui/sonner";
 
 const pathName = Astro.originPathname;
 ---
@@ -20,6 +21,7 @@ const pathName = Astro.originPathname;
     <LoadingIndicator color="blue" height="3px"/>
   </head>
   <body>
+    <Toaster client:idle />
     <div class="min-h-screen bg-gray-50">
       <!-- Header -->
       <Header client:load>

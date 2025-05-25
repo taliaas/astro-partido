@@ -15,7 +15,7 @@
               class="p-4 hover:bg-gray-50 transition-colors duration-200"
             >
               <div class="flex items-start space-x-4">
-                <div class="flex-shrink-0">
+                <div class="shrink-0">
                   
                 </div>
                 <div class="flex-1 min-w-0">
@@ -36,7 +36,7 @@
                     </button>
                   </div>
                 </div>
-                <div class="flex-shrink-0">
+                <div class="shrink-0">
                   <button 
                     @click="dismissNotification(notification.id)"
                     class="text-gray-400 hover:text-gray-500 transition-colors duration-200"
