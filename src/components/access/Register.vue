@@ -4,7 +4,9 @@
       <!-- Header -->
       <div class="text-center space-y-2">
         <h2 class="text-2xl font-bold tracking-tight">Crear una cuenta</h2>
-        <p class="text-sm text-muted-foreground">Ingresa tus datos para registrarte</p>
+        <p class="text-sm text-muted-foreground">
+          Ingresa tus datos para registrarte
+        </p>
       </div>
 
       <!-- Form -->
@@ -14,7 +16,12 @@
           <FormItem>
             <FormLabel>Nombre</FormLabel>
             <FormControl>
-              <Input type="text" required placeholder="Juan" :="componentField" />
+              <Input
+                type="text"
+                required
+                placeholder="Juan"
+                :="componentField"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -25,7 +32,12 @@
           <FormItem>
             <FormLabel>Correo electrónico</FormLabel>
             <FormControl>
-              <Input type="email" required placeholder="juan@cujae.edu.cu" :="componentField" />
+              <Input
+                type="email"
+                required
+                placeholder="juan@cujae.edu.cu"
+                :="componentField"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -36,7 +48,12 @@
           <FormItem>
             <FormLabel>Contraseña</FormLabel>
             <FormControl>
-              <Input type="password" required placeholder="Escriba su contraseña..." :="componentField" />
+              <Input
+                type="password"
+                required
+                placeholder="Escriba su contraseña..."
+                :="componentField"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -47,7 +64,12 @@
           <FormItem>
             <FormLabel>Confirme su contraseña</FormLabel>
             <FormControl>
-              <Input type="password" required placeholder="Escriba su contraseña..." :="componentField" />
+              <Input
+                type="password"
+                required
+                placeholder="Escriba su contraseña..."
+                :="componentField"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -57,20 +79,28 @@
         <FormField name="acceptTerms" v-slot="{ handleChange, value }">
           <FormItem class="flex items-center gap-2 space-y-0">
             <FormControl>
-              <Checkbox :model-value="value" @update:model-value="handleChange" />
+              <Checkbox
+                :model-value="value"
+                @update:model-value="handleChange"
+              />
             </FormControl>
             <FormDescription>
               Acepto los
-              <a href="/condition" class="text-primary hover:text-blue-500 hover:underline">
+              <a
+                href="/condition"
+                class="text-primary hover:text-blue-500 hover:underline"
+              >
                 términos y condiciones
               </a>
             </FormDescription>
           </FormItem>
         </FormField>
         <!-- Submit Button -->
-        <Button type="submit"
+        <Button
+          type="submit"
           class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-          :disabled="isLoading || !formState.valid">
+          :disabled="isLoading || !formState.valid"
+        >
           <Loader2Icon v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
           {{ isLoading ? "Registrando..." : "Registrarse" }}
         </Button>
@@ -78,7 +108,10 @@
         <!-- Sign In Link -->
         <div class="text-center text-sm">
           ¿Ya tienes una cuenta?
-          <a href="/login" class="text-primary hover:text-blue-500 hover:underline">
+          <a
+            href="/login"
+            class="text-primary hover:text-blue-500 hover:underline"
+          >
             Inicia sesión
           </a>
         </div>
@@ -89,7 +122,14 @@
 
 <script setup lang="ts">
 import { Checkbox } from "@/components/ui/checkbox";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -103,38 +143,44 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 const { acceptTerms } = defineProps<{
-  acceptTerms: boolean
-}>()
+  acceptTerms: boolean;
+}>();
 
 const isLoading = ref(false);
 
-type RegisterData = z.infer<typeof schema>
-const schema = z.object({
-  name: z.string()
-    .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
-    .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
-  email: z.string()
-    .email({ message: "Ingresa un correo electrónico válido." }),
-  password: z.string()
-    .min(8, { message: "La contraseña debe tener al menos 8 caracteres." }),
-  confirmPassword: z.string(),
-  acceptTerms: z.boolean()
-    .refine((val) => val, { message: "Debes aceptar los términos y condiciones." }),
-}).superRefine(({ acceptTerms, password, confirmPassword }, ctx) => {
-  if (!acceptTerms) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["acceptTerms"]
-    })
-  }
-  if (confirmPassword !== password) {
-    ctx.addIssue({
-      code: "custom",
-      message: "Las contraseñas deben coincidir",
-      path: ["confirmPassword"]
-    })
-  }
-});
+type RegisterData = z.infer<typeof schema>;
+const schema = z
+  .object({
+    name: z
+      .string()
+      .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
+      .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
+    email: z
+      .string()
+      .email({ message: "Ingresa un correo electrónico válido." }),
+    password: z
+      .string()
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres." }),
+    confirmPassword: z.string(),
+    acceptTerms: z.boolean().refine((val) => val, {
+      message: "Debes aceptar los términos y condiciones.",
+    }),
+  })
+  .superRefine(({ acceptTerms, password, confirmPassword }, ctx) => {
+    if (!acceptTerms) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["acceptTerms"],
+      });
+    }
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Las contraseñas deben coincidir",
+        path: ["confirmPassword"],
+      });
+    }
+  });
 
 const form = useForm<RegisterData>({
   validationSchema: toTypedSchema(schema),
@@ -145,37 +191,40 @@ const form = useForm<RegisterData>({
       password: "",
       confirmPassword: "",
       acceptTerms,
-    }
-    const formValues = localStorage.getItem("register-form")
+    };
+    const formValues = localStorage.getItem("register-form");
     if (formValues) {
-      initialValues = JSON.parse(formValues || "{}")
+      initialValues = JSON.parse(formValues || "{}");
     }
     if (acceptTerms) {
-      initialValues.acceptTerms = true
+      initialValues.acceptTerms = true;
     }
-    return initialValues
+    return initialValues;
   },
-  keepValuesOnUnmount: true
-})
-const formValues = form.controlledValues
+  keepValuesOnUnmount: true,
+});
+const formValues = form.controlledValues;
 
-onBeforeUnmount(() => localStorage.setItem("register-form", JSON.stringify(formValues.value)))
+onBeforeUnmount(() =>
+  localStorage.setItem("register-form", JSON.stringify(formValues.value))
+);
 
-const formState = form.meta
+const formState = form.meta;
 
 const handleSubmit = form.handleSubmit(async (data: RegisterData) => {
   isLoading.value = true;
   try {
-    await actions.auth.register(data)
-    await signIn("credentials", data as any)
-    await navigate("/home")
-    setTimeout(() => toast.success("Usuario registrado con éxito"), 1000)
-    localStorage.removeItem("register-form")
+    console.log(data);
+    await actions.auth.register(data);
+    await signIn("credentials", data as any);
+    await navigate("/home");
+    setTimeout(() => toast.success("Usuario registrado con éxito"), 1000);
+    localStorage.removeItem("register-form");
   } catch (error) {
     console.error("Registration error:", error);
-    toast.error("Ha ocurrido un error al iniciar sesión")
+    toast.error("Ha ocurrido un error al iniciar sesión");
   } finally {
     isLoading.value = false;
   }
-})
+});
 </script>

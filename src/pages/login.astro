@@ -1,8 +1,15 @@
 ---
 import LoginContainer from "@/components/access/Login.vue";
 import AuthLayout from "../layouts/AuthLayout.astro";
+
+const error = Astro.url.searchParams.get("error");
 ---
 
 <AuthLayout>
   <LoginContainer client:load />
 </AuthLayout>
+
+<script is:inline define:vars={{ error }}>
+  import { toast } from "vue-sonner";
+  error && toast.error("Ha ocurrido un error al iniciar sesión");
+</script>

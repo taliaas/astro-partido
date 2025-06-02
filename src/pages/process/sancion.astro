@@ -1,3 +1,26 @@
 ---
-$END$
+import SancionService from "@/services/SancionService";
+import RootLayout from "../../layouts/RootLayout.astro";
+import Sanciones from "../sanciones.astro";
+import { getSession } from "auth-astro/server";
+
+const session = await getSession(Astro.request);
+const searchParams = Astro.url.searchParams;
+const page = Number(searchParams.get("page") ?? 1);
+
+async function getSanciones() {
+  const sancion = new SancionService();
+  try {
+    return await sancion.getAll(page, session);
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+const sanciones = await getSanciones();
 ---
+
+<RootLayout>
+  <Sanciones sanciones={sanciones} client:load />
+</RootLayout>

@@ -224,10 +224,26 @@
               </TableBody>
             </Table>
 
+            <!-- Empty State -->
+            <div v-if="filteredActas?.length === 0" class="text-center py-16">
+              <div
+                  class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
+              >
+                <SearchIcon class="h-6 w-6"/>
+              </div>
+              <h3 class="mt-4 text-sm font-medium text-gray-900">
+                No se encontraron actas
+              </h3>
+              <p class="mt-1 text-sm text-gray-500">
+                Ajuste los filtros o cree una nueva acta para comenzar.
+              </p>
+            </div>
+
             <div class="flex justify-between">
-              <div class="text-md text-muted-foreground p-4">
+              <div v-if="actas?.total === 0"></div>
+              <div v-else class="text-md text-muted-foreground p-4">
                 Mostrando <span class="font-medium">{{ page }}</span> de <span class="font-medium">{{
-                  actas.total
+                  actas?.total
                 }}</span> páginas
               </div>
               <div class="flex justify-end gap-4 p-4">
@@ -249,20 +265,6 @@
                 </button>
               </div>
             </div>
-            <!-- Empty State -->
-            <div v-if="filteredActas?.length === 0" class="text-center py-16">
-              <div
-                  class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
-              >
-                <SearchIcon class="h-6 w-6"/>
-              </div>
-              <h3 class="mt-4 text-sm font-medium text-gray-900">
-                No se encontraron actas
-              </h3>
-              <p class="mt-1 text-sm text-gray-500">
-                Ajuste los filtros o cree una nueva acta para comenzar.
-              </p>
-            </div>
           </div>
         </div>
       </div>
@@ -279,16 +281,16 @@
         </DialogHeader>
 
         <!-- Selector de tipo de acta (obligatorio) -->
-        <div class="mb-6">
+        <div class="">
           <label class="block text-sm font-medium text-gray-700 mb-2">
-            Tipo de acta <span class="text-red-500">*</span>
+            Seleccione el tipo de acta: <span class="text-red-500">*</span>
           </label>
-          <div class="flex gap-3">
+          <div class="flex gap-3 text-sm">
             <label
                 :class="[
-              'flex items-center justify-center px-4 py-2 border rounded-md cursor-pointer flex-1',
+              'flex items-center justify-center border rounded-md cursor-pointer flex-1',
               tipoActa === 'ro'
-                ? 'bg-button text-primary-foreground'
+                ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]"
             >
@@ -303,9 +305,9 @@
             </label>
             <label
                 :class="[
-              'flex items-center justify-center px-4 py-2 border rounded-md cursor-pointer flex-1',
+              'flex items-center justify-center py-1.5 border rounded-md cursor-pointer flex-1',
               tipoActa === 'cp'
-                ? 'bg-button text-primary-foreground '
+                ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]"
             >
@@ -323,9 +325,9 @@
 
         <!-- Área de arrastre de archivos -->
         <div
-            class="mt-6 border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
+            class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
             :class="{ 'border-blue-500 bg-blue-50': isDragging }"
-            @drop.prevent="handleDrop"
+            @drop.prevent="handleFileDrop"
             @dragover.prevent="isDragging = true"
             @dragleave.prevent="isDragging = false"
             @dragenter.prevent
@@ -346,22 +348,42 @@
               seleccione desde su dispositivo
             </button>
           </p>
-          <p class="mt-1 text-xs text-gray-500">PDF, hasta 10MB por archivo</p>
-          <div class="m-2 border-t mt-4">
-            <ul class="space-y-4 mt-3">
-              <li v-for="(files, index) in uploadedFiles" :key="index">
-                <p class="text-muted-foreground">{{ files.name }}</p>
-              </li>
-            </ul>
-          </div>
+          <p class="mt-1 text-xs text-gray-500">DOCX, PDF, hasta 10MB por archivo</p>
           <input
               ref="fileInput"
               type="file"
               multiple
-              accept=".pdf"
+              accept=".pdf,.docx"
               class="hidden"
               @change="handleFileSelect"
           />
+        </div>
+
+         <!-- Lista de archivos -->
+        <div v-if="uploadedFiles.length > 0" class="space-y-3 max-h-32 overflow-y-auto">
+          <div
+            v-for="(file, index) in uploadedFiles"
+            :key="index"
+            class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+          >
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 rounded flex items-center justify-center">
+                <FileTextIcon class="size-5" />
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">{{ file.name }}</p>
+              <div class="flex items-center gap-2 mt-1">
+                <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</p>
+              </div>
+            </div>
+            <button
+              @click="removeFile(file.name)"
+              class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600"
+            >
+              <Trash2Icon class="size-4" />
+            </button>
+          </div>
         </div>
 
         <DialogFooter>
@@ -374,8 +396,9 @@
           </Button>
           <Button
               @click="handleDrop"
-              :disabled="!uploadedFiles.length"
+              :disabled="!uploadedFiles.length || loading"
               class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              :loading
           >
             Cargar archivos
           </Button>
@@ -413,31 +436,34 @@
 </template>
 
 <script setup lang="ts">
-import {exportar} from "@/lib/export_cp.ts";
-import {exportarRO} from "@/lib/export_ro.ts";
-import {actions} from "astro:actions";
-import {navigate} from "astro:transitions/client";
+import { exportar } from "@/lib/export_cp.ts";
+import { exportarRO } from "@/lib/export_ro.ts";
+import { usePermissions } from "@/utils/auth.ts";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
 import {
   ArrowDown,
   ArrowUp,
   Download,
   Edit,
   Eye,
+  FileTextIcon,
   MoreVerticalIcon,
   Pencil,
   PlusIcon,
   SearchIcon,
+  Trash2Icon,
   TrashIcon,
   UploadCloudIcon,
 } from "lucide-vue-next";
-import {computed, ref} from "vue";
-import {Badge} from "../ui/badge";
-import {Button} from "../ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,} from "../ui/dialog";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "../ui/dropdown-menu";
-import {Input} from "../ui/input";
-import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
-import {usePermissions} from "@/utils/auth.ts";
+import { computed, ref } from "vue";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "../ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
+import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
+import { toast } from "vue-sonner";
 
 const {actas, page} = defineProps<{
   actas: any;
@@ -453,7 +479,20 @@ const uploadedFiles = ref([]);
 const isDragging = ref(false);
 const showDelete = ref(false);
 const currentPage = ref(page)
-const hasNextPage = ref(actas.total)
+const hasNextPage = ref(actas?.total)
+const loading = ref(false)
+
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+const removeFile = (fileName) => {
+  uploadedFiles.value = uploadedFiles.value.filter((file) => file.name !== fileName)
+}
 
 const tableHeaders = [
   "No.",
@@ -483,19 +522,19 @@ function handleSort() {
 }
 
 const nucleos = computed(() => {
-  return [...new Set(actas.data?.map((item) => item.core?.name))];
+  return [...new Set(actas?.data?.map((item) => item.core?.name))];
 });
 const typeMinutes = computed(() => {
-  return [...new Set(actas.data?.map((item) => item.type))];
+  return [...new Set(actas?.data?.map((item) => item.type))];
 });
 
 const statuses = computed(() => {
-  return [...new Set(actas.data?.map((item) => item.status))];
+  return [...new Set(actas?.data?.map((item) => item.status))];
 });
 
 const filteredActas = computed(() => {
   const [year, month] = selectFecha.value.split('-');
-  return actas.data?.filter((item) => {
+  return actas?.data?.filter((item) => {
     return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
         (selectedStatus.value && item.status !== selectedStatus.value) ||
         (selectType.value && item.type !== selectType.value))
@@ -580,18 +619,30 @@ async function eliminarActa() {
 //cargar acta
 const handleDrop = async () => {
   isDragging.value = false;
-  const files = Array.from(uploadedFiles.value);
+  loading.value = true
+  const files = Array.from(uploadedFiles.value ?? []);
+  console.log(files);
   const formData = new FormData();
-  formData.append("type", tipoActa.value)
-  for (const f of files) formData.append("files", f);
+  formData.append("type", tipoActa.value);
+  files.forEach((f) => {
+    formData.append("files", f);
+  });
   try {
-    await actions.minute.uploadMinutes(formData)
+    // const data = await actions.minute.uploadMinutes.orThrow(formData)
+    const navigationData = new FormData()
+    navigationData.append("data","datos")
+    if (tipoActa.value === "ro") {
+      await navigate('/addRO',{ state:{formData:navigationData}})
+    } else {
+      await navigate('/addCP',{formData:navigationData})
+    }
     showUploadDialog.value = false;
     uploadedFiles.value = [];
-    navigate('/minutes');
-  } catch (e) {
-    alert(e);
-    throw new Error(e);
+  } catch (error) {
+    toast.error("Error al cargar el acta");
+    throw new Error(error);
+  } finally {
+    loading.value = false
   }
 };
 
@@ -599,6 +650,17 @@ const handleFileSelect = (event) => {
   const files = Array.from(event.target.files);
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 };
+
+const handleFiles = (files) => {
+  // Only add real File objects to uploadedFiles
+  uploadedFiles.value = [...uploadedFiles.value, ...files];
+}
+
+const handleFileDrop = (e) => {
+  isDragging.value = false
+  const files = Array.from(e.dataTransfer.files)
+  handleFiles(files)
+}
 
 function goToNextPage() {
   if (actas.total > currentPage.value) {

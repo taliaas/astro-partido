@@ -108,7 +108,6 @@ import { reactive, ref } from "vue";
 
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import Textarea from "../ui/textarea/Textarea.vue";
 
 const formData = reactive({
@@ -123,7 +122,7 @@ const addAgendaItem = () => {
   agendaItems.value.push({ description: "" });
 };
 
-const removeAgendaItem = (index) => {
+const removeAgendaItem = (index: any) => {
   agendaItems.value.splice(index, 1);
 };
 </script>

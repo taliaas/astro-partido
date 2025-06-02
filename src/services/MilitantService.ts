@@ -21,6 +21,24 @@ export default class MilitantService {
         }
     }
 
+    async getMilitantes(id: number) {
+        try {
+            const response = await fetch(`${API_URL}/militantes/active/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+    }
+
     async getMilitantesByCore(id: number, page: number) {
         try {
             const response = await fetch(`${API_URL}/militantes/core/${id}?page=${page}`, {

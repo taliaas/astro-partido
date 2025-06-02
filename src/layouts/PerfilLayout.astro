@@ -3,7 +3,7 @@ import "../globals.css";
 import { ClientRouter } from "astro:transitions";
 import Header from "@/components/layout/Header.vue";
 import Navigation from "@/components/layout/Navigation.vue";
-import LoadingIndicator from "astro-loading-indicator/component"
+import LoadingIndicator from "astro-loading-indicator/component";
 import { Toaster } from "@/components/ui/sonner";
 
 const pathName = Astro.originPathname;
@@ -18,10 +18,10 @@ const pathName = Astro.originPathname;
     <meta name="generator" content={Astro.generator} />
     <title>Motor</title>
     <ClientRouter />
-    <LoadingIndicator color="blue" height="3px"/>
+    <LoadingIndicator color="blue" height="3px" />
   </head>
   <body>
-    <Toaster client:idle />
+    <Toaster client:idle richColors />
     <div class="min-h-screen bg-gray-50">
       <!-- Header -->
       <Header client:load>

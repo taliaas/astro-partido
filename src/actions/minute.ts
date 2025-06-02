@@ -6,20 +6,26 @@ import { API_URL } from "astro:env/client";
 export const uploadMinutes = defineAction({
   accept: "form",
   input: z.object({
-    files: z.any(),
+    files: z.any().array(),
     type: z.string().refine((val) => ["ro", "cp"].includes(val)),
   }),
   async handler({ files, type }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
-    const res = await fetch(`${API_URL}/minutes/upload?type=${type}`, {
+    const formData = new FormData();
+    files.forEach((f) => {
+      formData.append("files", f)
+    });
+    const res = await fetch(`http://localhost:5000/minutes/upload?type=${type}`, {
       method: "POST",
-      body: files,
+      body: formData,
       headers: {
         Authorization: `${session.jwt}`,
       },
     });
+    console.log(res);
+
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

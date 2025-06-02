@@ -87,3 +87,11 @@ export const updateStatusMinutes = defineAction({
     return await response.json();
   },
 });
+
+export const processMinute = defineAction({
+  accept: "form",
+  input: z.object({ file: z.instanceof(File) }),
+  handler({ file }, context) {
+
+  },
+})

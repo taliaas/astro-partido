@@ -1,6 +1,6 @@
 import { actions } from "astro:actions";
 import { getSession } from "auth-astro/server";
-import { onBeforeMount, ref, computed, onMounted } from "vue";
+import { onBeforeMount, ref } from "vue";
 
 export const modules = [
   "Documentos",
@@ -8,8 +8,8 @@ export const modules = [
   "Reportes",
   "Usuarios",
   "Militantes",
-  "Núcleos"
-
+  "Núcleos",
+  "Procesos",
 ] as const;
 export type Module = (typeof modules)[number];
 
@@ -20,6 +20,7 @@ export const permissionActions = [
   { id: "delete", name: "Eliminar" },
   { id: "read", name: "Ver" },
   { id: "export", name: "Exportar" },
+  { id: "all", name: "Todo" },
 ] as const;
 
 function hasPermissions(module: string, action: string, claims: any[]) {

@@ -71,7 +71,29 @@
                   :id="`${resource}-${action.id}`"
                   class="rounded border-gray-300"
                   :checked="isPermissionChecked(resource, action.id)"
-                  @change="togglePermission(resource, action.id)"
+                  @change="
+                    action.id === 'all'
+                      ? (isPermissionChecked(resource, 'all')
+                          ? permissionActions
+                              .filter((a) => a.id !== 'all')
+                              .forEach((a) => {
+                                if (isPermissionChecked(resource, a.id)) {
+                                  togglePermission(resource, a.id);
+                                }
+                              })
+                          : permissionActions
+                              .filter((a) => a.id !== 'all')
+                              .forEach((a) => {
+                                if (!isPermissionChecked(resource, a.id)) {
+                                  togglePermission(resource, a.id);
+                                }
+                              }),
+                        togglePermission(resource, 'all'))
+                      : (togglePermission(resource, action.id),
+                        // Si se desmarca alguno, desmarcar 'all'
+                        isPermissionChecked(resource, 'all') &&
+                          togglePermission(resource, 'all'))
+                  "
                 />
               </td>
             </tr>
@@ -119,10 +141,17 @@ const permissionActions = [
   { id: "delete", name: "Eliminar" },
   { id: "read", name: "Ver" },
   { id: "export", name: "Exportar" },
+  { id: "all", name: "Todo" },
 ];
 
 // Obtener los módulos únicos de los claims
-const permissionResources = ["Documentos", "Análisis", "Reportes", "Usuarios"];
+const permissionResources = [
+  "Documentos",
+  "Análisis",
+  "Reportes",
+  "Usuarios",
+  "Procesos",
+];
 
 const saving = ref(false);
 

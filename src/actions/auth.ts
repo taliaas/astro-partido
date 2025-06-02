@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getSession } from "auth-astro/server";
 
 export const register = defineAction({
+  accept: "json",
   input: z.object({
     email: z.string().email(),
     name: z.string(),
@@ -11,6 +12,7 @@ export const register = defineAction({
     role: z.string().optional(),
   }),
   async handler(input, context) {
+    console.log(input)
     const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {

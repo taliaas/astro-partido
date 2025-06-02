@@ -13,7 +13,7 @@ const bypassProtection = [
 const authRoutes = ["/login", "/register"];
 
 export const routesMiddleware = defineMiddleware(async (ctx, next) => {
-  if (ctx.url.pathname.startsWith("/api")) return next();
+  if (ctx.url.pathname.startsWith("/api") || ctx.url.pathname.startsWith("/_actions")) return next();
   const session = await getSession(ctx.request);
   if (session && authRoutes.some((route) => ctx.url.pathname === route)) {
     return ctx.redirect("/home");

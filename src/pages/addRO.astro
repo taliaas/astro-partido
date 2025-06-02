@@ -10,6 +10,16 @@ import ThirdStep from "src/components/Ordinary/ThirdStep.vue";
 const session = await getSession(Astro.request)
 const n_user = session?.user
 
+console.log(Astro.request.method)
+
+let data
+if (Astro.request.method === "POST"){
+  const formdata = await Astro.request.formData()
+  console.log(formdata.get('data'))
+  data = JSON.stringify(formdata.get('data'))
+}
+console.log(data)
+
 async function getUser() {
   const services = new UserService()
   try {
@@ -32,9 +42,6 @@ const user = await getUser()
 ---
 
 <RootLayout>
-  <MinutesOrdinary user={user} client:load>
-    <FirstStep cores={cores} slot="first-step" client:load />
-    <SecondStep slot="second-step" client:load />
-    <ThirdStep slot="third-step" client:load />
+  <MinutesOrdinary user={user} cores={cores} client:load>
   </MinutesOrdinary>
 </RootLayout>

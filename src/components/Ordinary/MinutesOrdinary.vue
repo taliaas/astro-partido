@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
+  <form @submit="submitForm" class="min-h-screen bg-gray-50 p-6">
     <div
       class="mb-8 text-center transform transition-all duration-500 hover:scale-102"
     >
@@ -57,19 +57,19 @@
         </div>
       </div>
       <div class="p-2 mt-4">
-        <form @submit.prevent="submitForm" class="space-y-6">
+        <div @submit="submitForm" class="space-y-6">
           <!--  Información 1 -->
           <section v-show="currentStep === 1" class="space-y-4">
-            <slot name="first-step" />
+            <FirstStep :cores />
           </section>
 
           <!--  Información 2 -->
           <section v-show="currentStep === 2" class="space-y-4">
-            <slot name="second-step" />
+            <SecondStep />
           </section>
           <!--  Información 3 -->
           <section v-show="currentStep === 3" class="space-y-4">
-            <slot name="third-step" />
+             <ThirdStep />
           </section>
 
           <!-- Botones de navegación -->
@@ -98,28 +98,30 @@
               Enviar
             </button>
           </div>
-        </form>
-      </div>
-      <!-- Notification -->
-      <div
-          v-if="notification.show"
-          class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
-          :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
-      >
-        {{ notification.message }}
+        </div>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script setup lang="ts">
-import {ArrowLeft, ArrowRight} from "lucide-vue-next";
-import {computed, reactive, ref} from "vue";
-import {navigate} from "astro:transitions/client";
-import {actions} from "astro:actions";
+import {
+  form_schema,
+  type FormSchema,
+} from "@/components/Ordinary/form_schema";
+import { toTypedSchema } from "@vee-validate/zod";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import { ArrowLeft, ArrowRight } from "lucide-vue-next";
+import { useForm } from "vee-validate";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
+import FirstStep from "@/components/Ordinary/FirstStep.vue";
+import SecondStep from "@/components/Ordinary/SecondStep.vue";
+import ThirdStep from "@/components/Ordinary/ThirdStep.vue";
 
 const currentStep = ref(1);
-const { user } = defineProps<{ user: any }>();
+const { user, cores } = defineProps<{ user: any, cores: any }>();
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
 };
@@ -132,60 +134,45 @@ const progress = computed(() => {
   return ((currentStep.value - 1) / (3 - 1)) * 100;
 });
 
-const notification = reactive({
-  show: false,
-  message: '',
-  type: 'success'
-})
-const showNotification = (message: string, type = 'success') => {
-  notification.show = true
-  notification.message = message
-  notification.type = type
-  setTimeout(() => {
-    notification.show = false
-  }, 3000)
-}
-const submitForm = async (e: any) => {
-  const form = e.target as HTMLFormElement;
-  const formEntries = Array.from(new FormData(form).entries());
-  const data = {};
-  for (const [key, value] of formEntries) {
-    const [prop, index, att] = key.split(".");
-    if (index !== undefined) {
-      if (!data[prop]) {
-        data[prop] = [];
-      }
-      if (att) {
-        if (!data[prop][index]) data[prop][index] = {};
-        data[prop][index][att] = value;
-      } else {
-        data[prop][index] = value;
-      }
-    } else {
-      data[prop] = value;
-    }
-  }
-  data.user_create = user
-  data.core = { id: data.nucleo };
+const form = useForm({
+  validationSchema: toTypedSchema(form_schema),
+  initialValues: {
+    fecha: new Date(),
+    core: 1,
+    hora: "",
+    lugar: "",
+    invitados: [],
+    militantes: [],
+    agreements: [],
+    extranjero: [],
+    analisis: "",
+    observaciones: "",
+    chequeo: "",
+    fechaCP: new Date(),
+    fechaPrep: new Date(),
+    fechaProx: new Date(),
+    order: [],
+    orientaciones: "",
+  },
+});
 
+const submitForm = form.handleSubmit(async (data: FormSchema) => {
+  data.core = { id: data.core };
   try {
     await actions.ordinary.createMinute({
       data,
-      abscents: data.militante.filter(m=>m.estado==="ausente"),
-    invitados: data.invitados ?? [],
-    agreements: data.agreements ?? [],
-    extranjero: data.extranjero ?? [],
-    })
-    showNotification('Se creó el acta correctamente')
-    await navigate("/minutes/");
+      abscents: data.militantes.filter((m) => m.estado === "ausente"),
+      invitados: data.invitados ?? [],
+      agreements: data.agreements ?? [],
+      extranjero: data.extranjero ?? [],
+    });
+    toast.success("Se creó el acta correctamente");
+    navigate("/minutes");
   } catch (error) {
-    if (error.response) {
-      console.log(error.response.data.message);
-    }
-    showNotification("Error al crear el acta", error);
+    toast.error("Error al crear el acta");
     console.error(error);
   }
-};
+});
 </script>
 
 1

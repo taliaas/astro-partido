@@ -159,41 +159,28 @@
                             <h2 class="font-medium text-lg text-foreground">
                               Descripción
                             </h2>
-                            {{ details(nucleo.name) }}
+                            Aquí va la descripción
                           </SheetDescription>
                         </SheetHeader>
 
                         <div class="pt-8">
-                          <div v-for="(detail, index) in tasks" :key="index" class="border-b pb-4">
+                          <div class="border-b p-2">
                             <div class="flex justify-between mb-1">
-                              <span class="font-medium text-lg">{{
-                                detail.title
-                              }}</span>
-                              <span>{{ detail.value }}</span>
+                              <span class="font-medium text-lg">
+                                Responsable
+                              </span>
+                              <span>Nombre</span>
                             </div>
                             <p class="text-sm text-gray-600">
-                              {{ detail.description }}
+                              Cargo
                             </p>
                           </div>
-                        </div>
-
-                        <div class="pt-6">
-                          <h4 class="font-medium mb-3 text-xl">Historial</h4>
-                          <div class="space-y-2">
-                            <div v-for="(event, index) in history" :key="index" class="flex items-start">
-                              <div class="h-2 w-2 rounded-full bg-gray-900 mt-2 mr-3 shrink-0"></div>
-                              <div>
-                                <div class="flex items-center">
-                                  <span class="text-md">{{ event.date }}</span>
-                                  <span class="mx-2 text-gray-400">•</span>
-                                  <span class="text-md text-blue-600">{{
-                                    event.action
-                                  }}</span>
-                                </div>
-                                <p class="text-md text-gray-500 mt-1">
-                                  {{ event.description }}
-                                </p>
-                              </div>
+                          <div class="border-b p-2">
+                            <div class="flex justify-between mb-1">
+                              <span class="font-medium text-lg">
+                                Fecha
+                              </span>
+                              <span>date</span>
                             </div>
                           </div>
                         </div>
@@ -310,39 +297,4 @@ const setTotal = (comite: { core: { id: string }[] }) => {
 
   return total;
 };
-
-const details = (nucleo: { name: string }) => {
-  return "Centro de Estudios e Investigaciones Sociales";
-};
-const tasks = ref([
-  {
-    title: "Responsable",
-    value: "Juan Pérez",
-    description: "Director del centro desde 2020",
-  },
-  {
-    title: "Última actualización",
-    value: "15/03/2023",
-    description: "Actualizado por el equipo de coordinación",
-  },
-  {
-    title: "Estado",
-    value: "Activo",
-    description: "Proyecto en desarrollo continuo",
-  },
-]);
-
-const history = ref([
-  {
-    date: "20/02/2023",
-    action: "Agregación",
-    description: "Se presentó propuesta de proyecto",
-  },
-  {
-    date: "15/01/2023",
-    action: "Cambio",
-    description:
-      'De "Reunión de planificación final" a "Reunión de planificación inicial"',
-  },
-]);
 </script>

@@ -1,8 +1,12 @@
 <template>
-  <div class="h-full bg-gray-100 flex-1 flex justify-center items-center w-full">
+  <div
+    class="h-full bg-gray-100 flex-1 flex justify-center items-center w-full"
+  >
     <div class="w-full max-w-lg space-y-4 p-7 bg-white rounded-md shadow-2xl">
       <div class="flex items-center justify-center h-28">
-        <UserIcon class="w-28 h-full mr-2 bg-blue-600 border border-blue-400 text-white p-6 rounded-full" />
+        <UserIcon
+          class="w-28 h-full mr-2 bg-blue-600 border border-blue-400 text-white p-6 rounded-full"
+        />
       </div>
       <div class="text-center">
         <h2 class="mt-6 text-3xl font-bold text-gray-900">
@@ -10,26 +14,32 @@
         </h2>
         <p class="mt-2 text-xl text-gray-600">Inicia sesión en tu cuenta</p>
       </div>
-      <form class="mt-8 space-y-6" @submit="handleSubmit">
+      <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
         <div class="flex flex-col gap-4">
           <FormField v-slot="{ componentField }" name="email">
             <FormItem>
-              <FormLabel class="sr-only">
-                Correo electrónico
-              </FormLabel>
+              <FormLabel class="sr-only"> Correo electrónico </FormLabel>
               <FormControl>
-                <Input type="email" required placeholder="Correo electrónico" :="componentField" />
+                <Input
+                  type="email"
+                  required
+                  placeholder="Correo electrónico"
+                  :="componentField"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           </FormField>
           <FormField v-slot="{ componentField }" name="password">
             <FormItem>
-              <FormLabel class="sr-only">
-                Contraseña
-              </FormLabel>
+              <FormLabel class="sr-only"> Contraseña </FormLabel>
               <FormControl>
-                <Input type="password" required placeholder="Contraseña" :="componentField" />
+                <Input
+                  type="password"
+                  required
+                  placeholder="Contraseña"
+                  :="componentField"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -38,16 +48,28 @@
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-
-            <label class="text-sm text-gray-900 flex  gap-2 items-center">
-              <Checkbox name="rememberMe"
-                class="h-4 w-4 text-md text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-              Recuérdame
-            </label>
+            <FormField v-slot="{ value, handleChange }" name="rememberMe">
+              <FormItem>
+                <div class="flex items-center gap-2">
+                  <FormControl>
+                    <Checkbox
+                      :value
+                      name="rememberMe"
+                      class="h-4 w-4 text-md text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      @update:model-value="handleChange"
+                    />
+                  </FormControl>
+                  <FormLabel> Recuérdame </FormLabel>
+                </div>
+              </FormItem>
+            </FormField>
           </div>
 
           <div class="text-sm">
-            <a href="/password" class="font-medium text-md text-blue-600 hover:text-blue-500">
+            <a
+              href="/password"
+              class="font-medium text-md text-blue-600 hover:text-blue-500"
+            >
               ¿Olvidaste tu contraseña?
             </a>
           </div>
@@ -66,7 +88,13 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toTypedSchema } from "@vee-validate/zod";
 import { navigate } from "astro:transitions/client";
@@ -77,33 +105,40 @@ import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { z } from "zod";
 
-type UserData = z.infer<typeof userSchema>
+type UserData = z.infer<typeof userSchema>;
 const userSchema = z.object({
   email: z.string().email({ message: "Ingrese un correo electrónico válido" }),
-  password: z.string().min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
+  password: z
+    .string()
+    .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
+  rememberMe: z.boolean(),
 });
 
 const form = useForm<UserData>({
   validationSchema: toTypedSchema(userSchema),
   initialValues: {
     email: "",
-    password: ""
+    password: "",
+    rememberMe: false,
   },
-
-})
+});
 
 const loading = ref(false);
 
 const handleSubmit = form.handleSubmit(async (data: UserData) => {
-  loading.value = true
+  loading.value = true;
   try {
-    await signIn("credentials", { email: data.email, password: data.password })
-    toast.success("Sesión iniciado con éxito")
-    navigate("/home")
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      rememberMe: data.rememberMe,
+    });
+    toast.success("Sesión iniciado con éxito");
+    navigate("/home");
   } catch (error) {
     console.error("Error", error);
-    toast.error("Ha ocurrido un error al iniciar sesión")
-    loading.value = false
+    toast.error("Ha ocurrido un error al iniciar sesión");
+    loading.value = false;
   }
-})
+});
 </script>

@@ -1,23 +1,32 @@
 <script setup lang="ts">
-
-const { path } = defineProps<{
-    path: string
-}>()
+const { path, canSeeProcess } = defineProps<{
+  path: string;
+  canSeeProcess: boolean;
+}>();
 
 const navigationItems = [
-    { name: 'Inicio', href: '/home' },
-    { name: 'Funcionamiento', href: '/minutes' },
-    { name: 'Análisis', href: '/analisis_indicador' },
-    { name: 'Reportes', href: '/estadofunc' }
-]
-
+  { name: "Funcionamiento", href: "/minutes" },
+  ...(canSeeProcess ? [{ name: "Procesos", href: "/process" }] : []),
+  { name: "Análisis", href: "/analisis_indicador" },
+  { name: "Reportes", href: "/estadofunc" },
+];
 </script>
 
 <template>
-    <nav class="hidden md:flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6">
-        <a v-for="item in navigationItems" :key="item.name" :href="item.href"
-            :class="['dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors', { 'text-blue-600': path === item.href }]">
-            {{ item.name }}
-        </a>
-    </nav>
+  <nav
+    class="hidden md:flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6"
+  >
+    <a
+      v-for="item in navigationItems"
+      :key="item.name"
+      :href="item.href"
+      :class="[
+        'dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors',
+        { 'text-blue-600': path === item.href },
+      ]"
+    >
+      {{ item.name }}
+    </a>
+  </nav>
+  {{ canSeeProcess }}
 </template>

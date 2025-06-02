@@ -214,33 +214,37 @@
   <section class="space-y-4 border-t">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
       <div class="w-3/4 space-y-2">
-        <label for="proxima" class="block text-md font-medium text-gray-700">
-          Próxima reunión
-        </label>
-        <Input
-          type="date"
-          required
-          id="proxima"
-          name="fechaProx"
-          v-model="formData.proximaReunion"
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
+        <FormField name="fechaProx" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel> Próxima reunión </FormLabel>
+            <FormControl>
+              <Input
+                  type="date"
+                  required
+                  :="componentField"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
       <div class="w-3/4 space-y-2">
-        <label
-          for="preparacion"
-          class="block text-md font-medium text-gray-700"
-        >
-          Preparación próxima reunión
-        </label>
-        <Input
-          type="date"
-          required
-          id="preparacion"
-          name="fechaPrep"
-          v-model="formData.preparacionReunion"
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
+        <FormField name="preparacion" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel> Preparación próxima reunión </FormLabel>
+            <FormControl>
+              <Input
+                  type="date"
+                  required
+                  :="componentField"
+                  v-model="formData.preparacionReunion"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
       <div class="w-3/4 space-y-2">
         <label for="circulo" class="block text-md font-medium text-gray-700">
@@ -265,6 +269,11 @@ import Textarea from "../ui/textarea/Textarea.vue";
 import Input from "../ui/input/Input.vue";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
+import FormItem from "../ui/form/FormItem.vue";
+import FormMessage from "../ui/form/FormMessage.vue";
+import FormLabel from "../ui/form/FormLabel.vue";
+import FormControl from "../ui/form/FormControl.vue";
+import {FormField} from "@/components/ui/form";
 
 const agreements = ref([{ description: "", responsible: "", date: "" }]);
 

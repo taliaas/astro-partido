@@ -17,7 +17,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="role in roles" :key="role.id" class="border-b transition-colors hover:bg-muted/50">
+            <tr
+              v-for="role in roles"
+              :key="role.id"
+              class="border-b transition-colors hover:bg-muted/50"
+            >
               <td class="p-4 font-medium">{{ role.name }}</td>
               <td class="p-4 text-muted-foreground">{{ role.description }}</td>
               <td class="p-4 text-center">{{ role.users?.length }}</td>
@@ -35,9 +39,7 @@
                       <DropdownMenuGroup>
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          Editar
-                        </DropdownMenuItem>
+                        <DropdownMenuItem> Editar </DropdownMenuItem>
 
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem variant="destructive">
@@ -50,17 +52,21 @@
                       <AlertDialogHeader>
                         <AlertDialogTitle>Eliminar rol</AlertDialogTitle>
                         <AlertDialogDescription>
-                          ¿Está seguro que desea eliminar el rol {{ role.name }}?
+                          ¿Está seguro que desea eliminar el rol
+                          {{ role.name }}?
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>
-                          Cancelar
-                        </AlertDialogCancel>
-                        <Button :disabled="deleting" :loading="deleting" @click="handleDelete(role.id)" variant="destructive">Eliminar</Button>
+                        <AlertDialogCancel> Cancelar </AlertDialogCancel>
+                        <Button
+                          :disabled="deleting"
+                          :loading="deleting"
+                          @click="handleDelete(role.id)"
+                          variant="destructive"
+                          >Eliminar</Button
+                        >
                       </AlertDialogFooter>
                     </AlertDialogContent>
-
                   </DropdownMenu>
                 </AlertDialog>
               </td>
@@ -81,9 +87,27 @@
 import { ref } from "vue";
 import { MoreVerticalIcon } from "lucide-vue-next";
 import type { Role } from "@/interface/Roles.ts";
-import CreateRoleButton from "@/components/settings/role/CreateRoleButton.vue"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import CreateRoleButton from "@/components/settings/role/CreateRoleButton.vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { actions } from "astro:actions";
 import { toast } from "vue-sonner";
@@ -95,17 +119,16 @@ const toggleRoleDropdown = (id) => {
   activeRoleDropdown.value = activeRoleDropdown.value === id ? null : id;
 };
 
-const deleting = ref(false)
+const deleting = ref(false);
 
 async function handleDelete(id: number) {
-  deleting.value = true
-  const { error, data } = await actions.role.deleteRole(id)
+  deleting.value = true;
+  const { error, data } = await actions.role.deleteRole(id);
   if (error) {
-    console.error(data)
-    toast.error("Ha ocurrido un error al tratar de eliminar el role")
+    console.error(data);
+    toast.error("Ha ocurrido un error al tratar de eliminar el role");
   }
-  await navigate("")
-  setTimeout(() => toast.success("Rol eliminado de forma exitosa"), 1000)
+  await navigate("");
+  setTimeout(() => toast.success("Rol eliminado de forma exitosa"), 1000);
 }
-
 </script>

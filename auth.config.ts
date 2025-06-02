@@ -4,6 +4,7 @@ import { defineConfig } from "auth-astro";
 
 export default defineConfig({
   trustHost: true,
+
   pages: {
     signIn: "/login",
     newUser: "/home",
@@ -15,8 +16,10 @@ export default defineConfig({
       credentials: {
         email: {},
         password: {},
+        rememberMe: {}
       },
       async authorize(credentials) {
+        console.log(credentials)
         const res = await fetch(`${API_URL}/auth/login`, {
           method: "POST",
           headers: {
