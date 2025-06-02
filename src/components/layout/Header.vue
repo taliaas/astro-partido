@@ -17,7 +17,7 @@
     </a>
 
     <!-- Navigation -->
-    <slot name="navigation" :canSeeProcess="hasPermission('Procesos', 'all')" />
+    <slot name="navigation" />
 
     <!-- Right Section -->
     <div class="flex items-center space-x-4">
@@ -107,7 +107,6 @@ import {
   SearchIcon,
 } from "lucide-vue-next";
 import UserNav from "../Otros/UserNav.vue";
-import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipProvider,
@@ -121,7 +120,6 @@ import { usePermissions } from "@/utils/auth";
 const isDark = ref(false);
 const searchQuery = ref("");
 
-const hasPermission = usePermissions();
 const searchStore = useSearchStore();
 
 const toggleSearchPanel = () => {
@@ -146,6 +144,4 @@ onMounted(() => {
     document.documentElement.classList.add("dark");
   }
 });
-
-function search() {}
 </script>

@@ -5,10 +5,7 @@
         <!-- Sección de Comités -->
         <div class="flex flex-row items-center justify-between mb-4">
           <h2 class="font-medium text-xl text-foreground">Cómites</h2>
-          <Button
-            @click="handleAddComite"
-            class="flex items-center gap-1"
-          >
+          <Button @click="handleAddComite" class="flex items-center gap-1">
             <PlusIcon class="h-4 w-4 mr-1" />
             Añadir
           </Button>
@@ -34,7 +31,9 @@
 
               <template v-for="comite in comites" :key="comite.id">
                 <!-- Fila del comité -->
-                <tr class="text-lg border-b transition-colors hover:bg-muted/50">
+                <tr
+                  class="text-lg border-b transition-colors hover:bg-muted/50"
+                >
                   <td class="p-4">
                     <div
                       class="flex items-center cursor-pointer"
@@ -75,7 +74,7 @@
                         <div class="py-1">
                           <a
                             href="#"
-                            class="block px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
+                            class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
                             @click.prevent="handleEditComite(comite)"
                           >
                             <EditIcon class="h-4 w-4" />
@@ -83,7 +82,7 @@
                           </a>
                           <a
                             href="#"
-                            class="block px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
+                            class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
                             @click.prevent="handleAddNucleo(comite.id)"
                           >
                             <PlusIcon class="h-4 w-4" />
@@ -425,7 +424,7 @@ const toggleComiteExpansion = (comiteId: string) => {
   console.log(comiteId);
   if (expandedComites.value.includes(comiteId)) {
     expandedComites.value = expandedComites.value.filter(
-      (id) => id !== comiteId,
+      (id) => id !== comiteId
     );
   } else {
     expandedComites.value.push(comiteId);

@@ -1,12 +1,9 @@
 <template>
   <div class="container mx-auto pt-6 bg-gray-50 dark:bg-zinc-800">
-    <div class="flex justify-between">
-      <div v-if="isVisible">
-        <SearchHome />
-      </div>
+    <div class="flex justify-center">
 
-      <div class="grid gap-6 md:grid-cols-[1fr_350px]">
-        <div class="space-y-6 w-[1050px]">
+      <div class="flex w-full justify-between gap-6">
+        <div class="space-y-6 flex-1 ">
           <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">
             Panel de Control de KPIs
           </h1>
@@ -38,7 +35,7 @@
             </TabsContent>
           </Tabs>
         </div>
-        <div class="space-y-6 w-full md:w-[300px] mt-12">
+        <div class="w-fit pt-12">
           <RightSidebar />
         </div>
       </div>
