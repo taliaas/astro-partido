@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import {usePermissions} from "@/utils/auth.ts";
+import { usePermissions } from "@/utils/auth.ts";
 
 const { path } = defineProps<{
   path: string;
 }>();
 const hasPermission = usePermissions();
+console.log("path", hasPermission("Procesos", "all"));
 
 const navigationItems = [
   { name: "Funcionamiento", href: "/minutes" },
-  ...(hasPermission('Procesos', 'all') ? [{ name: "Procesos", href: "/process" }] : []),
+  ...(hasPermission("Procesos", "all")
+    ? [{ name: "Procesos", href: "/process" }]
+    : []),
   { name: "Análisis", href: "/analisis_indicador" },
   { name: "Reportes", href: "/estadofunc" },
 ];
@@ -22,13 +25,12 @@ const navigationItems = [
       v-for="item in navigationItems"
       :key="item.name"
       :href="item.href"
-    >"
       :class="[
-      'dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors',
-      { 'text-blue-600': path === item.href },
-      ]
+        'dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors',
+        { 'text-blue-600': path === item.href },
+      ]"
+    >
       {{ item.name }}
     </a>
   </nav>
-  {{ canSeeProcess }}
 </template>

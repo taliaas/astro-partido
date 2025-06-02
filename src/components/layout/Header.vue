@@ -115,7 +115,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useSearchStore } from "@/utils/store.ts";
 import SearchHome from "@/components/layout/SearchHome.vue";
-import { usePermissions } from "@/utils/auth";
 
 const isDark = ref(false);
 const searchQuery = ref("");
