@@ -9,17 +9,17 @@ export default defineConfig({
     signIn: "/login",
     newUser: "/home",
     error: "/login",
-    signOut: "/login",
+    signOut: "/",
   },
   providers: [
     Credentials({
       credentials: {
         email: {},
         password: {},
-        rememberMe: {}
+        rememberMe: {},
       },
       async authorize(credentials) {
-        console.log(credentials)
+        console.log(credentials);
         const res = await fetch(`${API_URL}/auth/login`, {
           method: "POST",
           headers: {
@@ -36,9 +36,14 @@ export default defineConfig({
     }),
   ],
   callbacks: {
-    jwt({ user, token }: { user?: any; token: any }) {
+    async jwt({ user, token }: { user?: any; token: any }) {
       if (user) {
         token.user = user;
+      } else {
+        const res = await fetch(`${API_URL}/auth/verify`, {
+          headers: { Authorization: `Bearer ${token.user.jwt}` },
+        });
+        if (!res.ok) throw new Error("Unauthorized");
       }
       return token;
     },
