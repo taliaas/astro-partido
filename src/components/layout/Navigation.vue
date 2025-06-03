@@ -5,7 +5,7 @@ const { path } = defineProps<{
   path: string;
 }>();
 const hasPermission = usePermissions();
-console.log("path", hasPermission("Procesos", "all"));
+console.log("path", hasPermission("Documentos", "create"));
 
 const navigationItems = [
   { name: "Funcionamiento", href: "/minutes" },
