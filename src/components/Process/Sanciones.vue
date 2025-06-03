@@ -127,7 +127,7 @@
                       <Eye class="h-4 w-4"/>
                       Ver
                     </DropdownMenuItem>
-                    <DropdownMenuItem >
+                    <DropdownMenuItem @click="editSanction(sanction)">
                       <Pencil class="h-4 w-4"/>
                       Editar
                     </DropdownMenuItem>
@@ -253,8 +253,8 @@
   </div>
 </template>
 
-<script setup>
-import { computed, onMounted, ref } from "vue";
+<script setup lang="ts">
+import { computed, ref } from "vue";
 import { Eye, MoreVerticalIcon, Pencil, TrashIcon, XIcon} from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -264,16 +264,19 @@ import {
 } from "@/components/ui/dropdown-menu/index.js";
 import {Button} from "@/components/ui/button/index.js";
 import {toast} from "vue-sonner";
+import { actions } from "astro:actions";
+
+const { sanciones } = defineProps<{
+  sanciones: any[];
+}>();
 
 // Estado reactivo
-const sanctions = ref([]);
 const availableMembers = ref([]);
 const searchTerm = ref("");
 const statusFilter = ref("all");
 const showModal = ref(false);
 const isEditing = ref(false);
 const isLoading = ref(false);
-const notification = ref({ show: false, type: "", message: "" });
 
 const currentSanction = ref({
   id: null,
@@ -286,39 +289,9 @@ const currentSanction = ref({
   status: "active",
 });
 
-// Datos de ejemplo
-const mockSanctions = [
-  {
-    id: 1,
-    memberId: "1",
-    memberName: "Juan Carlos Pérez",
-    memberCI: "12345678901",
-    reason: "Incumplimiento de normativas internas",
-    startDate: "2024-01-15",
-    duration: "3 meses",
-    status: "active",
-  },
-  {
-    id: 2,
-    memberId: "2",
-    memberName: "María González",
-    memberCI: "98765432109",
-    reason: "Conducta inapropiada en reunión",
-    startDate: "2023-12-01",
-    duration: "1 mes",
-    status: "completed",
-  },
-];
-
-const mockMembers = [
-  { id: "1", name: "Juan Carlos Pérez", ci: "12345678901" },
-  { id: "2", name: "María González", ci: "98765432109" },
-  { id: "3", name: "Carlos Rodríguez", ci: "11223344556" },
-];
-
 // Computed
 const filteredSanctions = computed(() => {
-  return sanctions.value.filter((sanction) => {
+  return sanciones?.filter((sanction) => {
     const matchesSearch =
       sanction.memberName
         .toLowerCase()
@@ -359,33 +332,15 @@ const closeModal = () => {
 
 const saveSanction = async () => {
   isLoading.value = true;
-
   try {
-    // Simular llamada a API
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const member = availableMembers.value.find(
-      (m) => m.id === currentSanction.value.memberId,
-    );
-    if (member) {
-      currentSanction.value.memberName = member.name;
-      currentSanction.value.memberCI = member.ci;
-    }
 
     if (isEditing.value) {
-      const index = sanctions.value.findIndex(
-        (s) => s.id === currentSanction.value.id,
-      );
-      if (index !== -1) {
-        sanctions.value[index] = { ...currentSanction.value };
-      }
+      await actions.sancion.update()
       toast.success("Sanción actualizada correctamente");
     } else {
-      currentSanction.value.id = Date.now();
-      sanctions.value.push({ ...currentSanction.value });
+      await actions.sancion.createSancion()
       toast.success("Sanción creada correctamente");
     }
-
     closeModal();
   } catch (error) {
     toast.error("Error al guardar la sanción");
@@ -401,25 +356,10 @@ const deleteSanction = async (id) => {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       sanctions.value = sanctions.value.filter((s) => s.id !== id);
-      showNotification("success", "Sanción eliminada correctamente");
+      toast.success( "Sanción eliminada correctamente");
     } catch (error) {
-      showNotification("error", "Error al eliminar la sanción");
+      toast.error( "Error al eliminar la sanción");
     }
-  }
-};
-
-const completeSanction = async (id) => {
-  try {
-    // Simular llamada a API
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const sanction = sanctions.value.find((s) => s.id === id);
-    if (sanction) {
-      sanction.status = "completed";
-      showNotification("success", "Sanción marcada como completada");
-    }
-  } catch (error) {
-    showNotification("error", "Error al completar la sanción");
   }
 };
 
@@ -445,9 +385,4 @@ const getStatusText = (status) => {
   return texts[status] || status;
 };
 
-// Inicialización
-onMounted(() => {
-  sanctions.value = mockSanctions;
-  availableMembers.value = mockMembers;
-});
 </script>

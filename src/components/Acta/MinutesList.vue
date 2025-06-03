@@ -561,8 +561,6 @@ const filters = ref({
   status: "",
 });
 
-const menssage = ref("");
-
 const getStatusClass = (status) => {
   const classes = {
     Aprobada: "bg-green-100 text-green-800 hover:bg-green-200",
@@ -609,9 +607,10 @@ async function eliminarActa() {
 
   try {
     await actions.minute.deleteMinute(id, tipo)
-    menssage.value = "Se eliminó correctamente el acta";
+    toast.success("Se eliminó correctamente el acta");
     navigate('/minutes')
   } catch (e) {
+    toast.error("Error al eliminar el acta")
     console.error(e);
   }
 }
