@@ -1,0 +1,48 @@
+---
+function isActiveSection(route: string) {
+    return Astro.url.pathname === route;
+}
+
+const navigationItems = [
+    { id: "register", title: "Registro de actividades", route: "/process" },
+    { id: "sancion", title: "Sanciones", route: "/process/sancion"},
+    { id: "traslado", title: "Traslados", route: "/process/traslado"},
+    {id: "desactivaciones", title: "Desactivaciones", route: "/process/desactivacion"},
+];
+---
+
+<div class="container mx-auto px-4 py-6 md:px-6 md:py-8">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight">Procesos del funcionamiento</h1>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-8 md:flex-row">
+        <!-- Barra lateral de navegación -->
+        <aside class="md:w-1/4">
+            <nav class="grid gap-2 md:sticky md:top-20">
+                {
+                    navigationItems.map((item) => (
+                            <a
+                                    href={item.route}
+                                    class:list={[
+                                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                        isActiveSection(item.route)
+                                            ? "bg-muted text-foreground"
+                                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                                    ]}
+                            >
+                                <span>{item.title}</span>
+                            </a>
+                    ))
+                }
+            </nav>
+        </aside>
+
+        <!-- Contenido principal -->
+        <div class="flex-1 max-w-7xl">
+            <slot />
+        </div>
+    </div>
+</div>

@@ -1,8 +1,11 @@
 ---
-import General from "../../components/Process/General.vue"
+import Register from "../../components/Process/Register.vue"
 import RootLayout from "../../layouts/RootLayout.astro";
+import ProcessLayout from "../../layouts/ProcessLayout.astro";
 ---
 
 <RootLayout>
-    <General client:load/>
+    <ProcessLayout>
+        <Register client:load/>
+    </ProcessLayout>
 </RootLayout>

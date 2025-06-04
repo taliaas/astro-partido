@@ -27,13 +27,17 @@
           />
         </div>
         <select
-          v-model="statusFilter"
+          v-model="selectStatus"
           class="px-3 py-2 border border-gray-300 rounded-md"
         >
           <option value="all">Todos los estados</option>
-          <option value="active">Activas</option>
-          <option value="completed">Completadas</option>
-          <option value="suspended">Suspendidas</option>
+          <option
+              v-for="stat in status"
+              :key="stat"
+              :value="stat"
+          >
+            {{ stat }}
+          </option>
         </select>
         <select
           v-model="selectNucleo"
@@ -45,7 +49,7 @@
             :key="nucleo.id"
             :value="nucleo.id"
           >
-            {{ nucleo.nombre }}
+            {{ nucleo.names }}
           </option>
         </select>
       </div>
@@ -156,8 +160,8 @@
             </tr>
           </tbody>
         </table>
-        <div v-if="filteredSanctions.length === 0" class="text-center py-8 text-gray-500 text-lg">
-          No hay sanciones.
+        <div v-if="!filteredSanctions?.length" class="text-center py-8 text-gray-500 text-lg">
+          No hay sanciones. {{members?.firstname}}
         </div>
       </div>
     </div>
@@ -183,17 +187,17 @@
               >Militante</label
             >
             <select
-              v-model="currentSanction.memberId"
+              v-model="currentSanction.militanteId"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
             >
               <option value="">Seleccionar militante</option>
               <option
-                v-for="member in availableMembers"
+                v-for="member in members"
                 :key="member.id"
                 :value="member.id"
               >
-                {{ member.name }} - CI: {{ member.ci }}
+                {{ member.firstname }} {{ member.lastname }}
               </option>
             </select>
           </div>
@@ -203,11 +207,11 @@
               >Motivo</label
             >
             <textarea
-              v-model="currentSanction.reason"
+              v-model="currentSanction.causa"
               required
               rows="3"
               placeholder="Describe el motivo de la sanción..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
             ></textarea>
           </div>
 
@@ -216,21 +220,30 @@
               >Fecha de Inicio</label
             >
             <input
-              v-model="currentSanction.startDate"
+              v-model="currentSanction.fecha"
               type="date"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
           </div>
 
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Severidad</label>
+            <select v-model="currentSanction.severidad" required class="w-full px-3 py-2 border border-gray-300 rounded">
+              <option value="">Seleccione la severidad</option>
+              <option value="LEVE">Leve</option>
+              <option value="MEDIA">Media</option>
+              <option value="GRAVE">Grave</option>
+            </select>
+          </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1"
               >Duración</label
             >
             <select
-              v-model="currentSanction.duration"
+              v-model="currentSanction.duracion"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
             >
               <option value="">Seleccionar duración</option>
               <option value="1 mes">1 mes</option>
@@ -241,11 +254,11 @@
             </select>
           </div>
 
-          <div class="flex gap-3 pt-4">
-            <button
+          <div class="flex gap-3 pt-4 justify-end">
+            <Button
               type="submit"
               :disabled="isLoading"
-              class="flex-1 bg-primary hover:bg-blue-400 text-white py-2 px-4 rounded-md transition-colors"
+              :loading="isLoading"
             >
               {{
                 isLoading
@@ -254,14 +267,14 @@
                     ? "Actualizar"
                     : "Crear Sanción"
               }}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               @click="closeModal"
-              class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md transition-colors"
+              variant="secondary"
             >
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -281,29 +294,43 @@ import {
 import {Button} from "@/components/ui/button/index.js";
 import {toast} from "vue-sonner";
 import { actions } from "astro:actions";
+import {Select} from "@/components/ui/select";
 
-const { sanciones } = defineProps<{
+const { sanciones, members } = defineProps<{
   sanciones: any[];
+  members: any[];
 }>();
 
 // Estado reactivo
-const availableMembers = ref([]);
 const searchTerm = ref("");
-const statusFilter = ref("all");
 const showModal = ref(false);
 const isEditing = ref(false);
 const isLoading = ref(false);
+
+const nucleos = computed(() => {
+  const set = new Set(sanciones?.map((sanction) => {
+    sanction.militante?.core?.name
+  }))
+  return Array.from(set)
+})
+const status = computed(() => {
+  const set = new Set(sanciones?.map((sanction) => {
+    sanction.estado
+  }))
+  return Array.from(set)
+})
+
 const selectNucleo = ref("all");
+const selectStatus = ref("all")
 
 const currentSanction = ref({
   id: null,
-  memberId: "",
-  memberName: "",
-  memberCI: "",
-  reason: "",
-  startDate: "",
-  duration: "",
-  status: "active",
+  militanteId: "",
+  causa: "",
+  fecha: "",
+  severidad: "LEVE",
+  duracion: "",
+  estado: "active",
 });
 
 // Computed
@@ -325,13 +352,12 @@ const openAddModal = () => {
   isEditing.value = false;
   currentSanction.value = {
     id: null,
-    memberId: "",
-    memberName: "",
-    memberCI: "",
-    reason: "",
-    startDate: new Date().toISOString().split("T")[0],
-    duration: "",
-    status: "active",
+    militanteId: "",
+    causa: "",
+    fecha: "",
+    severidad: "",
+    duracion: "",
+    estado: "active",
   };
   showModal.value = true;
 };
@@ -349,18 +375,19 @@ const closeModal = () => {
 
 const saveSanction = async () => {
   isLoading.value = true;
-  try {
 
+  try {
     if (isEditing.value) {
       await actions.sancion.update()
       toast.success("Sanción actualizada correctamente");
     } else {
-      await actions.sancion.createSancion()
+      await actions.sancion.createSancion(currentSanction.value)
       toast.success("Sanción creada correctamente");
     }
     closeModal();
   } catch (error) {
     toast.error("Error al guardar la sanción");
+    console.log(error)
   } finally {
     isLoading.value = false;
   }
@@ -384,22 +411,5 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("es-ES");
 };
 
-const getStatusBadgeClass = (status) => {
-  const classes = {
-    active: "bg-red-100 text-red-800",
-    completed: "bg-green-100 text-green-800",
-    suspended: "bg-yellow-100 text-yellow-800",
-  };
-  return classes[status] || "bg-gray-100 text-gray-800";
-};
-
-const getStatusText = (status) => {
-  const texts = {
-    active: "Activa",
-    completed: "Completada",
-    suspended: "Suspendida",
-  };
-  return texts[status] || status;
-};
 
 </script>

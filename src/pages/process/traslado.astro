@@ -1,8 +1,11 @@
 ---
 import Transfer from "../../components/Process/Traslado.vue"
 import RootLayout from "../../layouts/RootLayout.astro";
+import ProcessLayout from "../../layouts/ProcessLayout.astro";
 ---
 
 <RootLayout>
-    <Transfer client:load/>
+    <ProcessLayout>
+        <Transfer client:load/>
+    </ProcessLayout>
 </RootLayout>

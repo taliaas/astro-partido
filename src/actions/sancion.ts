@@ -4,12 +4,11 @@ import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
 
 export const createSancion = defineAction({
-    accept: "form",
     input: z.object({
         causa: z.string().min(1),
         fecha: z.date(),
         severidad: z.enum(["LEVE", "GRAVE", "MEDIA"]).optional(),
-        duracion: z.number().min(1).max(365).optional(),
+        duracion: z.string().min(1),
         estado: z.enum(["PENDIENTE", "ACEPTADA", "RECHAZADA"]).optional(),
         militanteId: z.number().int().positive(),
     }),
