@@ -51,7 +51,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Documents from "../Home/Documents.vue";
 import KPIs from "../Home/KPIs.vue";
 import RightSidebar from "./RightSidebar.vue";
-import SearchHome from "@/components/layout/SearchHome.vue";
 import { useSearchStore } from "@/utils/store.ts";
 
 const icons = { Activity, FileCheck2, Files, FileText };

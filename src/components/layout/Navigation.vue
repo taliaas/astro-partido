@@ -1,13 +1,33 @@
 <script setup lang="ts">
+import { usePermissions } from "@/utils/auth-client";
+
 const { path } = defineProps<{
   path: string;
 }>();
 
+const hasPermissions = usePermissions();
+
 const navigationItems = [
-  { name: "Funcionamiento", href: "/minutes" },
-  { name: "Procesos", href: "/process" },
-  { name: "Análisis", href: "/analisis_indicador" },
-  { name: "Reportes", href: "/estadofunc" },
+  {
+    name: "Funcionamiento",
+    href: "/minutes",
+    hasPermission: hasPermissions("Documentos", "read"),
+  },
+  {
+    name: "Procesos",
+    href: "/process",
+    hasPermission: hasPermissions("Procesos", "read"),
+  },
+  {
+    name: "Análisis",
+    href: "/analisis_indicador",
+    hasPermission: hasPermissions("Análisis", "read"),
+  },
+  {
+    name: "Reportes",
+    href: "/estadofunc",
+    hasPermission: hasPermissions("Reportes", "read"),
+  },
 ];
 </script>
 

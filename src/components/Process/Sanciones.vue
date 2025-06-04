@@ -28,12 +28,25 @@
         </div>
         <select
           v-model="statusFilter"
-          class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+          class="px-3 py-2 border border-gray-300 rounded-md"
         >
           <option value="all">Todos los estados</option>
           <option value="active">Activas</option>
           <option value="completed">Completadas</option>
           <option value="suspended">Suspendidas</option>
+        </select>
+        <select
+          v-model="selectNucleo"
+          class="px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="all">Todos los núcleos</option>
+          <option
+            v-for="nucleo in nucleos"
+            :key="nucleo.id"
+            :value="nucleo.id"
+          >
+            {{ nucleo.nombre }}
+          </option>
         </select>
       </div>
     </div>
@@ -143,6 +156,9 @@
             </tr>
           </tbody>
         </table>
+        <div v-if="filteredSanctions.length === 0" class="text-center py-8 text-gray-500 text-lg">
+          No hay sanciones.
+        </div>
       </div>
     </div>
 
@@ -277,6 +293,7 @@ const statusFilter = ref("all");
 const showModal = ref(false);
 const isEditing = ref(false);
 const isLoading = ref(false);
+const selectNucleo = ref("all");
 
 const currentSanction = ref({
   id: null,

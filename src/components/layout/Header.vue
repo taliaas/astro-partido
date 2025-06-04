@@ -16,6 +16,7 @@
       </h1>
     </a>
 
+
     <!-- Navigation -->
     <slot name="navigation" />
 
@@ -23,20 +24,25 @@
     <div class="flex items-center space-x-4">
       <!-- Search -->
       <div class="relative">
-        <div class="flex items-center gap-2 border px-3 py-2 rounded-md w-full">
-          <SearchIcon class="h-4 w-4 text-gray-400" />
+        <div
+          class="flex items-center gap-2 border px-3 py-2 rounded-md w-full text-gray-400"
+        >
+          <SearchIcon class="h-4 w-4" />
           <input
             v-model="searchQuery"
             class="flex-1 border-0 outline-none bg-transparent placeholder:text-gray-400"
             placeholder="Buscar..."
             @keyup.enter="search"
           />
-          <button
-            @click="toggleSearchPanel"
-            class="h-7 w-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500"
+          <Sheet_container
+            title="Búsqueda avanzada"
+            description="Utiliza los filtros para refinar la búsqueda"
           >
             <FilterIcon class="h-4 w-4" />
-          </button>
+            <template #content>
+              <Filters />
+            </template>
+          </Sheet_container>
         </div>
       </div>
 
@@ -61,10 +67,7 @@
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <!-- Search -->
-      <div>
-        <SearchHome class="w-full" />
-      </div>
+
       <!-- Action Buttons -->
       <a
         href="/chat"
@@ -97,24 +100,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import {
   BellIcon,
-  MessageSquareIcon,
-  SunIcon,
-  MoonIcon,
   FilterIcon,
+  MessageSquareIcon,
+  MoonIcon,
   SearchIcon,
+  SunIcon,
 } from "lucide-vue-next";
 import UserNav from "../Otros/UserNav.vue";
 import {
   Tooltip,
-  TooltipProvider,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSearchStore } from "@/utils/store.ts";
-import SearchHome from "@/components/layout/SearchHome.vue";
+import Sheet_container from "@/components/Sheet_container/sheet_container.vue";
+import Filters from "@/components/filters/filters.vue";
 
 const isDark = ref(false);
 const searchQuery = ref("");
@@ -134,7 +138,7 @@ const toggleTheme = () => {
 onMounted(() => {
   const savedTheme = localStorage.getItem("theme");
   const systemPrefersDark = window.matchMedia(
-    "(prefers-color-scheme: dark)"
+    "(prefers-color-scheme: dark)",
   ).matches;
 
   isDark.value = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
