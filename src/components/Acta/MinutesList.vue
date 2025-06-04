@@ -438,7 +438,7 @@
 <script setup lang="ts">
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
-import { usePermissions } from "@/utils/auth.ts";
+import { usePermissions } from "@/utils/auth-client.ts";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import {

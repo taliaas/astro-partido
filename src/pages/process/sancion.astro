@@ -1,8 +1,8 @@
 ---
 import SancionService from "@/services/SancionService";
 import RootLayout from "../../layouts/RootLayout.astro";
-import Sanciones from "../sanciones.astro";
 import { getSession } from "auth-astro/server";
+import Sanciones from "@/components/Process/Sanciones.vue";
 
 const session = await getSession(Astro.request);
 const searchParams = Astro.url.searchParams;

@@ -25,7 +25,6 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
-    ssr: { external: true },
   },
   experimental: {
     clientPrerender: true

@@ -1,6 +1,3 @@
-import { actions } from "astro:actions";
-import { getSession } from "auth-astro/server";
-import { onBeforeMount, ref } from "vue";
 
 export const modules = [
   "Documentos",
@@ -23,7 +20,7 @@ export const permissionActions = [
   { id: "all", name: "Todo" },
 ] as const;
 
-function hasPermissions(module: string, action: string, claims: any[]) {
+export function hasPermissions(module: string, action: string, claims: any[]) {
   const check = claims.some(
     (claim: any) =>
       claim.module === module &&
@@ -33,26 +30,6 @@ function hasPermissions(module: string, action: string, claims: any[]) {
   return check;
 }
 
-export async function hasServerPermissions(
-  module: Module,
-  action: PermissionAction,
-  request: Request,
-) {
-  const session = await getSession(request);
-  if (!session) return false;
-  return hasPermissions(module, action, (session?.user as any).claims ?? []);
-}
 
-export function usePermissions() {
-  const user = ref<any>(null);
-  onBeforeMount(async () => {
-    const { data, error } = await actions.auth.me();
-    if (!error && data) {
-      user.value = data;
-    }
-  });
-  return function check(module: Module, action: PermissionAction) {
-    if (!user.value) return false;
-    return hasPermissions(module, action, user.value.role?.claims ?? []);
-  };
-}
+
+

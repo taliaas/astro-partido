@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { usePermissions } from "@/utils/auth.ts";
-
 const { path } = defineProps<{
   path: string;
 }>();
-const hasPermission = usePermissions();
 
 const navigationItems = [
   { name: "Funcionamiento", href: "/minutes" },
