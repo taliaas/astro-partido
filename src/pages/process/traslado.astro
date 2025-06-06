@@ -1,11 +1,42 @@
 ---
+import MilitantService from "../../services/MilitantService";
+import {getSession} from "auth-astro/server";
 import Transfer from "../../components/Process/Traslado.vue"
 import RootLayout from "../../layouts/RootLayout.astro";
 import ProcessLayout from "../../layouts/ProcessLayout.astro";
+import TrasladoService from "../../services/TrasladoService";
+
+const session = await getSession(Astro.request);
+const searchParams = Astro.url.searchParams;
+const page = Number(searchParams.get("page") ?? 1);
+
+async function getTraslado(): Promise<any[]> {
+    const traslado = new TrasladoService();
+    try {
+        return await traslado.getAll(page, session);
+    } catch (e) {
+        console.error(e);
+        return [];
+    }
+}
+
+async function getMembers(): Promise<any[]>{
+    const service = new MilitantService()
+    try{
+        return await service.getAll()
+    }
+    catch(error){
+        console.error(error)
+        throw new Error()
+    }
+}
+const traslados: Promise<any[]> = getTraslado()
+const members: Promise<any[]> = getMembers()
+console.log(traslados)
 ---
 
 <RootLayout>
     <ProcessLayout>
-        <Transfer client:load/>
+        <Transfer traslados={traslados} members={members} client:load/>
     </ProcessLayout>
 </RootLayout>

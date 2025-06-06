@@ -34,6 +34,19 @@
           <option value="completed">Completados</option>
           <option value="rejected">Rechazados</option>
         </select>
+        <select
+            v-model="selectNucleo"
+            class="px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="all">Todos los núcleos</option>
+          <option
+              v-for="nucleo in nucleos"
+              :key="nucleo.id"
+              :value="nucleo.id"
+          >
+            {{ nucleo.names }}
+          </option>
+        </select>
       </div>
     </div>
 
@@ -294,8 +307,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import {Select} from "@/components/ui/select/index.js";
 
 // Estado reactivo
 const transfers = ref([])
@@ -308,6 +322,7 @@ const showDetailsModal = ref(false)
 const isLoading = ref(false)
 const notification = ref({ show: false, type: '', message: '' })
 const selectedTransfer = ref(null)
+const selectNucleo = ref("all");
 
 const currentTransfer = ref({
   id: null,
@@ -321,6 +336,11 @@ const currentTransfer = ref({
   effectiveDate: '',
   status: 'pending'
 })
+
+const { traslados, members } = defineProps<{
+  traslados: any[];
+  members: any[];
+}>();
 
 // Datos de ejemplo
 const mockTransfers = [
@@ -364,6 +384,13 @@ const filteredTransfers = computed(() => {
     const matchesStatus = statusFilter.value === 'all' || transfer.status === statusFilter.value
     return matchesSearch && matchesStatus
   })
+})
+
+const nucleos = computed(() => {
+  const set = new Set(traslados?.map((tras) => {
+    tras.militante?.core?.name
+  }))
+  return Array.from(set)
 })
 
 // Métodos

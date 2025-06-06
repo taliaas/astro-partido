@@ -170,13 +170,13 @@
       >
         <div class="flex flex-col space-y-1.5 text-center sm:text-left">
           <h2 class="text-lg font-semibold leading-none tracking-tight">
-            {{ isEditing ? "Edit Member" : "Add Member" }}
+            {{ isEditing ? "Editar militante" : "Añadir militante" }}
           </h2>
           <p class="text-sm text-muted-foreground">
             {{
               isEditing
-                ? "Update member information"
-                : "Fill in the details to add a new member"
+                ? "Actualizar la información de los militantes"
+                : "Complete los datos para agregar un nuevo militante"
             }}
           </p>
         </div>
@@ -186,14 +186,14 @@
               <label
                 for="firstname"
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >First Name</label
+                >Nombre</label
               >
               <input
                 id="firstname"
                 v-model="currentMember.firstname"
                 type="text"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="First name"
+                placeholder="Nombre"
                 required
               />
             </div>
@@ -201,14 +201,14 @@
               <label
                 for="lastname"
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Last Name</label
+                >Apellidos</label
               >
               <input
                 id="lastname"
                 v-model="currentMember.lastname"
                 type="text"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Last name"
+                placeholder="Apellidos"
                 required
               />
             </div>
@@ -218,14 +218,14 @@
             <label
               for="email"
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >Email</label
+              >Correo</label
             >
             <input
               id="email"
               v-model="currentMember.email"
               type="email"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Email address"
+              placeholder="Correo"
               required
             />
           </div>
@@ -235,7 +235,7 @@
               <label
                 for="organization"
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Organization</label
+                >Organización</label
               >
               <select
                 id="organization"
@@ -243,17 +243,16 @@
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
               >
-                <option value="" disabled>Select organization</option>
+                <option value="" disabled>Seleccione la organización</option>
                 <option value="pcc">PCC</option>
                 <option value="ujc">UJC</option>
-                <option value="other">Other</option>
               </select>
             </div>
             <div class="space-y-2">
               <label
                 for="core"
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Core</label
+                >Núcleo</label
               >
               <select
                 id="core"
@@ -261,10 +260,8 @@
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
               >
-                <option value="" disabled>Select core</option>
-                <option value="CEIS">CEIS</option>
-                <option value="CEIGE">CEIGE</option>
-                <option value="CEIM">CEIM</option>
+                <option value="" disabled>Seleccione el núcleo</option>
+                <option value="">CEIS</option>
               </select>
             </div>
           </div>
@@ -274,14 +271,14 @@
               <label
                 for="phone"
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Phone</label
+                >Teléfono</label
               >
               <input
                 id="phone"
                 v-model="currentMember.phone"
                 type="text"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Phone number"
+                placeholder="Número de teléfono"
                 required
               />
             </div>
@@ -289,7 +286,7 @@
               <label
                 for="status"
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Status</label
+                >Estado</label
               >
               <div class="flex items-center space-x-2 pt-2">
                 <button
@@ -321,14 +318,14 @@
             <label
               for="address"
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >Address</label
+              >Dirección</label
             >
             <input
               id="address"
               v-model="currentMember.address"
               type="text"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Address"
+              placeholder="Dirección"
               required
             />
           </div>
@@ -345,7 +342,7 @@
               type="submit"
               class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
             >
-              {{ isEditing ? "Save Changes" : "Add Member" }}
+              {{ isEditing ? "Guardar cambios" : "Añadir militante" }}
             </button>
           </div>
         </form>
@@ -390,20 +387,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from "vue";
-import {
-  Search,
-  PlusCircle,
-  Pencil,
-  Trash,
-  UserX,
-  UserCheck,
-  MoreVerticalIcon,
-} from "lucide-vue-next";
+import { computed, reactive, ref } from "vue";
+import { Pencil, Search, Trash } from "lucide-vue-next";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
+import MilitantService from "@/services/MilitantService.ts";
+
 
 // UI state
 const searchQuery = ref("");
@@ -452,7 +443,7 @@ const filteredMembers = computed(() => {
       member.lastname.toLowerCase().includes(query) ||
       member.email.toLowerCase().includes(query) ||
       member.organization.toLowerCase().includes(query) ||
-      member.core.name.toLowerCase().includes(query)
+      member.core.name.toLowerCase().includes(query),
   );
 });
 
@@ -493,6 +484,7 @@ const resetCurrentMember = () => {
 };
 
 const saveMember = () => {
+  const service = new MilitantService();
   if (isEditing.value) {
     // Update existing member
     const index = members.value.findIndex((m) => m.id === currentMember.id);
@@ -501,9 +493,8 @@ const saveMember = () => {
     }
   } else {
     // Add new member
-    const newId = Math.max(0, ...members.value.map((m) => m.id)) + 1;
-    currentMember.id = newId;
-    members.value.push(JSON.parse(JSON.stringify(currentMember)));
+    const session = ''
+    service.createMilitant(session, currentMember);
   }
 
   closeMemberModal();
@@ -522,7 +513,7 @@ function nextPage() {
   if (currentPage.value < totalPages) {
     currentPage.value++;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
     );
   }
 }
@@ -530,7 +521,7 @@ function previousPage() {
   if (currentPage > 1) {
     currentPage.value--;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
     );
   }
 }

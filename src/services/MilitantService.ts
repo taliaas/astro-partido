@@ -39,6 +39,26 @@ export default class MilitantService {
         }
     }
 
+    async createMilitant(session, data){
+        try{
+            const response = await fetch(`${API_URL}/militantes/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                Authorization: "Bearer " + session?.jwt,
+                    body: JSON.stringify(data),
+            })
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+           return await response.json()
+        }
+        catch (e) {
+            throw new Error(e)
+        }
+    }
+
     async getMilitantesByCore(id: number, page: number) {
         try {
             const response = await fetch(`${API_URL}/militantes/core/${id}?page=${page}`, {
