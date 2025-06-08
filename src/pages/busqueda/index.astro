@@ -1,0 +1,29 @@
+---
+
+import RootLayout from "../../layouts/RootLayout.astro";
+import Busqueda from "../../components/filters/Busqueda.vue"
+import SolrService from "../../services/SolrService";
+
+const searchParams = Astro.url.searchParams
+const limit = searchParams.get("limit") || 1
+const page = searchParams.get("page") || 1
+
+async function getActas(limit: any, page: any, query: any) {
+    try {
+        const service = new SolrService()
+        if (!service) {
+            throw new Error('Error al leer');
+        }
+        return service.getAllMinutes(page, limit, query);
+    } catch (error) {
+        console.error('Error fetching actas:', error);
+        throw new Error;
+    }
+}
+
+const actas = getActas(limit, page, query)
+---
+
+<RootLayout>
+    <Busqueda />
+</RootLayout>

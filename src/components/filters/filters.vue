@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import {API_URL} from "astro:env/client";
 
 // Reactive data
 const documentType = ref("todos");
@@ -8,40 +7,13 @@ const status = ref("cualquier");
 const dateFrom = ref("");
 const dateTo = ref("");
 const keywords = ref("");
-const open = ref(false);
 
-const query = async () => {
-  const params = {
-    doc_type: documentType.value,
-    status: status.value,
-    dateFrom: dateFrom.value,
-    dateTo: dateTo.value,
-    keywords: keywords.value,
-  };
-  try {
-    const response = await fetch(`${API_URL}/indexing/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    });
-    if (!response.ok) throw new Error('Error en la consulta');
-    const data = await response.json();
-
-  } catch (error) {
-    console.error('Error al consultar:', error);
-  }
-};
-
-async function openQuery() {
-  await query();
-  open.value = true;
-}
 </script>
 
 <template>
   <div class="h-full flex flex-col">
     <!-- Form Content -->
-    <form action="/minutes" method="post" class="p-6 space-y-6 flex flex-col flex-1">
+    <form action="/busqueda" method="post" class="p-6 space-y-6 flex flex-col flex-1">
       <!-- Tipo de documento -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700"
@@ -122,7 +94,6 @@ async function openQuery() {
           Limpiar
         </Button>
         <button
-          @click="openQuery"
           type="submit"
           class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
         >
