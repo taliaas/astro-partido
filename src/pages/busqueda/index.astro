@@ -4,6 +4,11 @@ import RootLayout from "../../layouts/RootLayout.astro";
 import Busqueda from "../../components/filters/Busqueda.vue"
 import SolrService from "../../services/SolrService";
 
+const formData = await Astro.request.formData()
+const query = Object.fromEntries(formData.entries())
+
+console.log(query)
+
 const searchParams = Astro.url.searchParams
 const limit = searchParams.get("limit") || 1
 const page = searchParams.get("page") || 1
