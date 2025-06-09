@@ -4,15 +4,26 @@ import {getSession} from "auth-astro/server.ts";
 import {API_URL} from "astro:env/client";
 
 export const deactiveMili = defineAction({
-    input: z.number(),
+    input: z.object({
+        motivo: z.string(),
+        fecha: z.string(),
+        estado: z.string(),
+        militante: z.any(),
+    }),
     handler: async (input, context) => {
         const session: any = await getSession(context.request);
-        const res = await fetch(`${API_URL}/militantes/deactivate/${input}`, {
-            method: "PUT",
+        const res = await fetch(`${API_URL}/desactivation`, {
+            method: "POsT",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + session?.jwt,
             },
+            body: JSON.stringify({
+                motivo: input.motivo,
+                fecha: input.fecha,
+                estado: input.estado,
+                militante: input.militante,
+            }),
         });
         if (!res.ok) {
             throw new ActionError({

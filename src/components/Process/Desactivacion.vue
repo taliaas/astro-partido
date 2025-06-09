@@ -39,7 +39,21 @@ const currentDeactivation = ref({
 
 // Computed
 const filteredDeactivations = computed(() => {
-  return desactivations?.data;
+  if (!desactivations?.data) return [];
+  return desactivations.data.filter((deactivation: any) => {
+    // Filtro por término de búsqueda (nombre o apellido)
+    const member = deactivation.militante || {};
+    const fullName = `${member.firstname || ''} ${member.lastname || ''}`.toLowerCase();
+    const matchesSearch = !searchTerm.value || fullName.includes(searchTerm.value.toLowerCase());
+
+    // Filtro por núcleo
+    const matchesCore = !currentNucleos.value || member.core === currentNucleos.value;
+
+    // Filtro por motivo
+    const matchesReason = !reasonFilter.value || deactivation.motivo === reasonFilter.value;
+
+    return matchesSearch && matchesCore && matchesReason;
+  });
 });
 
 // Métodos
@@ -75,7 +89,6 @@ const saveDeactivation = async () => {
       return;
     }
     const newDeactivation = {
-      id: Date.now(),
       motivo: currentDeactivation.value.motivo,
       fecha: currentDeactivation.value.fecha,
       estado: 'pending',
@@ -95,7 +108,7 @@ const confirmDeactivation = async (id: number) => {
   if (confirm('¿Está seguro de que desea confirmar esta desactivación?')) {
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
-      const deactivation = deactivations.value.find(d => d.id === id);
+      const deactivation = desactivations?.data.find((d: any) => d.id === id);
       if (deactivation) {
         deactivation.estado = 'confirmed';
         toast.success('Desactivación confirmada correctamente');
@@ -110,7 +123,7 @@ const reactivateMember = async (id: number) => {
   if (confirm('¿Está seguro de que desea reactivar este miembro?')) {
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
-      const deactivation = deactivations.value.find(d => d.id === id);
+      const deactivation = desactivations?.data.find((d: any) => d.id === id);
       if (deactivation) {
         deactivation.estado = 'reactivated';
         deactivation.reactivationDate = new Date().toISOString().split('T')[0];
@@ -125,17 +138,6 @@ const reactivateMember = async (id: number) => {
 const viewDeactivationDetails = (deactivation: any) => {
   selectedDeactivation.value = deactivation;
   showDetailsModal.value = true;
-};
-
-const getReasonText = (reason: string) => {
-  const texts: Record<string, string> = {
-    retirement: 'Jubilación',
-    resignation: 'Renuncia',
-    disciplinary: 'Acción Disciplinaria',
-    transfer_out: 'Traslado Externo',
-    other: 'Otro'
-  };
-  return texts[reason] || reason;
 };
 
 const getStatusBadgeClass = (status: string) => {
@@ -197,20 +199,12 @@ onMounted(() => {
           class="px-3 py-2 border border-gray-300 rounded-md"
         >
           <option value="">Todos los motivos</option>
-          <option value="retirement">Jubilación</option>
-          <option value="resignation">Renuncia</option>
-          <option value="disciplinary">Acción Disciplinaria</option>
-          <option value="transfer_out">Traslado Externo</option>
-          <option value="other">Otro</option>
+          <option value="Jubilación">Jubilación</option>
+          <option value="Otro">Otro</option>
         </select>
-        <input
-          v-model="dateFilter"
-          type="month"
-          class="px-3 py-2 border border-gray-300 rounded-md "
-        />
       </div>
     </div>
-
+{{ desactivations.data }}
     <!-- Lista de Desactivaciones -->
     <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -240,11 +234,10 @@ onMounted(() => {
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-for="deactivation in filteredDeactivations" :key="deactivation.id" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="font-medium text-gray-900">{{ deactivation.militante?.name }}</div>
-                <div class="text-sm text-gray-500">CI: {{ deactivation.militante?.ci }}</div>
+                <div class="font-medium text-gray-900">{{ deactivation.militante?.firstname }} {{ deactivation.militante?.lastname }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="text-sm text-gray-900">{{ getReasonText(deactivation.motivo) }}</span>
+                <span class="text-sm text-gray-900">{{deactivation.motivo }}</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ deactivation.fecha }}
@@ -258,35 +251,18 @@ onMounted(() => {
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                <button
-                  @click="viewDeactivationDetails(deactivation)"
-                  class="text-blue-600 hover:text-blue-900 transition-colors"
-                >
-                  Ver Detalles
-                </button>
-                <button
-                  v-if="deactivation.estado === 'pending'"
-                  @click="confirmDeactivation(deactivation.id)"
-                  class="text-green-600 hover:text-green-900 transition-colors"
-                >
-                  Confirmar
-                </button>
-                <button
-                  v-if="deactivation.estado === 'confirmed' && deactivation.motivo !== 'disciplinary'"
-                  @click="reactivateMember(deactivation.id)"
-                  class="text-orange-600 hover:text-orange-900 transition-colors"
-                >
-                  Reactivar
-                </button>
+                <!--acciones que se deben ejecutar-->
               </td>
             </tr>
-            <tr v-if="desactivations?.data.length === 0">
+            <tr v-if="filteredDeactivations?.length === 0">
               <td colspan="6" class="text-center py-8 text-gray-500">No hay desactivaciones registradas.</td>
             </tr>
           </tbody>
         </table>
       </div>
+      
     </div>
+    
 
     <!-- Modal para Nueva Desactivación -->
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -398,7 +374,7 @@ onMounted(() => {
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700">Motivo</label>
-              <p class="text-sm text-gray-900">{{ getReasonText(selectedDeactivation.motivo) }}</p>
+              <p class="text-sm text-gray-900">{{ selectedDeactivation.motivo }}</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Fecha</label>
