@@ -5,8 +5,19 @@ import Header from "@/components/layout/Header.vue";
 import Navigation from "@/components/layout/Navigation.vue";
 import LoadingIndicator from "astro-loading-indicator/component";
 import { Toaster } from "@/components/ui/sonner";
+import CoreService from "@/services/CoreService";
 
 const pathName = Astro.originPathname;
+
+async function getCore() {
+  const service = new CoreService();
+  try {
+    return await service.getAllCore();
+  } catch (e) {
+    console.error(e);
+  }
+}
+const cores = await getCore();
 ---
 
 <!doctype html>
@@ -24,7 +35,7 @@ const pathName = Astro.originPathname;
     <Toaster client:idle richColors />
     <div class="min-h-screen bg-gray-50">
       <!-- Header -->
-      <Header client:load>
+      <Header cores={cores} client:load>
         <Navigation client:load slot="navigation" path={pathName} />
       </Header>
 

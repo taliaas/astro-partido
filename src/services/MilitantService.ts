@@ -39,23 +39,24 @@ export default class MilitantService {
         }
     }
 
-    async createMilitant(session, data){
+    async createMilitant(session: any, data: any){
         try{
             const response = await fetch(`${API_URL}/militantes/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': "Bearer " + session?.jwt,
                 },
-                Authorization: "Bearer " + session?.jwt,
-                    body: JSON.stringify(data),
+                body: JSON.stringify(data),
             })
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
            return await response.json()
         }
-        catch (e) {
-            throw new Error(e)
+        catch (error) {
+            console.log(error)
+            throw new Error(String(error))
         }
     }
 

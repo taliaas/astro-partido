@@ -39,15 +39,7 @@ const currentDeactivation = ref({
 
 // Computed
 const filteredDeactivations = computed(() => {
-  return desactivations?.data.filter(deactivation => {
-    const matchesSearch =
-      deactivation.militante?.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      deactivation.militante?.ci?.includes(searchTerm.value);
-    const matchesReason = !reasonFilter.value || deactivation.motivo === reasonFilter.value;
-    const matchesDate = !dateFilter.value || (deactivation.fecha && deactivation.fecha.startsWith(dateFilter.value));
-    const matchesCore = !currentNucleos.value || deactivation.militante?.core == currentNucleos.value;
-    return matchesSearch && matchesReason && matchesDate && matchesCore;
-  });
+  return desactivations?.data;
 });
 
 // Métodos
@@ -185,7 +177,6 @@ onMounted(() => {
       </button>
     </div>
 
-    {{ desactivations }}
     <!-- Filtros -->
     <div class="bg-white p-4 rounded-lg border shadow-sm">
       <div class="flex gap-4 items-center">
@@ -311,7 +302,7 @@ onMounted(() => {
 
         <form @submit.prevent="saveDeactivation" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Miembro</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Militante</label>
             <select
               v-model="currentDeactivation.militante"
               required
@@ -395,7 +386,7 @@ onMounted(() => {
         <div v-if="selectedDeactivation" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700">Miembro</label>
+              <label class="block text-sm font-medium text-gray-700">Militante</label>
               <p class="text-sm text-gray-900">{{ selectedDeactivation.militante?.name }}</p>
             </div>
             <div>
