@@ -1,12 +1,14 @@
 import { API_URL } from 'astro:env/client';
 
 export default class NotificationService {
-    async getAll(email: any) {
+    async getAll(user: any) {
+        console.log(user.email)
         try {
-            const response = await fetch(`${API_URL}/notification/user/${email}`, {
+            const response = await fetch(`${API_URL}/notification/user/${user.email}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user.jwt}`,
                 },
             });
             if (!response.ok) {

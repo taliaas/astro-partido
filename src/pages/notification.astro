@@ -10,13 +10,14 @@ const user = session?.user
 async function getNotification() {
   const service = new NotificationService()
   try {
-    await service.getAll(user?.email ?? '')
+    return await service.getAll(user)
   } catch (e) {
     console.error('Error fetching notification:', e);
     throw e;
   }
 }
 const notifications= await getNotification()
+console.log("Notification: ",notifications)
 ---
 
 <RootLayout>

@@ -28,28 +28,27 @@
             v-model="statusFilter"
             class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all">Todos los estados</option>
+          <option value="">Todos los estados</option>
           <option value="pending">Pendientes</option>
-          <option value="approved">Aprobados</option>
           <option value="completed">Completados</option>
-          <option value="rejected">Rechazados</option>
         </select>
         <select
             v-model="selectNucleo"
             class="px-3 py-2 border border-gray-300 rounded-md"
         >
-          <option value="all">Todos los núcleos</option>
+          <option value="">Todos los núcleos</option>
           <option
               v-for="nucleo in nucleos"
               :key="nucleo.id"
               :value="nucleo.id"
           >
-            {{ nucleo.names }}
+            {{ nucleo.name }}
           </option>
         </select>
       </div>
     </div>
 
+    {{ filteredTransfers }}
     <!-- Lista de Traslados -->
     <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -57,7 +56,7 @@
           <thead class="bg-gray-50 border-b">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Miembro
+              Militante
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Origen
@@ -66,7 +65,7 @@
               Destino
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Fecha Solicitud
+              Fecha
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Estado
@@ -79,22 +78,19 @@
           <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="transfer in filteredTransfers" :key="transfer.id" class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="font-medium text-gray-900">{{ transfer.memberName }}</div>
-              <div class="text-sm text-gray-500">CI: {{ transfer.memberCI }}</div>
+              <div class="font-medium text-gray-900">{{ transfer.militante.firstname }} {{ transfer.militante.lastname }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ transfer.origin }}
+              {{ transfer.origen }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ transfer.destination }}
+              {{ transfer.destino }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ formatDate(transfer.requestDate) }}
+              {{ transfer.fecha }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getStatusBadgeClass(transfer.status)" class="px-2 py-1 text-xs font-medium rounded-full">
-                  {{ getStatusText(transfer.status) }}
-                </span>
+                {{ transfer.estado }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
               <button
@@ -242,12 +238,8 @@
         <div v-if="selectedTransfer" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700">Miembro</label>
+              <label class="block text-sm font-medium text-gray-700">Militante</label>
               <p class="text-sm text-gray-900">{{ selectedTransfer.memberName }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">CI</label>
-              <p class="text-sm text-gray-900">{{ selectedTransfer.memberCI }}</p>
             </div>
           </div>
 
@@ -291,38 +283,21 @@
         </div>
       </div>
     </div>
-
-    <!-- Notificaciones -->
-    <div v-if="notification.show" :class="getNotificationClass()" class="fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50">
-      <div class="flex items-center gap-2">
-        <svg v-if="notification.type === 'success'" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-        </svg>
-        <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-        </svg>
-        <span>{{ notification.message }}</span>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import {Select} from "@/components/ui/select/index.js";
+import { ref, computed } from 'vue'
+import { toast } from 'vue-sonner'
 
 // Estado reactivo
-const transfers = ref([])
-const availableMembers = ref([])
-const branches = ref(['Sucursal Centro', 'Sucursal Norte', 'Sucursal Sur', 'Sucursal Este', 'Sucursal Oeste'])
 const searchTerm = ref('')
-const statusFilter = ref('all')
+const statusFilter = ref('')
 const showModal = ref(false)
 const showDetailsModal = ref(false)
 const isLoading = ref(false)
-const notification = ref({ show: false, type: '', message: '' })
 const selectedTransfer = ref(null)
-const selectNucleo = ref("all");
+const selectNucleo = ref("");
 
 const currentTransfer = ref({
   id: null,
@@ -338,60 +313,19 @@ const currentTransfer = ref({
 })
 
 const { traslados, members } = defineProps<{
-  traslados: any[];
+  traslados: any;
   members: any[];
 }>();
 
-// Datos de ejemplo
-const mockTransfers = [
-  {
-    id: 1,
-    memberId: '1',
-    memberName: 'Ana María López',
-    memberCI: '12345678901',
-    origin: 'Sucursal Centro',
-    destination: 'Sucursal Norte',
-    reason: 'Reestructuración administrativa',
-    requestDate: '2024-01-10',
-    effectiveDate: '2024-02-01',
-    status: 'approved'
-  },
-  {
-    id: 2,
-    memberId: '2',
-    memberName: 'Carlos Mendoza',
-    memberCI: '98765432109',
-    origin: 'Sucursal Sur',
-    destination: 'Sucursal Este',
-    reason: 'Solicitud personal',
-    requestDate: '2024-01-15',
-    effectiveDate: '2024-02-15',
-    status: 'pending'
-  }
-]
-
-const mockMembers = [
-  { id: '1', name: 'Ana María López', ci: '12345678901' },
-  { id: '2', name: 'Carlos Mendoza', ci: '98765432109' },
-  { id: '3', name: 'Luis Fernández', ci: '11223344556' }
-]
-
 // Computed
 const filteredTransfers = computed(() => {
-  return transfers.value.filter(transfer => {
-    const matchesSearch = transfer.memberName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-        transfer.memberCI.includes(searchTerm.value)
-    const matchesStatus = statusFilter.value === 'all' || transfer.status === statusFilter.value
-    return matchesSearch && matchesStatus
-  })
+  return traslados?.data;
 })
 
 const nucleos = computed(() => {
-  const set = new Set(traslados?.map((tras) => {
-    tras.militante?.core?.name
-  }))
-  return Array.from(set)
-})
+  console.log(traslados?.data)
+  
+});
 
 // Métodos
 const openAddModal = () => {
@@ -423,115 +357,35 @@ const saveTransfer = async () => {
   isLoading.value = true
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    const member = availableMembers.value.find(m => m.id === currentTransfer.value.memberId)
-    if (member) {
-      currentTransfer.value.memberName = member.name
-      currentTransfer.value.memberCI = member.ci
-    }
-
-    currentTransfer.value.id = Date.now()
-    transfers.value.push({ ...currentTransfer.value })
-
-    showNotification('success', 'Traslado creado correctamente')
+    
+    toast.success('Traslado creado correctamente')
     closeModal()
   } catch (error) {
-    showNotification('error', 'Error al crear el traslado')
+    toast.error('Error al crear el traslado')
   } finally {
     isLoading.value = false
   }
 }
 
-const approveTransfer = async (id) => {
+const approveTransfer = async () => {
   try {
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    const transfer = transfers.value.find(t => t.id === id)
-    if (transfer) {
-      transfer.status = 'approved'
-      showNotification('success', 'Traslado aprobado correctamente')
-    }
+    
   } catch (error) {
-    showNotification('error', 'Error al aprobar el traslado')
+    toast.error('Error al aprobar el traslado')
   }
 }
 
-const completeTransfer = async (id) => {
+const completeTransfer = async () => {
   try {
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    const transfer = transfers.value.find(t => t.id === id)
-    if (transfer) {
-      transfer.status = 'completed'
-      showNotification('success', 'Traslado completado correctamente')
-    }
+   
   } catch (error) {
-    showNotification('error', 'Error al completar el traslado')
+    toast.error('Error al completar el traslado')
   }
 }
+const viewTransferDetails = async () => {
 
-const rejectTransfer = async (id) => {
-  if (confirm('¿Está seguro de que desea rechazar este traslado?')) {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      const transfer = transfers.value.find(t => t.id === id)
-      if (transfer) {
-        transfer.status = 'rejected'
-        showNotification('success', 'Traslado rechazado')
-      }
-    } catch (error) {
-      showNotification('error', 'Error al rechazar el traslado')
-    }
-  }
 }
+const rejectTransfer = async () => {
 
-const viewTransferDetails = (transfer) => {
-  selectedTransfer.value = transfer
-  showDetailsModal.value = true
 }
-
-const showNotification = (type, message) => {
-  notification.value = { show: true, type, message }
-  setTimeout(() => {
-    notification.value.show = false
-  }, 3000)
-}
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('es-ES')
-}
-
-const getStatusBadgeClass = (status) => {
-  const classes = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    approved: 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800',
-    rejected: 'bg-red-100 text-red-800'
-  }
-  return classes[status] || 'bg-gray-100 text-gray-800'
-}
-
-const getStatusText = (status) => {
-  const texts = {
-    pending: 'Pendiente',
-    approved: 'Aprobado',
-    completed: 'Completado',
-    rejected: 'Rechazado'
-  }
-  return texts[status] || status
-}
-
-const getNotificationClass = () => {
-  return notification.value.type === 'success'
-      ? 'bg-green-500 text-white'
-      : 'bg-red-500 text-white'
-}
-
-// Inicialización
-onMounted(() => {
-  transfers.value = mockTransfers
-  availableMembers.value = mockMembers
-})
 </script>
