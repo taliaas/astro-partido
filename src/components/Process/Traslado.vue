@@ -48,7 +48,6 @@
       </div>
     </div>
 
-    {{ filteredTransfers }}
     <!-- Lista de Traslados -->
     <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -128,8 +127,8 @@
               </button>
             </td>
           </tr>
-          <tr v-if="filteredTransfers?.length === undefined">
-              <td colspan="6" class="text-center py-8 text-gray-500">No hay traslados registradas.</td>
+          <tr v-if="!filteredTransfers?.length">
+              <td colspan="6" class="text-center py-8 text-gray-500">No hay traslados registrados.</td>
             </tr>
           </tbody>
         </table>
@@ -328,7 +327,7 @@ const { traslados, members } = defineProps<{
 
 // Computed
 const filteredTransfers = computed(() => {
-  return traslados?.data;
+  return traslados;
 })
 
 const nucleos = computed(() => {
