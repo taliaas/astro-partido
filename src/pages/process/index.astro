@@ -5,6 +5,7 @@ import RootLayout from "../../layouts/RootLayout.astro";
 import { getSession } from "auth-astro/server";
 import Sanciones from "@/components/Process/Sanciones.vue";
 import ProcessLayout from "../../layouts/ProcessLayout.astro";
+import CoreService from "@/services/CoreService";
 
 const session = await getSession(Astro.request);
 const searchParams = Astro.url.searchParams;
@@ -19,7 +20,14 @@ async function getSanciones() {
     return [];
   }
 }
-
+async function getCore() {
+    const service = new CoreService();
+    try {
+        return await service.getAllCore();
+    } catch (e) {
+        console.error(e);
+    }
+}
 async function getMembers(){
   const service = new MilitantService()
     try{
@@ -30,13 +38,13 @@ async function getMembers(){
       throw new Error()
     }
 }
-
+const cores = await getCore();
 const sanciones = await getSanciones();
 const members = await getMembers();
 ---
 
 <RootLayout>
   <ProcessLayout>
-    <Sanciones sanciones={sanciones} members={members} client:load />
+    <Sanciones sanciones={sanciones} members={members} cores={cores} client:load />
   </ProcessLayout>
 </RootLayout>

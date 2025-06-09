@@ -27,13 +27,13 @@
           />
         </div>
         <select
-          v-model="selectStatus"
+          v-model="statusFilter"
           class="px-3 py-2 border border-gray-300 rounded-md"
         >
-          <option value="all">Todos los estados</option>
+          <option value="">Todos los estados</option>
           <option
               v-for="stat in status"
-              :key="stat"
+              :key="String(stat)"
               :value="stat"
           >
             {{ stat }}
@@ -43,13 +43,13 @@
           v-model="selectNucleo"
           class="px-3 py-2 border border-gray-300 rounded-md"
         >
-          <option value="all">Todos los núcleos</option>
+          <option value="">Todos los núcleos</option>
           <option
-            v-for="nucleo in nucleos"
+            v-for="nucleo in cores"
             :key="nucleo.id"
             :value="nucleo.id"
           >
-            {{ nucleo.names }}
+            {{ nucleo.name }}
           </option>
         </select>
       </div>
@@ -101,29 +101,25 @@
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
-                  {{ sanction.memberName }}
-                </div>
-                <div class="text-sm text-gray-500">
-                  CI: {{ sanction.memberCI }}
+                  {{ sanction.militante.firstname }} {{ sanction.militante.lastname }}
                 </div>
               </td>
               <td class="px-6 py-4">
                 <div class="text-sm text-gray-900 max-w-xs">
-                  {{ sanction.reason }}
+                  {{ sanction.causa }}
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ formatDate(sanction.startDate) }}
+                {{ sanction.fecha }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ sanction.duration }}
+                {{ sanction.duracion }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  :class="getStatusBadgeClass(sanction.status)"
                   class="px-2 py-1 text-xs font-medium rounded-full"
                 >
-                  {{ getStatusText(sanction.status) }}
+                  {{ sanction.estado }}
                 </span>
               </td>
               <td
@@ -161,7 +157,7 @@
           </tbody>
         </table>
         <div v-if="!filteredSanctions?.length" class="text-center py-8 text-gray-500 text-lg">
-          No hay sanciones. {{members?.firstname}}
+          No hay sanciones
         </div>
       </div>
     </div>
@@ -294,11 +290,11 @@ import {
 import {Button} from "@/components/ui/button/index.js";
 import {toast} from "vue-sonner";
 import { actions } from "astro:actions";
-import {Select} from "@/components/ui/select";
 
-const { sanciones, members } = defineProps<{
-  sanciones: any[];
+const { sanciones, members, cores } = defineProps<{
+  sanciones: any;
   members: any[];
+  cores: any[]
 }>();
 
 // Estado reactivo
@@ -307,21 +303,15 @@ const showModal = ref(false);
 const isEditing = ref(false);
 const isLoading = ref(false);
 
-const nucleos = computed(() => {
-  const set = new Set(sanciones?.map((sanction) => {
-    sanction.militante?.core?.name
-  }))
-  return Array.from(set)
-})
-const status = computed(() => {
-  const set = new Set(sanciones?.map((sanction) => {
-    sanction.estado
-  }))
-  return Array.from(set)
-})
+const selectNucleo = ref("");
+const statusFilter = ref("")
 
-const selectNucleo = ref("all");
-const selectStatus = ref("all")
+const status = computed(() => {
+  const set = new Set(
+    sanciones?.data.map((sanction) => sanction.estado)
+  );
+  return Array.from(set);
+});
 
 const currentSanction = ref({
   id: null,
@@ -335,15 +325,16 @@ const currentSanction = ref({
 
 // Computed
 const filteredSanctions = computed(() => {
-  return sanciones?.filter((sanction) => {
+  return sanciones?.data.filter((sanction) => {
     const matchesSearch =
-      sanction.memberName
+      sanction?.militante.firstname
         .toLowerCase()
         .includes(searchTerm.value.toLowerCase()) ||
-      sanction.memberCI.includes(searchTerm.value);
+      sanction.militante.lastname.includes(searchTerm.value);
+    //const matchedCores = sanction?.militante.core.name === '' || sanction?.militante.core.name === selectNucleo.value; 
     const matchesStatus =
-      statusFilter.value === "all" || sanction.status === statusFilter.value;
-    return matchesSearch && matchesStatus;
+      statusFilter.value === "" || sanction.estado === statusFilter.value;
+    return matchesSearch && matchesStatus //&& matchedCores;
   });
 });
 

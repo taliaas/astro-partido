@@ -7,7 +7,7 @@ export default class SancionService {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `${session.jwt}`,
+                    Authorization: `Bearer ${session.jwt}`,
                 },
             });
             if (!response.ok) {

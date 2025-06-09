@@ -204,7 +204,7 @@ onMounted(() => {
         </select>
       </div>
     </div>
-{{ desactivations.data }}
+    
     <!-- Lista de Desactivaciones -->
     <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
