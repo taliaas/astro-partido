@@ -1,12 +1,13 @@
 import {API_URL} from "astro:env/client";
 
 export default class DeactivationService {
-    async getAllDesactivation(){
+    async getAllDesactivation(page: any, session: any){
         try {
-            const response = await fetch(`${API_URL}/desactivation`, {
+            const response = await fetch(`${API_URL}/desactivation?page=${page}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session?.jwt}`, 
                 },
             });
             if (!response.ok) {

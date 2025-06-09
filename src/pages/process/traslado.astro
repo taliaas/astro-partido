@@ -30,8 +30,8 @@ async function getMembers(): Promise<any[]>{
         throw new Error()
     }
 }
-const traslados: Promise<any[]> = getTraslado()
-const members: Promise<any[]> = getMembers()
+const members = await getMembers()
+const traslados = await getTraslado()
 console.log(traslados)
 ---
 

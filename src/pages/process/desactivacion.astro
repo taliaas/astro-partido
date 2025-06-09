@@ -4,6 +4,12 @@ import Desactivaciones from "../../components/Process/Desactivacion.vue"
 import RootLayout from "../../layouts/RootLayout.astro";
 import ProcessLayout from "../../layouts/ProcessLayout.astro";
 import DeactivationService from "../../services/DeactivationService";
+import MilitantService from "@/services/MilitantService";
+import { getSession } from "auth-astro/server";
+
+const searchParams = Astro.url.searchParams
+const page = searchParams.get("page") || 1
+const session = await getSession(Astro.request)
 
 async function getCore() {
     const service = new CoreService();
@@ -13,21 +19,33 @@ async function getCore() {
         console.error(e);
     }
 }
-async function getDesactivation(){
+async function getDesactivation(page: any, session: any){
     const service = new DeactivationService();
     try {
-        return await service.getAllDesactivation();
+        return await service.getAllDesactivation(page, session);
     } catch (e) {
         console.error(e);
     }
 }
+async function getMembers(): Promise<any[]>{
+    const service = new MilitantService()
+    try{
+        return await service.getAll()
+    }
+    catch(error){
+        console.error(error)
+        throw new Error()
+    }
+}
+const members = await getMembers();
 
 const cores = await getCore();
-const desactivations = await getDesactivation();
+const desactivations = await getDesactivation(page, session?.user);
+console.log(desactivations)
 ---
 
 <RootLayout>
     <ProcessLayout>
-        <Desactivaciones cores={cores} desactivations={desactivations} client:load/>
+        <Desactivaciones cores={cores} desactivations={desactivations} members={members} client:load/>
     </ProcessLayout>
 </RootLayout>
