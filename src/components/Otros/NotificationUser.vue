@@ -2,7 +2,7 @@
 import { BellIcon, CheckIcon, XIcon, InfoIcon, AlertTriangleIcon, AlertCircleIcon, CheckCircleIcon, ClockIcon } from 'lucide-vue-next';
 
 const { notifications } = defineProps<{
-  notifications: any;
+  notifications: any[];
 }>();
 
 </script>
@@ -34,7 +34,6 @@ const { notifications } = defineProps<{
         </div>
 
         <!-- Notifications List -->
-         {{ notifications }}
         <div v-if="notifications && notifications.length > 0" class="divide-y divide-gray-100">
           <div 
             v-for="notification in notifications" 
@@ -46,17 +45,17 @@ const { notifications } = defineProps<{
               <div class="flex-shrink-0 mt-1">
                 <div 
                   :class="{
-                    'bg-blue-100 text-blue-600': notification.type === 3 || !notification.type,
-                    'bg-yellow-100 text-yellow-600': notification.type === 1 || notification.type === 4,
+                    'bg-blue-100 text-blue-600': notification.type === 2 || !notification.type,
+                    'bg-yellow-100 text-yellow-600': notification.type === 1 || notification.type === 3,
                     'bg-red-100 text-red-600': notification.type === 0,
-                    'bg-green-100 text-green-600': notification.type === 5
+                    'bg-green-100 text-green-600': notification.type === 4
                   }"
                   class="p-2 rounded-full"
                 >
-                  <InfoIcon v-if="notification.type === 3 || !notification.type" class="h-4 w-4" />
-                  <AlertTriangleIcon v-else-if="notification.type === 1 || notification.type === 4" class="h-4 w-4" />
+                  <InfoIcon v-if="notification.type === 2 || !notification.type" class="h-4 w-4" />
+                  <AlertTriangleIcon v-else-if="notification.type === 1 || notification.type === 3" class="h-4 w-4" />
                   <AlertCircleIcon v-else-if="notification.type === 0" class="h-4 w-4" />
-                  <CheckCircleIcon v-else-if="notification.type === 5" class="h-4 w-4" />
+                  <CheckCircleIcon v-else-if="notification.type === 4" class="h-4 w-4" />
                 </div>
               </div>
 
@@ -65,23 +64,23 @@ const { notifications } = defineProps<{
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
                     <!-- Title -->
-                    <h3 class="text-sm font-semibold text-gray-900 mb-1">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-1">
                       {{ notification.title || 'Notificación del Sistema' }}
                     </h3>
                     
                     <!-- Message -->
-                    <p class="text-sm text-gray-700 leading-relaxed">
-                      {{ notification.menssage }}
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                      Mensaje: {{ notification.menssage }}
                     </p>
-                    <p class="text-sm text-gray-700 leading-relaxed">
+                    <p class="text-lg text-gray-500 leading-relaxed">
                       {{ notification.subject }}
                     </p>
                     
                     <!-- Metadata -->
                     <div class="flex items-center space-x-4 mt-3">
-                      <div class="flex items-center text-xs text-gray-500">
+                      <div class="flex items-center text-md text-gray-500">
                         <ClockIcon class="h-3 w-3 mr-1" />
-                        {{ notification.createdAt || 'Hace unos momentos' }}
+                        {{ notification.createdAt ? notification.createdAt.slice(0, 10) : 'Hace unos momentos' }}
                       </div>
                       
                       <div v-if="notification.tipo_alerta" class="flex items-center">

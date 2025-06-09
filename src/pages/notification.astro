@@ -17,9 +17,8 @@ async function getNotification() {
   }
 }
 const notifications= await getNotification()
-console.log("Notification: ",notifications)
 ---
 
 <RootLayout>
-  <NotificationContainer notifications={notifications ?? []} client:load/>
+  <NotificationContainer notifications={notifications} client:load/>
 </RootLayout>
