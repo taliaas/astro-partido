@@ -1,11 +1,33 @@
 ---
+import CoreService from "../../services/CoreService";
 import Desactivaciones from "../../components/Process/Desactivacion.vue"
 import RootLayout from "../../layouts/RootLayout.astro";
 import ProcessLayout from "../../layouts/ProcessLayout.astro";
+import DeactivationService from "../../services/DeactivationService";
+
+async function getCore() {
+    const service = new CoreService();
+    try {
+        return await service.getAllCore();
+    } catch (e) {
+        console.error(e);
+    }
+}
+async function getDesactivation(){
+    const service = new DeactivationService();
+    try {
+        return await service.getAllDesactivation();
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+const cores = await getCore();
+const desactivations = await getDesactivation();
 ---
 
 <RootLayout>
     <ProcessLayout>
-        <Desactivaciones client:load/>
+        <Desactivaciones cores={cores} desactivations={desactivations} client:load/>
     </ProcessLayout>
 </RootLayout>

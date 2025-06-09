@@ -24,11 +24,15 @@
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
           />
         </div>
+        <select v-model="currentNucleos">
+          <option value="">Todos los núcleos</option>
+          <option v-for="core in cores" :key="core.id" :value="core.id"></option>
+        </select>
         <select
             v-model="reasonFilter"
             class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
         >
-          <option value="all">Todos los motivos</option>
+          <option value="">Todos los motivos</option>
           <option value="retirement">Jubilación</option>
           <option value="resignation">Renuncia</option>
           <option value="disciplinary">Acción Disciplinaria</option>
@@ -59,7 +63,7 @@
               Fecha Desactivación
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Procesado Por
+              Núcleo
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Estado
@@ -70,24 +74,22 @@
           </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="deactivation in filteredDeactivations" :key="deactivation.id" class="hover:bg-gray-50">
+          <tr v-for="deactivation in desactivations" :key="deactivation.id" class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="font-medium text-gray-900">{{ deactivation.memberName }}</div>
-              <div class="text-sm text-gray-500">CI: {{ deactivation.memberCI }}</div>
+              <div class="font-medium text-gray-900">{{ deactivation.militante.name }}</div>
+              <div class="text-sm text-gray-500">CI: {{ deactivation.militante.ci }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="text-sm text-gray-900">{{ getReasonText(deactivation.reason) }}</span>
+              <span class="text-sm text-gray-900">{{ getReasonText(deactivation.motivo) }}</span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ formatDate(deactivation.deactivationDate) }}
+              {{ deactivation.fecha }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ deactivation.processedBy }}
+              {{ deactivation.militante.core }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getStatusBadgeClass(deactivation.status)" class="px-2 py-1 text-xs font-medium rounded-full">
-                  {{ getStatusText(deactivation.status) }}
-                </span>
+                  {{ deactivation.estado }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
               <button
@@ -279,25 +281,19 @@
         </div>
       </div>
     </div>
-
-    <!-- Notificaciones -->
-    <div v-if="notification.show" :class="getNotificationClass()" class="fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50">
-      <div class="flex items-center gap-2">
-        <svg v-if="notification.type === 'success'" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-        </svg>
-        <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-        </svg>
-        <span>{{ notification.message }}</span>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import {toast} from "vue-sonner";
 
+const { cores, desactivations } = defineProps<{
+  cores: any;
+  desactivations: any;
+}>();
+
+const currentNucleos = ref('')
 // Estado reactivo
 const deactivations = ref([])
 const availableMembers = ref([])
@@ -307,7 +303,6 @@ const dateFilter = ref('')
 const showModal = ref(false)
 const showDetailsModal = ref(false)
 const isLoading = ref(false)
-const notification = ref({ show: false, type: '', message: '' })
 const selectedDeactivation = ref(null)
 
 const currentDeactivation = ref({
@@ -321,38 +316,6 @@ const currentDeactivation = ref({
   processedBy: 'Administrador Sistema',
   status: 'pending'
 })
-
-// Datos de ejemplo
-const mockDeactivations = [
-  {
-    id: 1,
-    memberId: '1',
-    memberName: 'Roberto Sánchez',
-    memberCI: '12345678901',
-    reason: 'retirement',
-    deactivationDate: '2024-01-20',
-    notes: 'Jubilación después de 30 años de servicio',
-    processedBy: 'María González',
-    status: 'confirmed'
-  },
-  {
-    id: 2,
-    memberId: '2',
-    memberName: 'Elena Martínez',
-    memberCI: '98765432109',
-    reason: 'resignation',
-    deactivationDate: '2024-01-25',
-    notes: 'Renuncia voluntaria por motivos personales',
-    processedBy: 'Carlos López',
-    status: 'pending'
-  }
-]
-
-const mockMembers = [
-  { id: '1', name: 'Roberto Sánchez', ci: '12345678901' },
-  { id: '2', name: 'Elena Martínez', ci: '98765432109' },
-  { id: '3', name: 'Pedro Ramírez', ci: '11223344556' }
-]
 
 // Computed
 const filteredDeactivations = computed(() => {
@@ -422,10 +385,10 @@ const confirmDeactivation = async (id) => {
       const deactivation = deactivations.value.find(d => d.id === id)
       if (deactivation) {
         deactivation.status = 'confirmed'
-        showNotification('success', 'Desactivación confirmada correctamente')
+        toast.success('Desactivación confirmada correctamente')
       }
     } catch (error) {
-      showNotification('error', 'Error al confirmar la desactivación')
+      toast.error('Error al confirmar la desactivación')
     }
   }
 }
@@ -439,10 +402,10 @@ const reactivateMember = async (id) => {
       if (deactivation) {
         deactivation.status = 'reactivated'
         deactivation.reactivationDate = new Date().toISOString().split('T')[0]
-        showNotification('success', 'Miembro reactivado correctamente')
+        toast.success( 'Miembro reactivado correctamente')
       }
     } catch (error) {
-      showNotification('error', 'Error al reactivar el miembro')
+      toast.error('Error al reactivar el miembro')
     }
   }
 }
@@ -450,13 +413,6 @@ const reactivateMember = async (id) => {
 const viewDeactivationDetails = (deactivation) => {
   selectedDeactivation.value = deactivation
   showDetailsModal.value = true
-}
-
-const showNotification = (type, message) => {
-  notification.value = { show: true, type, message }
-  setTimeout(() => {
-    notification.value.show = false
-  }, 3000)
 }
 
 const formatDate = (dateString) => {

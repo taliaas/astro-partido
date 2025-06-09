@@ -58,6 +58,10 @@
         <div v-if="activeSection === 'militantes'" class="space-y-6">
           <Militantes :militantes />
         </div>
+
+        <div v-if="activeSection === 'trazas'" class="space-y-6">
+          <Register />
+        </div>
       </div>
     </div>
   </div>
@@ -71,6 +75,7 @@ import ClaimsManage from "@/components/settings/ClaimsManage.vue";
 import CoreManage from "@/components/settings/CoreManage.vue";
 import Notification from "@/components/settings/Notification.vue";
 import Militantes from "@/components/settings/Militantes.vue";
+import Register from "@/components/settings/Register.vue";
 
 const { users, roles, claims, comites, cores, militantes } = defineProps<{
   users: any;

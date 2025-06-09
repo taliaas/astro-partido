@@ -40,7 +40,7 @@
           >
             <FilterIcon class="h-4 w-4" />
             <template #content>
-              <Filters />
+              <Filters :cores/>
             </template>
           </Sheet_container>
         </div>
@@ -122,6 +122,10 @@ import Filters from "@/components/filters/filters.vue";
 
 const isDark = ref(false);
 const searchQuery = ref("");
+
+const { cores } = defineProps<{
+  cores: any[],
+}>();
 
 const searchStore = useSearchStore();
 
