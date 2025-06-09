@@ -128,6 +128,9 @@
               </button>
             </td>
           </tr>
+          <tr v-if="filteredTransfers?.length === undefined">
+              <td colspan="6" class="text-center py-8 text-gray-500">No hay traslados registradas.</td>
+            </tr>
           </tbody>
         </table>
       </div>

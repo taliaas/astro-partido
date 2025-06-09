@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto py-8 px-4">
+  <div class="container mx-auto py-8 px-6 border bg-white rounded-md shadow-xl">
     <!-- Sheet_container and Add -->
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"
@@ -19,8 +19,9 @@
         v-model="selectCore"
         class="rounded-md border px-3 py-2 mx-1.5 text-sm"
       >
-        <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
-          {{ nucleo }}
+      <option value="">Todos los núcleos</option>
+        <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.name">
+          {{ nucleo.name }}
         </option>
       </select>
       <button
@@ -389,12 +390,9 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
 import { Pencil, Search, Trash } from "lucide-vue-next";
-import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import MilitantService from "@/services/MilitantService.ts";
-
 
 // UI state
 const searchQuery = ref("");
@@ -403,9 +401,10 @@ const showDeleteModal = ref(false);
 const isEditing = ref(false);
 const memberToDelete = ref(null);
 
-const { militantes, page } = defineProps<{
+const { militantes, page, cores } = defineProps<{
   militantes: any;
   page: number;
+  cores: any;
 }>();
 
 const currentPage = ref(page);
@@ -423,13 +422,7 @@ const currentMember = reactive({
   },
 });
 
-const nucleos = computed(() => {
-  const userList = Array.isArray(militantes.data) ? militantes.data : [];
-  console.log(userList);
-  return [...new Set(userList.map((item) => item.core?.name).filter(Boolean))];
-});
-
-const selectCore = ref(nucleos.value[0]);
+const selectCore = ref('');
 // Computed properties
 const filteredMembers = computed(() => {
   if (!searchQuery.value) {
