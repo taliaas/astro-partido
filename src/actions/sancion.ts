@@ -30,7 +30,7 @@ export const createSancion = defineAction({
             body,
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${session.jwt}`,
+                Authorization: `Bearer ${session.jwt}`,
             },
         });
 
@@ -72,7 +72,7 @@ export const updateSancion = defineAction({
             body,
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `${session.jwt}`,
+                Authorization: `Bearer ${session.jwt}`,
             },
         });
 

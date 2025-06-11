@@ -12,7 +12,7 @@ export const deactiveMili = defineAction({
     }),
     handler: async (input, context) => {
         const session: any = await getSession(context.request);
-        const res = await fetch(`${API_URL}/desactivation`, {
+        const res = await fetch(`${API_URL}/deactivation`, {
             method: "POsT",
             headers: {
                 "Content-Type": "application/json",

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
 import { navigate } from "astro:transitions/client";
 import { ref } from "vue";
 
@@ -56,6 +55,7 @@ function goToPreviousPage() {
             {{ found }} coincidencias encontradas
           </p>
         </div>
+        {{ actas.docs }}
         <!-- Results -->
         <div class="space-y-6">
           <div
@@ -91,7 +91,7 @@ function goToPreviousPage() {
             <!-- Actions -->
             <div class="flex items-center gap-4 text-sm">
               <a
-                :href='/view/'
+              href="/"
                 class="text-blue-600 hover:underline font-medium"
               >
                 Ver detalles
