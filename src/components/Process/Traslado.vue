@@ -38,7 +38,7 @@
         >
           <option value="">Todos los núcleos</option>
           <option
-              v-for="nucleo in nucleos"
+              v-for="nucleo in cores"
               :key="nucleo.id"
               :value="nucleo.id"
           >
@@ -47,7 +47,7 @@
         </select>
       </div>
     </div>
-
+{{ traslados }}
     <!-- Lista de Traslados -->
     <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -298,6 +298,12 @@
 import { ref, computed } from 'vue'
 import { toast } from 'vue-sonner'
 
+const { traslados, members, cores } = defineProps<{
+  traslados: any;
+  members: any[];
+  cores: any;
+}>();
+
 // Estado reactivo
 const searchTerm = ref('')
 const statusFilter = ref('')
@@ -320,20 +326,10 @@ const currentTransfer = ref({
   status: 'pending'
 })
 
-const { traslados, members } = defineProps<{
-  traslados: any;
-  members: any[];
-}>();
-
 // Computed
 const filteredTransfers = computed(() => {
   return traslados;
 })
-
-const nucleos = computed(() => {
-  console.log(traslados?.data)
-  
-});
 
 // Métodos
 const openAddModal = () => {

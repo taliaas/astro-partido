@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { format } from "date-fns";
 import { navigate } from "astro:transitions/client";
 import { ref } from "vue";
 
@@ -7,9 +8,9 @@ const { actas, limit } = defineProps<{
   limit: any;
 }>();
 
-console.log(actas)
 const found = ref(0);
 const currentPage = ref(1);
+
 const total = ref(actas?.total);
 const currentLimit = ref(limit);
 const tableHeaders = [
@@ -31,7 +32,7 @@ function goToNextPage() {
 function goToPreviousPage() {
   if (currentPage.value > 1) {
     currentPage.value--;
-    navigate(`/busqueda??page=${currentPage.value}&limit=${limit}`);
+    navigate(`/busqueda?page=${currentPage.value}&limit=${limit}`);
   }
 }
 
@@ -45,8 +46,8 @@ function goToPreviousPage() {
       <div
         class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
       >
-        <div class="p-8">
-          <h2 class="font-bold text-3xl">Búsqueda Avanzada</h2>
+        <div class="p-8 border-b">
+          <h2 class="font-bold text-3xl">Resultado de la búsqueda</h2>
           <p v-if="found === 0" class="text-md text-gray-500"></p>
           <p v-else-if="found === 1" class="text-md text-gray-500">
             {{ found }} coincidencia encontrada
@@ -55,47 +56,32 @@ function goToPreviousPage() {
             {{ found }} coincidencias encontradas
           </p>
         </div>
-        {{ actas.docs }}
+
         <!-- Results -->
-        <div class="space-y-6">
+        <div class="space-y-4">
           <div
-            v-for="acta in actas"
+            v-for="acta in actas.docs"
             :key="acta.id"
-            class="border-b border-gray-200 pb-6"
+            class="p-6 border-b border-gray-200 pb-6"
           >
             <!-- Title and PDF link -->
             <div class="flex justify-between items-start mb-2">
-              <h2
-                class="text-xl text-blue-600 hover:underline cursor-pointer font-normal"
+              <a target="_blank"
+                class="text-xl font-normal"
               >
                 {{ acta.name }}
-              </h2>
-              <a
-                target="_blank"
-                class="text-blue-600 hover:underline text-sm font-medium"
-              >
-                Acta
-              </a>
+            </a>
+              
             </div>
 
             <!-- Metadata -->
             <div class="text-green-700 text-sm mb-2">
-              {{ acta.core }}, {{ acta.fecha }}
+              {{ acta.core }}, {{ format(acta.creation_date, 'yyyy-MM-dd') }}
             </div>
 
             <!-- Description -->
             <div class="text-gray-700 text-sm mb-3 leading-relaxed">
-              {{ acta.text }}
-            </div>
-
-            <!-- Actions -->
-            <div class="flex items-center gap-4 text-sm">
-              <a
-              href="/"
-                class="text-blue-600 hover:underline font-medium"
-              >
-                Ver detalles
-              </a>
+              {{ acta.text  || 'actas' }}
             </div>
           </div>
           <div v-if="actas?.length === 0" class="border border-b-gray-300 p-8">
