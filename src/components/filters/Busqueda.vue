@@ -1,26 +1,18 @@
 <script setup lang="ts">
 import { format } from "date-fns";
 import { navigate } from "astro:transitions/client";
+import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { ref } from "vue";
 
-const { actas, limit } = defineProps<{
+const { actas, limit, page } = defineProps<{
   actas: any;
   limit: any;
+  page: any;
 }>();
 
-const found = ref(0);
-const currentPage = ref(1);
-
+const found = ref(actas.numFound);
+const currentPage = ref(page);
 const total = ref(actas?.total);
-const currentLimit = ref(limit);
-const tableHeaders = [
-  "No.",
-  "Nombre del acta",
-  "Núcleo",
-  "Fecha",
-  "Estado",
-  "Acciones",
-];
 
 function goToNextPage() {
   if (actas.total > currentPage.value) {
@@ -88,7 +80,23 @@ function goToPreviousPage() {
             No hay coincidencias
             {{actas}}
           </div>
+
         </div>
+
+        <div class="flex justify-between">
+          <div class="p-4 text-muted-foreground">
+            Mostrando {{page}} de {{limit}}
+          </div>
+          <div class="space-x-4 p-4 flex justify-end">
+            <button @click="goToPreviousPage" type="button" class="flex gap-2 border rounded text-sm font-medium px-4 py-2 mr-4 ">
+              <ArrowLeft class="w-4 h-4" />
+            </button>
+            <button @click="goToNextPage" type="button" class="flex gap-2 rounded border text-sm font-medium px-4 py-2 mr-4 ">
+              <ArrowRight class="w-4 h-4"/>
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

@@ -47,7 +47,7 @@
         </select>
       </div>
     </div>
-{{ traslados }}
+{{ traslados.data }}
     <!-- Lista de Traslados -->
     <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -328,7 +328,7 @@ const currentTransfer = ref({
 
 // Computed
 const filteredTransfers = computed(() => {
-  return traslados;
+  return traslados.data;
 })
 
 // Métodos

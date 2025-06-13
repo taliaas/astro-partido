@@ -15,8 +15,8 @@ const { notifications } = defineProps<{
         <div class="p-6 border-b border-gray-200">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
-              <div class="p-2 bg-blue-100 rounded-lg">
-                <BellIcon class="h-6 w-6 text-blue-600" />
+              <div class="p-2 rounded-lg">
+                <BellIcon class="h-6 w-6" />
               </div>
               <div>
                 <h1 class="text-2xl font-bold text-gray-900">Notificaciones del Sistema</h1>
@@ -24,11 +24,6 @@ const { notifications } = defineProps<{
                     {{ notifications?.length === 1 ? '1 notificación' : (notifications?.length || 0) + ' notificaciones' }}
                 </p>
               </div>
-            </div>
-            <div class="flex items-center space-x-2">
-              <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                Marcar todas como leídas
-              </button>
             </div>
           </div>
         </div>

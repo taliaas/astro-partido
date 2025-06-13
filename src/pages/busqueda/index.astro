@@ -11,7 +11,7 @@ const formData = await Astro.request.formData()
 const query = Object.fromEntries(formData.entries())
 
 const searchParams = Astro.url.searchParams
-const limit = searchParams.get("limit") || 1
+const limit = searchParams.get("limit") || 10
 const page = searchParams.get("page") || 1
 
 async function getActas(limit: any) {
@@ -42,9 +42,8 @@ async function getActasByQuery(limit: any, query: any){
 }
 
 const actas = query.name === "" && query.doc_type === "" && query.core === "" && query.status === "" && query.dateFrom === "" && query.dateTo === "" && query.keywords === "" ? await getActas(limit) : await getActasByQuery(limit, query)
-console.log(actas)
 ---
 
 <RootLayout>
-    <Busqueda actas={actas} limit={limit} />
+    <Busqueda actas={actas} limit={limit} page={page} />
 </RootLayout>

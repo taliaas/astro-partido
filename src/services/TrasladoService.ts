@@ -7,7 +7,6 @@ export default class TrasladoService {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': "Bearer " + session?.jwt,
                 },
             });
             if (!response.ok) {
