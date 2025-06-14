@@ -316,24 +316,24 @@ const statusFilter = ref("")
 
 const status = computed(() => {
   const set = new Set(
-    sanciones?.data.map((sanction) => sanction.estado)
+    sanciones?.data.map((sanction: any) => sanction.estado)
   );
   return Array.from(set);
 });
 
 const currentSanction = ref({
   id: null,
-  militanteId: "",
   causa: "",
   fecha: "",
   severidad: "LEVE",
   duracion: "",
-  estado: "active",
+  estado: "PENDIENTE",
+  militanteId: "",
 });
 
 // Computed
 const filteredSanctions = computed(() => {
-  return sanciones?.data.filter((sanction) => {
+  return sanciones?.data.filter((sanction: any) => {
     const matchesSearch =
       sanction?.militante.firstname
         .toLowerCase()
@@ -361,7 +361,7 @@ const openAddModal = () => {
   showModal.value = true;
 };
 
-const editSanction = (sanction) => {
+const editSanction = (sanction: any) => {
   isEditing.value = true;
   currentSanction.value = { ...sanction };
   showModal.value = true;
@@ -377,10 +377,10 @@ const saveSanction = async () => {
 
   try {
     if (isEditing.value) {
-      await actions.sancion.update()
+      //await actions.sancion.updateSancion(currentSanction.value)
       toast.success("Sanción actualizada correctamente");
     } else {
-      await actions.sancion.createSancion(currentSanction.value)
+      //await actions.sancion.createSancion(currentSanction.value)
       toast.success("Sanción creada correctamente");
     }
     closeModal();
@@ -391,24 +391,5 @@ const saveSanction = async () => {
     isLoading.value = false;
   }
 };
-
-const deleteSanction = async (id) => {
-  if (confirm("¿Está seguro de que desea eliminar esta sanción?")) {
-    try {
-      // Simular llamada a API
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      sanctions.value = sanctions.value.filter((s) => s.id !== id);
-      toast.success( "Sanción eliminada correctamente");
-    } catch (error) {
-      toast.error( "Error al eliminar la sanción");
-    }
-  }
-};
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("es-ES");
-};
-
 
 </script>

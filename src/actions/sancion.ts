@@ -43,7 +43,6 @@ export const createSancion = defineAction({
 
 
 export const updateSancion = defineAction({
-    accept: "form",
     input: z.object({
         id: z.number().int().positive(),
         causa: z.string().min(1).optional(),

@@ -6,6 +6,7 @@ import {API_URL} from "astro:env/client";
 export const deactiveMili = defineAction({
     input: z.object({
         motivo: z.string(),
+        details: z.string(),
         fecha: z.string(),
         estado: z.string(),
         militante: z.any(),

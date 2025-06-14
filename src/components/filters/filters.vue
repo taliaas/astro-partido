@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import {reactive, ref} from "vue";
-import {Select} from "@/components/ui/select";
-import {Status} from "@/enum/Status.ts";
-import {Label} from "@/components/ui/label";
+import { Status } from "@/enum/Status.ts";
+import { reactive } from "vue";
 
 const { cores } = defineProps<{
   cores: any[],
@@ -19,12 +17,12 @@ const filters = reactive({
 })
 
 const statusList = [
-    Status.A,
-    Status.R,
-    Status.I,
-    Status.O,
-    Status.P
-] as Status
+  Status.A,
+  Status.R,
+  Status.I,
+  Status.O,
+  Status.P
+] 
 
 </script>
 
