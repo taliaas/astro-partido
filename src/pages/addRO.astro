@@ -1,47 +1,44 @@
 ---
-import {getSession} from "auth-astro/server";
-import UserService from "../services/UserService";import CoreService from "../services/CoreService";
+import { getSession } from "auth-astro/server";
+import UserService from "../services/UserService";
+import CoreService from "../services/CoreService";
 import RootLayout from "../layouts/RootLayout.astro";
 import MinutesOrdinary from "@/components/Ordinary/MinutesOrdinary.vue";
-import FirstStep from "src/components/Ordinary/FirstStep.vue";
-import SecondStep from "src/components/Ordinary/SecondStep.vue";
-import ThirdStep from "src/components/Ordinary/ThirdStep.vue";
 
-const session = await getSession(Astro.request)
-const n_user = session?.user
+const session = await getSession(Astro.request);
+const n_user = session?.user;
 
-console.log(Astro.request.method)
+console.log(Astro.request.method);
 
-let data
-if (Astro.request.method === "POST"){
-  const formdata = await Astro.request.formData()
-  console.log(formdata.get('data'))
-  data = JSON.stringify(formdata.get('data'))
+let data;
+if (Astro.request.method === "POST") {
+  const formdata = await Astro.request.formData();
+  console.log(formdata.get("data"));
+  data = JSON.stringify(formdata.get("data"));
 }
-console.log(data)
+console.log(data);
 
 async function getUser() {
-  const services = new UserService()
+  const services = new UserService();
   try {
-    return await services.getUserByEmail(n_user?.email ?? '')
+    return await services.getUserByEmail(n_user?.email ?? "",(session as any).jwt);
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 }
 
 async function getCore() {
   const service = new CoreService();
   try {
-    return await service.getAllCore();
+    return await service.getAllCore((session as any).jwt);
   } catch (e) {
     console.error(e);
   }
 }
 const cores = await getCore();
-const user = await getUser()
+const user = await getUser();
 ---
 
 <RootLayout>
-  <MinutesOrdinary user={user} cores={cores} client:load>
-  </MinutesOrdinary>
+  <MinutesOrdinary user={user} cores={cores} client:load />
 </RootLayout>

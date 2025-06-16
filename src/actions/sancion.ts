@@ -6,7 +6,7 @@ import { API_URL } from "astro:env/client";
 export const createSancion = defineAction({
     input: z.object({
         causa: z.string().min(1),
-        fecha: z.date(),
+        fecha: z.coerce.date(),
         severidad: z.enum(["LEVE", "GRAVE", "MEDIA"]).optional(),
         duracion: z.string().min(1),
         estado: z.enum(["PENDIENTE", "ACEPTADA", "RECHAZADA"]).optional(),

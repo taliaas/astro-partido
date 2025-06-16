@@ -1,12 +1,13 @@
 import { API_URL } from 'astro:env/client';
 
 export default class UserService {
-  async getAllUser(page: number) {
+  async getAllUser(page: number,token:string) {
     try {
       const response = await fetch(`${API_URL}/user?page=${page}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
       });
       if (!response.ok) {
@@ -40,7 +41,7 @@ export default class UserService {
     }
   }
 
-  async getUserByEmail(email: string) {
+  async getUserByEmail(email: string, token:string) {
     console.log(email);
     try {
       const response = await fetch(
@@ -49,6 +50,7 @@ export default class UserService {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           },
         }
       );

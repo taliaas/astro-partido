@@ -16,9 +16,9 @@
               <SelectGroup>
                 <SelectItem
                   v-for="role in roles"
-                  :key="role.id"
-                  :value="role.id"
-                  >{{ role.name }}
+                  :key="role"
+                  :value="role"
+                  >{{ role }}
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
@@ -106,7 +106,7 @@
           <AlertCircle class="w-4 h-4 bg-secondary" />
           Editando permisos para:
           <span class="font-medium">{{
-            roles.find((r) => r.id === selectRole)?.name
+            roles.find((r) => r === selectRole)
           }}</span>
         </div>
       </div>
@@ -124,15 +124,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { roleEnum } from "@/enum/roleEnum";
 import type { Claims } from "@/interface/Claims.ts";
-import type { Role } from "@/interface/Roles.ts";
 import { actions } from "astro:actions";
 import { AlertCircle } from "lucide-vue-next";
 import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
-const { claims, roles } = defineProps<{ claims: Claims[]; roles: Role[] }>();
-const selectRole = ref(claims[0]?.role?.id ?? null);
+const { claims } = defineProps<{ claims: Claims[]; }>();
+const roles: roleEnum[] =  [
+  roleEnum.Admin,
+  roleEnum.Cmte,
+  roleEnum.Func,
+  roleEnum.Gnral,
+  roleEnum.Ideologico,
+  roleEnum.mtte
+]
+const selectRole = ref(roles[0]);
 
 // Definir las acciones posibles
 const permissionActions = [

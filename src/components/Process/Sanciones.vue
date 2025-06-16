@@ -377,10 +377,10 @@ const saveSanction = async () => {
 
   try {
     if (isEditing.value) {
-      //await actions.sancion.updateSancion(currentSanction.value)
+      await actions.sancion.updateSancion(currentSanction.value as any)
       toast.success("Sanción actualizada correctamente");
     } else {
-      //await actions.sancion.createSancion(currentSanction.value)
+      await actions.sancion.createSancion(currentSanction.value  as any)
       toast.success("Sanción creada correctamente");
     }
     closeModal();

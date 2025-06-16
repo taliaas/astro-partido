@@ -19,12 +19,14 @@ export default class CoreService {
     }
   }
 
-  async getAllCore() {
+  async getAllCore(token?: string) {
+    
     try {
       const response = await fetch(`${API_URL}/core`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
       });
       if (!response.ok) {

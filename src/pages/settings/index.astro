@@ -4,6 +4,9 @@ import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import RoleService from "@/services/RoleService";
 import UserService from "@/services/UserService";
+import { getSession } from "auth-astro/server";
+
+const session = (await getSession(Astro.request)) as any
 
 const searchParams = Astro.url.searchParams;
 const page = Number(searchParams.get("page") ?? 1);
@@ -11,7 +14,7 @@ const page = Number(searchParams.get("page") ?? 1);
 async function getAllUsers() {
   const service = new UserService();
   try {
-    return service.getAllUser(page);
+    return service.getAllUser(page,session.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -19,7 +22,7 @@ async function getAllUsers() {
 async function getAllRoles() {
   const service = new RoleService();
   try {
-    return service.getRoles();
+    return service.getRoles(session.jwt);
   } catch (e) {
     console.error(e);
   }

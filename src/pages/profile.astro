@@ -10,7 +10,7 @@ const n_user = session?.user
 async function getUser() {
     const services = new UserService()
     try {
-        return await services.getUserByEmail(n_user?.email ?? '')
+        return await services.getUserByEmail(n_user?.email ?? '', (session as any).jwt)
     } catch (e) {
         console.error(e)
     }

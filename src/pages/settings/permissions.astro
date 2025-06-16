@@ -4,11 +4,14 @@ import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import ClaimService from "@/services/ClaimService";
 import RoleService from "@/services/RoleService";
+import { getSession } from "auth-astro/server";
+
+const session = (await getSession(Astro.request)) as any
 
 async function getAllRoles() {
   const service = new RoleService();
   try {
-    return service.getRoles();
+    return service.getRoles(session.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -17,7 +20,7 @@ async function getAllRoles() {
 async function getClaims() {
   const service = new ClaimService();
   try {
-    return service.getAllClaims();
+    return service.getAllClaims(session.jwt);
   } catch (e) {
     console.error(e);
   }

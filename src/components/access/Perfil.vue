@@ -44,7 +44,7 @@
               <!-- Role (Read-only) -->
               <div>
                 <label class="block text-sm font-medium text-gray-700">Rol</label>
-                <Input type="text" v-model="user.role.name" readonly class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
+                <Input type="text" v-model="user.role?.name" readonly class="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
               </div>
             </div>
 
