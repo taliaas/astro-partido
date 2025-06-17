@@ -110,7 +110,9 @@ import { LockIcon, SaveIcon, ShieldCheckIcon, UserIcon } from "lucide-vue-next";
 import { reactive, ref } from "vue";
 import Input from "../ui/input/Input.vue";
 
-const { user } = defineProps<{ user: any }>();
+const { user: data } = defineProps<{ user: any }>();
+
+const user = reactive(data.value)
 
 const showPasswordModal = ref(false);
 const message = ref("");
