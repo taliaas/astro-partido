@@ -41,30 +41,58 @@
           <tr v-for="(item, index) in agreements" :key="index" class="border-b">
             <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
             <td class="p-4 align-middle">
-              <input
-                type="text"
-                v-model="item.description"
-                class="w-full bg-transparent focus:outline-none"
-                placeholder="Descripción"
+              <FormField
                 :name="'agreements.' + index + '.descripcion'"
-              />
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="text"
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none"
+                      placeholder="Descripción"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </td>
             <td class="p-4 align-middle">
-              <input
-                type="text"
-                v-model="item.responsible"
-                class="w-full bg-transparent focus:outline-none"
-                placeholder="Responsable"
+              <FormField
                 :name="'agreements.' + index + '.responsable'"
-              />
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="text"
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none"
+                      placeholder="Responsable"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </td>
             <td class="p-4 align-middle">
-              <Input
-                type="date"
-                v-model="item.date"
-                class="w-1/2 border-none rounded bg-transparent focus:outline-none"
+              <FormField
                 :name="'agreements.' + index + '.fecha'"
-              />
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="date"
+                      v-bind="componentField"
+                      class="w-1/2 border-none rounded bg-transparent focus:outline-none"
+                      :name="'agreements.' + index + '.fecha'"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </td>
             <td class="p-4 align-middle">
               <button
@@ -121,60 +149,114 @@
         <tbody>
           <tr v-for="(item, index) in travels" :key="index" class="border-b">
             <td class="p-4 align-middle">
-              <input
-                type="text"
-                v-model="item.name"
-                class="w-full bg-transparent focus:outline-none"
-                placeholder="Nombre"
+              <FormField
                 :name="'extranjero.' + index + '.nombre'"
-              />
-            </td>
-            <td class="p-4 align-middle">
-              <input
-                type="text"
-                v-model="item.reason"
-                class="w-full bg-transparent focus:outline-none"
-                placeholder="Motivo"
-                :name="'extranjero.' + index + '.motivo'"
-              />
-            </td>
-            <td class="p-4 align-middle">
-              <input
-                type="text"
-                v-model="item.destination"
-                class="w-full bg-transparent focus:outline-none"
-                placeholder="Destino"
-                :name="'extranjero.' + index + '.destino'"
-              />
-            </td>
-            <td class="p-4 align-middle">
-              <input
-                type="date"
-                v-model="item.dates.ida"
-                class="w-full bg-transparent focus:outline-none"
-                placeholder="Fechas"
-                :name="'extranjero.' + index + '.fechaIda'"
-              />
-            </td>
-            <td class="p-4 align-middle">
-              <input
-                type="date"
-                v-model="item.dates.regreso"
-                class="w-full bg-transparent focus:outline-none"
-                placeholder="Fechas"
-                :name="'extranjero.' + index + '.fechaRegreso'"
-              />
-            </td>
-            <td class="p-4 align-middle">
-              <select
-                v-model="item.status"
-                class="w-full bg-transparent focus:outline-none rounded"
-                :name="'extranjero.' + index + '.estado'"
+                v-slot="{ componentField }"
               >
-                <option value="Pendiente">Pendiente</option>
-                <option value="Aprobado">Aprobado</option>
-                <option value="Rechazado">Rechazado</option>
-              </select>
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="text"
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none"
+                      placeholder="Nombre"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </td>
+            <td class="p-4 align-middle">
+              <FormField
+                :name="'extranjero.' + index + '.motivo'"
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="text"
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none"
+                      placeholder="Motivo"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </td>
+            <td class="p-4 align-middle">
+              <FormField
+                :name="'extranjero.' + index + '.destino'"
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="text"
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none"
+                      placeholder="Destino"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </td>
+            <td class="p-4 align-middle">
+              <FormField
+                :name="'extranjero.' + index + '.fechaIda'"
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="date"
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none"
+                      placeholder="Fecha"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </td>
+            <td class="p-4 align-middle">
+              <FormField
+                :name="'extranjero.' + index + '.fechaRegreso'"
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <input
+                      type="date"
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none"
+                      placeholder="Fecha"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </td>
+            <td class="p-4 align-middle">
+              <FormField
+                :name="'extranjero.' + index + '.estado'"
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <select
+                      v-bind="componentField"
+                      class="w-full bg-transparent focus:outline-none rounded"
+                    >
+                      <option value="Pendiente">Pendiente</option>
+                      <option value="Aprobado">Aprobado</option>
+                      <option value="Rechazado">Rechazado</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </td>
             <td class="p-4 align-middle">
               <button
@@ -194,19 +276,19 @@
   <!-- Observaciones y Firmas -->
   <section class="space-y-4 my-4">
     <div class="space-y-2">
-      <label
-        for="observaciones"
-        class="block text-md font-medium text-gray-700"
-      >
-        Observaciones generales
-      </label>
-      <Textarea
-        id="observaciones"
-        name="observaciones"
-        v-model="formData.observaciones"
-        rows="4"
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-      ></Textarea>
+      <FormField name="observaciones" v-slot="{ componentField }">
+        <FormItem class="w-3/4">
+          <FormLabel>Observaciones generales</FormLabel>
+          <FormControl>
+            <Textarea
+              v-bind="componentField"
+              rows="4"
+              class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            ></Textarea>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
     </div>
   </section>
 
@@ -219,10 +301,10 @@
             <FormLabel> Próxima reunión </FormLabel>
             <FormControl>
               <Input
-                  type="date"
-                  required
-                  :="componentField"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                type="date"
+                required
+                :="componentField"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
             </FormControl>
             <FormMessage />
@@ -235,11 +317,11 @@
             <FormLabel> Preparación próxima reunión </FormLabel>
             <FormControl>
               <Input
-                  type="date"
-                  required
-                  :="componentField"
-                  v-model="formData.preparacionReunion"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                type="date"
+                required
+                :="componentField"
+                v-model="formData.preparacionReunion"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
             </FormControl>
             <FormMessage />
@@ -273,11 +355,11 @@ import FormItem from "../ui/form/FormItem.vue";
 import FormMessage from "../ui/form/FormMessage.vue";
 import FormLabel from "../ui/form/FormLabel.vue";
 import FormControl from "../ui/form/FormControl.vue";
-import {FormField} from "@/components/ui/form";
+import { FormField } from "@/components/ui/form";
 
 const agreements = ref([{ description: "", responsible: "", date: "" }]);
 
-const travels = reactive([
+const travels = ref([
   {
     name: "",
     reason: "",
@@ -294,7 +376,7 @@ const addAgreement = () => {
   agreements.value.push({ description: "", responsible: "", date: "" });
 };
 
-const removeAgreement = (index) => {
+const removeAgreement = (index: any) => {
   agreements.value.splice(index, 1);
 };
 
@@ -303,12 +385,15 @@ const addTravel = () => {
     name: "",
     reason: "",
     destination: "",
-    dates: "",
+    dates: {
+      ida: null,
+      regreso: null,
+    },
     status: "pendiente",
   });
 };
 
-const removeTravel = (index) => {
+const removeTravel = (index: any) => {
   travels.value.splice(index, 1);
 };
 

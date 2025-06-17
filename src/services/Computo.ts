@@ -20,12 +20,13 @@ export default class ComputoService {
         }
     }
 
-    async getCalcularComputo(id: string) {
+    async getCalcularComputo(id: string, session: any) {
         try {
             const response = await fetch(`${API_URL}/computo/calcular_computo/${id}`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session?.jwt}`,
                 },
             });
             if (!response.ok) {

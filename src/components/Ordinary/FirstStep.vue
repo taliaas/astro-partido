@@ -1,23 +1,5 @@
 <template>
   <div class="space-y-8">
-    <!-- 2. Núcleo -->
-    <FormField name="nucleo" v-slot="{ componentField }">
-      <FormItem class="w-1/3">
-        <FormLabel> Núcleo </FormLabel>
-        <FormControl>
-          <select
-            :="componentField"
-            class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
-            <option v-for="nucleo in cores" :key="nucleo" :value="nucleo.id">
-              {{ nucleo?.name }}
-            </option>
-          </select></FormControl
-        >
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
     <div class="mt-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField name="fecha" v-slot="{ componentField }">

@@ -6,8 +6,10 @@ import RootLayout from "../../layouts/RootLayout.astro";
 import Editar from "../../components/Indicators/Editar.vue"
 import OrdinaryService from "../../services/OrdinaryService";
 import {indicadores} from "../../lib/indicadoresKey";
+import { getSession } from "auth-astro/server";
 
 const {id} = Astro.params;
+const session = (await getSession(Astro.request)) as any;
 
 if (!id) {
     throw new Error("No id provided");
@@ -36,7 +38,7 @@ async function getActaPolitica() {
 async function obtenerComputo() {
     const service = new ComputoService();
     try {
-        return service.getCalcularComputo(id!);
+        return service.getCalcularComputo(id!, session);
     } catch (error) {
         console.log("error");
     }
@@ -44,7 +46,6 @@ async function obtenerComputo() {
 
 const ind = await obtenerComputo()
 const cp = await getActaPolitica()
-console.log(cp)
 const map = new Map()
 
 for (const {key} of indicadores) {

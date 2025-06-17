@@ -86,11 +86,13 @@
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
+import { actions } from "astro:actions";
 import Editar from "../Ordinary/ActaDisplay.vue";
 import type { Indicadores } from "@/interface/Indicadores.ts";
 import ComputoService from "@/services/Computo.ts";
 import { navigate } from "astro:transitions/client";
 import { indicadores } from "@/lib/indicadoresKey.ts";
+import { toast } from "vue-sonner";
 import Display from "@/components/Political/Display.vue";
 
 const { ind, acta, cp } = defineProps<{
@@ -132,22 +134,11 @@ const validateForm = () => {
   return Object.keys(newErrors).length === 0;
 };
 
-// Show notification
-const showNotification = (message, type = "success") => {
-  notification.show = true;
-  notification.message = message;
-  notification.type = type;
-  setTimeout(() => {
-    notification.show = false;
-  }, 3000);
-};
-
 // Save form data
 const saveIndicadores = async () => {
   if (!validateForm()) {
-    showNotification(
-      "Por favor, corrija los errores en el formulario",
-      "error",
+    toast.error(
+      "Por favor, corrija los errores en el formulario"
     );
     return;
   }
@@ -161,19 +152,18 @@ const saveIndicadores = async () => {
     minute: acta,
     ...formData,
   };
-  console.log(data);
   try {
     await service.create(data);
-    showNotification("Indicadores guardados exitosamente");
+    toast.success("Indicadores guardados exitosamente");
     await navigate("/minutes");
   } catch (error) {
-    showNotification("Error al guardar los indicadores", "error");
+    toast.error("Error al guardar los indicadores");
   } finally {
     isSubmitting.value = false;
   }
 };
 
-const getName = (key) => {
+const getName = (key: any) => {
   return indicadores.find((i) => i.key === key)?.name;
 };
 </script>

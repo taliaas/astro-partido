@@ -11,7 +11,7 @@ export const createMinute = defineAction({
     agreements: z.any().array(),
     extranjero: z.any().array(),
   }),
-  async handler({data, ...rest}, context) {
+  async handler({ data, ...rest }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
@@ -21,11 +21,15 @@ export const createMinute = defineAction({
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.jwt}`,
       },
-      body: JSON.stringify({...data, ...rest}),
+      body: JSON.stringify({ ...data, ...rest }),
     });
-    if (!res.ok) {
+    if (res.status === 409) {
+      throw new ActionError({ code: "CONFLICT" })
+    }
+    else if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
+
     return res.json();
   },
 });

@@ -20,7 +20,7 @@
               <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Información General
               </h2>
-              <div class="flex gap-4 text-lg">
+              <div class="flex text-lg justify-between p-2">
                 <div class="card">
                   <span class="font-medium text-gray-700">Núcleo:</span>
                   {{ acta.core?.name }}
@@ -73,9 +73,9 @@
                 <div
                   v-for="(causa, index) in acta.causa"
                   :key="index"
-                  class="mb-4 bg-gray-100 p-2 rounded text-gray-700 pl-4 font-medium"
+                  class="flex mb-4 bg-gray-100 p-2 rounded text-gray-700 pl-4 font-medium"
                 >
-                  {{ causa }}
+                 <div>Nombre: {{ JSON.parse(causa).nombre }} | Motivo: {{ JSON.parse(causa).motivo }}</div>
                 </div>
               </div>
             </section>
@@ -90,7 +90,7 @@
 
             <!-- Desarrollo de la reunión -->
             <section title="Planteamientos">
-              <h2 class="text-xl font-semibold text-gray-800 mb-2 ">
+              <h2 class="text-xl font-semibold text-gray-800 mb-2">
                 Principales planteamientos realizados
               </h2>
               <div class="mb-4 text-md pr-6 pl-2">
@@ -124,16 +124,8 @@
         </CardContent>
         <CardFooter class="flex justify-end border-t p-6">
           <div class="flex gap-5" v-if="acta.status === 'Pendiente'">
-            <Button
-              type="button"
-              variant="ghost"
-              class="p-4 bg-gray-100 text-md font-medium text-gray-700 hover:bg-gray-200 hover:shadow-md"
-              @click="updateStatus(Status.R)"
-            >
-              {{ isSubmitting ? "Rechazando..." : "Rechazada" }}
-            </Button>
             <button
-              class="bg-blue-600 text-white text-md font-medium px-4 rounded hover:bg-blue-700 hover:shadow-md"
+              class="bg-blue-600 text-white text-md font-medium px-4 py-2 rounded hover:bg-blue-700 hover:shadow-md"
               @click="updateStatus(Status.A)"
               :disabled="isSubmitting"
             >
@@ -144,7 +136,7 @@
             <Button
               type="button"
               variant="ghost"
-              class="p-6 text-lg font-medium text-gray-700 hover:bg-gray-100"
+              class="px-4 py-2 text-lg font-medium text-gray-700 hover:bg-gray-100"
               @click="$emit('move')"
             >
               <ArrowLeft class="w-4 h-4" />
@@ -180,31 +172,20 @@ const { acta } = defineProps<{
 defineEmits(["move"]);
 
 const infoActa = ref<HTMLElement | null>(null);
-const isSubmitting = ref(false)
+const isSubmitting = ref(false);
 const updateStatus = async (status: string) => {
-  
   isSubmitting.value = true;
   try {
-    await actions.political.updateStatusMinutes({id:acta.id,status})
-    
+    await actions.political.updateStatusMinutes({ id: acta.id, status });
+
     await navigate("/minutes");
   } catch (e) {
-    console.error(e)
+    console.error(e);
   } finally {
     isSubmitting.value = false;
   }
 };
 const exportarActa = () => {
-  exportar(acta)
+  exportar(acta);
 };
 </script>
-
-<style scoped>
-@reference "tailwindcss";
-
-@layer components {
-  .card {
-    @apply border flex flex-col rounded-lg p-2 px-4 w-fit text-gray-600 min-w-32 hover:shadow-md;
-  }
-}
-</style>
