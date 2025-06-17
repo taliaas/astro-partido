@@ -1,12 +1,8 @@
 <template>
-  <div
-      class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:bg-zinc-800"
-  >
+  <div class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:bg-zinc-800">
     <div class="max-w-[1600px] mx-auto p-6">
       <!-- Main Card -->
-      <div
-          class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
-      >
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
         <!-- Header Section -->
         <div class="p-8 border-b border-gray-100">
           <div class="flex flex-col space-y-1">
@@ -20,7 +16,7 @@
         <!-- Content Area -->
         <div class="divide-y divide-gray-100">
           <!-- Actions Bar -->
-          <div class="p-6" v-if="hasPermission('Documentos','create')">
+          <div class="p-6" v-if="hasPermission('Documentos', 'create')">
             <div class="flex justify-between items-center">
               <div class="flex gap-3">
                 <Button variant="outline" @click="showUploadDialog = true">
@@ -28,20 +24,14 @@
                 </Button>
               </div>
               <div class="flex gap-3">
-                <a
-                    href="/addRO"
-                    class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button"
-                >
-                  <PlusIcon class="h-4 w-4 mr-2"/>
-                  Ordinaria</a
-                >
-                <a
-                    href="/addCP"
-                    class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium"
-                >
-                  <PlusIcon class="h-4 w-4 mr-2"/>
-                  C. Político</a
-                >
+                <a href="/addRO" class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button">
+                  <PlusIcon class="h-4 w-4 mr-2" />
+                  Ordinaria
+                </a>
+                <a href="/addCP" class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium">
+                  <PlusIcon class="h-4 w-4 mr-2" />
+                  C. Político
+                </a>
               </div>
             </div>
           </div>
@@ -51,56 +41,28 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1.5">
                 <div class="relative">
-                  <SearchIcon
-                      class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
-                  />
-                  <Input
-                      id="search"
-                      v-model="filters.search"
-                      placeholder="Buscar por nombre..."
-                      class="pl-9"
-                  />
+                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input id="search" v-model="filters.search" placeholder="Buscar por nombre..." class="pl-9" />
                 </div>
               </div>
               <div class="gap-4 flex">
-                <select
-                    v-model="selectType"
-                    class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full"
-                >
+                <select v-model="selectType" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
                   <option value="">Todas las actas</option>
-                  <option
-                      v-for="type in typeMinutes"
-                      :key="type"
-                      :value="type"
-                  >
+                  <option v-for="type in typeMinutes" :key="type" :value="type">
                     {{ type === 'ro' ? 'Acta Ordinaria' : type === 'cp' ? 'Círculo Político' : type }}
                   </option>
                 </select>
                 <!-- Nucleo -->
-                <select
-                    v-model="selectedNucleo"
-                    class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full"
-                >
+                <select v-model="selectedNucleo" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
                   <option value="">Todos los núcleos</option>
-                  <option
-                      v-for="nucleo in nucleos"
-                      :key="nucleo"
-                      :value="nucleo"
-                  >
+                  <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
                     {{ nucleo }}
                   </option>
                 </select>
                 <!-- Status -->
-                <select
-                    v-model="selectedStatus"
-                    class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full"
-                >
+                <select v-model="selectedStatus" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
                   <option value="">Todos los estados</option>
-                  <option
-                      v-for="status in statuses"
-                      :key="status"
-                      :value="status"
-                  >
+                  <option v-for="status in statuses" :key="status" :value="status">
                     {{ status }}
                   </option>
                 </select>
@@ -113,57 +75,33 @@
           <!-- Enhanced Table -->
           <div class="overflow-x-auto p-6">
             <Table class="p-2">
-              <TableHeader
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
+              <TableHeader class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <TableRow>
-                  <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[0] }}
                   </th>
-                  <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[1] }}
                   </th>
-                  <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[2] }}
                   </th>
-                  <th
-                      :data-sort="sort"
-                      @click="handleSort"
-                      class="group cursor-pointer px-6 py-3 flex text-left text-xs font-medium text-gray-500 uppercase tracking-wider justify-between"
-                  >
+                  <th :data-sort="sort" @click="handleSort"
+                    class="group cursor-pointer px-6 py-3 flex text-left text-xs font-medium text-gray-500 uppercase tracking-wider justify-between">
                     {{ tableHeaders[3] }}
-                    <ArrowUp
-                        v-if="sort === 'DESC' || sort === null"
-                        class="w-4 h-4"
-                        :class="{ 'stroke-blue-500': sort === 'DESC' }"
-                    />
-                    <ArrowDown
-                        v-if="sort === 'ASC'"
-                        class="w-4 h-4 stroke-blue-500"
-                    />
+                    <ArrowUp v-if="sort === 'DESC' || sort === null" class="w-4 h-4"
+                      :class="{ 'stroke-blue-500': sort === 'DESC' }" />
+                    <ArrowDown v-if="sort === 'ASC'" class="w-4 h-4 stroke-blue-500" />
                   </th>
-                  <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[4] }}
                   </th>
-                  <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  ></th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow
-                    v-for="(acta, index) in filteredActas"
-                    :key="acta.id"
-                    class="hover:bg-gray-50/50 transition-colors duration-200"
-                >
+                <TableRow v-for="(acta, index) in filteredActas" :key="acta.id"
+                  class="hover:bg-gray-50/50 transition-colors duration-200">
                   <TableCell class="font-medium pl-8">{{ index + 1 }}</TableCell>
                   <TableCell class="pl-6">{{ acta.name }}</TableCell>
                   <TableCell class=" pl-6 text-left"> {{ acta.core?.name }}</TableCell>
@@ -176,44 +114,35 @@
                   <TableCell class="text-center">
                     <DropdownMenu>
                       <DropdownMenuTrigger class="focus:outline-none">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            class="rounded-full"
-                        >
-                          <MoreVerticalIcon class="h-4 w-4"/>
+                        <Button variant="ghost" size="icon" class="rounded-full">
+                          <MoreVerticalIcon class="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem @click="handleAction('ver', acta)">
-                          <Eye class="h-4 w-4"/>
+                          <Eye class="h-4 w-4" />
                           Ver
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('editar', acta)"
-                                          v-if="hasPermission('Documentos','update')">
-                          <Pencil class="h-4 w-4"/>
+                          v-if="hasPermission('Documentos', 'update')">
+                          <Pencil class="h-4 w-4" />
                           Editar
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                            v-if="
-                            acta.type === 'ro' &&
-                            acta.status === 'Pendiente'
-                          "
-                            @click="handleAction('procesar', acta)"
-                        >
-                          <Edit class="h-4 w-4"/>
+                        <DropdownMenuItem v-if="
+                          acta.type === 'ro' &&
+                          acta.status === 'Pendiente'
+                        " @click="handleAction('procesar', acta)">
+                          <Edit class="h-4 w-4" />
                           Procesar
                         </DropdownMenuItem>
-                        <DropdownMenuItem @click="handleAction('export', acta)" v-if="hasPermission('Documentos','export')">
-                          <Download class="h-4 w-4"/>
+                        <DropdownMenuItem @click="handleAction('export', acta)"
+                          v-if="hasPermission('Documentos', 'export')">
+                          <Download class="h-4 w-4" />
                           Exportar
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                            v-if="hasPermission('Documentos','delete')"
-                            @click="handleAction('eliminar', acta)"
-                            class="text-red-600 border-t focus:text-red-600"
-                        >
-                          <TrashIcon class="h-4 w-4"/>
+                        <DropdownMenuItem v-if="hasPermission('Documentos', 'delete')"
+                          @click="handleAction('eliminar', acta)" class="text-red-600 border-t focus:text-red-600">
+                          <TrashIcon class="h-4 w-4" />
                           Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -225,10 +154,8 @@
 
             <!-- Empty State -->
             <div v-if="filteredActas?.length === 0" class="text-center py-16">
-              <div
-                  class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
-              >
-                <SearchIcon class="h-6 w-6"/>
+              <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
+                <SearchIcon class="h-6 w-6" />
               </div>
               <h3 class="mt-4 text-sm font-medium text-gray-900">
                 No se encontraron actas
@@ -246,20 +173,12 @@
                 }}</span> páginas
               </div>
               <div class="flex justify-end gap-4 p-4">
-                <button
-                    class="rounded-md border px-3 py-1"
-                    :disabled="currentPage === 1"
-                    :class="{'bg-muted': currentPage === 1}"
-                    @click="goToPreviousPage"
-                >
+                <button class="rounded-md border px-3 py-1" :disabled="currentPage === 1"
+                  :class="{ 'bg-muted': currentPage === 1 }" @click="goToPreviousPage">
                   Anterior
                 </button>
-                <button
-                    class="rounded-md border px-3 py-1"
-                    :disabled="currentPage >= hasNextPage"
-                    :class="{'bg-muted': currentPage >= hasNextPage}"
-                    @click="goToNextPage"
-                >
+                <button class="rounded-md border px-3 py-1" :disabled="currentPage >= hasNextPage"
+                  :class="{ 'bg-muted': currentPage >= hasNextPage }" @click="goToNextPage">
                   Siguiente
                 </button>
               </div>
@@ -285,86 +204,50 @@
             Seleccione el tipo de acta: <span class="text-red-500">*</span>
           </label>
           <div class="flex gap-3 text-sm">
-            <label
-                :class="[
+            <label :class="[
               'flex items-center justify-center border rounded-md cursor-pointer flex-1',
               tipoActa === 'ro'
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-            ]"
-            >
-              <input
-                  type="radio"
-                  name="tipoActa"
-                  value="ro"
-                  v-model="tipoActa"
-                  class="sr-only"
-              />
+            ]">
+              <input type="radio" name="tipoActa" value="ro" v-model="tipoActa" class="sr-only" />
               Acta Ordinaria
             </label>
-            <label
-                :class="[
+            <label :class="[
               'flex items-center justify-center py-1.5 border rounded-md cursor-pointer flex-1',
               tipoActa === 'cp'
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-            ]"
-            >
-              <input
-                  type="radio"
-                  name="tipoActa"
-                  value="cp"
-                  v-model="tipoActa"
-                  class="sr-only"
-              />
+            ]">
+              <input type="radio" name="tipoActa" value="cp" v-model="tipoActa" class="sr-only" />
               Círculo Político
             </label>
           </div>
         </div>
 
         <!-- Área de arrastre de archivos -->
-        <div
-            class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
-            :class="{ 'border-blue-500 bg-blue-50': isDragging }"
-            @drop.prevent="handleFileDrop"
-            @dragover.prevent="isDragging = true"
-            @dragleave.prevent="isDragging = false"
-            @dragenter.prevent
-        >
-          <UploadCloudIcon
-              class="mx-auto h-12 w-12 transition-colors duration-200"
-              :class="isDragging ? 'text-blue-600' : 'text-gray-400'"
-          />
+        <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
+          :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
+          @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
+          <UploadCloudIcon class="mx-auto h-12 w-12 transition-colors duration-200"
+            :class="isDragging ? 'text-blue-600' : 'text-gray-400'" />
           <p class="mt-2 text-sm text-gray-600">
             <span class="font-medium hover:text-gray-700">
               Arrastre archivos aquí
             </span>
             o
-            <button
-                @click="$refs.fileInput.click()"
-                class="font-medium text-blue-600 hover:text-blue-500"
-            >
+            <button @click="$refs.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
               seleccione desde su dispositivo
             </button>
           </p>
           <p class="mt-1 text-xs text-gray-500">DOCX, PDF, hasta 10MB por archivo</p>
-          <input
-              ref="fileInput"
-              type="file"
-              multiple
-              accept=".pdf,.docx"
-              class="hidden"
-              @change="handleFileSelect"
-          />
+          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect" />
         </div>
 
-         <!-- Lista de archivos -->
+        <!-- Lista de archivos -->
         <div v-if="uploadedFiles.length > 0" class="space-y-3 max-h-32 overflow-y-auto">
-          <div
-            v-for="(file, index) in uploadedFiles"
-            :key="index"
-            class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-          >
+          <div v-for="(file, index) in uploadedFiles" :key="index"
+            class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 rounded flex items-center justify-center">
                 <FileTextIcon class="size-5" />
@@ -376,55 +259,38 @@
                 <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</p>
               </div>
             </div>
-            <button
-              @click="removeFile(file.name)"
-              class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600"
-            >
+            <button @click="removeFile(file.name)" class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600">
               <Trash2Icon class="size-4" />
             </button>
           </div>
         </div>
 
         <DialogFooter>
-          <Button
-              type="reset"
-              variant="outline"
-              @click="showUploadDialog = false"
-          >
+          <Button type="reset" variant="outline" @click="showUploadDialog = false">
             Cancelar
           </Button>
-          <Button
-              @click="handleDrop"
-              :disabled="!uploadedFiles.length || loading"
-              class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              :loading
-          >
+          <Button @click="handleDrop" :disabled="!uploadedFiles.length || loading"
+            class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
             Cargar archivos
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
 
-    <div
-        v-if="showDelete"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-    >
+    <div v-if="showDelete" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div class="bg-white rounded p-4 w-full max-w-md">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
         <form @submit.prevent="handleDelete" class="space-y-4 p-4">
           <div>¿Estás seguro que desea eliminar el acta?
-            <p class="font-semibold">{{ currentsMinute.name }}</p></div>
+            <p class="font-semibold">{{ currentsMinute.name }}</p>
+          </div>
           <div class="flex justify-end space-x-3">
-            <button
-                type="submit"
-                class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
+            <button type="submit"
+              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
               Cancelar
             </button>
-            <button
-                class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-                @click="eliminarActa()"
-            >
+            <button class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+              @click="eliminarActa()">
               Aceptar
             </button>
           </div>
@@ -464,7 +330,7 @@ import { Input } from "../ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
 import { toast } from "vue-sonner";
 
-const {actas, page} = defineProps<{
+const { actas, page } = defineProps<{
   actas: any;
   type: string;
   page: number;
@@ -535,23 +401,23 @@ const filteredActas = computed(() => {
   const [year, month] = selectFecha.value.split('-');
   return actas?.data?.filter((item) => {
     return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
-        (selectedStatus.value && item.status !== selectedStatus.value) ||
-        (selectType.value && item.type !== selectType.value))
+      (selectedStatus.value && item.status !== selectedStatus.value) ||
+      (selectType.value && item.type !== selectType.value))
   })
-      .filter(item => {
-        const date = new Date(item.fecha);
-        return !selectFecha.value || (date.getFullYear() === Number(year) &&
-            (date.getMonth() + 1) === Number(month))
-      })
-      .sort((a, b) => {
-        if (sort.value === "DESC") {
-          return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
-        } else if (sort.value === "ASC") {
-          return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
-        } else {
-          return a.id - b.id;
-        }
-      }) ?? [];
+    .filter(item => {
+      const date = new Date(item.fecha);
+      return !selectFecha.value || (date.getFullYear() === Number(year) &&
+        (date.getMonth() + 1) === Number(month))
+    })
+    .sort((a, b) => {
+      if (sort.value === "DESC") {
+        return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
+      } else if (sort.value === "ASC") {
+        return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
+      } else {
+        return a.id - b.id;
+      }
+    }) ?? [];
 });
 
 const filters = ref({
@@ -603,7 +469,7 @@ async function eliminarActa() {
   const tipo = acta?.type ?? "";
 
   try {
-    await actions.minute.deleteMinute(id, tipo)
+    await actions.minute.deleteMinute({ id, type: tipo })
     toast.success("Se eliminó correctamente el acta");
     navigate('/minutes')
   } catch (e) {
@@ -626,7 +492,7 @@ const handleDrop = async () => {
   try {
     // const data = await actions.minute.uploadMinutes.orThrow(formData)
     const navigationData = new FormData()
-    navigationData.append("data","datos")
+    navigationData.append("data", "datos")
     showUploadDialog.value = false;
     uploadedFiles.value = [];
     navigate('/minutes')

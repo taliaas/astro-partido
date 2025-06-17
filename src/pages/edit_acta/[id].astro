@@ -3,8 +3,11 @@ import CoreService from "../../services/CoreService";
 import RootLayout from "../../layouts/RootLayout.astro";
 import EditContainer from "../../components/Political/Edit.vue";
 import PoliticalService from "../../services/PoliticalService";
+import {getSession} from "auth-astro/server.ts";
+
 
 const { id } = Astro.params;
+const session = (await getSession(Astro.request)) as any
 
 if (!id) {
     throw new Error("No id provided");
@@ -23,7 +26,7 @@ async function getActa() {
 async function getCore() {
     const service = new CoreService();
     try {
-        return await service.getAllCore();
+        return await service.getAllCore(session.jwt);
     } catch (e) {
         console.error(e);
     }

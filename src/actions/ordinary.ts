@@ -36,7 +36,7 @@ export const createMinute = defineAction({
 
 export const updateMinute = defineAction({
   input: z.object({
-    id: z.string(),
+    id: z.number(),
     data: z.any(),
   }),
   async handler({ id, data }, context) {

@@ -43,9 +43,9 @@ export const deleteMinute = defineAction({
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(`${API_URL}/minutes/delete/${id}?type=${type}`, {
-      method: "DELETE",
+      method: "POST",
       headers: {
-        Authorization: `${session.jwt}`,
+        Authorization: `Bearer ${session.jwt}`,
       },
     });
     if (!res.ok) {
