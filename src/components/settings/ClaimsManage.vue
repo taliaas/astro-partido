@@ -175,7 +175,7 @@ const hasChanges = computed(() => {
 // Actualizar el estado de un permiso (check/uncheck)
 function togglePermission(resource: string, actionId: string) {
   const claimIdx = editableClaims.value.findIndex(
-    (c) => c.role?.id === selectRole.value && c.module === resource
+    (c) => c.role.name === selectRole.value && c.module === resource
   );
   if (claimIdx !== -1) {
     // Si existe el claim para ese módulo y rol
@@ -194,13 +194,13 @@ function togglePermission(resource: string, actionId: string) {
     }
   } else {
     // Si no existe el claim, crearlo con la acción
-    const roleObj = roles.find((r) => r.id === selectRole.value);
+    const roleObj = roles.find((r) => r === selectRole.value);
     if (roleObj) {
       editableClaims.value.push({
         id: Date.now(), // id temporal, el backend debe asignar el real
         actions: [actionId],
         module: resource,
-        role: roleObj,
+        role: { name: roleObj},
       });
     }
   }
@@ -210,7 +210,7 @@ function togglePermission(resource: string, actionId: string) {
 function isPermissionChecked(resource: string, actionId: string) {
   return editableClaims.value.some(
     (perm) =>
-      perm.role?.id === selectRole.value &&
+      perm.role?.name === selectRole.value &&
       perm.module === resource &&
       perm.actions.includes(actionId)
   );
@@ -223,7 +223,7 @@ async function saveClaims() {
     // Para cada rol, agrupar sus claims y preparar el objeto para guardar
     const rolesToSave = roles.map((role) => {
       const claimsToSave = editableClaims.value.filter(
-        (c) => c.role?.id === role.id
+        (c) => c.role?.name === role
       );
       const grouped = permissionResources.map((resource) => {
         const claim = claimsToSave.find((c) => c.module === resource);
@@ -233,7 +233,7 @@ async function saveClaims() {
         };
       });
       return {
-        id: role.id,
+        name: role,
         data: { claims: grouped },
       };
     });

@@ -3,7 +3,6 @@ import ClaimsManage from "@/components/settings/ClaimsManage.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import ClaimService from "@/services/ClaimService";
-import RoleService from "@/services/RoleService";
 import { getSession } from "auth-astro/server";
 
 const session = (await getSession(Astro.request)) as any
