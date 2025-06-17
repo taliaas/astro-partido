@@ -2,11 +2,14 @@
 import CoreService from "../services/CoreService";
 import MinutesPolit from "@/components/Political/MinutesPolit.vue";
 import RootLayout from "../layouts/RootLayout.astro";
+import { getSession } from "auth-astro/server";
+
+const session = (await getSession(Astro.request)) as any
 
 async function getCore() {
     const service = new CoreService();
     try {
-        return await service.getAllCore();
+        return await service.getAllCore(session.jwt);
     } catch (e) {
         console.error(e);
     }
