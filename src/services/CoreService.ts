@@ -20,7 +20,6 @@ export default class CoreService {
   }
 
   async getAllCore(token?: string) {
-    
     try {
       const response = await fetch(`${API_URL}/core`, {
         method: 'GET',

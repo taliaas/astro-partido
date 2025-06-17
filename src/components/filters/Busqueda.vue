@@ -48,7 +48,6 @@ function goToPreviousPage() {
             {{ found }} coincidencias encontradas
           </p>
         </div>
-
         <!-- Results -->
         <div class="space-y-4">
           <div
@@ -85,7 +84,7 @@ function goToPreviousPage() {
 
         <div class="flex justify-between">
           <div class="p-4 text-muted-foreground">
-            Mostrando {{page}} de {{limit}}
+            
           </div>
           <div class="space-x-4 p-4 flex justify-end">
             <button @click="goToPreviousPage" type="button" class="flex gap-2 border rounded text-sm font-medium px-4 py-2 mr-4 ">

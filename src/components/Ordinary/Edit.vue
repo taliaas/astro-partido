@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
     <div
-        class="max-w-7xl container p-6 shadow-md border rounded-lg border-gray-300"
+        class="max-w-7xl mx-auto p-6 shadow-md border rounded-lg border-gray-300"
     >
       <div class="space-x-4">
         <div class="space-y-2 text-center">
@@ -10,8 +10,8 @@
         </div>
 
         <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>1. Informacion General</AccordionTrigger>
+          <AccordionItem value="item-1" class="pb-4">
+            <AccordionTrigger class="text-xl">1. Informacion General</AccordionTrigger>
             <AccordionContent>
               <div class="space-x-2">
                 <div class="w-1/3 p-2">
@@ -23,12 +23,12 @@
                   <select
                       name="nucleo"
                       v-model="acta.core.name"
-                      class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      class="w-3/4 px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
                     <option
                         v-for="nucleo in cores"
-                        :key="nucleo"
-                        :value="nucleo"
+                        :key="nucleo.id"
+                        :value="nucleo.name"
                     >
                       {{ nucleo?.name }}
                     </option>
@@ -104,10 +104,10 @@
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-2">
-            <AccordionTrigger>4. Desarrollo</AccordionTrigger>
+          <AccordionItem value="item-2" class="pb-4">
+            <AccordionTrigger class="text-xl">2. Desarrollo</AccordionTrigger>
             <AccordionContent class="p-2">
-              <div class="">
+              <div class="space-y-2">
                 <label
                     for="chequeo"
                     class="block text-md font-medium text-gray-700"
@@ -118,12 +118,12 @@
                     name="chequeo"
                     v-model="acta.chequeo"
                     rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     placeholder="Chequeo de acuerdos"
                 >
                 </Textarea>
               </div>
-              <div class="">
+              <div class="space-y-2">
                 <label
                     for="orient"
                     class="block text-md font-medium text-gray-700"
@@ -134,11 +134,11 @@
                     name="orientaciones"
                     v-model="acta.orientaciones"
                     rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     placeholder="Orientaciones del Organismo Superior"
                 ></Textarea>
               </div>
-              <div>
+              <div class="space-y-2">
                 <label
                     for="analisis"
                     class="block text-md font-medium text-gray-700"
@@ -149,7 +149,7 @@
                     name="analisis"
                     v-model="acta.analisis"
                     rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     placeholder="Análisis y discusiones"
                 ></Textarea>
               </div>
@@ -165,13 +165,13 @@
                     name="observaciones"
                     v-model="acta.observaciones"
                     rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 ></Textarea>
               </div>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>5. Fechas</AccordionTrigger>
+            <AccordionTrigger class="text-xl">3. Fechas</AccordionTrigger>
             <AccordionContent>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div class="w-3/4 space-y-2">
@@ -227,13 +227,13 @@
           </AccordionItem>
         </Accordion>
 
-        <div class="grid grid-cols-4 gap-4 m-4">
-          <button class="p-2 rounded border">Cancelar</button>
+        <div class="flex justify-end gap-4">
+          <button @click="resetData" class="p-2 rounded border">Cancelar</button>
           <button
               @click="update"
-              class="p-2 rounded border bg-blue-600 hover:bg-blue-700 text-white"
+              class="p-2 rounded border bg-primary hover:bg-blue-700 text-white"
           >
-            Guardar cambios
+            Guardar
           </button>
         </div>
       </div>
@@ -242,19 +242,26 @@
 </template>
 
 <script setup lang="ts">
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/ui/accordion";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import { toast } from "vue-sonner";
 import Input from "../ui/input/Input.vue";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion";
-import {Button} from "@/components/ui/button";
 import Textarea from "../ui/textarea/Textarea.vue";
-import {actions} from "astro:actions";
 
 const {cores, acta} = defineProps<{ cores: any[]; acta: any }>();
 
 async function update() {
   try {
-    return await actions.ordinary.updateMinute({id: acta.id, data: acta})
+    await actions.ordinary.updateMinute({id: acta.id, data: acta})
+    toast.success("Se actualizó el acta correctamente")
   } catch (e) {
     console.error(e);
+    toast.error("Ocurrió un error al actualizar el acta. Inténtalo de nuevo")
   }
+}
+
+async function resetData(){
+  navigate('/')
 }
 </script>

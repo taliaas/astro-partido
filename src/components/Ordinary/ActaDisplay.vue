@@ -17,7 +17,8 @@
           <div ref="infoActa" class="space-y-8">
             <!-- Información General -->
             <section>
-              <div class="flex text-lg gap-6">
+              <div class="flex text-lg gap-6 w-full justify-between">
+                
                 <div class="card">
                   <span class="font-medium text-gray-700">Núcleo:</span>
                   {{ acta.core?.name }}
@@ -50,7 +51,10 @@
             </section>
 
             <!-- Asistencia -->
-            <section title="Miembros">
+            <section title="Miembros" class="gap-2">
+              <div class="text-2xl font-semibold text-gray-800 mb-2">
+                  <h2>Militantes</h2>
+                </div>
               <Table
                 v-if="acta.militante.length"
                 class="text-md rounded-lg border border-gray-300"
@@ -72,12 +76,10 @@
                     <TableCell class="text-center">
                       <Badge
                         v-if="miembro.ausente === 'ausente'"
-                        variant="success"
                         >Ausente
                       </Badge>
                       <Badge
                         v-else-if="miembro.presente === 'Virtual'"
-                        variant="info"
                         >Virtual
                       </Badge>
                       <span v-else>Presente</span>
@@ -111,9 +113,9 @@
               <h2 class="text-2xl font-semibold text-gray-800 mb-2">
                 Desarrollo de la reunión
               </h2>
-              <Accordion type="single" collapsible class="text-xl">
+              <Accordion type="single" collapsible >
                 <AccordionItem value="item-1" v-if="acta.chequeo.length !== 0">
-                  <AccordionTrigger> Chequeo de acuerdos</AccordionTrigger>
+                  <AccordionTrigger class="text-lg"> Chequeo de acuerdos</AccordionTrigger>
                   <AccordionContent>
                     <h3 class="text-lg mb-2">
                       {{ acta.chequeo }}
@@ -124,7 +126,7 @@
                   value="item-2"
                   v-if="acta.orientaciones.length !== 0"
                 >
-                  <AccordionTrigger>
+                  <AccordionTrigger class="text-lg">
                     Orientaciones del Organismo Superior
                   </AccordionTrigger>
                   <AccordionContent>
@@ -134,7 +136,7 @@
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3" v-if="acta.analisis.length !== 0">
-                  <AccordionTrigger> Análisis</AccordionTrigger>
+                  <AccordionTrigger class="text-lg"> Análisis</AccordionTrigger>
                   <AccordionContent>
                     <p class="text-lg">{{ acta.analisis }}</p>
                   </AccordionContent>
@@ -143,7 +145,7 @@
                   value="item-4"
                   v-if="acta.agreements.length !== 0"
                 >
-                  <AccordionTrigger> Acuerdos</AccordionTrigger>
+                  <AccordionTrigger > Acuerdos</AccordionTrigger>
                   <AccordionContent>
                     <ul class="space-y-4">
                       <li
@@ -237,23 +239,7 @@
         </CardContent>
         <CardFooter class="flex justify-end border-t p-6">
           <div class="flex gap-5" v-if="acta.status === 'Pendiente'">
-            <Button
-              type="button"
-              variant="ghost"
-              :disabled="isRechSubmitting"
-              class="p-4 bg-gray-100 text-md font-medium text-gray-700 hover:bg-gray-200 hover:shadow-md"
-              @click="updateStatus(Status.R)"
-            >
-              {{ isRechSubmitting ? "Rechazando..." : "Rechazada" }}
-            </Button>
-            <button
-              type="button"
-              class="bg-blue-600 text-white text-md font-medium px-4 rounded hover:bg-blue-700 hover:shadow-md"
-              @click="updateStatus(Status.A)"
-              :disabled="isSubmitting"
-            >
-              {{ isSubmitting ? "Aprobando..." : "Aprobada" }}
-            </button>
+            <button @click="openProcesar" class="px-4 py-2 text-md font-medium bg-primary rounded-lg text-white">Procesar</button>
           </div>
           <div v-else-if="existsCP">
             <Button
@@ -273,29 +259,25 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
-import {ArrowRight, DownloadIcon} from "lucide-vue-next";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
-import {Badge} from "@/components/ui/badge";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "../ui/accordion";
-import {Status} from "@/enum/Status.ts";
-import {navigate} from "astro:transitions/client";
-import {exportarRO} from "@/lib/export_ro.ts";
-import {actions} from "astro:actions";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { exportarRO } from "@/lib/export_ro.ts";
+import { ArrowRight, DownloadIcon } from "lucide-vue-next";
+import { ref } from "vue";
+import { navigate } from "astro:transitions/client";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "../ui/accordion";
 
 const { acta, existsCP } = defineProps<{
   acta: any;
   existsCP?: boolean;
 }>();
-console.log("Acta Ordinaria", existsCP);
+
 defineEmits(["move"]);
 
-const isSubmitting = ref(false);
-const isRechSubmitting = ref(false);
 const infoActa = ref<HTMLElement | null>(null);
-const totalMilitantes = acta.militante.length || 0;
+const totalMilitantes = acta.militante?.length || 0;
 const totalAusentes = acta.abscents.length || 0;
 const presente = totalMilitantes - totalAusentes;
 const porciento = totalMilitantes > 0 ? (presente * 100) / totalMilitantes : 0;
@@ -304,22 +286,10 @@ const exportar = () => {
   exportarRO(acta);
 };
 
-const updateStatus = async (status) => {
-  isSubmitting.value = true;
-  try {
-    await actions.ordinary.updateStatusMinutes({id:acta.id,status})
-    await navigate("/minutes");
-  } catch (e) {
-    throw new Error(e);
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-
 const list = () => {
-  return acta.militante.map((militante) => {
+  return acta.militante.map((militante: any) => {
     const ausencia = acta.abscents.find(
-      (a) => a.militante?.id === militante?.id,
+      (a: any) => a.militante?.id === militante?.id,
     );
     console.log(acta.abscents);
     return {
@@ -328,14 +298,8 @@ const list = () => {
     };
   });
 };
-</script>
 
-<style scoped>
-@reference "tailwindcss";
-
-@layer components {
-  .card {
-    @apply border flex flex-col rounded-lg p-2 px-4 w-fit text-gray-600 min-w-32;
-  }
+function openProcesar(){
+  navigate(`/indicadores/${acta.id}`);
 }
-</style>
+</script>

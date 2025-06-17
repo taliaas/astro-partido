@@ -196,9 +196,8 @@
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             v-if="
-                            acta.name === 'Acta Ordinaria' &&
-                            acta.status === 'Aprobada' &&
-                            hasPermission('Documentos','update')
+                            acta.type === 'ro' &&
+                            acta.status === 'Pendiente'
                           "
                             @click="handleAction('procesar', acta)"
                         >
@@ -242,8 +241,8 @@
             <div class="flex justify-between">
               <div v-if="actas?.total === 0"></div>
               <div v-else class="text-md text-muted-foreground p-4">
-                Mostrando <span class="font-medium">{{ page }}</span> de <span class="font-medium">{{
-                  actas?.total
+                Mostrando <span class="font-medium">{{ page || 1 }}</span> de <span class="font-medium">{{
+                  actas?.total || 1
                 }}</span> páginas
               </div>
               <div class="flex justify-end gap-4 p-4">
@@ -563,9 +562,7 @@ const filters = ref({
 
 const getStatusClass = (status) => {
   const classes = {
-    Aprobada: "bg-green-100 text-green-800 hover:bg-green-200",
     Pendiente: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
-    Rechazada: "bg-red-100 text-red-800 hover:bg-red-200",
     Procesada: "bg-blue-100 text-blue-800 hover:bg-blue-200",
     Inactiva: "bg-gray-300 text-gray-800 hover:bg-gray-400",
   };
@@ -630,13 +627,9 @@ const handleDrop = async () => {
     // const data = await actions.minute.uploadMinutes.orThrow(formData)
     const navigationData = new FormData()
     navigationData.append("data","datos")
-    if (tipoActa.value === "ro") {
-      await navigate('/addRO',{ state:{formData:navigationData}})
-    } else {
-      await navigate('/addCP',{formData:navigationData})
-    }
     showUploadDialog.value = false;
     uploadedFiles.value = [];
+    navigate('/minutes')
   } catch (error) {
     toast.error("Error al cargar el acta");
     throw new Error(error);
@@ -651,7 +644,6 @@ const handleFileSelect = (event) => {
 };
 
 const handleFiles = (files) => {
-  // Only add real File objects to uploadedFiles
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 }
 

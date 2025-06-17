@@ -1,8 +1,10 @@
 ---
+import { getSession } from "auth-astro/server";
 import List from "../components/Acta/MinutesList.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import MinutesService from "../services/Minutes";
 
+const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams
 const type = searchParams.get("type")
 const page = searchParams.get("page")
@@ -14,7 +16,7 @@ async function getActas(tipo: string, page: any) {
             throw new Error('Error al leer');
         }
 
-        return service.getAllMinutes(tipo, page);
+        return service.getAllMinutes(tipo, page, session);
     } catch (error) {
         console.error('Error fetching actas:', error);
         throw error;

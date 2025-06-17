@@ -69,7 +69,7 @@
           </section>
           <!--  Información 3 -->
           <section v-show="currentStep === 3" class="space-y-4">
-             <ThirdStep />
+            <ThirdStep />
           </section>
 
           <!-- Botones de navegación -->
@@ -105,23 +105,24 @@
 </template>
 
 <script setup lang="ts">
+import FirstStep from "@/components/Ordinary/FirstStep.vue";
 import {
   form_schema,
   type FormSchema,
 } from "@/components/Ordinary/form_schema";
+import SecondStep from "@/components/Ordinary/SecondStep.vue";
+import ThirdStep from "@/components/Ordinary/ThirdStep.vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
+import { formatDate } from "date-fns";
 import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
-import FirstStep from "@/components/Ordinary/FirstStep.vue";
-import SecondStep from "@/components/Ordinary/SecondStep.vue";
-import ThirdStep from "@/components/Ordinary/ThirdStep.vue";
 
 const currentStep = ref(1);
-const { user, cores } = defineProps<{ user: any, cores: any }>();
+const { user, cores } = defineProps<{ user: any; cores: any }>();
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
 };
@@ -170,7 +171,7 @@ const submitForm = form.handleSubmit(async (data: FormSchema) => {
     navigate("/minutes");
   } catch (error) {
     toast.error("Error al crear el acta");
-    console.error(error);
+    throw new Error("Error al crear el acta");
   }
 });
 </script>

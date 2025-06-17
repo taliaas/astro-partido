@@ -1,13 +1,15 @@
-
 ---
+import {getSession} from "auth-astro/server";
 import CoreService from "../../services/CoreService";
 import ListCore from "src/components/Core/ListCore.vue"
 import RootLayout from "../../layouts/RootLayout.astro";
 
+const session = (await getSession(Astro.request)) as any
+
 async function getCore() {
     const service = new CoreService();
     try {
-        return await service.getAllCore();
+        return await service.getAllCore(session.jwt);
     } catch (e) {
         console.error(e);
     }
