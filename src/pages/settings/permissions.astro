@@ -8,15 +8,6 @@ import { getSession } from "auth-astro/server";
 
 const session = (await getSession(Astro.request)) as any
 
-async function getAllRoles() {
-  const service = new RoleService();
-  try {
-    return service.getRoles(session.jwt);
-  } catch (e) {
-    console.error(e);
-  }
-}
-
 async function getClaims() {
   const service = new ClaimService();
   try {
@@ -26,12 +17,11 @@ async function getClaims() {
   }
 }
 
-const roles = await getAllRoles();
 const claims = await getClaims();
 ---
 
 <RootLayout>
   <SettingsLayout>
-    <ClaimsManage claims={claims} roles={roles} client:load />
+    <ClaimsManage claims={claims} client:load />
   </SettingsLayout>
 </RootLayout>
