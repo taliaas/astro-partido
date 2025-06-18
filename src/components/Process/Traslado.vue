@@ -31,8 +31,8 @@
           class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Todos los estados</option>
-          <option value="pending">Pendientes</option>
-          <option value="completed">Completados</option>
+          <option :value="Estado[0]">{{ Estado[0] }}</option>
+          <option :value="Estado[1]">{{ Estado[1] }}</option>
         </select>
         <select
           v-model="selectNucleo"
@@ -83,7 +83,7 @@
                 Estado
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
               </th>
@@ -101,23 +101,23 @@
                   {{ transfer.militante.lastname }}
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">
                 {{ transfer.origen }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">
                 {{ transfer.destino }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ transfer.fecha }}
+              <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">
+                {{ format(transfer.fecha, "yyyy-MM-dd") }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">
                 {{ transfer.militante.core.name }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 {{ transfer.estado }}
               </td>
               <td
-                class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2"
+                class="px-6 py-4 text-center whitespace-nowrap text-md font-medium space-x-2"
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger class="focus:outline-none">
@@ -159,7 +159,7 @@
             <h3 class="text-lg font-semibold">Nuevo Traslado</h3>
           </div>
           <div v-else>
-             <h3 class="text-lg font-semibold">Editar Traslado</h3>
+            <h3 class="text-lg font-semibold">Editar Traslado</h3>
           </div>
           <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
             <XIcon class="h-4 w-4" />
@@ -168,7 +168,7 @@
 
         <form @submit.prevent="saveTransfer()" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-md font-medium text-gray-700 mb-1"
               >Miembro</label
             >
             <select
@@ -188,7 +188,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-md font-medium text-gray-700 mb-1"
               >Sucursal de Origen</label
             >
             <Input
@@ -200,7 +200,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-md font-medium text-gray-700 mb-1"
               >Sucursal de Destino</label
             >
             <Input
@@ -213,7 +213,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-md font-medium text-gray-700 mb-1"
               >Motivo del Traslado</label
             >
             <textarea
@@ -226,7 +226,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-md font-medium text-gray-700 mb-1"
               >Fecha Efectiva</label
             >
             <input
@@ -268,69 +268,70 @@
           <button
             @click="closeDetailsModal"
             class="text-gray-400 hover:text-gray-600"
-          ></button>
+          >
+            <XIcon class="h-4 w-4" />
+          </button>
         </div>
 
         <div v-if="selectedTransfer" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-md font-medium text-gray-700"
                 >Militante</label
               >
-              <p class="text-sm text-gray-900">
-                {{ selectedTransfer.militante.firstname }}
-                {{ selectedTransfer.militante.lastname }}
-              </p>
-              <p class="text-sm text-gray-900">
-                CI: {{ selectedTransfer.militante.ci }}
-              </p>
+              <div class="flex justify-between">
+                <p class="text-md text-gray-900">
+                  {{ selectedTransfer.militante.firstname }}
+                  {{ selectedTransfer.militante.lastname }}
+                </p>
+                <p class="text-md text-gray-900">
+                  CI: {{ selectedTransfer.militante.ci }}
+                </p>
+              </div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-md font-medium text-gray-700"
                 >Origen</label
               >
-              <p class="text-sm text-gray-900">{{ selectedTransfer.origen }}</p>
+              <p class="text-md text-gray-900">{{ selectedTransfer.origen }}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-md font-medium text-gray-700"
                 >Destino</label
               >
-              <p class="text-sm text-gray-900">
+              <p class="text-md text-gray-900">
                 {{ selectedTransfer.destino }}
               </p>
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700"
+            <label class="block text-md font-medium text-gray-700"
               >Motivo</label
             >
-            <p class="text-sm text-gray-900">{{ selectedTransfer.details }}</p>
+            <p class="text-md text-gray-900">{{ selectedTransfer.details }}</p>
           </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Fecha de Solicitud</label
-              >
-              <p class="text-sm text-gray-900">
-                {{ selectedTransfer.fecha }}
-              </p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Estado</label
-              >
-              <span
-                :class="selectedTransfer.estado"
-                class="px-2 py-1 text-xs font-medium rounded-full"
-              >
-                {{ selectedTransfer.estado }}
-              </span>
-            </div>
+          <div>
+            <label class="block text-md font-medium text-gray-700"
+              >Fecha de Solicitud</label
+            >
+            <p class="text-md text-gray-900">
+              {{ format(selectedTransfer.fecha, "yyyy-MM-dd") }}
+            </p>
+          </div>
+          <div>
+            <label class="block text-md font-medium text-gray-700"
+              >Estado</label
+            >
+            <span
+              :class="selectedTransfer.estado"
+              class="py-1 text-md rounded-full"
+            >
+              {{ selectedTransfer.estado }}
+            </span>
           </div>
         </div>
 
@@ -355,6 +356,8 @@ import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import Input from "@/components/ui/input/Input.vue";
 import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import { format } from "date-fns";
 import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
 import { ref, computed } from "vue";
 import { toast } from "vue-sonner";
@@ -373,7 +376,7 @@ const showDetailsModal = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
 const isEdit = ref(false);
-const currentId = ref('');
+const currentId = ref("");
 
 const Estado = ["Pendiente", "Completado"] as const;
 
@@ -397,7 +400,19 @@ const currentTransfer = ref({
 
 // Computed
 const filteredTransfers = computed(() => {
-  return traslados.data;
+  return traslados.data.filter((transfer: any) => {
+    const matchesSearch =
+      transfer?.militante.firstname
+        .toLowerCase()
+        .includes(searchTerm.value.toLowerCase()) ||
+      transfer.militante.lastname.includes(searchTerm.value);
+    const matchedCores =
+      selectNucleo.value === "" ||
+      transfer?.militante.core.id === selectNucleo.value;
+    const matchesStatus =
+      statusFilter.value === "" || transfer.estado === statusFilter.value;
+    return matchesSearch && matchesStatus && matchedCores;
+  });
 });
 
 // Métodos
@@ -434,14 +449,14 @@ const openEdit = (transfer: any) => {
     fecha: transfer.fecha,
     estado: transfer.estado,
   };
-  currentId.value = transfer.id
+  currentId.value = transfer.id;
   showModal.value = true;
   isEdit.value = true;
 };
 
 const closeModal = () => {
   showModal.value = false;
-  isEdit.value = false
+  isEdit.value = false;
 };
 
 const closeDetailsModal = () => {
@@ -463,10 +478,14 @@ const saveTransfer = async () => {
       await actions.transfer.createTransfer(currentTransfer.value);
       toast.success("Traslado creado correctamente");
     } else {
-      await actions.transfer.updateTransfer({...currentTransfer.value, id: currentId.value});
+      await actions.transfer.updateTransfer({
+        ...currentTransfer.value,
+        id: currentId.value,
+      });
       toast.success("El traslado fue editado correctamente");
     }
     closeModal();
+    navigate('/trasfer')
   } catch (error) {
     toast.error("Error al crear el traslado");
   } finally {

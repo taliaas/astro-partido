@@ -131,7 +131,7 @@
                 </span>
               </td>
               <td
-                class="px-6 py-4 whitespace-nowrap text-md font-medium space-x-2 text-center"
+                class="px-6 py-4 whitespace-nowrap text-lg font-medium space-x-2 text-center"
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger class="focus:outline-none">
@@ -140,7 +140,7 @@
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem @click="">
+                    <DropdownMenuItem @click="openDetails(sanction)">
                       <Eye class="h-4 w-4" />
                       Ver
                     </DropdownMenuItem>
@@ -294,21 +294,23 @@
     >
       <div class="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold">Detalles de la Sanción</h3>
+          <h3 class="text-xl font-bold">Detalles de la Sanción</h3>
           <button
             @click="closeDetailsModal"
             class="text-gray-400 hover:text-gray-600"
-          ></button>
+          >
+          <XIcon class="h-4 w-4" />
+        </button>
         </div>
 
         <div v-if="selectSanction" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-md font-medium text-gray-700"
+              <label class="block text-lg font-medium text-gray-700"
                 >Militante</label
               >
               <div class="flex justify-between">
-                <p class="text-md text-gray-900">
+                <p class="text-lg text-gray-900">
                   {{ selectSanction.militante.firstname }}
                   {{ selectSanction.militante.lastname }}
                 </p>
@@ -317,46 +319,58 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="block text-md font-medium text-gray-700"
-                >Origen</label
+              <label class="block text-lg font-medium text-gray-700"
+                >Causa</label
               >
-              <p class="text-md text-gray-900">{{ selectSanction.origen }}</p>
+              <p class="text-lg text-gray-900">{{ selectSanction.causa }}</p>
             </div>
             <div>
-              <label class="block text-md font-medium text-gray-700"
-                >Destino</label
+              <label class="block text-lg font-medium text-gray-700"
+                >Severidad</label
               >
-              <p class="text-sm text-gray-900">
-                {{ selectSanction.destino }}
+              <p class="text-lg text-gray-900">
+                {{ selectSanction.severidad }}
               </p>
             </div>
           </div>
-
-          <div>
-            <label class="block text-md font-medium text-gray-700"
-              >Motivo</label
+          <div class="pb-2">
+            <label class="block text-lg font-medium text-gray-700"
+              >Detalles</label
             >
-            <p class="text-md py-2 text-gray-900">
+            <p class="text-sm text-gray-900">
               {{ selectSanction.details }}
             </p>
           </div>
-          <div>
-            <label class="block text-md font-medium text-gray-700"
-              >Fecha de Solicitud</label
-            >
-            <p class="text-md text-gray-900">
-              {{ format(selectSanction.fecha, "yyyy-MM-dd") }}
-            </p>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-lg font-medium text-gray-700"
+                >Fecha de Solicitud</label
+              >
+              <p class="text-lg text-gray-900">
+                {{ format(selectSanction.fecha, "yyyy-MM-dd") }}
+              </p>
+            </div>
+            <div>
+              <label class="block text-lg font-medium text-gray-700"
+                >Duración</label
+              >
+              <p class="text-lg text-gray-900">
+                <div v-if="selectSanction.duracion > 1">
+                  {{ selectSanction.duracion }} meses
+                </div>
+                <div v-else>{{ selectSanction.duracion }} mes</div>
+              </p>
+            </div>
           </div>
           <div>
-            <label class="block text-md font-medium text-gray-700"
+            <label class="block text-lg font-medium text-gray-700"
               >Estado</label
             >
             <span
               :class="selectSanction.estado"
-              class="py-1 text-md rounded-full"
+              class="py-1 text-lg rounded-full"
             >
               {{ selectSanction.estado }}
             </span>
@@ -378,12 +392,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import {
-  Eye,
-  MoreVerticalIcon,
-  Pencil,
-  XIcon,
-} from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -404,17 +413,26 @@ const { sanciones, members, cores } = defineProps<{
 
 // Estado reactivo
 const searchTerm = ref("");
-const showDetailsModal = ref(false)
+const showDetailsModal = ref(false);
 const showModal = ref(false);
 const isEditing = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
 const statusFilter = ref("");
-const selectSanction = ref({})
 
 const EstadoSancion = ["APROBADA", "DENEGADA", "CUMPLIDA"] as const;
 
 const currentSanction = ref({
+  causa: "",
+  fecha: "",
+  details: "",
+  severidad: "LEVE",
+  duracion: 0,
+  estado: EstadoSancion[0],
+  militante: { id: "" },
+});
+
+const selectSanction = ref({
   causa: "",
   fecha: "",
   details: "",
@@ -441,8 +459,6 @@ const filteredSanctions = computed(() => {
   });
 });
 
-async 
-
 // Métodos
 const openAddModal = () => {
   isEditing.value = false;
@@ -458,6 +474,13 @@ const openAddModal = () => {
   showModal.value = true;
 };
 
+const openDetails = (sancion: any) => {
+  selectSanction.value = {
+    ...sancion,
+  };
+  showDetailsModal.value = true;
+};
+
 const editSanction = (sanction: any) => {
   isEditing.value = true;
   currentSanction.value = { ...sanction };
@@ -468,6 +491,7 @@ const closeModal = () => {
   showModal.value = false;
   isEditing.value = false;
 };
+
 const closeDetailsModal = () => {
   showDetailsModal.value = false;
   selectSanction.value = {
@@ -479,7 +503,7 @@ const closeDetailsModal = () => {
     duracion: 0,
     estado: EstadoSancion[0],
   };
-}
+};
 
 const saveSanction = async () => {
   isLoading.value = true;
