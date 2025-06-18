@@ -13,7 +13,7 @@ export const deactiveMili = defineAction({
     }),
     handler: async ({motivo, estado, fecha, details, militante}, context) => {
         const session: any = await getSession(context.request);
-        const res = await fetch(`${API_URL}/deactivation`, {
+        const res = await fetch(`${API_URL}/desactivation`, {
             method: "POsT",
             headers: {
                 "Content-Type": "application/json",

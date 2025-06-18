@@ -163,7 +163,7 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">Duración</label>
               <select v-model="currentSanction.duracion" required
                 class="w-full px-3 py-2 border border-gray-300 rounded-md">
-                <option value="0">Seleccionar duración</option>
+                <option value="">Seleccionar duración</option>
                 <option value="1">1 mes</option>
                 <option value="3">3 meses</option>
                 <option value="6">6 meses</option>
@@ -251,7 +251,7 @@ const currentSanction = ref({
   fecha: "",
   details: "",
   severidad: "LEVE",
-  duracion: 0,
+  duracion: "",
   estado: "APROBADA",
   militante: { id: "" },
 });
@@ -280,7 +280,7 @@ const openAddModal = () => {
     fecha: "",
     details: "",
     severidad: "",
-    duracion: 0,
+    duracion: "",
     estado: "APROBADA",
   };
   showModal.value = true;
