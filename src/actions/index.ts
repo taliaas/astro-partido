@@ -6,7 +6,8 @@ import * as minute from "./minute";
 import * as user from "./user.ts"
 import * as role from "./role";
 import * as militants from "./militants";
-import * as sancion from "./sancion.ts"
+import * as sancion from "./sancion.ts";
+import * as transfer from "./transfer.ts"
 
 export const server = {
   events,
@@ -17,5 +18,6 @@ export const server = {
   user,
   role,
   militants,
-  sancion
+  sancion, 
+  transfer
 };

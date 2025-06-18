@@ -14,7 +14,6 @@
         Nuevo Traslado
       </button>
     </div>
-
     <!-- Filtros -->
     <div class="bg-white p-4 rounded-lg border shadow-sm">
       <div class="flex gap-4 items-center">
@@ -31,8 +30,8 @@
           class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Todos los estados</option>
-          <option value="pending">Pendientes</option>
-          <option value="completed">Completados</option>
+          <option :value="Estado[0]">{{ Estado[0] }}</option>
+          <option :value="Estado[1]">{{ Estado[1] }}</option>
         </select>
         <select
           v-model="selectNucleo"
@@ -45,7 +44,7 @@
         </select>
       </div>
     </div>
-    {{ traslados.data }}
+
     <!-- Lista de Traslados -->
     <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -83,7 +82,7 @@
                 Estado
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
               </th>
@@ -108,7 +107,7 @@
                 {{ transfer.destino }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ transfer.fecha }}
+                {{ format(transfer.fecha, "yyyy-MM-dd") }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ transfer.militante.core.name }}
@@ -117,9 +116,14 @@
                 {{ transfer.estado }}
               </td>
               <td
-                class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2"
+                class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium space-x-2"
               >
-                <Button variant="ghost" size="icon" class="rounded-full">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="rounded-full p-2 hover:bg-muted"
+                  @click=""
+                >
                   <MoreVerticalIcon class="h-4 w-4" />
                 </Button>
               </td>
@@ -142,40 +146,29 @@
       <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold">Nuevo Traslado</h3>
-          <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
+          <button
+            @click="closeModal"
+            class="text-gray-400 hover:text-gray-600"
+          ></button>
         </div>
 
         <form @submit.prevent="saveTransfer" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Miembro</label
+              >Militante</label
             >
             <select
-              v-model="currentTransfer.memberId"
+              v-model="currentTransfer.militante"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Seleccionar miembro</option>
+              <option :value="{ id: 0 }">Seleccionar miembro</option>
               <option
-                v-for="member in availableMembers"
+                v-for="member in members"
                 :key="member.id"
                 :value="member.id"
               >
-                {{ member.name }} - CI: {{ member.ci }}
+                {{ member.firstname }} {{ member.lastname }}
               </option>
             </select>
           </div>
@@ -184,37 +177,24 @@
             <label class="block text-sm font-medium text-gray-700 mb-1"
               >Sucursal de Origen</label
             >
-            <select
-              v-model="currentTransfer.origin"
+            <input
+              type="text"
+              v-model="currentTransfer.origen"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Seleccionar origen</option>
-              <option v-for="branch in branches" :key="branch" :value="branch">
-                {{ branch }}
-              </option>
-            </select>
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1"
               >Sucursal de Destino</label
             >
-            <select
-              v-model="currentTransfer.destination"
+            <input
+              type="text"
+              v-model="currentTransfer.destino"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Seleccionar destino</option>
-              <option
-                v-for="branch in branches"
-                :key="branch"
-                :value="branch"
-                :disabled="branch === currentTransfer.origin"
-              >
-                {{ branch }}
-              </option>
-            </select>
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
           </div>
 
           <div>
@@ -222,7 +202,7 @@
               >Motivo del Traslado</label
             >
             <textarea
-              v-model="currentTransfer.reason"
+              v-model="currentTransfer.details"
               required
               rows="3"
               placeholder="Describe el motivo del traslado..."
@@ -235,7 +215,7 @@
               >Fecha Efectiva</label
             >
             <input
-              v-model="currentTransfer.effectiveDate"
+              v-model="currentTransfer.fecha"
               type="date"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -273,21 +253,7 @@
           <button
             @click="closeDetailsModal"
             class="text-gray-400 hover:text-gray-600"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
+          ></button>
         </div>
 
         <div v-if="selectedTransfer" class="space-y-4">
@@ -297,7 +263,7 @@
                 >Militante</label
               >
               <p class="text-sm text-gray-900">
-                {{ selectedTransfer.memberName }}
+                {{ selectedTransfer.militante }}
               </p>
             </div>
           </div>
@@ -307,14 +273,14 @@
               <label class="block text-sm font-medium text-gray-700"
                 >Origen</label
               >
-              <p class="text-sm text-gray-900">{{ selectedTransfer.origin }}</p>
+              <p class="text-sm text-gray-900">{{ selectedTransfer.origen }}</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700"
                 >Destino</label
               >
               <p class="text-sm text-gray-900">
-                {{ selectedTransfer.destination }}
+                {{ selectedTransfer.destino }}
               </p>
             </div>
           </div>
@@ -323,7 +289,7 @@
             <label class="block text-sm font-medium text-gray-700"
               >Motivo</label
             >
-            <p class="text-sm text-gray-900">{{ selectedTransfer.reason }}</p>
+            <p class="text-sm text-gray-900">{{ selectedTransfer.details }}</p>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -332,7 +298,7 @@
                 >Fecha de Solicitud</label
               >
               <p class="text-sm text-gray-900">
-                {{ selectedTransfer.requestDate }}
+                {{ selectedTransfer.fecha }}
               </p>
             </div>
             <div>
@@ -340,10 +306,10 @@
                 >Estado</label
               >
               <span
-                :class="selectedTransfer.status"
+                :class="selectedTransfer.estado"
                 class="px-2 py-1 text-xs font-medium rounded-full"
               >
-                {{ selectedTransfer.status }}
+                {{ selectedTransfer.estado }}
               </span>
             </div>
           </div>
@@ -363,6 +329,9 @@
 </template>
 
 <script setup lang="ts">
+import { actions } from "astro:actions";
+import { format } from "date-fns";
+import { MoreVerticalIcon } from "lucide-vue-next";
 import { ref, computed } from "vue";
 import { toast } from "vue-sonner";
 
@@ -372,46 +341,54 @@ const { traslados, members, cores } = defineProps<{
   cores: any;
 }>();
 
+const Estado = ["Pendiente", "Completado"] as const;
+
 // Estado reactivo
 const searchTerm = ref("");
 const statusFilter = ref("");
 const showModal = ref(false);
 const showDetailsModal = ref(false);
 const isLoading = ref(false);
-const selectedTransfer = ref(null);
 const selectNucleo = ref("");
 
 const currentTransfer = ref({
-  id: null,
-  memberId: "",
-  memberName: "",
-  memberCI: "",
-  origin: "",
-  destination: "",
-  reason: "",
-  requestDate: "",
-  effectiveDate: "",
-  status: "pending",
+  origen: "",
+  destino: "",
+  details: "",
+  fecha: new Date(),
+  militante: { id: 0 },
+  estado: Estado[0],
+});
+
+const selectedTransfer = ref({
+  origen: "",
+  destino: "",
+  details: "",
+  fecha: new Date(),
+  militante: { id: 0 },
+  estado: Estado[0],
 });
 
 // Computed
 const filteredTransfers = computed(() => {
-  return traslados.data;
+  return traslados?.data.filter((trasfer: any) => {
+    const matchesSearch =
+    trasfer?.militante.core.id === selectNucleo.value || selectNucleo.value === ""
+     const matchesStatus =
+      statusFilter.value === "" || trasfer.estado === statusFilter.value;
+    return matchesSearch && matchesStatus; 
+  });
 });
 
 // Métodos
 const openAddModal = () => {
   currentTransfer.value = {
-    id: null,
-    memberId: "",
-    memberName: "",
-    memberCI: "",
-    origin: "",
-    destination: "",
-    reason: "",
-    requestDate: new Date().toISOString().split("T")[0],
-    effectiveDate: "",
-    status: "pending",
+    origen: "",
+    destino: "",
+    details: "",
+    fecha: new Date(),
+    militante: { id: 0 },
+    estado: Estado[0],
   };
   showModal.value = true;
 };
@@ -422,13 +399,20 @@ const closeModal = () => {
 
 const closeDetailsModal = () => {
   showDetailsModal.value = false;
-  selectedTransfer.value = null;
+  selectedTransfer.value = {
+    origen: "",
+    destino: "",
+    details: "",
+    fecha: new Date(),
+    militante: { id: 0 },
+    estado: Estado[0],
+  };
 };
 
 const saveTransfer = async () => {
   isLoading.value = true;
-
   try {
+    await actions.transfer.createTransfer(currentTransfer.value);
     toast.success("Traslado creado correctamente");
     closeModal();
   } catch (error) {
@@ -437,5 +421,4 @@ const saveTransfer = async () => {
     isLoading.value = false;
   }
 };
-
 </script>

@@ -6,12 +6,12 @@ import {API_URL} from "astro:env/client";
 export const deactiveMili = defineAction({
     input: z.object({
         motivo: z.string(),
-        details: z.string(),
+        details: z.string().optional(),
         fecha: z.string(),
         estado: z.string(),
         militante: z.any(),
     }),
-    handler: async (input, context) => {
+    handler: async ({motivo, estado, fecha, details, militante}, context) => {
         const session: any = await getSession(context.request);
         const res = await fetch(`${API_URL}/deactivation`, {
             method: "POsT",
@@ -20,10 +20,11 @@ export const deactiveMili = defineAction({
                 Authorization: "Bearer " + session?.jwt,
             },
             body: JSON.stringify({
-                motivo: input.motivo,
-                fecha: input.fecha,
-                estado: input.estado,
-                militante: input.militante,
+                motivo,
+                fecha,
+                estado,
+                militante,
+                details
             }),
         });
         if (!res.ok) {

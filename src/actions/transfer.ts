@@ -8,13 +8,14 @@ const Estado = ['Pendiente',
 
 export const createTransfer = defineAction({
     input: z.object({
-        origen: z.string(),
-        destino: z.string(),
+        origen: z.string().min(3),
+        destino: z.string().min(3),
+        details: z.string().optional(),
         fecha: z.date(),
         estado: z.enum(Estado),
         militante: z.object({ id: z.coerce.number() })
     }),
-    async handler({ origen, destino, fecha, estado, militante }, context) {
+    async handler({ origen, destino, fecha, estado, militante, details }, context) {
         const session: any = await getSession(context.request);
         if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
@@ -24,6 +25,7 @@ export const createTransfer = defineAction({
                 destino,
                 fecha,
                 estado,
+                details,
                 militante
             });
 
