@@ -222,6 +222,7 @@ import {
 import { Button } from "@/components/ui/button/index.js";
 import { toast } from "vue-sonner";
 import { actions } from "astro:actions";
+import {navigate} from "astro:transitions/client";
 
 const { sanciones, members, cores } = defineProps<{
   sanciones: any;
@@ -308,6 +309,7 @@ const saveSanction = async () => {
       toast.success("Sanción creada correctamente");
     }
     closeModal();
+    navigate("")
   } catch (error) {
     toast.error("Error al guardar la sanción");
     console.log(error)

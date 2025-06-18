@@ -53,7 +53,7 @@ export const updateSancion = defineAction({
   input: z.object({
     id: z.number().int().positive(),
     causa: z.string().min(1).optional(),
-    fecha: z.date().optional(),
+    fecha: z.coerce.date().optional(),
     details: z.string().optional(),
     severidad: z.enum(severity).optional(),
     duracion: z.coerce.number().min(1).max(365).optional(),
