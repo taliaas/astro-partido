@@ -14,6 +14,7 @@
         Nuevo Traslado
       </button>
     </div>
+
     <!-- Filtros -->
     <div class="bg-white p-4 rounded-lg border shadow-sm">
       <div class="flex gap-4 items-center">
@@ -30,8 +31,8 @@
           class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Todos los estados</option>
-          <option :value="Estado[0]">{{ Estado[0] }}</option>
-          <option :value="Estado[1]">{{ Estado[1] }}</option>
+          <option value="pending">Pendientes</option>
+          <option value="completed">Completados</option>
         </select>
         <select
           v-model="selectNucleo"
@@ -82,7 +83,7 @@
                 Estado
               </th>
               <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
               </th>
@@ -107,7 +108,7 @@
                 {{ transfer.destino }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ format(transfer.fecha, "yyyy-MM-dd") }}
+                {{ transfer.fecha }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ transfer.militante.core.name }}
@@ -116,16 +117,25 @@
                 {{ transfer.estado }}
               </td>
               <td
-                class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium space-x-2"
+                class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2"
               >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  class="rounded-full p-2 hover:bg-muted"
-                  @click=""
-                >
-                  <MoreVerticalIcon class="h-4 w-4" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger class="focus:outline-none">
+                    <Button variant="ghost" size="icon" class="rounded-full">
+                      <MoreVerticalIcon class="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem @click="openDetails(transfer)">
+                      <Eye class="h-4 w-4" />
+                      Ver
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="openEdit(transfer)">
+                      <Pencil class="h-4 w-4" />
+                      Editar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </td>
             </tr>
             <tr v-if="!filteredTransfers?.length">
@@ -145,24 +155,28 @@
     >
       <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold">Nuevo Traslado</h3>
-          <button
-            @click="closeModal"
-            class="text-gray-400 hover:text-gray-600"
-          ></button>
+          <div v-if="!isEdit">
+            <h3 class="text-lg font-semibold">Nuevo Traslado</h3>
+          </div>
+          <div v-else>
+             <h3 class="text-lg font-semibold">Editar Traslado</h3>
+          </div>
+          <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+            <XIcon class="h-4 w-4" />
+          </button>
         </div>
 
-        <form @submit.prevent="saveTransfer" class="space-y-4">
+        <form @submit.prevent="saveTransfer()" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Militante</label
+              >Miembro</label
             >
             <select
-              v-model="currentTransfer.militante"
+              v-model="currentTransfer.militante.id"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option :value="{ id: 0 }">Seleccionar miembro</option>
+              <option value="">Seleccionar miembro</option>
               <option
                 v-for="member in members"
                 :key="member.id"
@@ -177,7 +191,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-1"
               >Sucursal de Origen</label
             >
-            <input
+            <Input
               type="text"
               v-model="currentTransfer.origen"
               required
@@ -189,12 +203,13 @@
             <label class="block text-sm font-medium text-gray-700 mb-1"
               >Sucursal de Destino</label
             >
-            <input
+            <Input
               type="text"
               v-model="currentTransfer.destino"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+            </Input>
           </div>
 
           <div>
@@ -263,7 +278,11 @@
                 >Militante</label
               >
               <p class="text-sm text-gray-900">
-                {{ selectedTransfer.militante }}
+                {{ selectedTransfer.militante.firstname }}
+                {{ selectedTransfer.militante.lastname }}
+              </p>
+              <p class="text-sm text-gray-900">
+                CI: {{ selectedTransfer.militante.ci }}
               </p>
             </div>
           </div>
@@ -329,9 +348,14 @@
 </template>
 
 <script setup lang="ts">
+import Button from "@/components/ui/button/Button.vue";
+import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
+import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
+import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
+import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+import Input from "@/components/ui/input/Input.vue";
 import { actions } from "astro:actions";
-import { format } from "date-fns";
-import { MoreVerticalIcon } from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
 import { ref, computed } from "vue";
 import { toast } from "vue-sonner";
 
@@ -341,8 +365,6 @@ const { traslados, members, cores } = defineProps<{
   cores: any;
 }>();
 
-const Estado = ["Pendiente", "Completado"] as const;
-
 // Estado reactivo
 const searchTerm = ref("");
 const statusFilter = ref("");
@@ -350,34 +372,32 @@ const showModal = ref(false);
 const showDetailsModal = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
+const isEdit = ref(false);
+const currentId = ref('');
 
-const currentTransfer = ref({
-  origen: "",
-  destino: "",
-  details: "",
-  fecha: new Date(),
-  militante: { id: 0 },
-  estado: Estado[0],
-});
+const Estado = ["Pendiente", "Completado"] as const;
 
 const selectedTransfer = ref({
   origen: "",
   destino: "",
   details: "",
+  militante: { id: 0, firstname: "", lastname: "", ci: "" },
   fecha: new Date(),
+  estado: Estado[0],
+});
+
+const currentTransfer = ref({
+  origen: "",
+  destino: "",
+  details: "",
   militante: { id: 0 },
+  fecha: new Date(),
   estado: Estado[0],
 });
 
 // Computed
 const filteredTransfers = computed(() => {
-  return traslados?.data.filter((trasfer: any) => {
-    const matchesSearch =
-    trasfer?.militante.core.id === selectNucleo.value || selectNucleo.value === ""
-     const matchesStatus =
-      statusFilter.value === "" || trasfer.estado === statusFilter.value;
-    return matchesSearch && matchesStatus; 
-  });
+  return traslados.data;
 });
 
 // Métodos
@@ -386,15 +406,42 @@ const openAddModal = () => {
     origen: "",
     destino: "",
     details: "",
-    fecha: new Date(),
     militante: { id: 0 },
+    fecha: new Date(),
     estado: Estado[0],
   };
   showModal.value = true;
 };
 
+const openDetails = (transfer: any) => {
+  selectedTransfer.value = {
+    origen: transfer.origen,
+    destino: transfer.destino,
+    details: transfer.details,
+    militante: transfer.militante,
+    fecha: transfer.fecha,
+    estado: transfer.estado,
+  };
+  showDetailsModal.value = true;
+};
+
+const openEdit = (transfer: any) => {
+  currentTransfer.value = {
+    origen: transfer.origen,
+    destino: transfer.destino,
+    details: transfer.details,
+    militante: transfer.militante,
+    fecha: transfer.fecha,
+    estado: transfer.estado,
+  };
+  currentId.value = transfer.id
+  showModal.value = true;
+  isEdit.value = true;
+};
+
 const closeModal = () => {
   showModal.value = false;
+  isEdit.value = false
 };
 
 const closeDetailsModal = () => {
@@ -403,8 +450,8 @@ const closeDetailsModal = () => {
     origen: "",
     destino: "",
     details: "",
+    militante: { id: 0, firstname: "", lastname: "", ci: "" },
     fecha: new Date(),
-    militante: { id: 0 },
     estado: Estado[0],
   };
 };
@@ -412,8 +459,13 @@ const closeDetailsModal = () => {
 const saveTransfer = async () => {
   isLoading.value = true;
   try {
-    await actions.transfer.createTransfer(currentTransfer.value);
-    toast.success("Traslado creado correctamente");
+    if (!isEdit) {
+      await actions.transfer.createTransfer(currentTransfer.value);
+      toast.success("Traslado creado correctamente");
+    } else {
+      await actions.transfer.updateTransfer({...currentTransfer.value, id: currentId.value});
+      toast.success("El traslado fue editado correctamente");
+    }
     closeModal();
   } catch (error) {
     toast.error("Error al crear el traslado");
