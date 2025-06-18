@@ -8,6 +8,7 @@ import { actions } from 'astro:actions';
 import { Eye, MoreVerticalIcon, Pencil } from 'lucide-vue-next';
 import { ref, computed, onMounted, reactive } from 'vue'
 import { toast } from "vue-sonner";
+import {navigate} from "astro:transitions/client";
 
 const { cores, desactivations, members } = defineProps<{
   cores: any[];
@@ -37,7 +38,7 @@ const currentDeactivation = ref({
   id: null,
   motivo: '',
   fecha: '',
-  estado: 'pendiente',
+  estado: 'APROBADA',
   militante: '',
   details: ''
 });
@@ -62,7 +63,7 @@ const openAddModal = () => {
     id: null,
     motivo: '',
     fecha: new Date().toISOString().split('T')[0],
-    estado: 'pending',
+    estado: 'APROBADA',
     militante: '',
     details: ''
   };
@@ -108,9 +109,10 @@ const saveDeactivation = async () => {
       estado: currentDeactivation.value.estado,
       militante: member,
     };
-    actions.militants.deactiveMili(newDeactivation);
+    await actions.militants.deactiveMili(newDeactivation);
     toast.success('Desactivación creada correctamente');
     showModal.value = false;
+    navigate("")
   } catch (error) {
     toast.error('Error al crear la desactivación');
   } finally {
