@@ -155,12 +155,9 @@
     >
       <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <div class="flex items-center justify-between mb-4">
-          <div v-if="!isEdit">
-            <h3 class="text-lg font-semibold">Nuevo Traslado</h3>
-          </div>
-          <div v-else>
-            <h3 class="text-lg font-semibold">Editar Traslado</h3>
-          </div>
+          <h3 class="text-lg font-semibold">
+            {{ isEdit ? "Editar Traslado" : "Nuevo Traslado" }}
+          </h3>
           <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
             <XIcon class="h-4 w-4" />
           </button>
@@ -169,14 +166,14 @@
         <form @submit.prevent="saveTransfer()" class="space-y-4">
           <div>
             <label class="block text-md font-medium text-gray-700 mb-1"
-              >Miembro</label
+              >Militante</label
             >
             <select
               v-model="currentTransfer.militante.id"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Seleccionar miembro</option>
+              <option value="">Seleccionar militante</option>
               <option
                 v-for="member in members"
                 :key="member.id"
@@ -227,8 +224,8 @@
 
           <div>
             <label class="block text-md font-medium text-gray-700 mb-1"
-              >Fecha </label
-            >
+              >Fecha
+            </label>
             <input
               v-model="currentTransfer.fecha"
               type="date"
@@ -399,7 +396,7 @@ const currentTransfer = ref({
   origen: "",
   destino: "",
   details: "",
-  militante: { id: 0 },
+  militante: { id: "" },
   fecha: new Date(),
   estado: Estado[0],
 });
@@ -427,7 +424,7 @@ const openAddModal = () => {
     origen: "",
     destino: "",
     details: "",
-    militante: { id: 0 },
+    militante: { id: ""},
     fecha: new Date(),
     estado: Estado[0],
   };
