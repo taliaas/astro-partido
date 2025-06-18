@@ -227,31 +227,38 @@
 
           <div>
             <label class="block text-md font-medium text-gray-700 mb-1"
-              >Fecha Efectiva</label
+              >Fecha </label
             >
             <input
               v-model="currentTransfer.fecha"
               type="date"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
           </div>
 
-          <div class="flex gap-3 pt-4">
-            <button
-              type="submit"
-              :disabled="isLoading"
-              class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2 px-4 rounded-md transition-colors"
-            >
-              {{ isLoading ? "Procesando..." : "Crear Traslado" }}
-            </button>
-            <button
+          <div class="flex gap-3 pt-4 justify-end">
+            <Button
               type="button"
               @click="closeModal"
-              class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md transition-colors"
+              class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md transition-colors"
             >
               Cancelar
-            </button>
+            </Button>
+            <Button
+              type="submit"
+              :disabled="isLoading"
+              :loading="isLoading"
+              class="bg-primary"
+            >
+              {{
+                isLoading
+                  ? "Guardando..."
+                  : isEdit
+                    ? "Actualizar"
+                    : "Crear Traslado"
+              }}
+            </Button>
           </div>
         </form>
       </div>
@@ -376,7 +383,6 @@ const showDetailsModal = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
 const isEdit = ref(false);
-const currentId = ref("");
 
 const Estado = ["Pendiente", "Completado"] as const;
 
@@ -394,7 +400,7 @@ const currentTransfer = ref({
   destino: "",
   details: "",
   militante: { id: 0 },
-  fecha: "",
+  fecha: new Date(),
   estado: Estado[0],
 });
 
@@ -422,7 +428,7 @@ const openAddModal = () => {
     destino: "",
     details: "",
     militante: { id: 0 },
-    fecha: "",
+    fecha: new Date(),
     estado: Estado[0],
   };
   showModal.value = true;
@@ -430,28 +436,17 @@ const openAddModal = () => {
 
 const openDetails = (transfer: any) => {
   selectedTransfer.value = {
-    origen: transfer.origen,
-    destino: transfer.destino,
-    details: transfer.details,
-    militante: transfer.militante,
-    fecha: transfer.fecha,
-    estado: transfer.estado,
+    ...transfer,
   };
   showDetailsModal.value = true;
 };
 
 const openEdit = (transfer: any) => {
-  currentTransfer.value = {
-    origen: transfer.origen,
-    destino: transfer.destino,
-    details: transfer.details,
-    militante: transfer.militante,
-    fecha: transfer.fecha,
-    estado: transfer.estado,
-  };
-  currentId.value = transfer.id;
-  showModal.value = true;
   isEdit.value = true;
+  currentTransfer.value = {
+    ...transfer,
+  };
+  showModal.value = true;
 };
 
 const closeModal = () => {
@@ -482,7 +477,7 @@ const saveTransfer = async () => {
       toast.success("El traslado fue editado correctamente");
     }
     closeModal();
-    navigate("/trasfer");
+    navigate("");
   } catch (error) {
     toast.error("Error al crear el traslado");
   } finally {

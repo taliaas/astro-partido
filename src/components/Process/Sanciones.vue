@@ -271,6 +271,9 @@
           </div>
 
           <div class="flex gap-3 justify-end">
+            <Button type="button" @click="closeModal" variant="secondary">
+              Cancelar
+            </Button>
             <Button type="submit" :disabled="isLoading" :loading="isLoading">
               {{
                 isLoading
@@ -279,9 +282,6 @@
                     ? "Actualizar"
                     : "Crear Sanción"
               }}
-            </Button>
-            <Button type="button" @click="closeModal" variant="secondary">
-              Cancelar
             </Button>
           </div>
         </form>
@@ -439,7 +439,7 @@ const selectSanction = ref({
   severidad: "LEVE",
   duracion: 0,
   estado: EstadoSancion[0],
-  militante: { id: "" },
+  militante: { id: "", firstname: '', lastname: '', ci: '' },
 });
 
 // Computed
@@ -495,7 +495,7 @@ const closeModal = () => {
 const closeDetailsModal = () => {
   showDetailsModal.value = false;
   selectSanction.value = {
-    militante: { id: "" },
+    militante:  { id: "", firstname: '', lastname: '', ci: '' },
     causa: "",
     fecha: "",
     details: "",
@@ -507,7 +507,6 @@ const closeDetailsModal = () => {
 
 const saveSanction = async () => {
   isLoading.value = true;
-
   try {
     if (isEditing.value) {
       await actions.sancion.updateSancion(currentSanction.value as any);

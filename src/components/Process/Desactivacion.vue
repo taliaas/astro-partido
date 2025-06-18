@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { hasPermissions } from '@/utils/auth';
+import Button from '@/components/ui/button/Button.vue';
+import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu.vue';
+import DropdownMenuContent from '@/components/ui/dropdown-menu/DropdownMenuContent.vue';
+import DropdownMenuItem from '@/components/ui/dropdown-menu/DropdownMenuItem.vue';
+import DropdownMenuTrigger from '@/components/ui/dropdown-menu/DropdownMenuTrigger.vue';
 import { actions } from 'astro:actions';
+import { Eye, MoreVerticalIcon, Pencil } from 'lucide-vue-next';
 import { ref, computed, onMounted, reactive } from 'vue'
 import { toast } from "vue-sonner";
 
@@ -41,15 +46,10 @@ const currentDeactivation = ref({
 const filteredDeactivations = computed(() => {
   if (!desactivations?.data) return [];
   return desactivations.data.filter((deactivation: any) => {
-    // Filtro por término de búsqueda (nombre o apellido)
     const member = deactivation.militante || {};
     const fullName = `${member.firstname || ''} ${member.lastname || ''}`.toLowerCase();
     const matchesSearch = !searchTerm.value || fullName.includes(searchTerm.value.toLowerCase());
-
-    // Filtro por núcleo
     const matchesCore = !currentNucleos.value || member.core === currentNucleos.value;
-
-    // Filtro por motivo
     const matchesReason = !reasonFilter.value || deactivation.motivo === reasonFilter.value;
 
     return matchesSearch && matchesCore && matchesReason;
@@ -170,7 +170,7 @@ onMounted(() => {
                 Motivo
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha Desactivación
+                Fecha 
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Núcleo
@@ -257,7 +257,7 @@ onMounted(() => {
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md "
             >
-              <option value="">Seleccionar miembro</option>
+              <option value="">Seleccionar militante</option>
               <option v-for="member in members" :key="member.id" :value="member.id">
                 {{ member.firstname }} {{ member.lastname }}
               </option>
