@@ -29,7 +29,7 @@ export const createTransfer = defineAction({
                 militante
             });
 
-            const res = await fetch(`${API_URL}/transfer`, {
+            const res = await fetch(`${API_URL}/trasfer`, {
                 method: "POST",
                 body,
                 headers: {
@@ -74,7 +74,7 @@ export const updateTransfer = defineAction({
                 militante
             });
 
-            const res = await fetch(`${API_URL}/transfer/${id}`, {
+            const res = await fetch(`${API_URL}/trasfer/${id}`, {
                 method: "PATCH",
                 body,
                 headers: {

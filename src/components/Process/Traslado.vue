@@ -385,7 +385,7 @@ const selectedTransfer = ref({
   destino: "",
   details: "",
   militante: { id: 0, firstname: "", lastname: "", ci: "" },
-  fecha: new Date(),
+  fecha: "",
   estado: Estado[0],
 });
 
@@ -394,7 +394,7 @@ const currentTransfer = ref({
   destino: "",
   details: "",
   militante: { id: 0 },
-  fecha: new Date(),
+  fecha: "",
   estado: Estado[0],
 });
 
@@ -422,7 +422,7 @@ const openAddModal = () => {
     destino: "",
     details: "",
     militante: { id: 0 },
-    fecha: new Date(),
+    fecha: "",
     estado: Estado[0],
   };
   showModal.value = true;
@@ -466,7 +466,7 @@ const closeDetailsModal = () => {
     destino: "",
     details: "",
     militante: { id: 0, firstname: "", lastname: "", ci: "" },
-    fecha: new Date(),
+    fecha: "",
     estado: Estado[0],
   };
 };
@@ -475,17 +475,14 @@ const saveTransfer = async () => {
   isLoading.value = true;
   try {
     if (!isEdit) {
-      await actions.transfer.createTransfer(currentTransfer.value);
+      await actions.transfer.createTransfer(currentTransfer.value as any);
       toast.success("Traslado creado correctamente");
     } else {
-      await actions.transfer.updateTransfer({
-        ...currentTransfer.value,
-        id: currentId.value,
-      });
+      await actions.transfer.updateTransfer(currentTransfer.value as any);
       toast.success("El traslado fue editado correctamente");
     }
     closeModal();
-    navigate('/trasfer')
+    navigate("/trasfer");
   } catch (error) {
     toast.error("Error al crear el traslado");
   } finally {
