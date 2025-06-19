@@ -11,7 +11,7 @@ export const createTransfer = defineAction({
         origen: z.string().min(3),
         destino: z.string().min(3),
         details: z.string().optional(),
-        fecha: z.date(),
+        fecha: z.coerce.date(),
         estado: z.enum(Estado),
         militante: z.object({ id: z.coerce.number() })
     }),
@@ -52,11 +52,11 @@ export const createTransfer = defineAction({
 
 export const updateTransfer = defineAction({
     input: z.object({
-        id: z.string(),
+        id: z.number(),
         origen: z.string().min(3).optional(),
         destino: z.string().min(3).optional(),
         details: z.string().optional(),
-        fecha: z.date().optional(),
+        fecha: z.coerce.date().optional(),
         estado: z.enum(Estado).optional(),
         militante: z.object({ id: z.coerce.number() }).optional()
     }),
@@ -65,28 +65,31 @@ export const updateTransfer = defineAction({
         if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
         try {
-            const body = JSON.stringify({
+            const body = {
                 origen,
                 destino,
-                fecha,
+                fecha: fecha?.toISOString(), // Convertir Date a string
                 estado,
                 details,
                 militante
-            });
-
+            };
+            
             const res = await fetch(`${API_URL}/trasfer/${id}`, {
                 method: "PATCH",
-                body,
+                body: JSON.stringify(body),
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${session.jwt}`,
                 },
+
             });
 
+            if(res.status === 400)
+                throw new Error()
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
             }
-            return res.json();
+            return await res.json();
         }
         catch (error) {
             console.log(error)

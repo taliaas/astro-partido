@@ -5,15 +5,15 @@ import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuConte
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import { actions } from "astro:actions";
-import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
-import { ref, computed, onMounted, reactive } from "vue";
-import { toast } from "vue-sonner";
 import { navigate } from "astro:transitions/client";
+import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
 
 const { cores, desactivations, members } = defineProps<{
-  cores: any[];
+  cores: any;
   desactivations: any;
-  members: any[];
+  members: any;
 }>();
 const EstadoDesactivacion = ["APROBADA", "RECHAZADA"] as const;
 
@@ -29,7 +29,7 @@ const selectedDeactivation = ref({
   motivo: "",
   fecha: "",
   estado: EstadoDesactivacion[0],
-  militante: { id: "", firstname: '', lastname: '', ci: '' },
+  militante: { id: "", firstname: "", lastname: "", ci: "" },
   details: "",
 });
 
@@ -48,7 +48,8 @@ const filteredDeactivations = computed(() => {
       deactivation?.militante.firstname
         .toLowerCase()
         .includes(searchTerm.value.toLowerCase()) ||
-      deactivation.militante.lastname.includes(searchTerm.value);
+      deactivation.militante.lastname.includes(searchTerm.value) ||
+      deactivation?.motivo.includes(searchTerm.value);
     const matchesCore =
       !currentNucleos.value ||
       deactivation.militante.core.id === currentNucleos.value;
@@ -89,7 +90,7 @@ const closeDetailmdodal = () => {
     motivo: "",
     fecha: "",
     estado: EstadoDesactivacion[0],
-    militante: { id: "", firstname: '', lastname: '', ci: '' },
+    militante: { id: "", firstname: "", lastname: "", ci: "" },
     details: "",
   };
 };
@@ -97,7 +98,7 @@ const closeDetailmdodal = () => {
 const saveDeactivation = async () => {
   isLoading.value = true;
   try {
-    if (isEditing.value) {
+    if (!isEditing.value) {
       await actions.militants.deactiveMili(currentDeactivation.value as any);
       toast.success("Desactivación creada correctamente");
     } else {
@@ -117,7 +118,7 @@ const saveDeactivation = async () => {
 </script>
 
 <template>
-  <div class="p-6 space-y-6">
+  <div class="p-2 space-y-6">
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-2xl font-bold text-gray-900">
@@ -233,7 +234,7 @@ const saveDeactivation = async () => {
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
                   :class="deactivation.estado"
-                  class="px-2 py-1 text-md rounded-full"
+                  class="py-1 text-md rounded-full"
                 >
                   {{ deactivation.estado }}
                 </span>
@@ -249,7 +250,9 @@ const saveDeactivation = async () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem @click="viewDeactivationDetails(deactivation)">
+                    <DropdownMenuItem
+                      @click="viewDeactivationDetails(deactivation)"
+                    >
                       <Eye class="h-4 w-4" />
                       Ver
                     </DropdownMenuItem>
@@ -283,7 +286,7 @@ const saveDeactivation = async () => {
             @click="showModal = false"
             class="text-gray-400 hover:text-gray-600"
           >
-          <XIcon class="h-4 w-4" />
+            <XIcon class="h-4 w-4" />
           </button>
         </div>
 
@@ -293,7 +296,7 @@ const saveDeactivation = async () => {
               >Militante</label
             >
             <select
-              v-model="currentDeactivation.militante"
+              v-model="currentDeactivation.militante.id"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md"
             >
@@ -386,7 +389,8 @@ const saveDeactivation = async () => {
                 >Militante</label
               >
               <p class="text-md text-gray-900">
-                {{ selectedDeactivation.militante?.firstname }} {{ selectedDeactivation.militante?.lastname }}
+                {{ selectedDeactivation.militante?.firstname }}
+                {{ selectedDeactivation.militante?.lastname }}
               </p>
             </div>
             <div>
@@ -397,31 +401,27 @@ const saveDeactivation = async () => {
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-md font-medium text-gray-700"
-                >Motivo</label
-              >
-              <p class="text-md text-gray-900">
-                {{ selectedDeactivation.motivo }}
-              </p>
-            </div>
-            <div>
-              <label class="block text-md font-medium text-gray-700"
-                >Detalles</label
-              >
-              <p class="text-md text-gray-900">
-                {{ selectedDeactivation.details }}
-              </p>
-            </div>
-            <div>
-              <label class="block text-md font-medium text-gray-700"
-                >Fecha</label
-              >
-              <p class="text-md text-gray-900">
-                {{ selectedDeactivation.fecha }}
-              </p>
-            </div>
+          <div>
+            <label class="block text-md font-medium text-gray-700"
+              >Motivo</label
+            >
+            <p class="text-md text-gray-900">
+              {{ selectedDeactivation.motivo }}
+            </p>
+          </div>
+          <div>
+            <label class="block text-md font-medium text-gray-700"
+              >Detalles</label
+            >
+            <p class="text-md text-gray-900">
+              {{ selectedDeactivation.details }}
+            </p>
+          </div>
+          <div>
+            <label class="block text-md font-medium text-gray-700">Fecha</label>
+            <p class="text-md text-gray-900">
+              {{ selectedDeactivation.fecha }}
+            </p>
           </div>
 
           <div>
@@ -430,7 +430,7 @@ const saveDeactivation = async () => {
             >
             <span
               :class="selectedDeactivation.estado"
-              class="px-2 py-1 text-md font-medium rounded-full"
+              class="y-1 text-md rounded-full"
             >
               {{ selectedDeactivation.estado }}
             </span>

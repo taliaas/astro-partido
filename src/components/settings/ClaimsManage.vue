@@ -175,34 +175,28 @@ const hasChanges = computed(() => {
 // Actualizar el estado de un permiso (check/uncheck)
 function togglePermission(resource: string, actionId: string) {
   const claimIdx = editableClaims.value.findIndex(
-    (c) => c.role.name === selectRole.value && c.module === resource
+    (c) => c.role === selectRole.value && c.module === resource
   );
   if (claimIdx !== -1) {
     // Si existe el claim para ese módulo y rol
     const claim = editableClaims.value[claimIdx];
-    const actionIdx = claim.actions.indexOf(actionId);
+    const actionIdx = claim.actions.indexOf(actionId as any);
     if (actionIdx !== -1) {
-      // Si la acción ya está, quitarla
       claim.actions.splice(actionIdx, 1);
-      // Si no quedan acciones, eliminar el claim completo
       if (claim.actions.length === 0) {
         editableClaims.value.splice(claimIdx, 1);
       }
     } else {
-      // Si no está la acción, agregarla
-      claim.actions.push(actionId);
+      claim.actions.push(actionId as any);
     }
   } else {
-    // Si no existe el claim, crearlo con la acción
-    const roleObj = roles.find((r) => r === selectRole.value);
-    if (roleObj) {
+
       editableClaims.value.push({
-        id: Date.now(), // id temporal, el backend debe asignar el real
-        actions: [actionId],
+        id: Date.now(),
+        actions: [actionId as any],
         module: resource,
-        role: { name: roleObj},
+        role: selectRole.value,
       });
-    }
   }
 }
 
@@ -210,9 +204,9 @@ function togglePermission(resource: string, actionId: string) {
 function isPermissionChecked(resource: string, actionId: string) {
   return editableClaims.value.some(
     (perm) =>
-      perm.role?.name === selectRole.value &&
+      perm.role === selectRole.value &&
       perm.module === resource &&
-      perm.actions.includes(actionId)
+      perm.actions.includes(actionId as any)
   );
 }
 
@@ -223,7 +217,7 @@ async function saveClaims() {
     // Para cada rol, agrupar sus claims y preparar el objeto para guardar
     const rolesToSave = roles.map((role) => {
       const claimsToSave = editableClaims.value.filter(
-        (c) => c.role?.name === role
+        (c) => c.role === role
       );
       const grouped = permissionResources.map((resource) => {
         const claim = claimsToSave.find((c) => c.module === resource);
@@ -252,8 +246,4 @@ async function saveClaims() {
   }
 }
 
-// Al cambiar de rol, filtrar los claims editables para ese rol
-watch(selectRole, (newRole) => {
-  // Opcional: podrías recargar editableClaims desde claims si quieres descartar cambios no guardados
-});
 </script>

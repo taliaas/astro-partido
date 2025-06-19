@@ -17,18 +17,22 @@ export default class SolrService {
             console.error(error);
         }
     }
-    async queryMinutes(limit: number, query: string){//como paso la query
+    async queryMinutes(query: string, start: number, limit: number, op: string){
         try {
-            const response = await fetch(`${API_URL}/solr?limit=${limit}`, {
-                method: "GET",
+            const response = await fetch(`${API_URL}/solr/search?start=${start}&rows=${limit}&q_op=${op}`, {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                body: JSON.stringify(query)
             });
+            console.log("Query",query)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return await response.json();
+            const res = await response.json();
+            console.log('Response', res)
+            return res
         } catch (error) {
             console.error(error);
         }

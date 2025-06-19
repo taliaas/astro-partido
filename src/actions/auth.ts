@@ -4,35 +4,40 @@ import { z } from "zod";
 import { getSession } from "auth-astro/server";
 
 export const register = defineAction({
-  accept: "json",
   input: z.object({
     email: z.string().email(),
     name: z.string(),
     password: z.string(),
     role: z.string().optional(),
   }),
-  async handler(input, context) {
-    console.log(input)
+  async handler({email, name, password, role}, context) {
     const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({email, name, password, role}),
     });
     if (res.status === 409) {
       throw new ActionError({
         code: "CONFLICT",
-        message: `User with email ${input.email} already exists`,
+        message: `User with email ${email} already exists`,
       });
+    }
+    const data = await res.json()
+    if (res.status === 404){
+      throw new ActionError({
+        code: "NOT_FOUND",
+        message: data.message
+      })
     }
     if (!res.ok) {
       throw new ActionError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `HTTP error! status: ${res.status}`,
+        message: data.message,
       });
     }
-    return res.json();
+    return data
   },
 });
 

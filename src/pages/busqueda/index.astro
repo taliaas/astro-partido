@@ -1,49 +1,57 @@
 ---
 import RootLayout from "../../layouts/RootLayout.astro";
-import Busqueda from "../../components/filters/Busqueda.vue"
+import Busqueda from "../../components/filters/Busqueda.vue";
 import SolrService from "../../services/SolrService";
 
-if(Astro.request.method !== 'POST'){
-    return Astro.redirect("/minutes")
+if (Astro.request.method !== "POST") {
+  return Astro.redirect("/minutes");
 }
 
-const formData = await Astro.request.formData()
-const query = Object.fromEntries(formData.entries())
+const formData = await Astro.request.formData();
+const query = Object.fromEntries(formData.entries());
 
-const searchParams = Astro.url.searchParams
-const limit = searchParams.get("limit") || 10
-const page = searchParams.get("page") || 1
+const searchParams = Astro.url.searchParams;
+const limit = searchParams.get("limit") || 10;
+const page = searchParams.get("page") || 1;
 
 async function getActas(limit: any) {
-    console.log("entro a searchAll")
-    try {
-        const service = new SolrService()
-        if (!service) {
-            throw new Error('Error al leer');
-        }
-        return service.getAllMinutes(limit);
-    } catch (error) {
-        console.error('Error fetching actas:', error);
-        throw new Error;
+  try {
+    const service = new SolrService();
+    if (!service) {
+      throw new Error("Error al leer");
     }
+    return service.getAllMinutes(limit);
+  } catch (error) {
+    console.error("Error fetching actas:", error);
+    throw new Error();
+  }
 }
-async function getActasByQuery(limit: any, query: any){
-    console.log("entro a searchQuery")
-    try {
-        const service = new SolrService()
-        if (!service) {
-            throw new Error('Error al leer');
-        }
-        return service.queryMinutes(limit, query);
-    } catch (error) {
-        console.error('Error fetching actas:', error);
-        throw new Error;
+async function getActasByQuery(page: any, limit: any, query: any) {
+
+  try {
+    const service = new SolrService();
+    if (!service) {
+      throw new Error("Error al leer");
     }
+    return service.queryMinutes(query, page, limit, "OR");
+  } catch (error) {
+    console.error("Error fetching actas:", error);
+    throw new Error();
+  }
 }
 
-const actas = query.name === "" && query.doc_type === "" && query.core === "" && query.status === "" && query.dateFrom === "" && query.dateTo === "" && query.keywords === "" ? await getActas(limit) : await getActasByQuery(limit, query)
+const actas =
+  query.name === "" &&
+  query.doc_type === "" &&
+  query.core === "" &&
+  query.status === "" &&
+  query.dateFrom === "" &&
+  query.dateTo === "" &&
+  query.keywords === ""
+    ? await getActas(limit)
+    : await getActasByQuery(query, page, limit);
 ---
 
 <RootLayout>
-    <Busqueda actas={actas} limit={limit} page={page} />
+  <Busqueda actas={actas} limit={limit} page={page} />
 </RootLayout>

@@ -21,7 +21,7 @@
               </tr>
             </thead>
             <tbody>
-              <template v-if="comites.length === 0">
+              <template v-if="comites?.length === 0">
                 <tr>
                   <td colspan="3" class="p-4 text-center text-muted-foreground">
                     No hay comités registrados.

@@ -1,4 +1,5 @@
 ---
+import {getSession} from "auth-astro/server";
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import {
@@ -6,11 +7,12 @@ import {
   default as ComputoService,
 } from "../services/Computo";
 import MinutesService from "../services/Minutes";
+const session = (await getSession(Astro.request)) as any;
 
 async function getMinute() {
   const service = new MinutesService();
   try {
-    return service.getLatestMinute();
+    return service.getLatestMinute(session.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -70,7 +72,7 @@ async function getKPIs() {
 async function getDocument() {
   const service = new MinutesService();
   try {
-    return await service.getMinutes();
+    return await service.getMinutes(session.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -84,7 +86,7 @@ async function getNegativeIndicator(): Promise<number | undefined> {
   }
 }
 
-const [documents, kpis, list, negative] = await Promise.all([
+const [documents, kpis, list] = await Promise.all([
   getMinute(),
   getKPIs(),
   getDocument(),
@@ -107,19 +109,13 @@ const cards = [
     value: list?.documents ?? 0,
     icon: "Files",
   },
-  {
-    title: "Indicadores Alertas",
-    value: negative ?? 0,
-    icon: "Activity",
-  },
 ];
 ---
 
 <RootLayout>
   <DashboardHome
-    client:load
     documents={documents!}
     kpis={kpis!}
-    cards={cards}
+    cards={cards} client:load
   />
 </RootLayout>

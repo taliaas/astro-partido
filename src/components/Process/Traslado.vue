@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="p-2 space-y-6">
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-2xl font-bold text-gray-900">Gestión de Traslados</h2>
@@ -169,6 +169,7 @@
               >Militante</label
             >
             <select
+              name="militante"
               v-model="currentTransfer.militante.id"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -189,6 +190,7 @@
               >Sucursal de Origen</label
             >
             <Input
+              name="origen"
               type="text"
               v-model="currentTransfer.origen"
               required
@@ -202,6 +204,7 @@
             >
             <Input
               type="text"
+              name="destino"
               v-model="currentTransfer.destino"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -215,6 +218,7 @@
             >
             <textarea
               v-model="currentTransfer.details"
+              name="details"
               required
               rows="3"
               placeholder="Describe el motivo del traslado..."
@@ -228,6 +232,7 @@
             </label>
             <input
               v-model="currentTransfer.fecha"
+              name="fecha"
               type="date"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -424,7 +429,7 @@ const openAddModal = () => {
     origen: "",
     destino: "",
     details: "",
-    militante: { id: ""},
+    militante: { id: "" },
     fecha: new Date(),
     estado: Estado[0],
   };
@@ -466,7 +471,8 @@ const closeDetailsModal = () => {
 const saveTransfer = async () => {
   isLoading.value = true;
   try {
-    if (!isEdit) {
+    if (!isEdit.value) {
+      console.log(currentTransfer.value)
       await actions.transfer.createTransfer(currentTransfer.value as any);
       toast.success("Traslado creado correctamente");
     } else {
@@ -476,7 +482,7 @@ const saveTransfer = async () => {
     closeModal();
     navigate("");
   } catch (error) {
-    toast.error("Error al crear el traslado");
+    toast.error("Error al guardar el traslado");
   } finally {
     isLoading.value = false;
   }

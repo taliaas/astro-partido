@@ -8,7 +8,7 @@
             Panel de Control de KPIs
           </h1>
 
-          <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
+          <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
             <Card v-for="(card, index) in cards" :key="index"
               class="bg-secondary rounded shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 ease-in-out hover:border-blue-200 ">
               <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">

@@ -9,13 +9,13 @@ export const deactiveMili = defineAction({
     input: z.object({
         motivo: z.string().min(3),
         details: z.string().optional(),
-        fecha: z.date(),
+        fecha: z.coerce.date(),
         estado: z.enum(EstadoDesactivacion),
         militante: z.any(),
     }),
     handler: async ({ motivo, estado, fecha, details, militante }, context) => {
         const session: any = await getSession(context.request);
-        const res = await fetch(`${API_URL}/deactivation`, {
+        const res = await fetch(`${API_URL}/desactivation`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -41,15 +41,16 @@ export const deactiveMili = defineAction({
 
 export const updateDeactivation = defineAction({
     input: z.object({
+        id: z.number(),
         motivo: z.string().min(3).optional(),
         details: z.string().optional(),
-        fecha: z.date().optional(),
+        fecha: z.coerce.date().optional(),
         estado: z.enum(EstadoDesactivacion).optional(),
         militante: z.any().optional(),
     }),
-    async handler({ motivo, details, fecha, estado, militante }, context) {
+    async handler({ id, motivo, details, fecha, estado, militante }, context) {
         const session: any = await getSession(context.request);
-        const res = await fetch(`${API_URL}/deactivation`, {
+        const res = await fetch(`${API_URL}/desactivation/${id}`, { 
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

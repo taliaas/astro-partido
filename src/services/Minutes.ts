@@ -20,12 +20,13 @@ export default class MinutesService {
   }
 
   //obtener las actas recientes
-  async getLatestMinute() {
+  async getLatestMinute(token: any) {
     try {
       const response = await fetch(`${API_URL}/minutes/latest`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
       });
       if (!response.ok) {
@@ -37,12 +38,13 @@ export default class MinutesService {
     }
   }
 
-  async getMinutes() {
+  async getMinutes(token: any) {
     try {
       const response = await fetch(`${API_URL}/minutes/dash`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
       });
       if (!response.ok) {

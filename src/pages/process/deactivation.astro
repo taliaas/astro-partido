@@ -7,14 +7,14 @@ import DeactivationService from "../../services/DeactivationService";
 import MilitantService from "@/services/MilitantService";
 import { getSession } from "auth-astro/server";
 
+const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams
 const page = searchParams.get("page") || 1
-const session = await getSession(Astro.request)
 
 async function getCore() {
     const service = new CoreService();
     try {
-        return await service.getAllCore();
+        return await service.getAllCore(session.jwt);
     } catch (e) {
         console.error(e);
     }

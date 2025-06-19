@@ -19,7 +19,7 @@ const navigationItems = [
     hasPermission: hasPermissions("Procesos", "read"),
   },
   {
-    name: "Análisis",
+    name: "Cómputo",
     href: "/analisis_indicador",
     hasPermission: hasPermissions("Análisis", "read"),
   },
@@ -33,7 +33,7 @@ const navigationItems = [
 
 <template>
   <nav
-    class="hidden md:flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6"
+    class="flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6"
   >
     <a
       v-for="item in navigationItems"

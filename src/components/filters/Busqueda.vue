@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { format } from "date-fns";
 import { navigate } from "astro:transitions/client";
-import { ArrowLeft, ArrowRight } from "lucide-vue-next";
+import { ArrowLeft, ArrowRight, Search } from "lucide-vue-next";
 import { ref } from "vue";
 
 const { actas, limit, page } = defineProps<{
@@ -10,10 +10,11 @@ const { actas, limit, page } = defineProps<{
   page: any;
 }>();
 
-const found = ref(actas.numFound);
+const found = ref(actas?.numFound || 0);
 const currentPage = ref(page);
 const total = ref(actas?.total);
 
+//next a la carga de la query hacer bien
 function goToNextPage() {
   if (actas.total > currentPage.value) {
     currentPage.value++;
@@ -40,7 +41,9 @@ function goToPreviousPage() {
       >
         <div class="p-8 border-b">
           <h2 class="font-bold text-3xl">Resultado de la búsqueda</h2>
-          <p v-if="found === 0" class="text-md text-gray-500"></p>
+          <p v-if="found === 0" class="text-md text-gray-500">
+            0 coincidencias encontradas
+          </p>
           <p v-else-if="found === 1" class="text-md text-gray-500">
             {{ found }} coincidencia encontrada
           </p>
@@ -49,9 +52,10 @@ function goToPreviousPage() {
           </p>
         </div>
         <!-- Results -->
+
         <div class="space-y-4">
           <div
-            v-for="acta in actas.docs"
+            v-for="acta in actas?.docs"
             :key="acta.id"
             class="p-6 border-b border-gray-200 pb-6"
           >
@@ -72,19 +76,17 @@ function goToPreviousPage() {
 
             <!-- Description -->
             <div class="text-gray-700 text-sm mb-3 leading-relaxed">
-              {{ acta.text  || 'actas' }}
+              {{ acta.text  || 'Actas' }}
             </div>
           </div>
-          <div v-if="actas?.length === 0" class="border border-b-gray-300 p-8">
+          <div v-if="found === 0" class="border border-b-gray-300 text-center text-gray-500 font-medium p-8">
             No hay coincidencias
-            {{actas}}
           </div>
 
         </div>
 
         <div class="flex justify-between">
           <div class="p-4 text-muted-foreground">
-            
           </div>
           <div class="space-x-4 p-4 flex justify-end">
             <button @click="goToPreviousPage" type="button" class="flex gap-2 border rounded text-sm font-medium px-4 py-2 mr-4 ">
