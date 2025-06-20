@@ -2,54 +2,52 @@
 import RootLayout from "../../layouts/RootLayout.astro";
 import Busqueda from "../../components/filters/Busqueda.vue";
 import SolrService from "../../services/SolrService";
+import { undefined } from "astro:schema";
 
 if (Astro.request.method !== "POST") {
   return Astro.redirect("/minutes");
 }
 
 const formData = await Astro.request.formData();
-const query = Object.fromEntries(formData.entries());
+const query = Object.fromEntries(
+  Array.from(formData.entries()).filter((entry) => entry[1])
+);
 
 const searchParams = Astro.url.searchParams;
 const limit = searchParams.get("limit") || 10;
-const page = searchParams.get("page") || 1;
+const page = searchParams.get("page") || 0;
 
-async function getActas(limit: any) {
+async function getActas() {
+  console.log("entro a actas *:*")
   try {
     const service = new SolrService();
     if (!service) {
       throw new Error("Error al leer");
     }
-    return service.getAllMinutes(limit);
+    return service.getAllMinutes(Number(limit));
   } catch (error) {
     console.error("Error fetching actas:", error);
     throw new Error();
   }
 }
-async function getActasByQuery(page: any, limit: any, query: any) {
-
+async function getActasByQuery() {
+  console.log("entro a actas query")
   try {
     const service = new SolrService();
     if (!service) {
       throw new Error("Error al leer");
     }
-    return service.queryMinutes(query, page, limit, "OR");
+    return service.queryMinutes(query, Number(page), Number(limit), "OR");
   } catch (error) {
     console.error("Error fetching actas:", error);
     throw new Error();
   }
 }
+console.log(query);
+const actas = Array.from(Object.entries(query)).length === 0
+    ? await getActas()
+    : await getActasByQuery();
 
-const actas =
-  query.name === "" &&
-  query.doc_type === "" &&
-  query.core === "" &&
-  query.status === "" &&
-  query.dateFrom === "" &&
-  query.dateTo === "" &&
-  query.keywords === ""
-    ? await getActas(limit)
-    : await getActasByQuery(query, page, limit);
 ---
 
 <RootLayout>

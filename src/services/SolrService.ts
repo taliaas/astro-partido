@@ -1,7 +1,7 @@
-import {API_URL} from "astro:env/client";
+import { API_URL } from "astro:env/client";
 
 export default class SolrService {
-    async getAllMinutes(limit: number){
+    async getAllMinutes(limit: number) {
         try {
             const response = await fetch(`${API_URL}/solr/all?limit=${limit}`, {
                 method: "GET",
@@ -17,7 +17,7 @@ export default class SolrService {
             console.error(error);
         }
     }
-    async queryMinutes(query: string, start: number, limit: number, op: string){
+    async queryMinutes(query: any, start: number, limit: number, op: string) {
         try {
             const response = await fetch(`${API_URL}/solr/search?start=${start}&rows=${limit}&q_op=${op}`, {
                 method: "POST",
@@ -26,7 +26,6 @@ export default class SolrService {
                 },
                 body: JSON.stringify(query)
             });
-            console.log("Query",query)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -37,20 +36,20 @@ export default class SolrService {
             console.error(error);
         }
     }
-    async advancedSearch(){
-        try{
+    async advancedSearch() {
+        try {
             const response = await fetch(`${API_URL}/solr`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
                 },
             });
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return await response.json();
         }
-        catch(error){
+        catch (error) {
             console.error(error)
         }
     }

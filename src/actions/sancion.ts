@@ -17,7 +17,7 @@ export const createSancion = defineAction({
     militante: z.object({ id: z.number().int().positive() }),
   }),
   async handler(
-    { causa, fecha, severidad, duracion, estado, militante,details },
+    { causa, fecha, severidad, duracion, estado, militante, details },
     context
   ) {
     const session: any = await getSession(context.request);
@@ -32,7 +32,7 @@ export const createSancion = defineAction({
       estado: estado || "APROBADA",
       militante,
     });
-      console.log(body)
+    
     const res = await fetch(`${API_URL}/sancion`, {
       method: "POST",
       body,
@@ -61,7 +61,7 @@ export const updateSancion = defineAction({
     militante: z.object({ id: z.number().int().positive() }).optional(),
   }),
   async handler(
-    { id, causa, fecha, severidad, duracion, estado, militante,details, },
+    { id, causa, fecha, severidad, duracion, estado, militante, details },
     context
   ) {
     const session: any = await getSession(context.request);
