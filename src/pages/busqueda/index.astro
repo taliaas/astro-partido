@@ -2,7 +2,6 @@
 import RootLayout from "../../layouts/RootLayout.astro";
 import Busqueda from "../../components/filters/Busqueda.vue";
 import SolrService from "../../services/SolrService";
-import { undefined } from "astro:schema";
 
 if (Astro.request.method !== "POST") {
   return Astro.redirect("/minutes");
@@ -18,7 +17,6 @@ const limit = searchParams.get("limit") || 10;
 const page = searchParams.get("page") || 0;
 
 async function getActas() {
-  console.log("entro a actas *:*")
   try {
     const service = new SolrService();
     if (!service) {
@@ -31,7 +29,6 @@ async function getActas() {
   }
 }
 async function getActasByQuery() {
-  console.log("entro a actas query")
   try {
     const service = new SolrService();
     if (!service) {
