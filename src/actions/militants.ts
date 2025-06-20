@@ -4,7 +4,7 @@ import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
 
 const EstadoDesactivacion = ['APROBADA', 'RECHAZADA'] as const
-const ORGANIZACION = ['PCC', 'UJC']
+const ORGANIZACION = ['PCC', 'UJC'] as const
 
 export const deactiveMili = defineAction({
     input: z.object({

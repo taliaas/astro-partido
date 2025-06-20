@@ -3,8 +3,8 @@ import { z } from "zod";
 import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
 
-const status = ["APROBADA", "RECHAZADA"];
-const severity = ["LEVE", "GRAVE", "MEDIA"];
+const status = ["APROBADA", "RECHAZADA"] as const;
+const severity = ["LEVE", "GRAVE", "MEDIA"] as const;
 
 export const createSancion = defineAction({
   input: z.object({
@@ -12,7 +12,7 @@ export const createSancion = defineAction({
     fecha: z.coerce.date(),
     details: z.string(),
     severidad: z.enum(severity).optional(),
-    duracion: z.coerce.number().min(1),
+    duracion: z.coerce.number().min(1).max(365),
     estado: z.enum(status).optional(),
     militante: z.object({ id: z.number().int().positive() }),
   }),
@@ -32,7 +32,7 @@ export const createSancion = defineAction({
       estado: estado || "APROBADA",
       militante,
     });
-    
+
     const res = await fetch(`${API_URL}/sancion`, {
       method: "POST",
       body,
