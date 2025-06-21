@@ -27,12 +27,12 @@
             v-model="selectCore"
             class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full"
           >
-          <option value="">Todos los núcleos</option>
+            <option value="">Todos los núcleos</option>
             <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.id">
               {{ nucleo.name }}
             </option>
           </select>
-          <Button @click="createUser = true"> Añadir </Button>
+          <Button @click="openCreate"> Añadir</Button>
         </div>
       </div>
 
@@ -85,29 +85,19 @@
                 <span v-else>{{ user.lastLogin }}</span>
               </td>
               <td class="p-4 text-center">
-                <div class="relative">
-                  <button
-                    @click="toggleDropdown(user)"
-                    class="rounded-md p-1 hover:bg-muted"
-                  >
-                    <MoreVerticalIcon class="h-4 w-4" />
-                  </button>
-                  <div
-                    v-if="activeDropdown?.id === user.id"
-                    class="absolute right-0 z-10 mt-2 w-40 rounded-md border bg-background shadow-lg"
-                  >
-                    <div
-                      class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
-                    >
-                      Acciones
-                    </div>
-                    <div class="py-1">
-                      <button class="px-4 py-2 text-sm hover:bg-muted w-full">
-                        Editar usuario
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger class="focus:outline-none">
+                    <Button variant="ghost" size="icon" class="rounded-full">
+                      <MoreVerticalIcon class="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem @click="openEdit(user)">
+                      <Pencil class="h-4 w-4" />
+                      Editar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </td>
             </tr>
           </tbody>
@@ -139,21 +129,26 @@
         </div>
       </div>
     </div>
+
     <!-- Create Dialog -->
     <Dialog :open="createUser" @update:open="createUser = $event">
       <DialogContent class="font-medium">
         <DialogHeader>
-          <DialogTitle class="text-xl">Crear Nuevo Usuario</DialogTitle>
+          <DialogTitle class="text-xl">
+            {{ isEdit ? "Editar Usuario" : "Crear Nuevo Usuario" }}
+          </DialogTitle>
           <DialogDescription>
-            Complete los datos del usuario para crear una nueva cuenta.
+            Complete los datos del usuario para
+            {{ isEdit ? "actualizarlo." : "crear una nueva cuenta." }}
           </DialogDescription>
         </DialogHeader>
         <CreateUserForm
+          :user="isEdit ? selectedUser : null"
           :onLoadingChange="(value) => (loading = value)"
         />
         <DialogFooter>
           <DialogClose>
-            <Button type="button" variant="outline"> Cancelar </Button>
+            <Button type="button" variant="outline"> Cancelar</Button>
           </DialogClose>
           <Button
             type="submit"
@@ -167,39 +162,6 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    <div
-      v-if="showSesionModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-    >
-      <div class="bg-white rounded p-6 w-full max-w-md">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">
-          Desactivar usuario
-        </h3>
-        <form @submit.prevent="handleDesactivation" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >¿Estás seguro que desea desactivar al usuario
-              {{ activeDropdown?.name }}?</label
-            >
-          </div>
-          <div class="flex justify-end space-x-3">
-            <button
-              type="submit"
-              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-
-            <button
-              class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-              @click="desactivation"
-            >
-              OK
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -215,10 +177,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { MoreVerticalIcon, SearchIcon } from "lucide-vue-next";
+import { MoreVerticalIcon, Pencil, SearchIcon } from "lucide-vue-next";
 import { computed, ref } from "vue";
+import DropdownMenuTrigger from "../../ui/dropdown-menu/DropdownMenuTrigger.vue";
+import DropdownMenuContent from "../../ui/dropdown-menu/DropdownMenuContent.vue";
+import DropdownMenuItem from "../../ui/dropdown-menu/DropdownMenuItem.vue";
+import DropdownMenu from "../../ui/dropdown-menu/DropdownMenu.vue";
 
 interface User {
   id: string;
@@ -239,18 +204,19 @@ const { users, page, cores } = defineProps<{
 const hasNextPage = ref(users.total);
 const currentPage = ref(page);
 const searchQuery = ref("");
-const activeDropdown = ref<User | null>(null);
+const selectedUser = ref<User | null>(null);
 const showSesionModal = ref(false);
-const selectCore = ref('');
+const selectCore = ref("");
 const createUser = ref(false);
 const loading = ref(false);
+const isEdit = ref(false);
 
 // Filtrar usuarios basado en la búsqueda
 const filteredUsers = computed(() => {
   if (!Array.isArray(users.data)) return [];
   return users.data.filter((user) => {
-    const matchesCore = 
-    selectCore.value === '' || user.core?.id === selectCore.value
+    const matchesCore =
+      selectCore.value === "" || user.core?.id === selectCore.value;
     const matchesSearch =
       !searchQuery.value ||
       user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
@@ -259,17 +225,16 @@ const filteredUsers = computed(() => {
   });
 });
 
-// Funciones para manejar dropdowns
-const toggleDropdown = (user: User) => {
-  activeDropdown.value = activeDropdown.value?.id === user.id ? null : user;
+const openEdit = (user: any) => {
+  isEdit.value = true
+  createUser.value = true;
+  selectedUser.value = user;
+
 };
 
-async function handleDesactivation() {
-  showSesionModal.value = false;
-}
-
-async function desactivation() {
-  await actions.user.deactiveUser(+activeDropdown.value?.id!);
+const openCreate = () => {
+  createUser.value = true
+  isEdit.value = false
 }
 
 function goToNextPage() {
@@ -285,5 +250,4 @@ function goToPreviousPage() {
     navigate(`/settings?page=${currentPage.value}`);
   }
 }
-
 </script>

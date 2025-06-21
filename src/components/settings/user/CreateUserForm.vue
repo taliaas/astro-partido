@@ -14,17 +14,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Role } from "@/interface/Roles.ts";
 import { toTypedSchema } from "@vee-validate/zod";
-import { ActionError, actions } from "astro:actions";
+import { actions } from "astro:actions";
 import { z } from "zod";
 import { navigate } from "astro:transitions/client";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
+import { ActionError } from "astro/actions/runtime/virtual/shared";
 
-const { onLoadingChange } = defineProps<{
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  lastLogin: string;
+  core?: any;
+}
+
+const { onLoadingChange, user } = defineProps<{
   onLoadingChange: (value: boolean) => void;
+  user: User | null;
 }>();
+
+console.log(user);
 
 const roleEnum = [
   "Administrador",
@@ -35,6 +48,15 @@ const roleEnum = [
   "Militante",
 ];
 
+const passwordSchema = user
+  ? z
+      .string()
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres." })
+      .or(z.string().length(0))
+  : z
+      .string()
+      .min(8, { message: "La contraseña debe tener al menos 8 caracteres." });
+
 type UserData = z.infer<typeof userSchema>;
 const userSchema = z.object({
   name: z
@@ -42,18 +64,16 @@ const userSchema = z.object({
     .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
     .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
   email: z.string().email({ message: "Ingresa un correo electrónico válido." }),
-  password: z
-    .string()
-    .min(8, { message: "La contraseña debe tener al menos 8 caracteres." }),
+  password: passwordSchema,
   role: z.string({ message: "El Rol es requerido" }),
 });
 
 const form = useForm<UserData>({
   initialValues: {
-    name: "",
-    email: "",
+    name: user?.name ?? "",
+    email: user?.email ?? "",
     password: "",
-    role: null as any,
+    role: user?.role.name ?? "",
   },
   validationSchema: toTypedSchema(userSchema),
 });
@@ -61,14 +81,13 @@ const form = useForm<UserData>({
 const handleSubmit = form.handleSubmit(async (data: UserData) => {
   onLoadingChange(true);
   const { error } = await actions.auth.register(data);
-  if(error instanceof ActionError){
-    toast.error(error.message)
-  }
-  else {
+  if (error instanceof ActionError) {
+    toast.error(error.message);
+  } else {
     await navigate("");
     setTimeout(() => toast.success("Usuario creado exitosamente"), 1000);
   }
-    onLoadingChange(false);
+  onLoadingChange(false);
 });
 </script>
 
@@ -81,7 +100,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
   >
     <FormField name="name" v-slot="{ componentField }">
       <FormItem class="grid-cols-3">
-        <FormLabel class="col-span-1"> Nombre: </FormLabel>
+        <FormLabel class="col-span-1"> Nombre:</FormLabel>
         <FormControl>
           <Input class="col-span-2" placeholder="Nombre" :="componentField" />
         </FormControl>
@@ -90,7 +109,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
     </FormField>
     <FormField name="email" v-slot="{ componentField }">
       <FormItem class="grid-cols-3">
-        <FormLabel class="col-span-1"> Email: </FormLabel>
+        <FormLabel class="col-span-1"> Email:</FormLabel>
         <FormControl>
           <Input
             type="email"
@@ -104,7 +123,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
     </FormField>
     <FormField name="password" v-slot="{ componentField }">
       <FormItem class="grid-cols-3">
-        <FormLabel class="col-span-1"> Contraseña: </FormLabel>
+        <FormLabel class="col-span-1"> Contraseña:</FormLabel>
         <FormControl>
           <Input
             type="password"
@@ -118,7 +137,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
     </FormField>
     <FormField name="role" v-slot="{ componentField }">
       <FormItem class="grid grid-cols-3">
-        <FormLabel class="col-span-1"> Rol: </FormLabel>
+        <FormLabel class="col-span-1"> Rol:</FormLabel>
         <Select :="componentField">
           <FormControl>
             <SelectTrigger class="col-span-2 w-full">
@@ -126,9 +145,9 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            <SelectItem v-for="role in roleEnum" :value="role">{{
-              role
-            }}</SelectItem>
+            <SelectItem v-for="role in roleEnum" :value="role"
+              >{{ role }}
+            </SelectItem>
           </SelectContent>
         </Select>
         <FormMessage class="col-start-2 col-span-2" />

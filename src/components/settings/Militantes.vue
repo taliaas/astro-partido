@@ -625,7 +625,13 @@ import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigg
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
-import { CheckIcon, Eye, MoreVerticalIcon, Pencil, Search } from "lucide-vue-next";
+import {
+  CheckIcon,
+  Eye,
+  MoreVerticalIcon,
+  Pencil,
+  Search,
+} from "lucide-vue-next";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
@@ -687,7 +693,7 @@ const filteredMembers = computed(() => {
       member.lastname.toLowerCase().includes(query) ||
       member.email.toLowerCase().includes(query) ||
       member.organization.toLowerCase().includes(query) ||
-      member.core.name.toLowerCase().includes(query)
+      member.core.name.toLowerCase().includes(query),
   );
 });
 
@@ -714,9 +720,10 @@ const closeMemberModal = () => {
 };
 
 const handleViewDetails = (militante: any) => {
-  selectedMilitante.value = militante
-  isModalOpen.value = true
-}
+  selectedMilitante.value = militante;
+  isModalOpen.value = true;
+  console.log("Entró", isModalOpen.value, selectedMilitante.value);
+};
 
 const closeModal = () => {
   isModalOpen.value = false;
@@ -773,15 +780,16 @@ function nextPage() {
   if (currentPage.value < totalPages) {
     currentPage.value++;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
     );
   }
 }
+
 function previousPage() {
   if (currentPage.value > 1) {
     currentPage.value--;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
     );
   }
 }
