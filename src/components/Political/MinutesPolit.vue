@@ -297,7 +297,7 @@ const cerrar = async () => {
 };
 
 const addAusencia = () => {
-  formData.value.causa.push({ nombre: "", motivo: "" });
+  formData.value.causa.push({ name: "", motivo: "" });
 };
 
 const removeAusencia = (index: number) => {

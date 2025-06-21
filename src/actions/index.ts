@@ -8,16 +8,20 @@ import * as role from "./role";
 import * as militants from "./militants";
 import * as sancion from "./sancion.ts";
 import * as transfer from "./transfer.ts"
+import * as comite from "./comite.ts"
+import * as core from "./core.ts"
 
 export const server = {
-  events,
-  auth,
-  political,
-  ordinary,
-  minute,
-  user,
-  role,
-  militants,
-  sancion, 
-  transfer
+    events,
+    auth,
+    political,
+    ordinary,
+    minute,
+    user,
+    role,
+    militants,
+    sancion,
+    transfer,
+    comite,
+    core
 };

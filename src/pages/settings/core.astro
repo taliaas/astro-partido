@@ -4,11 +4,14 @@ import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import ComiteService from "@/services/ComiteService";
 import CoreService from "@/services/CoreService";
+import {getSession} from "auth-astro/server";
+
+const session = (await getSession(Astro.request)) as any
 
 async function getComites() {
   const service = new ComiteService();
   try {
-    return service.getAllComite();
+    return service.getAllComite(session?.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -17,13 +20,15 @@ async function getComites() {
 async function nucleos() {
   const service = new CoreService();
   try {
-    return service.getAllCore();
+    return service.getAllCore(session?.jwt);
   } catch (e) {
     console.error(e);
   }
 }
 const cores = await nucleos();
 const comites = await getComites();
+
+console.log(cores,comites)
 ---
 
 <RootLayout>

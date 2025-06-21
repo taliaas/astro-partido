@@ -1,4 +1,4 @@
-import { API_URL } from "astro:env/client";
+import {API_URL} from "astro:env/client";
 
 export default class ComiteService {
     async createCore(areaData: { name: string }) {
@@ -19,12 +19,13 @@ export default class ComiteService {
         }
     }
 
-    async getAllComite() {
+    async getAllComite(token?: string) {
         try {
             const response = await fetch(`${API_URL}/comite`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
             });
             if (!response.ok) {

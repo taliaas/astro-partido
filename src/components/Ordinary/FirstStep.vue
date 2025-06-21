@@ -273,7 +273,7 @@ async function getMilitantes() {
 }
 
 const addPerson = () => {
-  person.value.push({ nombre: "", cargo: "" });
+  person.value.push({ name: "", cargo: "" });
 };
 
 const removeInvitados = (index: any) => {
