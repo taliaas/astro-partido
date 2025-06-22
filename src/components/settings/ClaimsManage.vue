@@ -7,6 +7,7 @@
         <div>
           <h4 class="text-lg font-semibold">Matriz de Permisos</h4>
         </div>
+        {{ claims }}
         <div class="flex items-center gap-2">
           <Select v-model="selectRole">
             <SelectTrigger>
@@ -240,5 +241,13 @@ async function saveClaims() {
     saving.value = false;
   }
 }
+
+watch(selectRole, (newRole) => {
+  //router.replace({ query: { ...router.currentRoute.value.query, role: newRole } });
+  navigate({
+    name: "/settings/permissions",
+    query: { role: newRole },
+  });
+});
 
 </script>

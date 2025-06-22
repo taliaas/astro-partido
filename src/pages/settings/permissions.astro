@@ -6,11 +6,12 @@ import ClaimService from "@/services/ClaimService";
 import { getSession } from "auth-astro/server";
 
 const session = (await getSession(Astro.request)) as any
+const role = Astro.params.role || session?.user?.role;
 
 async function getClaims() {
   const service = new ClaimService();
   try {
-    return service.getAllClaims(session.jwt);
+    return service.getAllClaims(session.jwt, role );
   } catch (e) {
     console.error(e);
   }

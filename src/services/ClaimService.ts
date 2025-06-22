@@ -1,9 +1,9 @@
 import { API_URL } from 'astro:env/client';
 
 export default class ClaimService {
-    async getAllClaims(token:string) {
+    async getAllClaims(token:string, role:string) {
         try {
-            const response = await fetch(`${API_URL}/claims`, {
+            const response = await fetch(`${API_URL}/claims/${role}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
