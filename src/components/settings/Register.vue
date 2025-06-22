@@ -8,14 +8,16 @@
       </p>
     </div>
     <!-- Tarjeta principal -->
-    <div class="bg-white rounded-lg border shadow-sm">
+    <div class="bg-white rounded-lg border shadow-md">
       <div class="p-6">
-      
         <!-- Tabla de trazas -->
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
               <tr class="border-b">
+                <th class="text-left py-3 px-4 font-medium text-gray-900">
+                  Módulo
+                </th>
                 <th class="text-left py-3 px-4 font-medium text-gray-900">
                   Acción
                 </th>
@@ -23,10 +25,10 @@
                   Usuario
                 </th>
                 <th class="text-left py-3 px-4 font-medium text-gray-900">
-                  Módulo
+                  Fecha
                 </th>
                 <th class="text-left py-3 px-4 font-medium text-gray-900">
-                  Fecha
+                  Hora
                 </th>
                 <th class="text-left py-3 px-4 font-medium text-gray-900 w-24">
                   Detalles
@@ -39,6 +41,9 @@
                 :key="traza.id"
                 class="border-b hover:bg-gray-50 cursor-pointer transition-colors"
               >
+                <td class="py-3 px-4 font-medium text-gray-900">
+                  {{ traza.module }}
+                </td>
                 <td class="py-3 px-4">
                   <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
@@ -52,28 +57,51 @@
                       <div class="font-medium text-gray-900">
                         {{ traza.user?.name }}
                       </div>
-                      <div class="text-sm text-gray-500">
+                      <div class="text-md text-gray-500">
                         {{ traza.user?.email }}
                       </div>
                     </div>
                   </div>
                 </td>
-                <td class="py-3 px-4 font-medium text-gray-900">
-                  {{ traza.module }}
+                <td class="py-3 px-4 text-md text-gray-500">
+                  {{ format(traza.createdAt, "yyyy-MM-dd") }}
                 </td>
-                <td class="py-3 px-4 text-sm text-gray-500">
-                  {{ traza.createdAt }}
+                <td class="py-3 px-4 text-md text-gray-500">
+                  {{ format(traza.createdAt, "HH:mm:ss") }}
                 </td>
-                <td class="py-3 px-4">
+                <td class="text-center py-3 px-4">
                   <button
                     @click="abrirDetalle(traza)"
-                    class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-md transition-colors"
+                    class="text-md hover:text-blue-600 px-3 py-1 rounded-md transition-colors"
                   >
                     <Eye class="w-4 h-4" />
                   </button>
                 </td>
               </tr>
+              <tr v-if="trazas.logs.length === 0">
+                <td colspan="6" class="text-center py-6 text-gray-500">
+                  No se encontraron trazas
+                </td>
+              </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="6" class="py-4 text-gray-500 text-md">
+                  Mostrasndo: {{ trazas.page }} de
+                  {{ trazas.lastPage }} página(s)
+                </td>
+                <td colspan="6" class="py-4 text-gray-500 text-md">
+                  <div class="space-x-2">
+                    <button class="p-2 border rounded-md" @click="previusPage">
+                      <ArrowLeft class="w-4 h-4" />
+                    </button>
+                    <button class="p-2 border rounded-md" @click="nextPage">
+                      <ArrowRight class="w-4 h-4" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -93,7 +121,7 @@
           <div class="flex items-center justify-between">
             <div>
               <h3 class="text-lg font-semibold">Detalles de la Traza</h3>
-              <p class="text-sm text-gray-600 mt-1">
+              <p class="text-md text-gray-600 mt-1">
                 Información completa para la traza seleccionada
               </p>
             </div>
@@ -110,15 +138,15 @@
           <!-- Acción y Módulo -->
           <div class="flex items-center justify-between">
             <div class="space-y-1">
-              <div class="text-sm font-medium text-gray-500">Acción</div>
+              <div class="text-md font-medium text-gray-500">Acción</div>
               <span
-                class="inline-flex items-center py-0.5 rounded-full text-sm font-medium"
+                class="inline-flex items-center py-0.5 rounded-full text-md font-medium"
               >
                 {{ trazaSeleccionada.action }}
               </span>
             </div>
             <div class="space-y-1 text-right">
-              <div class="text-sm font-medium text-gray-500">Módulo</div>
+              <div class="text-md font-medium text-gray-500">Módulo</div>
               <div class="font-medium text-gray-900">
                 {{ trazaSeleccionada.module }}
               </div>
@@ -128,7 +156,7 @@
           <!-- Información del Usuario -->
           <div class="space-y-3">
             <div
-              class="text-sm font-medium text-gray-500 flex items-center gap-2"
+              class="text-md font-medium text-gray-500 flex items-center gap-2"
             >
               <UserIcon class="h-4 w-4" />
               Información del Usuario
@@ -144,7 +172,7 @@
                   <div class="font-medium text-gray-900">
                     {{ trazaSeleccionada.user.name }}
                   </div>
-                  <div class="text-sm text-gray-500">
+                  <div class="text-md text-gray-500">
                     {{ trazaSeleccionada.user.email }}
                   </div>
                   <div class="text-xs text-gray-400">
@@ -158,14 +186,14 @@
           <!-- Fecha y Hora -->
           <div class="space-y-3">
             <div
-              class="text-sm font-medium text-gray-500 flex items-center gap-2"
+              class="text-md font-medium text-gray-500 flex items-center gap-2"
             >
               <CalendarIcon class="h-4 w-4" />
               Fecha y Hora
             </div>
             <div class="bg-gray-50 rounded-lg p-4">
-              <div class="font-mono text-sm text-gray-900">
-                {{ trazaSeleccionada.createdAt }}
+              <div class="font-mono text-md text-gray-900">
+                {{ format(trazaSeleccionada.createdAt, "yyyy-MM-dd HH:mm:ss") }}
               </div>
             </div>
           </div>
@@ -173,13 +201,13 @@
           <!-- ID de Entidad (si existe) -->
           <div v-if="trazaSeleccionada.entityId" class="space-y-3">
             <div
-              class="text-sm font-medium text-gray-500 flex items-center gap-2"
+              class="text-md font-medium text-gray-500 flex items-center gap-2"
             >
               <HashIcon class="h-4 w-4" />
               ID de Entidad
             </div>
             <div class="bg-gray-50 rounded-lg p-4">
-              <div class="font-mono text-sm text-gray-900">
+              <div class="font-mono text-md text-gray-900">
                 {{ trazaSeleccionada.entityId }}
               </div>
             </div>
@@ -188,13 +216,13 @@
           <!-- Metadatos Adicionales -->
           <div class="space-y-3">
             <div
-              class="text-sm font-medium text-gray-500 flex items-center gap-2"
+              class="text-md font-medium text-gray-500 flex items-center gap-2"
             >
               <DatabaseIcon class="h-4 w-4" />
               Metadatos de la Traza
             </div>
             <div class="bg-gray-50 rounded-lg p-4">
-              <div class="grid grid-cols-2 gap-4 text-sm">
+              <div class="grid grid-cols-2 gap-4 text-md">
                 <div>
                   <div class="font-medium text-gray-500">ID de Traza</div>
                   <div class="font-mono text-gray-900">
@@ -225,47 +253,70 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
-  XIcon,
-  UserIcon,
+  ArrowLeft,
+  ArrowRight,
   CalendarIcon,
-  HashIcon,
   DatabaseIcon,
   Eye,
+  HashIcon,
+  UserIcon,
+  XIcon,
 } from "lucide-vue-next";
+import { ref, watch } from "vue";
 
-const Action = [
-    "CREATE",
-    "UPDATE",
-    "DELETE",
-    "LOGIN"
-] as const
+const Action = ["CREATE", "UPDATE", "DELETE", "LOGIN"] as const;
 
 const { trazas } = defineProps<{
-  trazas: any
+  trazas: any;
 }>();
 
 const trazaSeleccionada = ref({
   id: 0,
-    action: Action[0],
-    module: '',
-    createdAt: '',
-    user: {
-      status: '',
-      name: '',
-      email: '',
-    },
-    entityId: '',
-    expiresAt: '',
+  action: Action[0],
+  module: "",
+  createdAt: "",
+  user: {
+    status: "",
+    name: "",
+    email: "",
+  },
+  entityId: "",
+  expiresAt: "",
 });
 const modalAbierto = ref(false);
+const currentPage = ref(trazas.page);
+
+// Mantener currentPage sincronizado con trazas.page
+watch(
+  () => trazas.page,
+  (newPage) => {
+    currentPage.value = newPage;
+  }
+);
 
 // Función para abrir el modal de detalles
 const abrirDetalle = (traza: any) => {
   trazaSeleccionada.value = traza;
   modalAbierto.value = true;
+};
+
+const previusPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    const limit = 10;
+    navigate(`register?page=${currentPage.value}&limit=${limit}`);
+  }
+};
+
+const nextPage = () => {
+  if (trazas.lastPage > currentPage.value) {
+    currentPage.value++;
+    const limit = 10;
+    navigate(`register?page=${currentPage.value}&limit=${limit}`);
+  }
 };
 
 // Función para cerrar el modal
@@ -274,15 +325,15 @@ const cerrarModal = () => {
   trazaSeleccionada.value = {
     id: 0,
     action: Action[0],
-    module: '',
-    createdAt: '',
-    user: { 
-      status: '',
-      name: '',
-      email: '',
+    module: "",
+    createdAt: "",
+    user: {
+      status: "",
+      name: "",
+      email: "",
     },
-    entityId: '',
-    expiresAt: '',
+    entityId: "",
+    expiresAt: "",
   };
 };
 </script>
