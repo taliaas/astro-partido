@@ -557,6 +557,7 @@ const saveNucleo = async () => {
   isLoading.value = true;
 
   if (isEditing.value && nucleoForm.id) {
+    console.log(nucleoForm)
     const { error } = await actions.core.updateCore(nucleoForm);
     if (error instanceof ActionError) {
       isLoading.value = false;

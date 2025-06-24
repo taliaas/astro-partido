@@ -94,6 +94,7 @@
               <CollapsibleTrigger
                 class="flex justify-between items-center group w-full p-2 text-lg font-medium hover:bg-gray-200 bg-gray-100 border border-gray-300 rounded-md group transition-colors">
                 {{ com.name }}
+
                 <div class="flex items-center gap-2">
                   <div class="group-data-[state=closed]:hidden px-3 bg-green-100 rounded-full">
                     <span class="text-green-700 text-sm">Total: {{ setTotal(com) }}</span>
@@ -247,6 +248,8 @@ const { comite, computo } = defineProps<{
   computo: any;
 }>();
 
+console.log(computo)
+
 const search = ref("");
 
 // Función para obtener indicadores por categoría
@@ -285,6 +288,7 @@ const getComputo = (nucleo: { id: string }) => {
   const c = computo.find(
     (c) => c.mes == month && c.anno == year && c.nucleo.id === nucleo.id,
   );
+
   return c?.[indicator] ?? 0;
 };
 

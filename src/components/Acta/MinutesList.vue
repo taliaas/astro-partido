@@ -25,11 +25,11 @@
               </div>
               <div class="flex gap-3">
                 <a href="/addRO" class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button">
-                  <PlusIcon class="h-4 w-4 mr-2" />
+                  <PlusIcon class="h-4 w-4 mr-2"/>
                   Ordinaria
                 </a>
                 <a href="/addCP" class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium">
-                  <PlusIcon class="h-4 w-4 mr-2" />
+                  <PlusIcon class="h-4 w-4 mr-2"/>
                   C. Político
                 </a>
               </div>
@@ -41,8 +41,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1.5">
                 <div class="relative">
-                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input id="search" v-model="filters.search" placeholder="Buscar por nombre..." class="pl-9" />
+                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"/>
+                  <Input id="search" v-model="filters.search" placeholder="Buscar por nombre..." class="pl-9"/>
                 </div>
               </div>
               <div class="gap-4 flex">
@@ -63,6 +63,7 @@
                 <select v-model="selectedStatus" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
                   <option value="">Todos los estados</option>
                   <option v-for="status in statuses" :key="status" :value="status">
+
                     {{ status }}
                   </option>
                 </select>
@@ -87,13 +88,13 @@
                     {{ tableHeaders[2] }}
                   </th>
                   <th :data-sort="sort" @click="handleSort"
-                    class="group cursor-pointer px-6 py-3 flex text-left text-xs font-medium text-gray-500 uppercase tracking-wider justify-between">
+                      class="group cursor-pointer px-6 py-3 flex text-left text-xs font-medium text-gray-500 uppercase tracking-wider justify-between">
                     {{ tableHeaders[3] }}
                     <ArrowUp v-if="sort === 'DESC' || sort === null" class="w-4 h-4"
-                      :class="{ 'stroke-blue-500': sort === 'DESC' }" />
-                    <ArrowDown v-if="sort === 'ASC'" class="w-4 h-4 stroke-blue-500" />
+                             :class="{ 'stroke-blue-500': sort === 'DESC' }"/>
+                    <ArrowDown v-if="sort === 'ASC'" class="w-4 h-4 stroke-blue-500"/>
                   </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[4] }}
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
@@ -101,13 +102,14 @@
               </TableHeader>
               <TableBody>
                 <TableRow v-for="(acta, index) in filteredActas" :key="acta.id"
-                  class="hover:bg-gray-50/50 transition-colors duration-200">
+                          class="hover:bg-gray-50/50 transition-colors duration-200">
                   <TableCell class="font-medium pl-8">{{ index + 1 }}</TableCell>
                   <TableCell class="pl-6">{{ acta.name }}</TableCell>
                   <TableCell class=" pl-6 text-left"> {{ acta.core?.name }}</TableCell>
                   <TableCell class="text-left">{{ acta.fecha }}</TableCell>
-                  <TableCell class="text-left">
+                  <TableCell class="text-center">
                     <Badge :class="getStatusClass(acta.status)">
+                      <Loader2 v-if="acta.status === 'Procesando'" class="animate-spin"/>
                       {{ acta.status }}
                     </Badge>
                   </TableCell>
@@ -115,34 +117,35 @@
                     <DropdownMenu>
                       <DropdownMenuTrigger class="focus:outline-none">
                         <Button variant="ghost" size="icon" class="rounded-full">
-                          <MoreVerticalIcon class="h-4 w-4" />
+                          <MoreVerticalIcon class="h-4 w-4"/>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem @click="handleAction('ver', acta)">
-                          <Eye class="h-4 w-4" />
+                          <Eye class="h-4 w-4"/>
                           Ver
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('editar', acta)"
-                          v-if="hasPermission('Documentos', 'update')">
-                          <Pencil class="h-4 w-4" />
+                                          v-if="hasPermission('Documentos', 'update')">
+                          <Pencil class="h-4 w-4"/>
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="
                           acta.type === 'ro' &&
                           acta.status === 'Pendiente'
                         " @click="handleAction('procesar', acta)">
-                          <Edit class="h-4 w-4" />
+                          <Edit class="h-4 w-4"/>
                           Procesar
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('export', acta)"
-                          v-if="hasPermission('Documentos', 'export')">
-                          <Download class="h-4 w-4" />
+                                          v-if="hasPermission('Documentos', 'export')">
+                          <Download class="h-4 w-4"/>
                           Exportar
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="hasPermission('Documentos', 'delete')"
-                          @click="handleAction('eliminar', acta)" class="text-red-600 border-t focus:text-red-600">
-                          <TrashIcon class="h-4 w-4" />
+                                          @click="handleAction('eliminar', acta)"
+                                          class="text-red-600 border-t focus:text-red-600">
+                          <TrashIcon class="h-4 w-4"/>
                           Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -155,7 +158,7 @@
             <!-- Empty State -->
             <div v-if="filteredActas?.length === 0" class="text-center py-16">
               <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
-                <SearchIcon class="h-6 w-6" />
+                <SearchIcon class="h-6 w-6"/>
               </div>
               <h3 class="mt-4 text-sm font-medium text-gray-900">
                 No se encontraron actas
@@ -174,11 +177,11 @@
               </div>
               <div class="flex justify-end gap-4 p-4">
                 <button class="rounded-md border px-3 py-1" :disabled="currentPage === 1"
-                  :class="{ 'bg-muted': currentPage === 1 }" @click="goToPreviousPage">
+                        :class="{ 'bg-muted': currentPage === 1 }" @click="goToPreviousPage">
                   Anterior
                 </button>
                 <button class="rounded-md border px-3 py-1" :disabled="currentPage >= hasNextPage"
-                  :class="{ 'bg-muted': currentPage >= hasNextPage }" @click="goToNextPage">
+                        :class="{ 'bg-muted': currentPage >= hasNextPage }" @click="goToNextPage">
                   Siguiente
                 </button>
               </div>
@@ -210,7 +213,7 @@
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]">
-              <input type="radio" name="tipoActa" value="ro" v-model="tipoActa" class="sr-only" />
+              <input type="radio" name="tipoActa" value="ro" v-model="tipoActa" class="sr-only"/>
               Acta Ordinaria
             </label>
             <label :class="[
@@ -219,7 +222,7 @@
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]">
-              <input type="radio" name="tipoActa" value="cp" v-model="tipoActa" class="sr-only" />
+              <input type="radio" name="tipoActa" value="cp" v-model="tipoActa" class="sr-only"/>
               Círculo Político
             </label>
           </div>
@@ -227,10 +230,10 @@
 
         <!-- Área de arrastre de archivos -->
         <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
-          :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
-          @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
+             :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
+             @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
           <UploadCloudIcon class="mx-auto h-12 w-12 transition-colors duration-200"
-            :class="isDragging ? 'text-blue-600' : 'text-gray-400'" />
+                           :class="isDragging ? 'text-blue-600' : 'text-gray-400'"/>
           <p class="mt-2 text-sm text-gray-600">
             <span class="font-medium hover:text-gray-700">
               Arrastre archivos aquí
@@ -241,16 +244,16 @@
             </button>
           </p>
           <p class="mt-1 text-xs text-gray-500">DOCX, PDF, hasta 10MB por archivo</p>
-          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect" />
+          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect"/>
         </div>
 
         <!-- Lista de archivos -->
         <div v-if="uploadedFiles.length > 0" class="space-y-3 max-h-32 overflow-y-auto">
           <div v-for="(file, index) in uploadedFiles" :key="index"
-            class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+               class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 rounded flex items-center justify-center">
-                <FileTextIcon class="size-5" />
+                <FileTextIcon class="size-5"/>
               </div>
             </div>
             <div class="flex-1 min-w-0">
@@ -260,7 +263,7 @@
               </div>
             </div>
             <button @click="removeFile(file.name)" class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600">
-              <Trash2Icon class="size-4" />
+              <Trash2Icon class="size-4"/>
             </button>
           </div>
         </div>
@@ -270,7 +273,7 @@
             Cancelar
           </Button>
           <Button @click="handleDrop" :disabled="!uploadedFiles.length || loading"
-            class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
+                  class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
             Cargar archivos
           </Button>
         </DialogFooter>
@@ -286,11 +289,11 @@
           </div>
           <div class="flex justify-end space-x-3">
             <button type="submit"
-              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
               Cancelar
             </button>
             <button class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-              @click="eliminarActa()">
+                    @click="eliminarActa()">
               Aceptar
             </button>
           </div>
@@ -301,11 +304,11 @@
 </template>
 
 <script setup lang="ts">
-import { exportar } from "@/lib/export_cp.ts";
-import { exportarRO } from "@/lib/export_ro.ts";
-import { usePermissions } from "@/utils/auth-client.ts";
-import { actions } from "astro:actions";
-import { navigate } from "astro:transitions/client";
+import {exportar} from "@/lib/export_cp.ts";
+import {exportarRO} from "@/lib/export_ro.ts";
+import {usePermissions} from "@/utils/auth-client.ts";
+import {actions} from "astro:actions";
+import {navigate} from "astro:transitions/client";
 import {
   ArrowDown,
   ArrowUp,
@@ -320,21 +323,40 @@ import {
   Trash2Icon,
   TrashIcon,
   UploadCloudIcon,
+  Loader2
 } from "lucide-vue-next";
-import { computed, ref } from "vue";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "../ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "../ui/dropdown-menu";
-import { Input } from "../ui/input";
-import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
-import { toast } from "vue-sonner";
+import {computed, effect, onMounted, ref, watch} from "vue";
+import {Badge} from "../ui/badge";
+import {Button} from "../ui/button";
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,} from "../ui/dialog";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "../ui/dropdown-menu";
+import {Input} from "../ui/input";
+import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
+import {toast} from "vue-sonner";
 
-const { actas, page } = defineProps<{
+const {actas, page} = defineProps<{
   actas: any;
-  type: string;
+  tyactaspe: string;
   page: number;
 }>();
+// const actas = ref(actasData)
+// const {data} = useEventSource(`${API_URL}/minutes/sse`)
+
+// effect(() => {
+//   data.value;
+//
+//   async function getActas(tipo: string, page: any) {
+//     const {data, error} = await actions.minute.getMinutes({typeMinutes: tipo, page})
+//     console.log(data)
+//     if (error instanceof ActionError) {
+//       throw new Error("Error al cargar las actas")
+//     }
+//     actas.value = data
+//   }
+//
+//   getActas()
+// })
+
 
 const hasPermission = usePermissions()
 
@@ -401,23 +423,23 @@ const filteredActas = computed(() => {
   const [year, month] = selectFecha.value.split('-');
   return actas?.data?.filter((item) => {
     return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
-      (selectedStatus.value && item.status !== selectedStatus.value) ||
-      (selectType.value && item.type !== selectType.value))
+        (selectedStatus.value && item.status !== selectedStatus.value) ||
+        (selectType.value && item.type !== selectType.value))
   })
-    .filter(item => {
-      const date = new Date(item.fecha);
-      return !selectFecha.value || (date.getFullYear() === Number(year) &&
-        (date.getMonth() + 1) === Number(month))
-    })
-    .sort((a, b) => {
-      if (sort.value === "DESC") {
-        return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
-      } else if (sort.value === "ASC") {
-        return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
-      } else {
-        return a.id - b.id;
-      }
-    }) ?? [];
+      .filter(item => {
+        const date = new Date(item.fecha);
+        return !selectFecha.value || (date.getFullYear() === Number(year) &&
+            (date.getMonth() + 1) === Number(month))
+      })
+      .sort((a, b) => {
+        if (sort.value === "DESC") {
+          return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
+        } else if (sort.value === "ASC") {
+          return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
+        } else {
+          return a.id - b.id;
+        }
+      }) ?? [];
 });
 
 const filters = ref({
@@ -428,9 +450,11 @@ const filters = ref({
 
 const getStatusClass = (status) => {
   const classes = {
-    Pendiente: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
-    Procesada: "bg-blue-100 text-blue-800 hover:bg-blue-200",
-    Inactiva: "bg-gray-300 text-gray-800 hover:bg-gray-400",
+    Creada: "bg-blue-100 text-blue-800 hover:bg-blue-200",
+    Procesando: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
+    'En Revisión': "bg-purple-100 text-purple-800 hover:bg-purple-200",
+    Procesada: "bg-green-100 text-green-800 hover:bg-green-200",
+    Validada: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
   };
   return classes[status] || "bg-gray-100 text-gray-800 hover:bg-gray-200";
 };
@@ -469,7 +493,7 @@ async function eliminarActa() {
   const tipo = acta?.type ?? "";
 
   try {
-    await actions.minute.deleteMinute({ id, type: tipo })
+    await actions.minute.deleteMinute({id, type: tipo})
     toast.success("Se eliminó correctamente el acta");
     navigate('/minutes')
   } catch (e) {
@@ -490,9 +514,7 @@ const handleDrop = async () => {
     formData.append("files", f);
   });
   try {
-    // const data = await actions.minute.uploadMinutes.orThrow(formData)
-    const navigationData = new FormData()
-    navigationData.append("data", "datos")
+    await actions.minute.uploadMinutes.orThrow(formData)
     showUploadDialog.value = false;
     uploadedFiles.value = [];
     navigate('/minutes')

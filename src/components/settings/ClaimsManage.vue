@@ -7,7 +7,6 @@
         <div>
           <h4 class="text-lg font-semibold">Matriz de Permisos</h4>
         </div>
-        {{ claims }}
         <div class="flex items-center gap-2">
           <Select v-model="selectRole">
             <SelectTrigger>
@@ -73,28 +72,12 @@
                   class="rounded border-gray-300"
                   :checked="isPermissionChecked(resource, action.id)"
                   @change="
-                    action.id === 'all'
-                      ? (isPermissionChecked(resource, 'all')
-                          ? permissionActions
-                              .filter((a) => a.id !== 'all')
-                              .forEach((a) => {
-                                if (isPermissionChecked(resource, a.id)) {
-                                  togglePermission(resource, a.id);
-                                }
-                              })
-                          : permissionActions
-                              .filter((a) => a.id !== 'all')
-                              .forEach((a) => {
-                                if (!isPermissionChecked(resource, a.id)) {
-                                  togglePermission(resource, a.id);
-                                }
-                              }),
-                        togglePermission(resource, 'all'))
-                      : (togglePermission(resource, action.id),
-                        // Si se desmarca alguno, desmarcar 'all'
-                        isPermissionChecked(resource, 'all') &&
-                          togglePermission(resource, 'all'))
-                  "
+        action.id === 'all'
+          ? toggleAllPermissions(resource, !$event.target.checked ? false : true)
+          : (togglePermission(resource, action.id),
+            // Si se desmarca alguno, desmarcar 'all'
+            isPermissionChecked(resource, 'all') && togglePermission(resource, 'all'))
+      "
               />
             </td>
           </tr>
@@ -122,7 +105,7 @@ import {roleEnum} from "@/enum/roleEnum";
 import type {Claims} from "@/interface/Claims.ts";
 import {actions} from "astro:actions";
 import {AlertCircle} from "lucide-vue-next";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import {toast} from "vue-sonner";
 
 const {claims} = defineProps<{ claims: Claims[]; }>();
@@ -185,7 +168,6 @@ function togglePermission(resource: string, actionId: string) {
       claim.actions.push(actionId as any);
     }
   } else {
-
     editableClaims.value.push({
       id: Date.now(),
       actions: [actionId as any],
@@ -195,9 +177,30 @@ function togglePermission(resource: string, actionId: string) {
   }
 }
 
+// Nueva función para marcar/desmarcar todos los permisos de una fila
+function toggleAllPermissions(resource: string, checked: boolean) {
+  permissionActions.forEach((action) => {
+    if (action.id !== 'all') {
+      const isChecked = isPermissionChecked(resource, action.id);
+      if (checked && !isChecked) {
+        togglePermission(resource, action.id);
+      } else if (!checked && isChecked) {
+        togglePermission(resource, action.id);
+      }
+    }
+  });
+  // Finalmente, marca/desmarca el propio 'all'
+  const isAllChecked = isPermissionChecked(resource, 'all');
+  if (checked && !isAllChecked) {
+    togglePermission(resource, 'all');
+  } else if (!checked && isAllChecked) {
+    togglePermission(resource, 'all');
+  }
+}
+
 // Saber si el permiso está activo para el recurso y acción (usando editableClaims)
 function isPermissionChecked(resource: string, actionId: string) {
-  return editableClaims.value.some(
+  return editableClaims.value?.some(
       (perm) =>
           perm.role.name === selectRole.value &&
           perm.module === resource &&

@@ -144,7 +144,7 @@ ChartJS.register(
   Filler,
 );
 const isFilterVisible = ref(true);
-const selectedIndicator = ref("pto");
+const selectedIndicator = ref("ptos");
 const current_year = new Date().getFullYear();
 const selectedYear = ref(2025);
 const selectedPeriod = ref("1");
@@ -159,7 +159,7 @@ const chartData = ref<ChartData<"line">>({ labels: [], datasets: [] });
 
 const indicators = [
   {
-    key: "pto",
+    key: "ptos",
     name: "Orden del Día",
     description: "Puntos del orden del día",
   },
@@ -339,6 +339,7 @@ const fetchData = async () => {
   const service = new StatusService();
   try {
     const { data: indData } = await service.getYear(selectedYear.value);
+    console.log(indData)
     const yearData = indData[selectedIndicator.value];
 
     const semesterData =

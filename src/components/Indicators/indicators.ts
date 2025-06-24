@@ -1,6 +1,6 @@
 export const categories = {
     "Asistencia": ["asistencia", "reason", "analisisAusenciasRO", "invitados", "participacionOrgSup"],
-    "Gestión": ["pto", "implOrtcsOrgSup", "politicaDeCuadros", "sanciones",
+    "Gestión": ["ptos", "implOrtcsOrgSup", "politicaDeCuadros", "sanciones",
         "planDeTrabajo", "reglamentosEstatutos"],
     "Acuerdos": ["totalDeAcuerdos",  "acuerdosSalidasExternas"],
     "Política": [
@@ -40,7 +40,7 @@ export const indicators = [
         description: "Estado de Causas de Ausencias",
     },
     {
-        key: "pto",
+        key: "ptos",
         category: "",
         name: "Orden del Día",
         description: "Puntos del orden del día",

@@ -2,6 +2,19 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "zod";
 import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
+import MinutesService from "@/services/Minutes.ts";
+
+export const getMinutes = defineAction({
+  input: z.object({
+    page: z.number().optional(),
+    type: z.string().optional(),
+  }),
+  async handler({ page, type }, ctx) {
+    const session = await getSession(ctx.request);
+    const service = new MinutesService();
+    return service.getAllMinutes(type, page, session);
+  },
+});
 
 export const uploadMinutes = defineAction({
   accept: "form",
@@ -15,21 +28,24 @@ export const uploadMinutes = defineAction({
 
     const formData = new FormData();
     files.forEach((f) => {
-      formData.append("files", f)
+      formData.append("files", f);
     });
-    const res = await fetch(`http://localhost:5000/minutes/upload?type=${type}`, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `${session.jwt}`,
+    const res = await fetch(
+      `http://localhost:5000/minutes/upload/spacy?type=${type}`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${session.jwt}`,
+        },
       },
-    });
-    console.log(res);
-
+    );
+    const data = await res.json();
     if (!res.ok) {
+      console.error(data);
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-    return res.json();
+    return data;
   },
 });
 

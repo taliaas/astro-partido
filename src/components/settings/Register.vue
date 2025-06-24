@@ -14,23 +14,23 @@
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
-              <tr class="border-b">
-                <th class="text-left py-3 px-4 font-medium text-gray-900">
+              <tr class="border-b text-lg">
+                <th class="text-left py-3 px-4 font-bold text-gray-900">
                   Módulo
                 </th>
-                <th class="text-left py-3 px-4 font-medium text-gray-900">
+                <th class="text-left py-3 px-4 font-bold text-gray-900">
                   Acción
                 </th>
-                <th class="text-left py-3 px-4 font-medium text-gray-900">
+                <th class="text-left py-3 px-4 font-bold text-gray-900">
                   Usuario
                 </th>
-                <th class="text-left py-3 px-4 font-medium text-gray-900">
+                <th class="text-left py-3 px-4 font-bold text-gray-900">
                   Fecha
                 </th>
-                <th class="text-left py-3 px-4 font-medium text-gray-900">
+                <th class="text-left py-3 px-4 font-bold text-gray-900">
                   Hora
                 </th>
-                <th class="text-left py-3 px-4 font-medium text-gray-900 w-24">
+                <th class="text-center py-3 px-4 font-bold text-gray-900 w-24">
                   Detalles
                 </th>
               </tr>
@@ -39,7 +39,7 @@
               <tr
                 v-for="traza in trazas.logs"
                 :key="traza.id"
-                class="border-b hover:bg-gray-50 cursor-pointer transition-colors"
+                class="border-b"
               >
                 <td class="py-3 px-4 font-medium text-gray-900">
                   {{ traza.module }}

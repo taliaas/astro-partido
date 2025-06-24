@@ -2,12 +2,13 @@ import type {Indicadores} from "@/interface/Indicadores.ts";
 import { API_URL } from "astro:env/client";
 
 export default class ComputoService {
-    async getAll() {
+    async getAll(token?: string) {
         try {
             const response = await fetch(`${API_URL}/computo`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
             });
             if (!response.ok) {
