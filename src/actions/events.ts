@@ -23,10 +23,13 @@ export const createEvent = defineAction({
         "Content-Type": "application/json",
       },
     });
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
+    const data = await res.json()
+    console.log("Data: ",data)
+    if (res.status === 401) {
+      throw new ActionError({ code: "UNAUTHORIZED" });
     }
-    return res.json();
+    
+    return data;
   },
 });
 

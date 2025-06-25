@@ -5,5 +5,5 @@ export interface Claims{
     id: number,
     actions:  ('create' | 'update' | 'delete' | 'read' | 'export')[],
     module: string,
-    role: roleEnum
+    role: { name: roleEnum }
 }

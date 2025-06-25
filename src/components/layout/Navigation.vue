@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { usePermissions } from "@/utils/auth-client";
+import { computed } from "vue";
 
 const { path } = defineProps<{
   path: string;
@@ -7,7 +8,7 @@ const { path } = defineProps<{
 
 const hasPermissions = usePermissions();
 
-const navigationItems = [
+const navigationItems = computed(() => [
   {
     name: "Funcionamiento",
     href: "/minutes",
@@ -28,7 +29,7 @@ const navigationItems = [
     href: "/estadofunc",
     hasPermission: hasPermissions("Reportes", "read"),
   },
-];
+]);
 </script>
 
 <template>

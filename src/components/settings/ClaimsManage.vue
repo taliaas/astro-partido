@@ -2,7 +2,7 @@
   <div class="rounded-lg border bg-card shadow-sm">
     <div class="p-6">
       <div
-          class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4"
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4"
       >
         <div>
           <h4 class="text-lg font-semibold">Matriz de Permisos</h4>
@@ -10,24 +10,21 @@
         <div class="flex items-center gap-2">
           <Select v-model="selectRole">
             <SelectTrigger>
-              <SelectValue class="min-w-48"/>
+              <SelectValue class="min-w-48" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem
-                    v-for="role in roles"
-                    :key="role"
-                    :value="role"
-                >{{ role }}
+                <SelectItem v-for="role in roles" :key="role" :value="role"
+                  >{{ role }}
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
           <Button
-              @click="saveClaims"
-              :disabled="!hasChanges || saving"
-              :loading="saving"
-              class="min-w-30"
+            @click="saveClaims"
+            :disabled="!hasChanges || saving"
+            :loading="saving"
+            class="min-w-30"
           >
             Guardar
           </Button>
@@ -37,61 +34,55 @@
       <div class="rounded-md border overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-          <tr class="border-b bg-muted/50">
-            <th class="h-10 w-[200px] px-4 py-4 text-left font-medium">
-              Recurso
-            </th>
-            <th
+            <tr class="border-b bg-muted/50">
+              <th class="h-10 w-[200px] px-4 py-4 text-left font-medium">
+                Recurso
+              </th>
+              <th
                 v-for="action in permissionActions"
                 :key="action.id"
                 class="h-10 px-2 text-center font-medium"
-            >
-              {{ action.name }}
-            </th>
-          </tr>
+              >
+                {{ action.name }}
+              </th>
+            </tr>
           </thead>
           <tbody>
-          <tr
+            <tr
               v-for="resource in permissionResources"
               :key="resource"
               class="border-b transition-colors hover:bg-muted/50"
-          >
-            <td class="px-4">
-              <div class="flex items-center gap-2">
-                <span class="font-medium">{{ resource }}</span>
-              </div>
-            </td>
-            <td
+            >
+              <td class="px-4">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium">{{ resource }}</span>
+                </div>
+              </td>
+              <td
                 v-for="action in permissionActions"
                 :key="action.id"
                 class="p-4 text-center"
-            >
-              <input
+              >
+                <input
                   type="checkbox"
                   :id="`${resource}-${action.id}`"
                   class="rounded border-gray-300"
                   :checked="isPermissionChecked(resource, action.id)"
-                  @change="
-        action.id === 'all'
-          ? toggleAllPermissions(resource, !$event.target.checked ? false : true)
-          : (togglePermission(resource, action.id),
-            // Si se desmarca alguno, desmarcar 'all'
-            isPermissionChecked(resource, 'all') && togglePermission(resource, 'all'))
-      "
-              />
-            </td>
-          </tr>
+                  @change="togglePermission(resource, action.id)"
+                />
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
 
       <div class="flex items-center justify-between mt-4">
-        <div class="text-xs text-muted-foreground flex items-center gap-1">
-          <AlertCircle class="w-4 h-4 bg-secondary"/>
+        <div class="text-md text-muted-foreground flex items-center gap-1">
+          <AlertCircle class="w-4 h-4 bg-secondary" />
           Editando permisos para:
           <span class="font-medium">{{
-              roles.find((r) => r === selectRole)
-            }}</span>
+            roles.find((r) => r === selectRole)
+          }}</span>
         </div>
       </div>
     </div>
@@ -99,16 +90,23 @@
 </template>
 
 <script setup lang="ts">
-import {Button} from "@/components/ui/button";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
-import {roleEnum} from "@/enum/roleEnum";
-import type {Claims} from "@/interface/Claims.ts";
-import {actions} from "astro:actions";
-import {AlertCircle} from "lucide-vue-next";
-import {computed, ref, watch} from "vue";
-import {toast} from "vue-sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { roleEnum } from "@/enum/roleEnum";
+import type { Claims } from "@/interface/Claims.ts";
+import { actions } from "astro:actions";
+import { AlertCircle } from "lucide-vue-next";
+import { computed, ref, watch } from "vue";
+import { toast } from "vue-sonner";
 
-const {claims} = defineProps<{ claims: Claims[]; }>();
+const { claims } = defineProps<{ claims: Claims[] }>();
 
 const roles: roleEnum[] = [
   roleEnum.Admin,
@@ -116,18 +114,17 @@ const roles: roleEnum[] = [
   roleEnum.Func,
   roleEnum.Gnral,
   roleEnum.Ideologico,
-  roleEnum.mtte
-]
+  roleEnum.mtte,
+];
 const selectRole = ref(roles[0]);
 
 // Definir las acciones posibles
 const permissionActions = [
-  {id: "create", name: "Crear"},
-  {id: "update", name: "Editar"},
-  {id: "delete", name: "Eliminar"},
-  {id: "read", name: "Ver"},
-  {id: "export", name: "Exportar"},
-  {id: "all", name: "Todo"},
+  { id: "create", name: "Crear" },
+  { id: "update", name: "Editar" },
+  { id: "delete", name: "Eliminar" },
+  { id: "read", name: "Ver" },
+  { id: "export", name: "Exportar" },
 ];
 
 // Obtener los módulos únicos de los claims
@@ -153,7 +150,7 @@ const hasChanges = computed(() => {
 // Actualizar el estado de un permiso (check/uncheck)
 function togglePermission(resource: string, actionId: string) {
   const claimIdx = editableClaims.value.findIndex(
-      (c) => c.role.name === selectRole.value && c.module === resource
+    (c) => c.role.name === selectRole.value && c.module === resource
   );
   if (claimIdx !== -1) {
     // Si existe el claim para ese módulo y rol
@@ -172,51 +169,32 @@ function togglePermission(resource: string, actionId: string) {
       id: Date.now(),
       actions: [actionId as any],
       module: resource,
-      role: selectRole.value,
+      role: {name: selectRole.value},
     });
-  }
-}
-
-// Nueva función para marcar/desmarcar todos los permisos de una fila
-function toggleAllPermissions(resource: string, checked: boolean) {
-  permissionActions.forEach((action) => {
-    if (action.id !== 'all') {
-      const isChecked = isPermissionChecked(resource, action.id);
-      if (checked && !isChecked) {
-        togglePermission(resource, action.id);
-      } else if (!checked && isChecked) {
-        togglePermission(resource, action.id);
-      }
-    }
-  });
-  // Finalmente, marca/desmarca el propio 'all'
-  const isAllChecked = isPermissionChecked(resource, 'all');
-  if (checked && !isAllChecked) {
-    togglePermission(resource, 'all');
-  } else if (!checked && isAllChecked) {
-    togglePermission(resource, 'all');
   }
 }
 
 // Saber si el permiso está activo para el recurso y acción (usando editableClaims)
 function isPermissionChecked(resource: string, actionId: string) {
   return editableClaims.value?.some(
-      (perm) =>
-          perm.role.name === selectRole.value &&
-          perm.module === resource &&
-          perm.actions.includes(actionId as any)
+    (perm) =>
+      perm.role.name === selectRole.value &&
+      perm.module === resource &&
+      perm.actions.includes(actionId as any)
   );
 }
+
+// Fuerza el estado de un permiso (check/uncheck) según el valor de 'checked'
 
 // Guardar cambios (ejemplo: emitir evento o llamar API)
 async function saveClaims() {
   saving.value = true;
-  console.log(editableClaims.value)
+  
   try {
     // Para cada rol, agrupar sus claims y preparar el objeto para guardar
     const rolesToSave = roles.map((role) => {
       const claimsToSave = editableClaims.value.filter(
-          (c) => c.role.name === role
+        (c) => c.role.name === role
       );
       const grouped = permissionResources.map((resource) => {
         const claim = claimsToSave.find((c) => c.module === resource);
@@ -227,13 +205,13 @@ async function saveClaims() {
       });
       return {
         name: role,
-        data: {claims: grouped},
+        data: { claims: grouped },
       };
     });
 
     // Llamar a la acción para cada rol
     await Promise.all(
-        rolesToSave.map((roleData) => actions.role.updateRole(roleData))
+      rolesToSave.map((roleData) => actions.role.updateRole(roleData))
     );
     toast.success("Permisos actualizados con éxito");
     originalClaims.value = JSON.stringify(editableClaims.value);
@@ -244,13 +222,4 @@ async function saveClaims() {
     saving.value = false;
   }
 }
-
-watch(selectRole, (newRole) => {
-  //router.replace({ query: { ...router.currentRoute.value.query, role: newRole } });
-  navigate({
-    name: "/settings/permissions",
-    query: { role: newRole },
-  });
-});
-
 </script>
