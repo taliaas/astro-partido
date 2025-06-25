@@ -214,11 +214,10 @@ const formState = form.meta;
 const handleSubmit = form.handleSubmit(async (data: RegisterData) => {
   isLoading.value = true;
   try {
-    console.log(data);
-    await actions.auth.register(data);
+    await actions.auth.register.orThrow(data);
+    toast.success("Usuario registrado con éxito")
     await signIn("credentials", data as any);
     await navigate("/home");
-    setTimeout(() => toast.success("Usuario registrado con éxito"), 1000);
     localStorage.removeItem("register-form");
   } catch (error) {
     console.error("Registration error:", error);

@@ -46,28 +46,10 @@
           </FormField>
         </div>
 
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <FormField v-slot="{ value, handleChange }" name="rememberMe">
-              <FormItem>
-                <div class="flex items-center gap-2">
-                  <FormControl>
-                    <Checkbox
-                      :value
-                      name="rememberMe"
-                      class="h-4 w-4 text-md text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                  <FormLabel> Recuérdame </FormLabel>
-                </div>
-              </FormItem>
-            </FormField>
-          </div>
-
+        <div class="flex items-center">
           <div class="text-sm">
             <a
-              href="/password"
+              href="/recover_password"
               class="font-medium text-md text-blue-600 hover:text-blue-500"
             >
               ¿Olvidaste tu contraseña?
@@ -87,7 +69,6 @@
 
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,

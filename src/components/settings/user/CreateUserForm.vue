@@ -48,15 +48,6 @@ const roleEnum = [
   "Militante",
 ];
 
-const passwordSchema = user
-  ? z
-      .string()
-      .min(8, { message: "La contraseña debe tener al menos 8 caracteres." })
-      .or(z.string().length(0))
-  : z
-      .string()
-      .min(8, { message: "La contraseña debe tener al menos 8 caracteres." });
-
 type UserData = z.infer<typeof userSchema>;
 const userSchema = z.object({
   name: z
@@ -64,7 +55,7 @@ const userSchema = z.object({
     .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
     .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
   email: z.string().email({ message: "Ingresa un correo electrónico válido." }),
-  password: passwordSchema,
+  //password: passwordSchema,
   role: z.string({ message: "El Rol es requerido" }),
 });
 
@@ -72,7 +63,6 @@ const form = useForm<UserData>({
   initialValues: {
     name: user?.name ?? "",
     email: user?.email ?? "",
-    password: "",
     role: user?.role.name ?? "",
   },
   validationSchema: toTypedSchema(userSchema),
@@ -80,13 +70,24 @@ const form = useForm<UserData>({
 
 const handleSubmit = form.handleSubmit(async (data: UserData) => {
   onLoadingChange(true);
-  const { error } = await actions.auth.register(data);
-  if (error instanceof ActionError) {
-    toast.error(error.message);
+  if (user) {
+    const { error } = await actions.user.updateUser({ ...data, id: user.id });
+    if (error instanceof ActionError) {
+      toast.error("Hubo un error al intentar actualizar el usuario");
+    } else {
+      await navigate("");
+      setTimeout(() => toast.success("Usuario actualizado exitosamente"), 1000);
+    }
   } else {
-    await navigate("");
-    setTimeout(() => toast.success("Usuario creado exitosamente"), 1000);
+    const { error } = await actions.auth.register(data);
+    if (error instanceof ActionError) {
+      toast.error("Hubo un error al intentar crear el usuario");
+    } else {
+      await navigate("");
+      setTimeout(() => toast.success("Usuario creado exitosamente"), 1000);
+    }
   }
+
   onLoadingChange(false);
 });
 </script>
@@ -115,20 +116,6 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
             type="email"
             class="col-span-2"
             placeholder="correo@ejemplo.com"
-            :="componentField"
-          />
-        </FormControl>
-        <FormMessage class="col-start-2 col-span-2" />
-      </FormItem>
-    </FormField>
-    <FormField name="password" v-slot="{ componentField }">
-      <FormItem class="grid-cols-3">
-        <FormLabel class="col-span-1"> Contraseña:</FormLabel>
-        <FormControl>
-          <Input
-            type="password"
-            class="col-span-2"
-            placeholder="********"
             :="componentField"
           />
         </FormControl>

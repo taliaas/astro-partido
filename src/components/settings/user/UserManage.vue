@@ -205,7 +205,6 @@ const hasNextPage = ref(users.total);
 const currentPage = ref(page);
 const searchQuery = ref("");
 const selectedUser = ref<User | null>(null);
-const showSesionModal = ref(false);
 const selectCore = ref("");
 const createUser = ref(false);
 const loading = ref(false);

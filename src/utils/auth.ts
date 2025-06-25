@@ -7,6 +7,7 @@ export const modules = [
   "Militantes",
   "Núcleos",
   "Procesos",
+  "Eventos"
 ] as const;
 export type Module = (typeof modules)[number];
 

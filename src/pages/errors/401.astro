@@ -1,0 +1,80 @@
+---
+import { Shield, ArrowLeft, Mail, LogIn, Home } from "lucide-vue-next";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import RootLayout from "../../layouts/RootLayout.astro";
+---
+
+<RootLayout>
+  <div
+    class="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4"
+  >
+    <div class="w-full max-w-2xl">
+      <Card class="border-0 shadow-2xl">
+        <CardContent class="p-8 md:p-12">
+          <div class="text-center space-y-6">
+            <!-- Error Icon -->
+            <div
+              class="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center"
+            >
+              <Shield class="w-12 h-12 text-red-600" />
+            </div>
+
+            <!-- Error Code -->
+            <div class="space-y-2">
+              <h1 class="text-6xl md:text-7xl font-bold text-red-600">401</h1>
+              <h2 class="text-2xl md:text-3xl font-bold text-gray-900">
+                Acceso no autorizado
+              </h2>
+            </div>
+
+            <!-- Error Message -->
+            <p class="text-gray-600 text-lg leading-relaxed max-w-md mx-auto">
+              No tienes permisos para acceder a esta página. Por favor, inicia
+              sesión con una cuenta autorizada o contacta al administrador.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 justify-center pt-6">
+              <a href="/auth/login">
+                <Button
+                  class="flex items-center gap-2 bg-red-600 hover:bg-red-700"
+                >
+                  <LogIn class="size-4" />
+                  Iniciar sesión
+                </Button>
+              </a>
+              <a href="/">
+                <Button variant="outline" class="flex items-center gap-2">
+                  <Home class="size-4" />
+                  Ir al inicio
+                </Button>
+              </a>
+            </div>
+
+            <!-- Contact Support -->
+            <div class="pt-6 border-t border-gray-200">
+              <p class="text-sm text-gray-500 mb-3">
+                ¿Necesitas ayuda? Contacta a nuestro equipo de soporte
+              </p>
+              <Button
+                variant="ghost"
+                class="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+              >
+                <Mail class="size-4" />
+                Contactar soporte
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Additional Info -->
+      <div class="mt-8 text-center">
+        <p class="text-sm text-gray-500">
+          Código de error: 401 - Unauthorized Access
+        </p>
+      </div>
+    </div>
+  </div>
+</RootLayout>

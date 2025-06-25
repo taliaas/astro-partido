@@ -1,5 +1,23 @@
 <template>
   <div class="container mx-auto py-8 px-6 border bg-white rounded-md shadow-xl">
+    <div class="flex justify-between py-4">
+      <h2 class="font-bold text-2xl">Militantes</h2>
+      <div class="flex justify-end gap-2">
+        <button
+        @click="openAddMemberModal"
+        class="inline-flex items-center justify-center bg-button rounded-md text-white px-4 py-2"
+      >
+        Añadir
+      </button>
+      <button
+        @click="downloadMili"
+        class="flex items-center gap-2 border px-4 py-2 rounded-md hover:bg-secondary"
+      >
+      <DownloadIcon class="w-4 h-4" />
+        Exportar
+      </button>
+      </div>
+    </div>
     <!-- Sheet_container and Add -->
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"
@@ -24,12 +42,6 @@
           {{ nucleo.name }}
         </option>
       </select>
-      <button
-        @click="openAddMemberModal"
-        class="inline-flex items-center justify-center bg-button rounded-md text-white h-10 px-4 py-2"
-      >
-        Añadir
-      </button>
     </div>
 
     <!-- Members Table -->
@@ -358,7 +370,7 @@
               type="submit"
               class="inline-flex items-center justify-center rounded-md text-md font-medium disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-2 py-2"
             >
-              {{ isEditing ? "Actualizar" : "Añadir militante" }}
+              {{ isEditing ? "Actualizar" : "Añadir" }}
             </button>
           </div>
         </form>
@@ -412,7 +424,7 @@
               </div>
               <div>
                 <label class="text-sm font-medium text-muted-foreground"
-                  >Cédula de Identidad</label
+                  >Carnet de Identidad</label
                 >
                 <p class="text-lg">{{ selectedMilitante.ci }}</p>
               </div>
@@ -603,12 +615,18 @@
           </div>
         </div>
 
-        <div class="p-6 border-t flex justify-end">
+        <div class="p-6 border-t flex justify-end gap-2">
           <button
             @click="closeModal"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium border px-4 py-2"
           >
             Cerrar
+          </button>
+          <button
+            @click="exportDetails"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+          >
+            Exportar
           </button>
         </div>
       </div>
@@ -627,6 +645,7 @@ import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
   CheckIcon,
+  DownloadIcon,
   Eye,
   MoreVerticalIcon,
   Pencil,
@@ -634,6 +653,8 @@ import {
 } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 // UI state
 const searchQuery = ref("");
@@ -708,6 +729,121 @@ const openAddMemberModal = () => {
   showMemberModal.value = true;
 };
 
+async function exportDetails() {
+  if (!selectedMilitante.value) {
+    toast.error("No hay militante seleccionado");
+    return;
+  }
+  const m = selectedMilitante.value;
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text("Detalles del Militante", 14, 16);
+
+  // Información Personal
+  doc.setFontSize(12);
+  doc.text("Información Personal", 14, 26);
+  doc.setFontSize(10);
+  doc.text(`Nombre: ${m.firstname || ''} ${m.lastname || ''}`, 14, 34);
+  doc.text(`Carnet de Identidad: ${m.ci || ''}`, 14, 40);
+  doc.text(`Estado: ${m.estado ? 'Activo' : 'Inactivo'}`, 14, 46);
+
+  // Información de Contacto
+  doc.setFontSize(12);
+  doc.text("Información de Contacto", 14, 56);
+  doc.setFontSize(10);
+  doc.text(`Email: ${m.email || ''}`, 14, 64);
+  doc.text(`Teléfono: ${m.phone || ''}`, 14, 70);
+  doc.text(`Dirección: ${m.address || ''}`, 14, 76);
+
+  // Información Organizacional
+  doc.setFontSize(12);
+  doc.text("Información Organizacional", 14, 86);
+  doc.setFontSize(10);
+  doc.text(`Organización: ${m.organization || ''}`, 14, 94);
+  doc.text(`Núcleo: ${m.core?.name || ''}`, 14, 100);
+
+  
+  let y = 110;
+  // Traslados
+  doc.setFontSize(12);
+  doc.text("Historial de Traslados", 14, y);
+  y += 6;
+  doc.setFontSize(10);
+  if (Array.isArray(m.traslados) && m.traslados.length > 0) {
+    m.traslados.forEach((t: any, idx: number) => {
+      doc.text(
+        `${idx + 1}. ${t.origen || ''} → ${t.destino || ''} | Fecha: ${t.fecha ? format(t.fecha, 'yyyy-MM-dd') : ''} | Estado: ${t.estado || ''} | Motivo: ${t.details || ''}`,
+        14,
+        y
+      );
+      y += 6;
+      if (y > 270) { doc.addPage(); y = 20; }
+    });
+  } else {
+    doc.text("No hay traslados registrados", 14, y);
+    y += 6;
+  }
+
+  // Sanciones
+  y += 6;
+  doc.setFontSize(12);
+  doc.text("Historial de Sanciones", 14, y);
+  y += 6;
+  doc.setFontSize(10);
+  if (Array.isArray(m.sanciones) && m.sanciones.length > 0) {
+    m.sanciones.forEach((s: any, idx: number) => {
+      doc.text(
+        `${idx + 1}. Causa: ${s.causa || ''} | Fecha: ${s.fecha ? format(s.fecha, 'yyyy-MM-dd') : ''} | Severidad: ${s.severidad || ''} | Estado: ${s.estado || ''} | Descripción: ${s.details || ''}`,
+        14,
+        y
+      );
+      y += 6;
+      if (y > 270) { doc.addPage(); y = 20; }
+    });
+  } else {
+    doc.text("No hay sanciones registradas", 14, y);
+    y += 6;
+  }
+
+  doc.save(`militante_${m.firstname || ''}_${m.lastname || ''}.pdf`);
+  toast.success("Detalles exportados correctamente");
+}
+
+async function downloadMili() {
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text("Listado de Militantes", 14, 16);
+
+  const rows = filteredMembers.value.map((member) => [
+    `${member.firstname} ${member.lastname}`,
+    member.email,
+    member.core?.name || '',
+    member.organization,
+    member.estado ? "Activo" : "Inactivo",
+    member.phone || '',
+    member.address || ''
+  ]);
+
+  autoTable(doc, {
+    head: [[
+      "Nombre",
+      "Correo",
+      "Núcleo",
+      "Organización",
+      "Estado",
+      "Teléfono",
+      "Dirección"
+    ]],
+    body: rows,
+    startY: 22,
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [41, 128, 185] },
+  });
+
+  doc.save("militantes.pdf");
+  toast.success("Militantes exportados correctamente");
+}
+
 const openEditMemberModal = (member: any) => {
   isEditing.value = true;
   currentMember.value = member;
@@ -764,10 +900,10 @@ const saveMember = async () => {
   try {
     if (isEditing.value) {
       await actions.militants.updateMember(currentMember.value as any);
-      toast.success("Sanción actualizada correctamente");
+      toast.success("Militante actualizado correctamente");
     } else {
       await actions.militants.createMember(currentMember.value as any);
-      toast.success("Sanción actualizada correctamente");
+      toast.success("Militante creado correctamente");
     }
     closeMemberModal();
     navigate("");

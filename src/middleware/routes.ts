@@ -8,6 +8,9 @@ const bypassProtection = [
   "/",
   "/help",
   "/condition",
+  "/errors/401",
+  "/errors/403"
+
 ];
 
 const authRoutes = ["/login", "/register"];

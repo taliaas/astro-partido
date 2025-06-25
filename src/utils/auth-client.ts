@@ -15,3 +15,14 @@ export function usePermissions() {
         return hasPermissions(module, action, user.value.role?.claims ?? []);
     };
 }
+
+export function useSession(){
+    const session = ref(null)
+    onBeforeMount(async () => {
+        const { data, error } = await actions.auth.me();
+        if (!error && data) {
+            session.value = data;
+        }
+    })
+    return session
+}

@@ -50,15 +50,16 @@ export const updateComite = defineAction({
 })
 
 export const deleteComite = defineAction({
-    input: z.number(),
+    input: z.coerce.number(),
     async handler(id, context) {
+        console.log(id)
         const session: any = await getSession(context.request);
         if (!session) throw new ActionError({code: "UNAUTHORIZED"});
-        const res = await fetch(`${API_URL}/comite/${id}`, {
-            method: "DELETE",
+        const res = await fetch(`${API_URL}/comite/status/${id}`, {
+            method: "PATCH",
             headers: {
-                Authorization: `Bearer ${session?.jwt}`,
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.jwt}`,
             },
         });
         if (!res.ok) {

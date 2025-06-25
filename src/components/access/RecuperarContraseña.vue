@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white rounded shadow-lg p-8">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
       <div class="text-center space-y-2 mb-8">
         <h1 class="text-2xl font-semibold text-gray-900">¿Olvidaste tu contraseña?</h1>
         <p class="text-gray-600 text-sm">
@@ -29,37 +29,29 @@
           </a>
         </div>
       </form>
-
-      <div v-if="message" class="mt-4 p-4 rounded-md"
-        :class="[success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700']">
-        {{ message }}
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { actions } from "astro:actions";
 import { ref } from "vue";
+import { toast } from "vue-sonner";
 
 const email = ref("");
 const isLoading = ref(false);
-const message = ref("");
 const success = ref(false);
 
 const handleSubmit = async () => {
   isLoading.value = true;
-  message.value = "";
-
   try {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
+    await actions.auth.recoverPassword({ email: email.value });
     success.value = true;
-    message.value = "Se han enviado las instrucciones a tu correo electrónico";
+    toast.success("Se han enviado las instrucciones a tu correo electrónico");
     email.value = "";
   } catch (error) {
     success.value = false;
-    message.value = "Ha ocurrido un error. Por favor intenta nuevamente";
+    toast.error("Ha ocurrido un error. Por favor intenta nuevamente");
   } finally {
     isLoading.value = false;
   }

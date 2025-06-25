@@ -3,7 +3,7 @@
     <!-- Calendar and Events Section -->
     <div class="space-y-4">
       <!-- Calendar Select -->
-      <Collapsible default-open>
+      <Collapsible default-open >
         <CollapsibleTrigger
           class="flex items-center w-full justify-between text-lg font-medium"
         >
@@ -20,7 +20,7 @@
       </Collapsible>
 
       <!-- Add Event Form -->
-      <Collapsible default-open>
+      <Collapsible default-open v-if="hasPermission('Eventos', 'create')">
         <CollapsibleTrigger
           class="flex items-center w-full justify-between text-lg font-medium"
         >
@@ -58,23 +58,22 @@
             class="w-full bg-blue-600 text-white rounded"
             >Añadir
           </Button>
-
-          <!-- No Events Message -->
-          <div v-if="pendingTasks.length === 0">
-            <p class="text-md text-gray-500">
-              No hay tareas o eventos para este día.
-            </p>
-          </div>
-
-          <div v-else class="border-t">
-            <h2 class="font-medium text-lg mt-2">Eventos</h2>
-            <div v-for="ev in pendingTasks" :key="ev.id" class="flex pt-2">
-              <p class="text-button px-4 font-medium">{{ ev.type }}</p>
-              <h3>{{ ev.title }}</h3>
-            </div>
-          </div>
         </CollapsibleContent>
       </Collapsible>
+      <!-- No Events Message -->
+      <div v-if="pendingTasks.length === 0">
+        <p class="text-md text-gray-500">
+          No hay tareas o eventos para este día.
+        </p>
+      </div>
+
+      <div v-else class="border-t">
+        <h2 class="font-medium text-lg mt-2">Eventos</h2>
+        <div v-for="ev in pendingTasks" :key="ev.id" class="flex pt-2">
+          <p class="text-button px-4 font-medium">{{ ev.type }}</p>
+          <h3>{{ ev.title }}</h3>
+        </div>
+      </div>
     </div>
 
     <div
@@ -112,6 +111,9 @@ import SelectTrigger from "../ui/select/SelectTrigger.vue";
 import SelectValue from "../ui/select/SelectValue.vue";
 import { toast } from "vue-sonner";
 import { ActionError } from "astro:actions";
+import { usePermissions } from "@/utils/auth-client";
+
+const hasPermission = usePermissions();
 
 const notification = reactive({
   show: false,

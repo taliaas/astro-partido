@@ -51,7 +51,7 @@
                     </div>
                   </td>
                   <td class="p-4 text-center">
-                    <Badge variant="outline">{{ comite.core?.length }}</Badge>
+                    <Badge variant="outline">{{ getNucleosByComite(comite.id).length }}</Badge>
                   </td>
                   <td class="p-4">
                     <div class="relative">
@@ -91,7 +91,7 @@
                           <div class="border-t my-1"></div>
                           <a
                             href="#"
-                            class="block px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
+                            class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
                             @click.prevent="handleDeleteComite(comite.id)"
                           >
                             <Trash2Icon class="h-4 w-4" />
@@ -109,7 +109,7 @@
                   class="bg-muted/10"
                 >
                   <td colspan="3" class="p-0">
-                    <div class="px-10 py-2 border-t">
+                    <div class="px-6 py-2 border-t">
                       <div
                         v-if="getNucleosByComite(comite.id).length === 0"
                         class="py-4 text-center text-muted-foreground"
@@ -126,7 +126,7 @@
 
                       <template v-else>
                         <div
-                          class="grid grid-cols-12 p-2 font-bold text-sm text-muted-foreground"
+                          class="grid grid-cols-12 p-2 text-sm font-bold text-muted-foreground"
                         >
                           <div class="col-span-3">Nombre</div>
                           <div class="col-span-3">Secretario General</div>
@@ -140,15 +140,15 @@
                         <div
                           v-for="nucleo in getNucleosByComite(comite.id)"
                           :key="nucleo.id"
-                          class="grid grid-cols-12 p-2 items-center border-t border-muted/30 hover:bg-muted/20"
+                          class="grid grid-cols-12 p-2 text-sm items-center border-t border-muted/30 hover:bg-muted/20"
                         >
                           <div class="col-span-3 flex items-center">
                             {{ nucleo.name }}
                           </div>
-                          <div class="col-span-3 text-sm">
+                          <div class="col-span-3">
                             {{ nucleo.secretarioGeneral }}
                           </div>
-                          <div class="col-span-3 text-sm">
+                          <div class="col-span-3">
                             {{ nucleo.secretarioFuncionamiento }}
                           </div>
                           <div class="col-span-2 text-center">
@@ -173,8 +173,7 @@
                               </div>
                               <div class="py-1">
                                 <a
-                                  href="#"
-                                  class="block px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
+                                  class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
                                   @click.prevent="handleEditNucleo(nucleo)"
                                 >
                                   <EditIcon class="h-4 w-4" />
@@ -183,7 +182,7 @@
                                 <div class="border-t my-1"></div>
                                 <a
                                   href="#"
-                                  class="block px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
+                                  class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
                                   @click.prevent="handleDeleteNucleo(nucleo.id)"
                                 >
                                   <Trash2Icon class="h-4 w-4" />
@@ -451,12 +450,6 @@ const getNucleosByComite = (comiteId: string) => {
   return cores.filter((nucleo) => nucleo.comite?.id === comiteId);
 };
 
-// Obtener nombre del comité por ID
-const getComiteNombre = (comiteId: string) => {
-  const comite = comites.value.find((c) => c.id === comiteId);
-  return comite ? comite.name : "Sin comité";
-};
-
 // Funciones para manejar comités
 const handleAddComite = () => {
   isEditing.value = false;
@@ -473,9 +466,15 @@ const handleEditComite = (comite: Comite) => {
   activeComiteDropdown.value = null;
 };
 
-const handleDeleteComite = (comiteId: string) => {
-  comites.value = comites.value.filter((comite) => comite.id !== comiteId);
-  cores.value = cores.value.filter((nucleo) => nucleo.comiteId !== comiteId);
+const handleDeleteComite = async (comiteId: string) => {
+  const { error } = await actions.comite.deleteComite(comiteId);
+  if (error instanceof ActionError) {
+    console.error(error);
+    toast.error("Error al eliminar el comité");
+  } else {
+    toast.success("El Comité se eliminó con éxito");
+    navigate("");
+  }
   activeComiteDropdown.value = null;
 };
 
@@ -520,19 +519,6 @@ const handleAddNucleo = (comiteId: string) => {
   activeComiteDropdown.value = null;
 };
 
-const handleAddNucleoGeneral = () => {
-  isEditing.value = false;
-  nucleoForm.id = "";
-  nucleoForm.name = "";
-  nucleoForm.secretarioGeneral = "";
-  nucleoForm.secretarioFuncionamiento = "";
-  nucleoForm.militantes = 0;
-  nucleoForm.comite.id = "";
-
-  selectedComite.value = null;
-  nucleoDialogOpen.value = true;
-};
-
 const handleEditNucleo = (nucleo: Nucleo) => {
   isEditing.value = true;
   nucleoForm.id = nucleo.id;
@@ -548,8 +534,15 @@ const handleEditNucleo = (nucleo: Nucleo) => {
   activeNucleoDropdown.value = null;
 };
 
-const handleDeleteNucleo = (nucleoId: string) => {
-  cores.value = cores.value.filter((nucleo) => nucleo.id !== nucleoId);
+const handleDeleteNucleo = async (nucleoId: string) => {
+  const { error } = await actions.core.deleteCore(nucleoId);
+  if (error instanceof ActionError) {
+    console.error(error);
+    toast.error("Error al eliminar el núcleo");
+  } else {
+    toast.success("El Núcleo se eliminó con éxito");
+    navigate("");
+  }
   activeNucleoDropdown.value = null;
 };
 
@@ -557,13 +550,13 @@ const saveNucleo = async () => {
   isLoading.value = true;
 
   if (isEditing.value && nucleoForm.id) {
-    console.log(nucleoForm)
+    console.log(nucleoForm);
     const { error } = await actions.core.updateCore(nucleoForm);
     if (error instanceof ActionError) {
       isLoading.value = false;
       return toast.error("Error al editar el núcleo");
     } else {
-      toast.success("El Nucleo se editó con éxito");
+      toast.success("El Núcleo se editó con éxito");
       comiteDialogOpen.value = false;
       navigate("");
     }

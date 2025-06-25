@@ -41,6 +41,35 @@ export const register = defineAction({
   },
 });
 
+export const recoverPassword = defineAction({
+  input: z.object({
+    email: z.string().email(),
+  }),
+  async handler({email}, context){
+    const res = await fetch(`${API_URL}/auth/recover`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({email}),
+    });
+    const data = await res.json()
+    if (res.status === 404){
+      throw new ActionError({
+        code: "NOT_FOUND",
+        message: data.message
+      })
+    }
+    if (!res.ok) {
+      throw new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: data.message,
+      });
+    }
+    return data
+  }  
+})
+
 export const profile = defineAction({
   async handler(_, context) {
     const session: any = await getSession(context.request);
@@ -119,3 +148,5 @@ export const me = defineAction({
     return session.user;
   },
 });
+
+

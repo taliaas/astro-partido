@@ -245,10 +245,8 @@ const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
 const { comite, computo } = defineProps<{
   comite: any[];
-  computo: any;
+  computo: any[];
 }>();
-
-console.log(computo)
 
 const search = ref("");
 
@@ -285,8 +283,9 @@ const getComputo = (nucleo: { id: string }) => {
   const [year, month] = value.split("-");
   const indicator = selectedIndicator.value;
 
+
   const c = computo.find(
-    (c) => c.mes == month && c.anno == year && c.nucleo.id === nucleo.id,
+    (c) => c.mes == month && c.anno == year && c.nucleo?.id === nucleo.id,
   );
 
   return c?.[indicator] ?? 0;

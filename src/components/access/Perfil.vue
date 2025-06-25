@@ -113,12 +113,9 @@ import Input from "../ui/input/Input.vue";
 const { user: data } = defineProps<{ user: any }>();
 
 const user = reactive(data)
-console.log("User",user)
-
-const showPasswordModal = ref(false);
 const message = ref("");
+const showPasswordModal = ref(false);
 const openChangePasswordModal = () => {
-  console.log(user)
   showPasswordModal.value = true;
 };
 

@@ -1,0 +1,26 @@
+---
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import ResetPassword from '../../components/access/ResetPassword.vue';
+import AuthService from '@/services/AuthService';
+
+const { token } = Astro.props;
+
+async function verify(token: string) {
+    const service = new AuthService()
+    try {
+        return await service.verify(token);
+    } catch (error) {
+        throw new Error('Invalid or expired token');
+    }
+
+}
+const user = verify(token)
+if(!user) {
+    return Astro.rewrite("/")
+
+}
+---
+
+<AuthLayout>
+    <ResetPassword user={user} client:load />
+</AuthLayout>

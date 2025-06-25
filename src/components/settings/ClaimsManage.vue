@@ -134,6 +134,7 @@ const permissionResources = [
   "Reportes",
   "Usuarios",
   "Procesos",
+  "Eventos"
 ];
 
 const saving = ref(false);
