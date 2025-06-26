@@ -67,17 +67,6 @@
               </button>
             </div>
           </form>
-
-          <!-- Notification -->
-          <div
-            v-if="notification.show"
-            class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
-            :class="
-              notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-            "
-          >
-            {{ notification.message }}
-          </div>
         </aside>
       </div>
     </div>
@@ -100,16 +89,11 @@ const { ind, acta, cp } = defineProps<{
   acta: any;
   cp: any;
 }>();
-
 // Form data
 const formData = reactive<Indicadores>(ind);
 const errors = reactive({});
 const isSubmitting = ref(false);
-const notification = reactive({
-  show: false,
-  message: "",
-  type: "success",
-});
+
 const isOrdinay = ref(true);
 
 // Reset form to initial values
@@ -133,27 +117,16 @@ const validateForm = () => {
   Object.assign(errors, newErrors);
   return Object.keys(newErrors).length === 0;
 };
-
+console.log(acta)
 // Save form data
 const saveIndicadores = async () => {
-  if (!validateForm()) {
-    toast.error(
-      "Por favor, corrija los errores en el formulario"
-    );
-    return;
-  }
   const service = new ComputoService();
   isSubmitting.value = true;
-  const fecha = new Date(acta.fecha);
   const data = {
-    anno: fecha.getFullYear(),
-    mes: fecha.getMonth() + 1,
-    nucleo: acta.core,
-    minute: acta,
     ...formData,
   };
   try {
-    await service.create(data);
+    await service.create(acta.id, data);
     toast.success("Indicadores guardados exitosamente");
     await navigate("/minutes");
   } catch (error) {

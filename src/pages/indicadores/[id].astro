@@ -7,6 +7,7 @@ import Editar from "../../components/Indicators/Editar.vue"
 import OrdinaryService from "../../services/OrdinaryService";
 import {indicadores} from "../../lib/indicadoresKey";
 import { getSession } from "auth-astro/server";
+import MinutesService from "@/services/Minutes";
 
 const {id} = Astro.params;
 const session = (await getSession(Astro.request)) as any;
@@ -16,9 +17,9 @@ if (!id) {
 }
 
 async function getActa() {
-    const services = new OrdinaryService()
+    const services = new MinutesService()
     try {
-        return services.getMinute(id!)
+        return services.getMinute(id!,session.jwt)
     } catch (e) {
         console.error(e)
     }

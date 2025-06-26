@@ -23,7 +23,7 @@ export default class ComputoService {
 
     async getCalcularComputo(id: string, session: any) {
         try {
-            const response = await fetch(`${API_URL}/computo/calcular_computo/${id}`,{
+            const response = await fetch(`${API_URL}/computo/${id}`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -77,10 +77,10 @@ export default class ComputoService {
         }
     }
 
-    async create(data: Indicadores){
+    async create(id: any, data: Indicadores){
         try {
-            const response = await fetch(`${API_URL}/computo`,{
-                method: 'POST',
+            const response = await fetch(`${API_URL}/computo/${id}`,{
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },

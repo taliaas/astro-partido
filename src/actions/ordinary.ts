@@ -9,7 +9,7 @@ export const createMinute = defineAction({
     abscents: z.any().array(),
     invitados: z.any().array(),
     agreements: z.any().array(),
-    extranjero: z.any().array(),
+    // extranjero: z.any().array().optional(),
   }),
   async handler({ data, ...rest }, context) {
     const session: any = await getSession(context.request);

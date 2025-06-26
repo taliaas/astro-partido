@@ -21,8 +21,9 @@ export const uploadMinutes = defineAction({
   input: z.object({
     files: z.any().array(),
     type: z.string().refine((val) => ["ro", "cp"].includes(val)),
+    mode: z.enum(['spacy', 'model'])
   }),
-  async handler({ files, type }, context) {
+  async handler({ files, type, mode }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
@@ -31,7 +32,7 @@ export const uploadMinutes = defineAction({
       formData.append("files", f);
     });
     const res = await fetch(
-      `http://localhost:5000/minutes/upload/spacy?type=${type}`,
+      `http://localhost:5000/minutes/upload/${mode}?type=${type}`,
       {
         method: "POST",
         body: formData,
