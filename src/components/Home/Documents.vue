@@ -112,21 +112,8 @@
       </div>
 
       <div class="flex justify-end mt-6">
-        <button
-          @click="isOpen = false"
-          class="px-4 py-2 bg-button text-primary-foreground rounded-md shadow hover:bg-button/10 transition-colors"
-        >
-          Cerrar
-        </button>
+        <Button @click="isOpen = false"> Cerrar </Button>
       </div>
-
-      <!-- Close button -->
-      <button
-        @click="isOpen = false"
-        class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-      >
-        <span class="sr-only">Cerrar</span>
-      </button>
     </div>
   </div>
 </template>
@@ -144,7 +131,7 @@ import type MinuteOrdinary from "@/interface/MinuteOrdinary.ts";
 import type MinutePolitical from "@/interface/MinutePolitical.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { exportar } from "@/lib/export_cp.ts";
-import { ChevronRight, Download } from "lucide-vue-next";
+import { ChevronRight, Download, XIcon } from "lucide-vue-next";
 import { ref } from "vue";
 
 const { documents } = defineProps<{ documents: any[] }>();

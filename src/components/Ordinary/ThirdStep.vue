@@ -277,7 +277,7 @@
   <section class="space-y-4 my-4">
     <div class="space-y-2">
       <FormField name="observaciones" v-slot="{ componentField }">
-        <FormItem class="w-3/4">
+        <FormItem class="">
           <FormLabel>Observaciones generales</FormLabel>
           <FormControl>
             <Textarea

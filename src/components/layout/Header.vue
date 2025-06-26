@@ -68,27 +68,11 @@
         </Tooltip>
       </TooltipProvider>
 
-      <!-- Action Buttons -->
-      <a
-        href="/chat"
-        class="p-2 hover:bg-muted dark:hover:bg-gray-700 rounded-full"
-      >
-        <MessageSquareIcon
-          class="h-5 w-5 text-muted-foreground dark:text-gray-400 dark:hover:text-white"
-        />
-      </a>
-
-      <!-- Theme Toggle -->
       <button
-        @click="toggleTheme"
+        @click="getEvent"
         class="p-2 hover:bg-accent dark:hover:bg-gray-700 rounded-full"
       >
-        <SunIcon
-          v-if="isDark"
-          class="h-5 w-5 text-muted-foreground dark:text-gray-400 dark:hover:text-white"
-        />
-        <MoonIcon
-          v-else
+        <CalendarIcon
           class="h-5 w-5 text-muted-foreground dark:text-gray-400"
         />
       </button>
@@ -100,55 +84,35 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import {
-  BellIcon,
-  FilterIcon,
-  MessageSquareIcon,
-  MoonIcon,
-  SearchIcon,
-  SunIcon,
-} from "lucide-vue-next";
-import UserNav from "../Otros/UserNav.vue";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useSearchStore } from "@/utils/store.ts";
 import Sheet_container from "@/components/Sheet_container/sheet_container.vue";
 import Filters from "@/components/filters/filters.vue";
+import {
+Tooltip,
+TooltipContent,
+TooltipProvider,
+TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+BellIcon,
+CalendarIcon,
+FilterIcon,
+SearchIcon
+} from "lucide-vue-next";
+import { ref } from "vue";
+import UserNav from "../Otros/UserNav.vue";
+import { navigate } from "astro:transitions/client";
 
-const isDark = ref(false);
 const searchQuery = ref("");
 
 const { cores } = defineProps<{
   cores: any[],
 }>();
 
-const searchStore = useSearchStore();
-
-const toggleSearchPanel = () => {
-  searchStore.showSidePanel = !searchStore.showSidePanel;
+const getEvent = () => {
+  navigate('/event');
 };
 
-const toggleTheme = () => {
-  isDark.value = !isDark.value;
-  document.documentElement.classList.toggle("dark");
-  localStorage.setItem("theme", isDark.value ? "dark" : "light");
+const search = () => {
+  console.log("Searching for:", searchQuery.value);
 };
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem("theme");
-  const systemPrefersDark = window.matchMedia(
-    "(prefers-color-scheme: dark)",
-  ).matches;
-
-  isDark.value = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
-
-  if (isDark.value) {
-    document.documentElement.classList.add("dark");
-  }
-});
 </script>

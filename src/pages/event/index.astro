@@ -1,0 +1,24 @@
+---
+import RootLayout from "../../layouts/RootLayout.astro";
+import EventComponent from "@/components/Event/EventComponent.vue";
+import EventService from "../../services/EventService"
+import { getSession } from "auth-astro/server";
+
+const session = await getSession(Astro.request)
+const searchParams = Astro.url.searchParams
+const page = Number(searchParams.get("page")) || 1
+
+async function getAllEvent(page: any) {
+  const service = new EventService()
+  try {
+    return await service.getAllEvents(page, session);
+  } catch (e) {
+    console.error(e);
+  }
+}
+const events = await getAllEvent(page)
+---
+
+<RootLayout>
+    <EventComponent event={events} page={page} client:load />
+</RootLayout>

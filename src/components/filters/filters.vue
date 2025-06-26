@@ -75,7 +75,7 @@ const statusList = [
         </select>
       </div>
 
-      <!-- Período -->
+      <!-- Período
       <div class="space-y-4">
         <label class="text-sm font-medium text-gray-700">Período</label>
         <div class="grid grid-cols-2 gap-3">
@@ -102,7 +102,7 @@ const statusList = [
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- Palabras clave -->
       <div class="space-y-4">

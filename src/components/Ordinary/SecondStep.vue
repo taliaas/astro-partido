@@ -16,6 +16,7 @@
         </Button>
       </div>
     </div>
+    {{ agendaItems }}
     <div class="rounded border">
       <table class="w-full">
         <thead>
@@ -69,7 +70,7 @@
     <h2 class="text-lg mt-8 mb-4 font-bold">Desarrollo</h2>
     <div class="">
       <FormField name="chequeo" v-slot="{ componentField }">
-        <FormItem class="w-3/4">
+        <FormItem class="">
           <FormLabel>1. Chequeo de acuerdos</FormLabel>
           <FormControl>
             <Textarea
@@ -85,7 +86,7 @@
     </div>
     <div class="space-y-2">
       <FormField name="orientaciones" v-slot="{ componentField }">
-        <FormItem class="w-3/4">
+        <FormItem class="">
           <FormLabel>2. Orientaciones del Organismo Superior</FormLabel>
           <FormControl>
             <Textarea
@@ -100,7 +101,7 @@
     </div>
     <div>
       <FormField name="analisis" v-slot="{ componentField }">
-        <FormItem class="w-3/4">
+        <FormItem class="">
           <FormLabel>3. Análisis y discusiones</FormLabel>
           <FormControl>
             <Textarea

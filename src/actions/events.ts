@@ -24,11 +24,11 @@ export const createEvent = defineAction({
       },
     });
     const data = await res.json()
-    console.log("Data: ",data)
+    console.log("Data: ", data)
     if (res.status === 401) {
       throw new ActionError({ code: "UNAUTHORIZED" });
     }
-    
+
     return data;
   },
 });
@@ -39,6 +39,29 @@ export const getEvents = defineAction({
   }),
   async handler({ date }, context) {
     const response = await fetch(`${API_URL}/event/date/${date}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  },
+});
+
+export const getAllEvents = defineAction({
+  input: z.object({
+    page: z.number()
+  }),
+  async handler({ page }, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    const response = await fetch(`${API_URL}/event?page=${page}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.jwt}`,
+        }
+      }
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

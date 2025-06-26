@@ -60,6 +60,7 @@
           </Button>
         </CollapsibleContent>
       </Collapsible>
+
       <!-- No Events Message -->
       <div v-if="pendingTasks.length === 0">
         <p class="text-md text-gray-500">
@@ -76,13 +77,6 @@
       </div>
     </div>
 
-    <div
-      v-if="notification.show"
-      class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300"
-      :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
-    >
-      {{ notification.message }}
-    </div>
   </div>
 </template>
 
@@ -114,12 +108,6 @@ import { ActionError } from "astro:actions";
 import { usePermissions } from "@/utils/auth-client";
 
 const hasPermission = usePermissions();
-
-const notification = reactive({
-  show: false,
-  message: "",
-  type: "success",
-});
 
 const newEvent = reactive({
   title: "",
