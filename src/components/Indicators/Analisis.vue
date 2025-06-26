@@ -5,18 +5,6 @@
       <div class="p-6">
         <div class="flex justify-between p-2">
           <h1 class="text-2xl font-bold mb-6">Análisis por Indicador</h1>
-          <TooltipProvider>
-            <Tooltip class="hover:bg-muted dark:hover:bg-gray-700 rounded-full">
-              <TooltipTrigger>
-                <a href="/parte" class="px-2 p-2 rounded text-lg font-semibold flex">
-                  Parte Municipio</a>
-              </TooltipTrigger>
-              <TooltipContent align="center" :align-offset="0" :arrow-padding="0" avoid-collisions
-                :collision-padding="0">
-                <p>Resumen Parte Municipio PCC</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
 
         <div class="flex gap-4">

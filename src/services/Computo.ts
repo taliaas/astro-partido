@@ -77,14 +77,14 @@ export default class ComputoService {
         }
     }
 
-    async create(data: Indicadores){
+    async getComputo(id: any, session: any){
         try {
-            const response = await fetch(`${API_URL}/computo`,{
-                method: 'POST',
+            const response = await fetch(`${API_URL}/computo/${id}`,{
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
+                     Authorization: `Bearer ${session?.jwt}`,
+                }
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');

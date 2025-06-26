@@ -132,7 +132,7 @@
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="
                           acta.type === 'ro' &&
-                          acta.status === 'Pendiente'
+                          acta.status === 'Procesada'
                         " @click="handleAction('procesar', acta)">
                           <Edit class="h-4 w-4"/>
                           Procesar
