@@ -41,7 +41,8 @@ async function obtenerComputo() {
     }
 }
 
-const acta = await getActa(id,session)
+const acta = await getActa(id,session.jwt)
+
 const political = await getActaPolitica();
 const ind = await obtenerComputo()
 const map = new Map()

@@ -67,8 +67,14 @@
             </div>
           </form>
         </aside>
-        <div class="flex-1 bg-red-500 ">
-          {{ acta }} an 
+        <div class="flex-1">
+          <embed
+            :src="url"
+            type="application/pdf"
+            width="100%"
+            height="1000"
+            title="Embedded PDF Viewer"
+          />
         </div>
       </div>
     </div>
@@ -76,15 +82,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { actions } from "astro:actions";
-import Editar from "../Ordinary/ActaDisplay.vue";
 import type { Indicadores } from "@/interface/Indicadores.ts";
-import ComputoService from "@/services/Computo.ts";
-import { navigate } from "astro:transitions/client";
 import { indicadores } from "@/lib/indicadoresKey.ts";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import { computed, reactive, ref } from "vue";
 import { toast } from "vue-sonner";
-import Display from "@/components/Political/Display.vue";
 
 const { ind, acta, cp } = defineProps<{
   ind: Indicadores;
@@ -105,24 +108,9 @@ const resetForm = () => {
   Object.keys(errors).forEach((key) => delete errors[key]);
 };
 
-// Validate form
-const validateForm = () => {
-  const newErrors = {};
-  Object.keys(formData).forEach((key) => {
-    if (formData[key] === "" || formData[key] === null) {
-      newErrors[key] = "Este campo es requerido";
-    } else if (formData[key] < 0) {
-      newErrors[key] = "El valor debe ser positivo";
-    }
-  });
-  Object.assign(errors, newErrors);
-  return Object.keys(newErrors).length === 0;
-};
-
 // Save form data
 const saveIndicadores = async () => {
   isSubmitting.value = true;
-  const fecha = new Date(acta.fecha);
   const data = {
     ...formData,
   };
@@ -140,4 +128,15 @@ const saveIndicadores = async () => {
 const getName = (key: any) => {
   return indicadores.find((i) => i.key === key)?.name;
 };
+
+const url = computed(() => {
+  if (!acta?.data) return null;
+  console.log(acta);
+  
+  // Convertir el buffer en un blob PDF
+  const byteArray = new Uint8Array(acta.data.data);
+  const blob = new Blob([byteArray], { type: "application/pdf" });
+
+  return URL.createObjectURL(blob);
+});
 </script>
