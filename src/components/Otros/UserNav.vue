@@ -37,7 +37,7 @@
         @click="showSesionModal = true"
         class="text-red-500 focus:text-red-500 hover:bg-gray-200 hover:text-red-700 dark:hover:bg-zinc-600"
       >
-        <LogOut class="mr-2 h-4 w-4" />
+        <LogOut class="mr-2 h-4 w-4 text-red-500" />
         <span>Cerrar Sesión</span>
       </DropdownMenuItem>
     </DropdownMenuContent>

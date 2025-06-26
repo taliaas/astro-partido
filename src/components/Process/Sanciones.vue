@@ -237,6 +237,7 @@
                 <option value="1">1 mes</option>
                 <option value="3">3 meses</option>
                 <option value="6">6 meses</option>
+                <option value="10">10 meses</option>
                 <option value="12">1 año</option>
               </select>
             </div>
@@ -339,7 +340,7 @@
             <label class="block text-lg font-medium text-gray-700"
               >Detalles</label
             >
-            <p class="text-sm text-gray-900">
+            <p class="text-lg text-gray-900">
               {{ selectSanction.details }}
             </p>
           </div>
