@@ -16,7 +16,7 @@
         </Button>
       </div>
     </div>
-    {{ agendaItems }}
+    
     <div class="rounded border">
       <table class="w-full">
         <thead>
