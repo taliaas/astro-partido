@@ -126,7 +126,7 @@
                           Ver
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('editar', acta)"
-                                          v-if="hasPermission('Documentos', 'update')">
+                                          v-if="hasPermission('Documentos', 'update') && !acta.isLoaded  ">
                           <Pencil class="h-4 w-4"/>
                           Editar
                         </DropdownMenuItem>
@@ -226,6 +226,13 @@
               Círculo Político
             </label>
           </div>
+          <label class="block text-sm font-medium text-gray-700 mb-2 mt-2">
+            Seleccione el tipo de procesamiento:
+          </label>
+          <div class="space-x-2 ">
+            <Button @click="mode = 'spacy'" :disabled="mode === 'spacy'" :data-disabled="mode === 'spacy'" class="opacity-50 data-[disabled=true]:opacity-100">Spacy</Button>
+            <Button @click="mode = 'model'" :disabled="mode === 'model'" :data-disabled="mode === 'model'" class="opacity-50 data-[disabled=true]:opacity-100">Model</Button>
+          </div>
         </div>
 
         <!-- Área de arrastre de archivos -->
@@ -304,41 +311,43 @@
 </template>
 
 <script setup lang="ts">
-import {exportar} from "@/lib/export_cp.ts";
-import {exportarRO} from "@/lib/export_ro.ts";
-import {usePermissions} from "@/utils/auth-client.ts";
-import {actions} from "astro:actions";
-import {navigate} from "astro:transitions/client";
+import { exportar } from "@/lib/export_cp.ts";
+import { exportarRO } from "@/lib/export_ro.ts";
+import { usePermissions } from "@/utils/auth-client.ts";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
 import {
-  ArrowDown,
-  ArrowUp,
-  Download,
-  Edit,
-  Eye,
-  FileTextIcon,
-  MoreVerticalIcon,
-  Pencil,
-  PlusIcon,
-  SearchIcon,
-  Trash2Icon,
-  TrashIcon,
-  UploadCloudIcon,
-  Loader2
+ArrowDown,
+ArrowUp,
+Download,
+Edit,
+Eye,
+FileTextIcon,
+Loader2,
+MoreVerticalIcon,
+Pencil,
+PlusIcon,
+SearchIcon,
+Trash2Icon,
+TrashIcon,
+UploadCloudIcon
 } from "lucide-vue-next";
-import {computed, effect, onMounted, ref, watch} from "vue";
-import {Badge} from "../ui/badge";
-import {Button} from "../ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,} from "../ui/dialog";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "../ui/dropdown-menu";
-import {Input} from "../ui/input";
-import {Table, TableBody, TableCell, TableHeader, TableRow,} from "../ui/table";
-import {toast} from "vue-sonner";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "../ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
+import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
 
 const {actas, page} = defineProps<{
   actas: any;
   tyactaspe: string;
   page: number;
 }>();
+console.log(actas)
+const mode = ref('spacy')
 // const actas = ref(actasData)
 // const {data} = useEventSource(`${API_URL}/minutes/sse`)
 
@@ -462,7 +471,9 @@ const getStatusClass = (status) => {
 const handleAction = (action, acta) => {
   currentsMinute.value = acta;
   if (action === "ver") {
-    if (acta.name === "Acta Ordinaria") {
+    if (acta.isLoaded) {
+      navigate(`/loaded-view/${acta.id}`)
+    } else if (acta.name === "Acta Ordinaria") {
       navigate(`/view/${acta.id}`);
     } else {
       navigate(`/cp_view/${acta.id}`);
@@ -510,6 +521,7 @@ const handleDrop = async () => {
   console.log(files);
   const formData = new FormData();
   formData.append("type", tipoActa.value);
+  formData.append("mode", mode.value);
   files.forEach((f) => {
     formData.append("files", f);
   });
