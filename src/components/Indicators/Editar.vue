@@ -74,27 +74,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { actions } from "astro:actions";
-import Editar from "../Ordinary/ActaDisplay.vue";
 import type { Indicadores } from "@/interface/Indicadores.ts";
+import { indicadores } from "@/lib/indicadoresKey.ts";
 import ComputoService from "@/services/Computo.ts";
 import { navigate } from "astro:transitions/client";
-import { indicadores } from "@/lib/indicadoresKey.ts";
+import { reactive, ref } from "vue";
 import { toast } from "vue-sonner";
-import Display from "@/components/Political/Display.vue";
 
 const { ind, acta, cp } = defineProps<{
   ind: Indicadores;
   acta: any;
   cp: any;
 }>();
+
 // Form data
 const formData = reactive<Indicadores>(ind);
 const errors = reactive({});
 const isSubmitting = ref(false);
-
-const isOrdinay = ref(true);
 
 // Reset form to initial values
 const resetForm = () => {
@@ -104,20 +100,6 @@ const resetForm = () => {
   Object.keys(errors).forEach((key) => delete errors[key]);
 };
 
-// Validate form
-const validateForm = () => {
-  const newErrors = {};
-  Object.keys(formData).forEach((key) => {
-    if (formData[key] === "" || formData[key] === null) {
-      newErrors[key] = "Este campo es requerido";
-    } else if (formData[key] < 0) {
-      newErrors[key] = "El valor debe ser positivo";
-    }
-  });
-  Object.assign(errors, newErrors);
-  return Object.keys(newErrors).length === 0;
-};
-console.log(acta)
 // Save form data
 const saveIndicadores = async () => {
   const service = new ComputoService();
@@ -136,7 +118,7 @@ const saveIndicadores = async () => {
   }
 };
 
-const getName = (key: any) => {
-  return indicadores.find((i) => i.key === key)?.name;
+const getName = (key: string) => {
+  return indicadores.find((i) => key.includes(i.key))?.name;
 };
 </script>

@@ -1,62 +1,64 @@
-
 ---
-import PoliticalService from "../../services/PoliticalService";
-import ComputoService from "../../services/Computo";
-import RootLayout from "../../layouts/RootLayout.astro";
-import Editar from "../../components/Indicators/Editar.vue"
-import OrdinaryService from "../../services/OrdinaryService";
-import {indicadores} from "../../lib/indicadoresKey";
-import { getSession } from "auth-astro/server";
 import MinutesService from "@/services/Minutes";
+import { getSession } from "auth-astro/server";
+import Editar from "../../components/Indicators/Editar.vue";
+import RootLayout from "../../layouts/RootLayout.astro";
+import { indicadores } from "../../lib/indicadoresKey";
+import ComputoService from "../../services/Computo";
+import PoliticalService from "../../services/PoliticalService";
 
-const {id} = Astro.params;
+const { id } = Astro.params;
 const session = (await getSession(Astro.request)) as any;
 
 if (!id) {
-    throw new Error("No id provided");
+  throw new Error("No id provided");
 }
 
 async function getActa() {
-    const services = new MinutesService()
-    try {
-        return services.getMinute(id!,session.jwt)
-    } catch (e) {
-        console.error(e)
-    }
+  const services = new MinutesService();
+  try {
+    return services.getMinute(id!, session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-const acta = await getActa()
+const acta = await getActa();
 
 async function getActaPolitica() {
-    const services = new PoliticalService()
-    try {
-        return services.getMinutesByCore(acta.core.id, acta.fecha)
-    } catch (e) {
-        console.error(e)
-    }
+  const services = new PoliticalService();
+  try {
+    return services.getMinutesByCore(acta.core.id, acta.fecha);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 async function obtenerComputo() {
-    const service = new ComputoService();
-    try {
-        return service.getCalcularComputo(id!, session);
-    } catch (error) {
-        console.log("error");
-    }
+  const service = new ComputoService();
+  try {
+    return service.getCalcularComputo(id!, session);
+  } catch (error) {
+    console.log("error");
+  }
 }
 
-const ind = await obtenerComputo()
-const cp = await getActaPolitica()
-const map = new Map()
+const ind = await obtenerComputo();
+const cp = await getActaPolitica();
+const map = new Map();
 
-for (const {key} of indicadores) {
-    map.set(key, 0)
-    if (key in ind) map.set(key, ind[key])
+for (const { key } of indicadores) {
+  map.set(key, 0);
+  if (key in ind) map.set(ind, ind[key]);
 }
+console.log(map);
 ---
 
 <RootLayout>
-    <Editar ind={Object.fromEntries(map.entries())} acta={acta} cp={cp} client:load/>
+  <Editar
+    ind={Object.fromEntries(map.entries())}
+    acta={acta}
+    cp={cp}
+    client:load
+  />
 </RootLayout>
-
----

@@ -1,10 +1,10 @@
-import type {Indicadores} from "@/interface/Indicadores.ts";
+import type { Indicadores } from "@/interface/Indicadores.ts";
 import { API_URL } from "astro:env/client";
 
 export default class ComputoService {
     async getAll(token?: string) {
         try {
-            const response = await fetch(`${API_URL}/computo`,{
+            const response = await fetch(`${API_URL}/computo`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export default class ComputoService {
 
     async getCalcularComputo(id: string, session: any) {
         try {
-            const response = await fetch(`${API_URL}/computo/${id}`,{
+            const response = await fetch(`${API_URL}/computo/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,9 +42,9 @@ export default class ComputoService {
 
     async getByDate(month: number, year: number) {
         try {
-            const response = await fetch(`${API_URL}/computo/find/${month}/${year}`,{
+            const response = await fetch(`${API_URL}/computo/find/${month}/${year}`, {
                 method: 'GET',
-                    headers: {
+                headers: {
                     'Content-Type': 'application/json',
                 },
             });
@@ -58,9 +58,9 @@ export default class ComputoService {
         }
     }
 
-    async getCompare(){
+    async getCompare() {
         try {
-            const response = await fetch(`${API_URL}/computo/compare`,{
+            const response = await fetch(`${API_URL}/computo/compare`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -77,9 +77,9 @@ export default class ComputoService {
         }
     }
 
-    async create(id: any, data: Indicadores){
+    async create(id: any, data: Indicadores) {
         try {
-            const response = await fetch(`${API_URL}/computo/${id}`,{
+            const response = await fetch(`${API_URL}/computo/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,9 +96,9 @@ export default class ComputoService {
         }
     }
 
-    async getNegativeIndicator(){
+    async getNegativeIndicator() {
         try {
-            const response = await fetch(`${API_URL}/computo/indicadores_alert`,{
+            const response = await fetch(`${API_URL}/computo/indicadores_alert`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
