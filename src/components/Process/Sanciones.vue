@@ -394,6 +394,68 @@
         </div>
       </div>
     </div>
+
+     <!-- Upload Dialog -->
+    <Dialog :open="showUploadDialog" @update:open="showUploadDialog = $event">
+      <DialogContent class="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Cargar actas</DialogTitle>
+          <DialogDescription>
+            Seleccione o arrastre los archivos que desea cargar
+          </DialogDescription>
+        </DialogHeader>
+
+        <!-- Área de arrastre de archivos -->
+        <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
+             :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
+             @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
+          <UploadCloudIcon class="mx-auto h-12 w-12 transition-colors duration-200"
+                           :class="isDragging ? 'text-blue-600' : 'text-gray-400'"/>
+          <p class="mt-2 text-sm text-gray-600">
+            <span class="font-medium hover:text-gray-700">
+              Arrastre archivos aquí
+            </span>
+            o
+            <button @click="$refs.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
+              seleccione desde su dispositivo
+            </button>
+          </p>
+          <p class="mt-1 text-xs text-gray-500">DOCX, PDF, hasta 10MB por archivo</p>
+          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect"/>
+        </div>
+
+        <!-- Lista de archivos -->
+        <div v-if="uploadedFiles.length > 0" class="space-y-3 max-h-32 overflow-y-auto">
+          <div v-for="(file, index) in uploadedFiles" :key="index"
+               class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 rounded flex items-center justify-center">
+                <FileTextIcon class="size-5"/>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">{{ file.name }}</p>
+              <div class="flex items-center gap-2 mt-1">
+                <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</p>
+              </div>
+            </div>
+            <button @click="removeFile(file.name)" class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600">
+              <Trash2Icon class="size-4"/>
+            </button>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button type="reset" variant="outline" @click="showUploadDialog = false">
+            Cancelar
+          </Button>
+          <Button @click="handleDrop" :disabled="!uploadedFiles.length || loading"
+                  class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
+            Cargar archivos
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -411,6 +473,11 @@ import { toast } from "vue-sonner";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
+import Dialog from "@/components/ui/dialog/Dialog.vue";
+import DialogContent from "@/components/ui/dialog/DialogContent.vue";
+import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
+import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
+import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 
 const { sanciones, members, cores } = defineProps<{
   sanciones: any;
@@ -426,9 +493,9 @@ const isEditing = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
 const statusFilter = ref("");
-
+const showUploadDialog = ref("");
 const EstadoSancion = ["APROBADA", "DENEGADA", "CUMPLIDA"] as const;
-
+const isDragging = ref("")
 const currentSanction = ref({
   causa: "",
   fecha: "",
