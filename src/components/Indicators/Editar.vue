@@ -108,7 +108,7 @@ const saveIndicadores = async () => {
     ...formData,
   };
   try {
-    await service.create(acta.id, data);
+    await service.updateComputo(acta.id, data);
     toast.success("Indicadores guardados exitosamente");
     await navigate("/minutes");
   } catch (error) {

@@ -348,24 +348,6 @@ const {actas, page} = defineProps<{
 }>();
 console.log(actas)
 const mode = ref('spacy')
-// const actas = ref(actasData)
-// const {data} = useEventSource(`${API_URL}/minutes/sse`)
-
-// effect(() => {
-//   data.value;
-//
-//   async function getActas(tipo: string, page: any) {
-//     const {data, error} = await actions.minute.getMinutes({typeMinutes: tipo, page})
-//     console.log(data)
-//     if (error instanceof ActionError) {
-//       throw new Error("Error al cargar las actas")
-//     }
-//     actas.value = data
-//   }
-//
-//   getActas()
-// })
-
 
 const hasPermission = usePermissions()
 
@@ -494,6 +476,7 @@ const handleAction = (action, acta) => {
     showDelete.value = true;
   }
 };
+
 const handleDelete = () => {
   showDelete.value = false;
 };
@@ -518,7 +501,7 @@ const handleDrop = async () => {
   isDragging.value = false;
   loading.value = true
   const files = Array.from(uploadedFiles.value ?? []);
-  console.log(files);
+  
   const formData = new FormData();
   formData.append("type", tipoActa.value);
   formData.append("mode", mode.value);

@@ -77,12 +77,13 @@ export default class ComputoService {
         }
     }
 
-    async create(id: any, data: Indicadores) {
+    async updateComputo(id: any, data: Indicadores) {
         try {
             const response = await fetch(`${API_URL}/computo/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    
                 },
                 body: JSON.stringify(data)
             });

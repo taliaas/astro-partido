@@ -68,7 +68,7 @@
           </div>
         </div>
       </div>
-
+   
       <!-- Selected Indicator Analysis -->
       <div v-else class="bg-white rounded-lg shadow-sm p-6">
         <div class="flex justify-end">
@@ -108,6 +108,7 @@
         <div v-else-if="selectedIndicator === 'reason'">
           <ReasonAttendance :selectedMonth="selectedMonth" />
         </div>
+        
         <div v-else class="space-y-3">
           <div
             v-for="com in comite"
@@ -125,7 +126,7 @@
                     class="group-data-[state=closed]:hidden px-3 bg-green-100 rounded-full"
                   >
                     <span class="text-green-700 text-sm"
-                      >Total: {{ setTotal(com) }}</span
+                      >Total: {{ setTotal(com) }} </span
                     >
                   </div>
                   <ChevronDownIcon
@@ -152,6 +153,7 @@
                   </div>
                   <div class="flex space-x-2">
                     <p class="text-gray-600">{{ getComputo(nucleo) }}</p>
+                    <p>{{ computo.mes }}</p>
                     <div
                       v-if="getComputo(nucleo) > 2"
                       class="p-1 bg-green-100 rounded-full"
@@ -179,7 +181,7 @@
                           <SheetTitle class="text-2xl">Detalles</SheetTitle>
                           <div class="py-2">
                             <h2 class="font-medium text-lg">
-                              {{ nucleo.name }}
+                              {{ nucleo?.name }}
                             </h2>
                             <div class="flex">
                               <p class="font-medium text-xl mr-2">
@@ -250,47 +252,40 @@
 </template>
 
 <script setup lang="ts">
-import { categories, indicators } from "@/components/Indicators/indicators";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  ArrowUpIcon,
-  ArrowDownIcon,
-  EyeIcon,
-  ChevronDownIcon,
-  Search,
-  XIcon,
-} from "lucide-vue-next";
 import Asistencia from "@/components/Indicators/Asistencia.vue";
-import { computed, ref } from "vue";
-import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Sheet,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { categories, indicators } from "@/components/Indicators/indicators";
 import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+Collapsible,
+CollapsibleContent,
+CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+Select,
+SelectContent,
+SelectGroup,
+SelectItem,
+SelectTrigger,
+SelectValue,
 } from "@/components/ui/select";
-import MilitantService from "@/services/MilitantService.ts";
+import { Separator } from "@/components/ui/separator";
+import {
+Sheet,
+SheetContent,
+SheetDescription,
+SheetHeader,
+SheetTitle,
+SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+ArrowDownIcon,
+ArrowUpIcon,
+ChevronDownIcon,
+EyeIcon,
+Search,
+XIcon,
+} from "lucide-vue-next";
+import { computed, ref } from "vue";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");

@@ -100,8 +100,6 @@ const handleSesion = () => {
 };
 
 const getInitial = computed(() => {
-  console.log(session.value);
-  
   const initialFirstname = session.value?.name?.at(0) ?? "U";
   return initialFirstname;
 });

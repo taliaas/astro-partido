@@ -198,7 +198,7 @@ export const indicators = [
     },
     {
         category: "",
-        key: "acuerdosSalidasExternas",
+        key: "acuerdosSalidasExternas",   
         name: "Acuerdos de Salidas Externas",
         description: "Acuerdos relacionados con salidas externas",
     },

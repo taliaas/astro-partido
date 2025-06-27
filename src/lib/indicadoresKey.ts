@@ -1,6 +1,6 @@
 export const indicadores = [
     {
-        key: "pto",
+        key: "ptos",
         name: "Puntos del Orden del Día",
         description: "Posición en el orden del día",
     },
@@ -10,24 +10,24 @@ export const indicadores = [
         description: "Total de acuerdos tomados",
     },
     {
-        key: "participacionOrgSup",
-        name: "Particip. de Org. Superior",
-        description: "Participantes de la organización superior",
-    },
-    { key: "invitados", name: "Invitados", description: "Invitados" },
-    { key: "cp", name: "Círculo Político", description: "Círculo político" },
-    {
-        key: "cp_agree",
-        name: "Acuerdos del Círculo Político",
-        description: "Acuerdos dentro del círculo político",
+        key: "participacionOrgSup_Cte",
+        name: "Particip. del Org. Superior del Comité",
+        description: "Participantes de la organización superior del comité",
     },
     {
-        key: "rendicionMilitante",
+        key: "participacionOrgSup_Mun",
+        name: "Particip. del Org. Superior del Municipio",
+        description: "Participantes de la organización superior del municipio",
+    },
+    { key: "totalInvitados", name: "Invitados", description: "Invitados" },
+    { key: "reunionExtraordinaria", name: "Círculo Político", description: "Círculo político" },
+    {
+        key: "redicionMilitantes",
         name: "Rendición Militante",
         description: "Rendición de cuentas de militantes",
     },
     {
-        key: "rendicionDirigente",
+        key: "redicionDirigAdm",
         name: "Rendición Dirigente",
         description: "Rendición de cuentas de dirigentes",
     },
@@ -48,7 +48,7 @@ export const indicadores = [
         description: "Análisis de actividades fundamentales",
     },
     {
-        key: "discusionDelitoCorrupcion",
+        key: "discusionDelitoCorrupcionIlegalidad",
         name: "Discusión Delito Corrupción",
         description: "Discusión sobre delitos y corrupción",
     },
@@ -123,12 +123,12 @@ export const indicadores = [
         description: "Guardias programadas en el PCC",
     },
     {
-        key: "acuerdosSalidasExternas",
+        key: "acuerdoSalidasExternas",
         name: "Acuerdos de Salidas Externas",
         description: "Acuerdos relacionados con salidas externas",
     },
     {
-        key: "trasladosIncorporaciones",
+        key: "trasladosIncorporacion",
         name: "Traslados e Incorporaciones",
         description: "Registro de traslados e incorporaciones",
     },

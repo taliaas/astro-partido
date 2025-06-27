@@ -6,7 +6,14 @@ import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
+import {
+  Eye,
+  MoreVerticalIcon,
+  Pencil,
+  PlusIcon,
+  UploadIcon,
+  XIcon,
+} from "lucide-vue-next";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
@@ -115,6 +122,8 @@ const saveDeactivation = async () => {
     isLoading.value = false;
   }
 };
+
+const saveMinute = async () => {};
 </script>
 
 <template>
@@ -128,12 +137,19 @@ const saveDeactivation = async () => {
           Administra las desactivaciones de miembros de la organización
         </p>
       </div>
-      <button
-        @click="openAddModal"
-        class="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-      >
-        Nueva Desactivación
-      </button>
+      <div class="flex gap-2">
+        <Button
+          @click="openAddModal"
+          class="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+        >
+          <PlusIcon class="size-4" />
+          Desactivación
+        </Button>
+        <Button @click="saveMinute">
+          <UploadIcon class="size-4" />
+          Documento
+        </Button>
+      </div>
     </div>
 
     <!-- Filtros -->

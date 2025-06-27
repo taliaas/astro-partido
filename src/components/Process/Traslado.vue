@@ -7,12 +7,19 @@
           Administra los traslados de miembros entre sucursales
         </p>
       </div>
-      <button
-        @click="openAddModal"
-        class="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-      >
-        Nuevo Traslado
-      </button>
+      <div class="flex gap-2">
+        <Button
+          @click="openAddModal"
+          class="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+        >
+          <PlusIcon class="size-4" />
+          Traslado
+        </Button>
+        <Button @click="saveMinute">
+          <UploadIcon class="size-4" />
+          Documento
+        </Button>
+      </div>
     </div>
 
     <!-- Filtros -->
@@ -367,7 +374,7 @@ import Input from "@/components/ui/input/Input.vue";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
-import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, PlusIcon, UploadIcon, XIcon } from "lucide-vue-next";
 import { ref, computed } from "vue";
 import { toast } from "vue-sonner";
 
@@ -472,7 +479,7 @@ const saveTransfer = async () => {
   isLoading.value = true;
   try {
     if (!isEdit.value) {
-      console.log(currentTransfer.value)
+      console.log(currentTransfer.value);
       await actions.transfer.createTransfer(currentTransfer.value as any);
       toast.success("Traslado creado correctamente");
     } else {
@@ -487,4 +494,8 @@ const saveTransfer = async () => {
     isLoading.value = false;
   }
 };
+
+const saveMinute = async () => {
+
+}
 </script>

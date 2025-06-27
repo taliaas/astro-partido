@@ -7,12 +7,19 @@
           Administra las sanciones disciplinarias de los miembros
         </p>
       </div>
-      <button
+      <div class="flex gap-2">
+        <Button
         @click="openAddModal"
         class="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
       >
-        Nueva Sanción
-      </button>
+        <PlusIcon class="size-4" />
+         Sanción
+      </Button>
+      <Button @click="saveMinute">
+        <UploadIcon class="size-4" />
+        Documento
+      </Button>
+      </div>
     </div>
 
     <!-- Filtros -->
@@ -392,7 +399,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { Eye, MoreVerticalIcon, Pencil, XIcon } from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, PlusIcon, UploadIcon, XIcon } from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -524,4 +531,8 @@ const saveSanction = async () => {
     isLoading.value = false;
   }
 };
+
+const saveMinute = async () => {
+
+}
 </script>
