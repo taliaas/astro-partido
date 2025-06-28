@@ -399,7 +399,7 @@
     <Dialog :open="showUploadDialog" @update:open="showUploadDialog = $event">
       <DialogContent class="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Cargar actas</DialogTitle>
+          <DialogTitle>Cargar documento</DialogTitle>
           <DialogDescription>
             Seleccione o arrastre los archivos que desea cargar
           </DialogDescription>
@@ -461,7 +461,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { Eye, MoreVerticalIcon, Pencil, PlusIcon, UploadIcon, XIcon } from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, PlusIcon, UploadIcon, XIcon, FileTextIcon, Trash2Icon, UploadCloudIcon } from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -473,11 +473,7 @@ import { toast } from "vue-sonner";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
-import Dialog from "@/components/ui/dialog/Dialog.vue";
-import DialogContent from "@/components/ui/dialog/DialogContent.vue";
-import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
-import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
-import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
+import {Dialog, DialogFooter, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "@/components/ui/dialog";
 
 const { sanciones, members, cores } = defineProps<{
   sanciones: any;
@@ -493,9 +489,12 @@ const isEditing = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
 const statusFilter = ref("");
-const showUploadDialog = ref("");
 const EstadoSancion = ["APROBADA", "DENEGADA", "CUMPLIDA"] as const;
-const isDragging = ref("")
+const showUploadDialog = ref(false);
+const uploadedFiles = ref([]);
+const isDragging = ref(false);
+const loading = ref(false)
+
 const currentSanction = ref({
   causa: "",
   fecha: "",
@@ -600,6 +599,22 @@ const saveSanction = async () => {
 };
 
 const saveMinute = async () => {
-
+  showUploadDialog.value = true
 }
+
+const handleFileSelect = (event) => {
+  const files = Array.from(event.target.files);
+  uploadedFiles.value = [...uploadedFiles.value, ...files];
+};
+
+const handleFiles = (files) => {
+  uploadedFiles.value = [...uploadedFiles.value, ...files];
+}
+
+const handleFileDrop = (e) => {
+  isDragging.value = false
+  const files = Array.from(e.dataTransfer.files)
+  handleFiles(files)
+}
+
 </script>

@@ -49,9 +49,8 @@ const map = new Map();
 
 for (const { key } of indicadores) {
   map.set(key, 0);
-  if (key in ind) map.set(key, ind[key] || 0);
+  if (key in ind) map.set(key, ind[key]);
 }
-console.log(ind);
 ---
 
 <RootLayout>

@@ -22,7 +22,7 @@ export const categories = {
         "crecimiento",
         "desactivacion",
         "guardiaPCC",
-        "trasladosIncorporaciones",
+        "trasladosIncorporacion",
     ],
 };
 
@@ -53,19 +53,25 @@ export const indicators = [
     },
     {
         category: "asistencia",
-        key: "participacionOrgSup",
-        name: "Particip. de Org. Superior",
-        description: "Participantes de la organización superior",
+        key: "participacionOrgSup_Cte",
+        name: "Participantes de la Org. Sup. del comité",
+        description: "Participantes de la organización superior de comité",
+    },
+    {
+        category: "",
+        key: "participacionOrgSup_Mun",
+        name: "Participantes de la Org. Sup. del Municipio",
+        description: "Participantes de la organización superior del Municipio"
     },
     {
         category: "asistencia",
-        key: "invitados",
+        key: "totalInvitados",
         name: "Invitados",
         description: "Invitados a la reunión",
     },
     {
         category: "",
-        key: "cp",
+        key: "reunionExtraordinaria",
         name: "Círculo Político",
         description: "Reunión de círculo de estudio",
     },
@@ -77,13 +83,13 @@ export const indicators = [
     },
     {
         category: "",
-        key: "rendicionMilitante",
+        key: "redicionMilitantes",
         name: "Rendición Militante",
         description: "Rendición de cuentas de militantes",
     },
     {
         category: "",
-        key: "rendicionDirigente",
+        key: "redicionDirigAdm",
         name: "Rendición Dirigente",
         description: "Rendición de cuentas de dirigentes",
     },
@@ -103,12 +109,12 @@ export const indicators = [
     {
         category: "",
         key: "analisisActFtal",
-        name: "Análisis Actividades",
+        name: "Análisis de la Actividad Fundamental",
         description: "Análisis de actividades fundamentales",
     },
     {
         category: "",
-        key: "discusionDelitoCorrupcion",
+        key: "discusionDelitoCorrupcionIlegalidad",
         name: "Discusión Delito Corrupción",
         description: "Discusión sobre delitos y corrupción",
     },
@@ -204,7 +210,7 @@ export const indicators = [
     },
     {
         category: "",
-        key: "trasladosIncorporaciones",
+        key: "trasladosIncorporacion",
         name: "Traslados e Incorporaciones",
         description: "Registro de traslados e incorporaciones",
     },

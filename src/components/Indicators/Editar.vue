@@ -45,6 +45,9 @@
                   >
                     {{ errors[key] }}
                   </span>
+                  <span v-if="!formData[key]" class="text-xs text-red-500">
+                    No se encontró*
+                  </span>
                 </div>
               </div>
             </div>
