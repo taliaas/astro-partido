@@ -27,7 +27,7 @@ const statusList = [
 </script>
 
 <template>
-  <div class="h-full flex flex-col">
+  <div class="h-full flex flex-col bg-white border-r shadow-sm pt-12">
     <!-- Form Content -->
     <form action="/busqueda" method="post" class="px-6 py-2 space-y-6 flex flex-col flex-1">
       <!--Nombre -->
