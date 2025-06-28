@@ -44,14 +44,14 @@ async function obtenerComputo() {
 }
 
 const ind = await obtenerComputo();
-const cp = await getActaPolitica();
+// const cp = await getActaPolitica();
 const map = new Map();
 
 for (const {key} of indicadores) {
-    map.set(key, {value: 0, text: ""});
+    map.set(key, {value: null, text: ""});
     if (key in ind) map.set(key, {
         value: ind[key],
-        text: ind[`${key}_text`]
+        text: ind[`${key}_text`] ?? ""
     });
 }
 ---
@@ -60,7 +60,6 @@ for (const {key} of indicadores) {
     <Editar
             ind={Object.fromEntries(map.entries())}
             acta={acta}
-            cp={cp}
             client:load
     />
 </RootLayout>

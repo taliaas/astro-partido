@@ -1,7 +1,7 @@
 import type {Invitados} from "@/interface/Invitados.ts";
 
 export interface Indicadores{
-    pto: number;
+    ptos: number;
     invitados: Invitados[]
     cp: number;
     cp_agree: number;

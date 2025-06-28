@@ -12,10 +12,10 @@
       </div>
 
       <div class="flex p-4 gap-4">
-        <aside>
-          <h2 class="font-medium text-2xl px-4">Indicadores</h2>
+        <aside class="p-4 space-y-4">
+          <h2 class="font-medium text-2xl">Indicadores</h2>
           <!-- Form -->
-          <form @submit="onSubmit" class="p-4 pb-6 relative">
+          <form @submit="onSubmit" class="pb-12 relative">
             <div class="grid grid-cols-2 gap-4">
               <FormField v-for="(_,key) in ind" :key="key" :name="`${key}.value`" v-slot="{componentField}">
                 <FormItem>
@@ -55,12 +55,13 @@
             </div>
           </form>
         </aside>
-        <main class="flex-1">
+        <main class="flex-1 py-4">
           <div class="sticky top-5">
             <FormField :name="`${currentIndicator}.text`" v-slot="{componentField}">
               <FormItem>
                 <FormControl>
-                  <Textarea :="componentField" class="w-full resize-none max-h-48"/>
+                  <Textarea :="componentField" class="w-full resize-none max-h-48"
+                            placeholder="Escriba el texto relacionado al indicador..."/>
                 </FormControl>
               </FormItem>
             </FormField>
@@ -84,7 +85,7 @@ import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/compon
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Textarea} from "@/components/ui/textarea";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 
 const {ind, acta, cp} = defineProps<{
   ind: Indicadores;
@@ -94,7 +95,7 @@ const {ind, acta, cp} = defineProps<{
 
 type Data = z.infer<typeof schema>
 const schema = z.record(z.string(), z.object({
-  value: z.number(),
+  value: z.number({message: "No encontrado"}),
   text: z.string()
 }))
 
@@ -104,9 +105,9 @@ const form = useForm<Data>({
   validateOnMount: true,
 })
 
-const state = form.errors
+watch(form.errors, () => console.log(form.errors.value))
 const loading = form.isSubmitting
-const currentIndicator = ref("")
+const currentIndicator = ref("ptos")
 
 
 // Reset form to initial values
@@ -116,6 +117,7 @@ const resetForm = () => {
 
 // Save form data
 const onSubmit = form.handleSubmit(async (data: Data) => {
+  console.log("Hola", data)
   const service = new ComputoService();
   const indMap = new Map()
   for (const [key, {value, text}] of Object.entries(data)) {
