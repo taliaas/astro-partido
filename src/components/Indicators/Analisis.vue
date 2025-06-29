@@ -254,7 +254,7 @@
 
 <script setup lang="ts">
 import Asistencia from "@/components/Indicators/Asistencia.vue";
-import {categories, indicators} from "@/components/Indicators/indicators";
+import {categories, indicators} from "@/utils/indicators.ts";
 import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
 import {
   Collapsible,
