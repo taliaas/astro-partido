@@ -77,20 +77,11 @@ async function getDocument() {
     console.error(e);
   }
 }
-async function getNegativeIndicator(): Promise<number | undefined> {
-  const service = new ComputoService();
-  try {
-    return await service.getNegativeIndicator();
-  } catch (e) {
-    console.error(e);
-  }
-}
 
 const [documents, kpis, list] = await Promise.all([
   getMinute(),
   getKPIs(),
   getDocument(),
-  getNegativeIndicator(),
 ]);
 
 const cards = [

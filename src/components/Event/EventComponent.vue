@@ -10,24 +10,29 @@
         </div>
 
         <div
-          v-if="event.data.length === 0"
-          class="p-28 flex flex-col items-center gap-2 border rounded-md bg-white"
+            v-if="event.data.length === 0"
+            class="p-28 flex flex-col items-center gap-2 border rounded-md bg-white"
         >
-          <CalendarIcon class="size-10 text-muted-foreground" />
+          <CalendarIcon class="size-10 text-muted-foreground"/>
           <p class="text-md text-gray-500">
             No hay tareas o eventos.
           </p>
         </div>
-        <div v-else v-for="ev in event.data" :key="ev.id" class="flex pt-2 bg-white border p-12 rounded">
-          <p class="text-button px-4 font-medium">{{ ev.type }}</p>
-          <h3>{{ ev.title }}</h3>
+        <div v-else class="flex pt-4 bg-white border p-12 rounded gap-2">
+          <div v-for="ev in event.data" :key="ev.id" class="border-b">
+            <div class="flex justify-between">
+              <p class="text-button px-4 font-medium">{{ ev.type }}</p>
+              <p class="text-gray-400">{{ev.date}}</p>
+            </div>
+            <h3 class="py-2">Detalles: {{ ev.title }}</h3>
+          </div>
         </div>
         <!-- Pagination -->
         <div class="flex items-center justify-between py-4">
           <button
-            @click="previousPage"
-            :disabled="currentPage === 1"
-            class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
+              @click="previousPage"
+              :disabled="currentPage === 1"
+              class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
           >
             Anterior
           </button>
@@ -36,9 +41,9 @@
             <span class="font-bold">{{ event.totalPages }}</span>
           </span>
           <button
-            @click="nextPage"
-            :disabled="currentPage === event.totalPages"
-            class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
+              @click="nextPage"
+              :disabled="currentPage === event.totalPages"
+              class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
           >
             Siguiente
           </button>
@@ -49,17 +54,18 @@
 </template>
 
 <script setup lang="ts">
-import { navigate } from "astro:transitions/client";
-import { CalendarIcon } from "lucide-vue-next";
-import { ref } from "vue";
+import {navigate} from "astro:transitions/client";
+import {CalendarIcon} from "lucide-vue-next";
+import {ref} from "vue";
 
 interface EventItem {
   id: number;
   type: string;
   title: string;
+  date: Date;
 }
 
-const { event, page } = defineProps<{
+const {event, page} = defineProps<{
   event: any;
   page: number;
 }>();
