@@ -1,6 +1,25 @@
+
+
 ---
+import {getSession} from "auth-astro/server";
+import ComputoService from "../../services/Computo";
 import ComputoCore from "../../components/Indicators/ComputoCore.vue"
 import RootLayout from "../../layouts/RootLayout.astro";
+
+const session: any = await getSession(Astro.request)
+const id = session.user?.core?.id
+
+async function getComputo(){
+    const service = new ComputoService()
+    try{
+        return await service.getAllByCore(session?.jwt, id);
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+console.log("Id core",id)
+const computo = await getComputo();
 ---
 <RootLayout>
     <ComputoCore computo={computo} client:load/>

@@ -18,13 +18,13 @@
             No hay tareas o eventos.
           </p>
         </div>
-        <div v-else class="flex pt-4 bg-white border p-12 rounded gap-2">
+        <div v-else class="flex pt-4 bg-white border p-12 rounded gap-2 grid grid-cols-1">
           <div v-for="ev in event.data" :key="ev.id" class="border-b">
+            <p class="text-button px-4 font-medium">{{ ev.type }}</p>
             <div class="flex justify-between">
-              <p class="text-button px-4 font-medium">{{ ev.type }}</p>
+              <h3 class="py-2">Detalles: {{ ev.title }}</h3>
               <p class="text-gray-400">{{ev.date}}</p>
             </div>
-            <h3 class="py-2">Detalles: {{ ev.title }}</h3>
           </div>
         </div>
         <!-- Pagination -->

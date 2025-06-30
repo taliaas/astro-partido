@@ -1,135 +1,180 @@
-export const indicadores = [
-    {
-        key: "ptos",
-        name: "Puntos del Orden del Día",
-        description: "Posición en el orden del día",
+export type Category = (typeof categories)[number];
+export const categories = [
+    "Asistencia",
+    "Gestión",
+    "Acuerdos",
+    "Política",
+    "Evaluación",
+    "Organización",
+] as const;
+
+interface IndicatorItem {
+    category: Category;
+    name: string;
+    description: string;
+}
+
+export type Indicators = (typeof indicators)
+export const indicators = {
+    asistencia: {
+        category: "Asistencia",
+        name: "Asistencia",
+        description: "Relación de asistencia",
     },
-    {
-        key: "totalDeAcuerdos",
+    reason: {
+        category: "Asistencia",
+        name: "Causas de ausencias",
+        description: "Estado de Causas de Ausencias",
+    },
+    ptos: {
+        category: "Gestión",
+        name: "Orden del Día",
+        description: "Puntos del orden del día",
+    },
+    totalDeAcuerdos: {
+        category: "Acuerdos",
         name: "Total de Acuerdos",
         description: "Total de acuerdos tomados",
     },
-    {
-        key: "participacionOrgSup_Cte",
-        name: "Particip. del Org. Superior del Comité",
-        description: "Participantes de la organización superior del comité",
+    participacionOrgSup_Cte: {
+        category: "Asistencia",
+        name: "Participantes de la Org. Sup. del comité",
+        description: "Participantes de la organización superior de Comité",
     },
-    {
-        key: "participacionOrgSup_Mun",
-        name: "Particip. del Org. Superior del Municipio",
-        description: "Participantes de la organización superior del municipio",
+    participacionOrgSup_Mun: {
+        category: "Asistencia",
+        name: "Participantes de la Org. Sup. del Municipio",
+        description: "Participantes de la organización superior del Municipio",
     },
-    { key: "totalInvitados", name: "Invitados", description: "Invitados" },
-    { key: "reunionExtraordinaria", name: "Círculo Político", description: "Círculo político" },
-    {
-        key: "redicionMilitantes",
-        name: "Rendición Militante",
-        description: "Rendición de cuentas de militantes",
+    invitados: {
+        category: "Asistencia",
+        name: "Invitados",
+        description: "Invitados a la reunión",
     },
-    {
-        key: "redicionDirigAdm",
-        name: "Rendición Dirigente",
-        description: "Rendición de cuentas de dirigentes",
+    cp: {
+        category: "Política",
+        name: "Círculo Político",
+        description: "Reunión de círculo de estudio",
     },
-    {
-        key: "usoComisiones",
+    cp_agree: {
+        category: "Política",
+        name: "Acuerdos del Círculo Político",
+        description: "Acuerdos dentro del círculo político",
+    },
+    usoComisiones: {
+        category: "Organización",
         name: "Uso de Comisiones",
         description: "Uso y funcionamiento de comisiones",
     },
-    {
-        key: "implOrtcsOrgSup",
+    implOrtcsOrgSup: {
+        category: "Gestión",
         name: "Implementación ORTCS",
         description:
             "Implementación de estrategias ORTCS en la organización superior",
     },
-    {
-        key: "analisisActFtal",
-        name: "Análisis Actividades",
+    analisisActFtal: {
+        category: "Evaluación",
+        name: "Análisis de la Actividad Fundamental",
         description: "Análisis de actividades fundamentales",
     },
-    {
-        key: "discusionDelitoCorrupcionIlegalidad",
+    discusionDelitoCorrupcionIlegalidad: {
+        category: "Política",
         name: "Discusión Delito Corrupción",
         description: "Discusión sobre delitos y corrupción",
     },
-    {
-        key: "analisisObjs",
+    analisisObjs: {
+        category: "Evaluación",
         name: "Análisis de Objetivos",
         description: "Evaluación y análisis de objetivos estratégicos",
     },
-    {
-        key: "politicaDeCuadros",
+    politicaDeCuadros: {
+        category: "Gestión",
         name: "Política de Cuadros",
         description: "Políticas de cuadros y liderazgo",
     },
-    {
-        key: "atencionFEU",
+    atencionFEU: {
+        category: "Organización",
         name: "Atención FEU",
-        description: "Atención a la FEU (Federación Estudiantil Universitaria)",
+        description: "Atención a la Federación Estudiantil Universitaria",
     },
-    {
-        key: "atencionUJC",
+    atencionUJC: {
+        category: "Organización",
         name: "Atención UJC",
-        description: "Atención a la UJC (Unión de Jóvenes Comunistas)",
+        description: "Atención a la Unión de Jóvenes Comunistas",
     },
-    {
-        key: "funcionamientoSindicato",
+    funcionamientoSindicato: {
+        category: "Organización",
         name: "Funcionamiento del Sindicato",
         description: "Evaluación del funcionamiento sindical",
     },
-    {
-        key: "reglamentosEstatutos",
+    reglamentosEstatutos: {
+        category: "Gestión",
         name: "Reglamentos y Estatutos",
         description: "Revisión y aplicación de reglamentos y estatutos",
     },
-    {
-        key: "analisisAusenciasRO",
+    analisisAusenciasRO: {
+        category: "Asistencia",
         name: "Análisis de Ausencias RO",
         description: "Evaluación de ausencias en reuniones oficiales",
     },
-    {
-        key: "otrosAnalisisDisciplinarios",
+    otrosAnalisisDisciplinarios: {
+        category: "Evaluación",
         name: "Otros Análisis Disciplinarios",
         description: "Evaluación de otros aspectos disciplinarios",
     },
-    {
-        key: "planDeTrabajo",
+    planDeTrabajo: {
+        category: "Gestión",
         name: "Plan de Trabajo",
         description: "Planificación y seguimiento de tareas",
     },
-    {
-        key: "sanciones",
+    sanciones: {
+        category: "Gestión",
         name: "Sanciones",
         description: "Registro y control de sanciones",
     },
-    {
-        key: "crecimiento",
+    crecimiento: {
+        category: "Organización",
         name: "Crecimiento",
         description: "Indicadores de crecimiento organizacional",
     },
-    {
-        key: "desactivacion",
+    desactivacion: {
+        category: "Organización",
         name: "Desactivaciones",
         description: "Registro de miembros desactivados",
     },
-    {
-        key: "evaluacion",
+    evaluacion: {
+        category: "Evaluación",
         name: "Evaluación",
         description: "Evaluación general del desempeño",
     },
-    {
-        key: "guardiaPCC",
+    guardiaPCC: {
+        category: "Organización",
         name: "Guardia PCC",
         description: "Guardias programadas en el PCC",
     },
-    {
-        key: "acuerdoSalidasExternas",
+    acuerdosSalidasExternas: {
+        category: "Acuerdos",
         name: "Acuerdos de Salidas Externas",
         description: "Acuerdos relacionados con salidas externas",
     },
-    {
-        key: "trasladosIncorporacion",
+    trasladosIncorporacion: {
+        category: "Organización",
         name: "Traslados e Incorporaciones",
         description: "Registro de traslados e incorporaciones",
     },
-] as const
+    rendicionMilitante: {
+        category: "Evaluación",
+        name: "Rendición de militantes",
+        description: "Rendición de militantes",
+    },
+    rendicionDirigente: {
+        category: "Evaluación",
+        name: "Rendición de dirigentes",
+        description: "Rendición de dirigentes",
+    },
+    rendicionOrganizacionesYOtros: {
+        category: "Evaluación",
+        name: "Rendición de organizaciones y otros",
+        description: "Rendición de organizaciones y otros",
+    },
+} as const satisfies Record<string, IndicatorItem>;
