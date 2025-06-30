@@ -314,7 +314,7 @@ const getComputo = (nucleo: { id: string }) => {
     (c) => c.month == month && c.year == year && c.core?.id === nucleo.id
   );
 
-  return c.indicators.find((i) => i.key === indicator)?.value;
+  return c?.indicators?.find((i) => i.key === indicator)?.value;
 };
 
 const setTotal = (comite: { core: { id: string }[] }) => {
