@@ -2,6 +2,7 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "zod";
 import { API_URL } from "astro:env/client";
 import { getSession } from "auth-astro/server.ts";
+import { roleEnum } from "@/enum/roleEnum";
 
 export const updateUser = defineAction({
   input: z.object({
@@ -14,7 +15,7 @@ export const updateUser = defineAction({
   async handler({ id, ...input }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
+    
     const res = await fetch(`${API_URL}/user/${id}`, {
       method: "PATCH",
       headers: {

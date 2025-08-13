@@ -20,9 +20,7 @@ export const form_schema = z.object({
         absenceReasons: z.enum(absenceReasons)
     }).array(),
     order: z.string().array(),
-    orientaciones: z.string(),
-    chequeo: z.string(),
-    analisis: z.string(),
+    development: z.string().array(),
     agreements: z.object({
         descripcion: z.string(),
         responsable: z.string(),
@@ -32,11 +30,4 @@ export const form_schema = z.object({
     fechaProx: z.coerce.date().min(today, { message: "La fecha no puede ser menor a la actual" }),
     fechaPrep: z.coerce.date().min(today, { message: "La fecha no puede ser menor a la actual" }),
     fechaCP: z.coerce.date().min(today, { message: "La fecha no puede ser menor a la actual" }),
-    extranjero: z.object({
-        nombre: z.string().min(3),
-        motivo: z.string(),
-        destino: z.string(),
-        fechaIda: z.coerce.date(),
-        estado: z.enum(['Pendiente', 'Aprobado', 'Rechazado']),
-    }).array()
 });

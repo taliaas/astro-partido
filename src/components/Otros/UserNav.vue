@@ -19,7 +19,8 @@
         class="hover:bg-gray-200 dark:hover:bg-zinc-600"
       >
         <User class="mr-2 h-4 w-4" />
-        <span>Mi Cuenta</span>
+        <span>Mi Cuenta </span>
+        
       </DropdownMenuItem>
 
       <DropdownMenuItem
@@ -35,9 +36,9 @@
 
       <DropdownMenuItem
         @click="showSesionModal = true"
-        class="text-red-500 focus:text-red-500 hover:bg-gray-200 hover:text-red-700 dark:hover:bg-zinc-600"
+        class="text-red-500 hover:bg-gray-200 hover:text-red-700 dark:hover:bg-zinc-600"
       >
-        <LogOut class="mr-2 h-4 w-4" />
+        <LogOut class="mr-2 h-4 w-4 text-red-500" />
         <span>Cerrar Sesión</span>
       </DropdownMenuItem>
     </DropdownMenuContent>
@@ -70,7 +71,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { navigate } from "astro:transitions/client";
-import { User, Settings, HelpCircle, LogOut } from "lucide-vue-next";
+import { User, Settings, LogOut } from "lucide-vue-next";
 import { ref } from "vue";
 import { signOut } from "auth-astro/client";
 import {

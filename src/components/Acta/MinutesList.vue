@@ -132,7 +132,7 @@
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="
                           acta.type === 'ro' &&
-                          acta.status === 'Procesada'
+                          acta.status === 'Pendiente'
                         " @click="handleAction('procesar', acta)">
                           <Edit class="h-4 w-4"/>
                           Procesar
@@ -341,16 +341,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "../ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
 
-const {actas, page} = defineProps<{
+const {actas, type, page, order} = defineProps<{
   actas: any;
-  tyactaspe: string;
+  type: string;
   page: number;
+  order: any;
 }>();
-console.log(actas)
+
 const mode = ref('spacy')
-
 const hasPermission = usePermissions()
-
 const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
 const showUploadDialog = ref(false);
 const uploadedFiles = ref([]);
@@ -359,6 +358,12 @@ const showDelete = ref(false);
 const currentPage = ref(page)
 const hasNextPage = ref(actas?.total)
 const loading = ref(false)
+const currentsMinute = ref(null);
+const selectType = ref("");
+const selectFecha = ref('');
+const selectedNucleo = ref("");
+const selectedStatus = ref("");
+const sort = ref<"ASC" | "DESC">(order);
 
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes'
@@ -381,14 +386,6 @@ const tableHeaders = [
   "",
 ];
 
-const currentsMinute = ref(null);
-const selectType = ref("");
-const selectFecha = ref('');
-const selectedNucleo = ref("");
-const selectedStatus = ref("");
-
-const sort = ref<"ASC" | "DESC" | null>(null);
-
 function handleSort() {
   if (sort.value === "ASC") {
     sort.value = "DESC";
@@ -397,6 +394,7 @@ function handleSort() {
   } else {
     sort.value = "ASC";
   }
+  navigate(`/minutes?type=all&page=${currentPage.value}&order=${sort.value}`)
 }
 
 const nucleos = computed(() => {
@@ -417,20 +415,6 @@ const filteredActas = computed(() => {
         (selectedStatus.value && item.status !== selectedStatus.value) ||
         (selectType.value && item.type !== selectType.value))
   })
-      .filter(item => {
-        const date = new Date(item.fecha);
-        return !selectFecha.value || (date.getFullYear() === Number(year) &&
-            (date.getMonth() + 1) === Number(month))
-      })
-      .sort((a, b) => {
-        if (sort.value === "DESC") {
-          return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
-        } else if (sort.value === "ASC") {
-          return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
-        } else {
-          return a.id - b.id;
-        }
-      }) ?? [];
 });
 
 const filters = ref({

@@ -1,0 +1,54 @@
+---
+import { roleEnum } from "@/enum/roleEnum";
+import { hasServerPermissions, hasServerRoles } from "@/utils/auth-server";
+
+const path = Astro.originPathname;
+
+const navigationItems = [
+  {
+    name: "Funcionamiento",
+    href: "/minutes",
+    enabled: await hasServerPermissions("Documentos", "read", Astro.request),
+  },
+  {
+    name: "Procesos",
+    href: "/process",
+    enabled:
+      (await hasServerPermissions("Procesos", "read", Astro.request)) &&
+      (await hasServerRoles([roleEnum.Cmte], Astro.request)),
+  },
+  {
+    name: "Cómputo",
+    href: (await hasServerRoles([roleEnum.Gnral], Astro.request))
+      ? "/analisis_indicador"
+      : "/analisis_indicador/comite",
+    enabled: await hasServerPermissions("Análisis", "read", Astro.request),
+  },
+  {
+    name: "Reportes",
+    href: "/estadofunc",
+    enabled: await hasServerPermissions("Reportes", "read", Astro.request),
+  },
+];
+---
+
+<nav
+  class="flex items-center text-gray-500 dark:text-gray-300 text-md font-semibold space-x-6"
+>
+  {
+    navigationItems.map(
+      (item) =>
+        item.enabled && (
+          <a
+            href={item.href}
+            class:list={[
+              "dark:text-gray-400 hover:text-foreground dark:hover:text-white transition-colors",
+              { "text-blue-600": path === item.href },
+            ]}
+          >
+            {item.name}
+          </a>
+        )
+    )
+  }
+</nav>

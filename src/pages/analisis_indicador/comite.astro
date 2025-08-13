@@ -1,0 +1,36 @@
+---
+import Analisis from '../../components/Indicators/Analisis.vue'
+import RootLayout from "../../layouts/RootLayout.astro";
+import ComiteService from "../../services/ComiteService";
+import ComputoService from "../../services/Computo";
+import {getSession} from "auth-astro/server.ts";
+
+const session: any = await getSession(Astro.request)
+
+async function getComite(){
+    const service = new ComiteService()
+    try{
+        return service.getAllComite(session?.jwt)
+    }
+    catch (e) {
+        console.error(e)
+    }
+}
+async function getComputo(){
+    const service = new ComputoService()
+    try{
+        return await service.getAll(session?.jwt);
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
+const comite = await getComite();
+const computo = await getComputo();
+console.log(comite)
+---
+
+<RootLayout>
+    <Analisis comite={comite} computo={computo} client:load/>
+</RootLayout>

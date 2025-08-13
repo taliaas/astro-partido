@@ -6,11 +6,13 @@ import RootLayout from "../layouts/RootLayout.astro";
 
 const session = await getSession(Astro.request)
 const user = session?.user
+const searchParams = Astro.url.searchParams
+const page = searchParams.get("page") || 1
 
 async function getNotification() {
   const service = new NotificationService()
   try {
-    return await service.getAll(user)
+    return await service.getAll(user, page)
   } catch (e) {
     console.error('Error fetching notification:', e);
     throw e;

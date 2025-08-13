@@ -1,66 +1,64 @@
 ---
 import MinutesService from "@/services/Minutes";
-import {getSession} from "auth-astro/server";
+import { getSession } from "auth-astro/server";
 import Editar from "../../components/Indicators/Editar.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
 import ComputoService from "../../services/Computo";
 import PoliticalService from "../../services/PoliticalService";
-import {indicators} from "../../lib/indicadoresKey";
+import { indicators } from "../../lib/indicadoresKey";
 
-const {id} = Astro.params;
+const { id } = Astro.params;
 const session = (await getSession(Astro.request)) as any;
 
 if (!id) {
-    throw new Error("No id provided");
+  throw new Error("No id provided");
 }
 
 async function getActa() {
-    const services = new MinutesService();
-    try {
-        return services.getMinute(id!, session.jwt);
-    } catch (e) {
-        console.error(e);
-    }
+  const services = new MinutesService();
+  try {
+    return services.getMinute(id!, session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 const acta = await getActa();
 
 async function getActaPolitica() {
-    const services = new PoliticalService();
-    try {
-        return services.getMinutesByCore(acta.core.id, acta.fecha);
-    } catch (e) {
-        console.error(e);
-    }
+  const services = new PoliticalService();
+  try {
+    return services.getMinutesByCore(acta.core.id, acta.fecha);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 async function obtenerComputo() {
-    const service = new ComputoService();
-    try {
-        return service.getCalcularComputo(id!, session);
-    } catch (error) {
-        console.log("error");
-    }
+  const service = new ComputoService();
+  try {
+    return service.getCalcularComputo(id!, session);
+  } catch (error) {
+    console.log("error");
+  }
 }
 
-const ind = await obtenerComputo();
-const cp = await getActaPolitica();
+const computo = await obtenerComputo();
+const ind = computo.indicators;
+// const cp = await getActaPolitica();
 
-const indList = []
+const indList = [];
 for (const key in indicators) {
-    const indicator = ind.find(i => i.key === key)
-    indList.push({
-        value: indicator?.value ?? null,
-        text: indicator?.text ?? ""
-    })
+  const indicator = ind.find((i) => i.key === key);
+  indList.push({
+    id: indicator?.id,
+    key,
+    value: indicator?.value ?? null,
+    text: indicator?.text ?? "",
+  });
 }
 ---
 
 <RootLayout>
-    <Editar
-            ind={indList}
-            acta={acta}
-            cp={cp}
-            client:load
-    />
+  <Editar ind={indList} acta={acta} client:load />
 </RootLayout>

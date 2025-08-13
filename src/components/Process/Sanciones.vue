@@ -15,10 +15,6 @@
         <PlusIcon class="size-4" />
          Sanción
       </Button>
-      <Button @click="saveMinute">
-        <UploadIcon class="size-4" />
-        Documento
-      </Button>
       </div>
     </div>
 

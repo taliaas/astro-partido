@@ -91,7 +91,6 @@ const expanding = ref(false);
 
 const handleExpanding = (nucleoId) => {
   const nucleo = cores.value.find(n => n.id === nucleoId);
-  console.log("Nucleo", nucleo);
   if (nucleo) expanding.value = !expanding.value;
 };
 

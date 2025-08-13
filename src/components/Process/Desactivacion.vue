@@ -145,10 +145,7 @@ const saveMinute = async () => {};
           <PlusIcon class="size-4" />
           Desactivación
         </Button>
-        <Button @click="saveMinute">
-          <UploadIcon class="size-4" />
-          Documento
-        </Button>
+        
       </div>
     </div>
 

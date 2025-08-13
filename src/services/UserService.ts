@@ -42,7 +42,6 @@ export default class UserService {
   }
 
   async getUserByEmail(email: string, token:string) {
-    console.log(email);
     try {
       const response = await fetch(
         `${API_URL}/user/data/${email}`,
@@ -65,7 +64,6 @@ export default class UserService {
   }
 
   async removeUser(id: number) {
-    console.log(id);
     try {
       const response = await fetch(
         `${API_URL}/user/${id}`,

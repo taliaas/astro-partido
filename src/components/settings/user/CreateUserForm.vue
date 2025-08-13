@@ -21,6 +21,7 @@ import { navigate } from "astro:transitions/client";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
 import { ActionError } from "astro/actions/runtime/virtual/shared";
+import { roleEnum } from "@/enum/roleEnum";
 
 interface User {
   id: string;
@@ -36,17 +37,6 @@ const { onLoadingChange, user } = defineProps<{
   onLoadingChange: (value: boolean) => void;
   user: User | null;
 }>();
-
-console.log(user);
-
-const roleEnum = [
-  "Administrador",
-  "Secretario del Funcionamiento",
-  "Secretario General del núcleo",
-  "Secretario político e ideológico",
-  "Miembro del Comite CUJAE",
-  "Militante",
-];
 
 type UserData = z.infer<typeof userSchema>;
 const userSchema = z.object({

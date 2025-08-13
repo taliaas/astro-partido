@@ -3,23 +3,13 @@ import CoreService from "../services/CoreService";
 import "../globals.css";
 import Header from "@/components/layout/Header.vue";
 import { ClientRouter } from "astro:transitions";
-import Navigation from "@/components/layout/Navigation.vue";
+import Navigation from "@/components/layout/Navigation.astro";
 import LoadingIndicator from "astro-loading-indicator/component";
 import { Toaster } from "@/components/ui/sonner";
 import { getSession } from "auth-astro/server";
 
 const pathName = Astro.originPathname;
 const session = (await getSession(Astro.request)) as any;
-
-async function getCore() {
-  const service = new CoreService();
-  try {
-    return await service.getAllCore(session.jwt);
-  } catch (e) {
-    console.error(e);
-  }
-}
-const cores = await getCore();
 ---
 
 <!doctype html>
@@ -37,8 +27,8 @@ const cores = await getCore();
     <Toaster client:idle richColors />
     <div class="min-h-screen bg-gray-50 dark:bg-zinc-800">
       <!-- Header -->
-      <Header cores={cores} client:load>
-        <Navigation client:load slot="navigation" path={pathName} />
+      <Header client:load>
+        <Navigation slot="navigation" />
       </Header>
       <div class="flex">
         <!-- Sidebar -->

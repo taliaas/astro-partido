@@ -1,3 +1,4 @@
+import type { roleEnum } from "@/enum/roleEnum";
 
 export const modules = [
   "Documentos",
@@ -29,6 +30,11 @@ export function hasPermissions(module: string, action: string, claims: any[]) {
       claim.actions.includes(action),
   )
   return check;
+}
+
+export function hasRoles(roles: roleEnum[], user: any) {
+  const role = user?.role?.name
+  return roles.includes(role as roleEnum);
 }
 
 

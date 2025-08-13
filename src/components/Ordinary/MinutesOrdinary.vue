@@ -115,7 +115,6 @@ import ThirdStep from "@/components/Ordinary/ThirdStep.vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { formatDate } from "date-fns";
 import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed, ref } from "vue";
@@ -123,6 +122,7 @@ import { toast } from "vue-sonner";
 
 const currentStep = ref(1);
 const { user, cores } = defineProps<{ user: any; cores: any }>();
+
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
 };
@@ -159,13 +159,14 @@ const form = useForm({
 
 const submitForm = form.handleSubmit(async (data: FormSchema) => {
   data.core = { id: data.core };
+  console.log('llega:', data);
+  
   try {
     await actions.ordinary.createMinute({
       data,
       abscents: data.militantes.filter((m) => m.estado === "ausente"),
       invitados: data.invitados ?? [],
       agreements: data.agreements ?? [],
-      extranjero: data.extranjero ?? [],
     });
     toast.success("Se creó el acta correctamente");
     navigate("/minutes");

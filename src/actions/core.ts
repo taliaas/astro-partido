@@ -39,7 +39,7 @@ export const updateCore = defineAction({
     async handler({id, ...input}, context) {
         const session: any = await getSession(context.request);
         if (!session) throw new ActionError({code: "UNAUTHORIZED"});
-        console.log(input)
+        
         const res = await fetch(`${API_URL}/core/${id}`, {
             method: "PATCH",
             body: JSON.stringify(input),
@@ -58,7 +58,6 @@ export const updateCore = defineAction({
 export const deleteCore = defineAction({
     input: z.coerce.number(),
     async handler(id, context) {
-        console.log(id)
         const session: any = await getSession(context.request);
         if (!session) throw new ActionError({code: "UNAUTHORIZED"});
         const res = await fetch(`${API_URL}/core/delete/${id}`, {

@@ -125,7 +125,6 @@ async function addEvent() {
   });
   if (error instanceof ActionError) {
     toast.error("Hubo un error al crear el evento");
-    console.error(error);
   } else {
     toast.success("Se creó un evento");
     newEvent.title = "";
@@ -135,10 +134,8 @@ async function addEvent() {
 }
 
 async function getAllEvent(date: any) {
-  console.log(date)
   try {
     pendingTasks.value = await actions.events.getEvents.orThrow({ date });
-    console.log(pendingTasks.value)
     return pendingTasks;
   } catch (e) {
     console.error(e);

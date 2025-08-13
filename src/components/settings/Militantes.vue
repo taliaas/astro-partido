@@ -33,15 +33,6 @@
           class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-8 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
-      <select
-        v-model="selectCore"
-        class="rounded-md border px-3 py-2 mx-1.5 text-md"
-      >
-        <option value="">Todos los núcleos</option>
-        <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.name">
-          {{ nucleo.name }}
-        </option>
-      </select>
     </div>
 
     <!-- Members Table -->
@@ -708,14 +699,14 @@ const filteredMembers = computed(() => {
   }
   if (!Array.isArray(militantes.data)) return [];
   const query = searchQuery.value.toLowerCase();
-  return militantes.data.filter(
+  return militantes?.data?.filter(
     (member: any) =>
       member.firstname.toLowerCase().includes(query) ||
       member.lastname.toLowerCase().includes(query) ||
       member.email.toLowerCase().includes(query) ||
       member.organization.toLowerCase().includes(query) ||
-      member.core.name.toLowerCase().includes(query),
-  );
+      member.core.name.toLowerCase().includes(query)
+  )
 });
 
 // Methods

@@ -24,16 +24,7 @@
             </Card>
           </div>
 
-          <Tabs v-model="activeTab" class="space-y-4">
-            <TabsList class="grid w-full grid-cols-1 md:grid-cols-2 h-auto">
-              <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
-                {{ tab.label }}
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value" class="space-y-4">
-              <component :is="tab.component" :documents :kpis />
-            </TabsContent>
-          </Tabs>
+          <Documents :documents />
         </div>
         <div class="w-fit pt-12">
           <RightSidebar />
@@ -47,15 +38,13 @@
 import { watch, ref } from "vue";
 import { Activity, FileCheck2, Files, FileText } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Documents from "../Home/Documents.vue";
-import KPIs from "../Home/KPIs.vue";
 import RightSidebar from "./RightSidebar.vue";
 import { useSearchStore } from "@/utils/store.ts";
 
 const icons = { Activity, FileCheck2, Files, FileText };
 
-const { documents, kpis, card } = defineProps<{
+const { documents, kpis, cards } = defineProps<{
   documents: any[];
   kpis: any[];
   cards: any;
@@ -65,11 +54,6 @@ const searchStore = useSearchStore();
 let isVisible = ref(false)
 const activeTab = ref("documents");
 
-const tabs = [
-  { value: "documents", label: "Documentos", component: Documents },
-  { value: "kpis", label: "Desempeño", component: KPIs },
-];
-
 watch(
   () => searchStore.showSidePanel,
   (newVal) => {
@@ -77,4 +61,5 @@ watch(
   },
   { immediate: true } // Para obtener el valor inicial
 );
+
 </script>

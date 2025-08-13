@@ -19,7 +19,7 @@
     "@vee-validate/zod": "^4.15.0",
     "@vueuse/core": "^12.8.2",
     "@vueuse/router": "^13.2.0",
-    "astro": "^5.8.0",
+    "astro": "^5.11.0",
     "astro-loading-indicator": "^0.7.0",
     "auth-astro": "^4.2.0",
     "aws-sdk": "^2.1692.0",
@@ -54,7 +54,7 @@
     "zod": "^3.25.28"
   },
   "devDependencies": {
-    "@astrojs/vercel": "^8.1.4",
+    "@astrojs/vercel": "^8.2.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/vue": "^8.1.0",
     "@types/bcryptjs": "^2.4.6",

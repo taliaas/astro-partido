@@ -32,6 +32,7 @@
             <FormMessage />
           </FormItem>
         </FormField>
+        
         <FormField name="lugar" v-slot="{ componentField }">
           <FormItem class="w-3/4">
             <FormLabel>Lugar</FormLabel>
@@ -173,15 +174,15 @@
               {{ militante.lastname }}
             </td>
             <td class="py-4 whitespace-nowrap">
-              <select
+                <select
                 v-model="estado[index]"
                 :name="'militante.' + index + '.estado'"
                 class="px-2 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
+                >
                 <option value="presente">Presente</option>
                 <option value="virtual">Virtual</option>
                 <option value="ausente">Ausente</option>
-              </select>
+                </select>
             </td>
             <td
               class="w-1/5 px-6 py-4 whitespace-nowrap"
@@ -239,11 +240,11 @@ import FormItem from "@/components/ui/form/FormItem.vue";
 import FormLabel from "@/components/ui/form/FormLabel.vue";
 import FormControl from "@/components/ui/form/FormControl.vue";
 import FormMessage from "@/components/ui/form/FormMessage.vue";
+import { useSession } from "@/utils/auth-client";
 
+const session = useSession();
 defineEmits(["update"]);
 
-const { cores } = defineProps<{ cores: any[] }>();
-const selectedNucleo = ref(cores[0]?.id);
 const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
 const formData = reactive({
   fecha: "",
@@ -258,10 +259,26 @@ const militantes = ref<
 >([]);
 const estado = reactive([]);
 
+// Ensure estado is initialized with "presente" for each militante
+watch(
+  militantes,
+  (newMilitantes) => {
+    // Only set if not already set
+    if (estado.length !== newMilitantes.length) {
+      newMilitantes.forEach((_, idx) => {
+        if (!estado[idx]) estado[idx] = "presente";
+      });
+      // Remove extra items if militantes shrinks
+      estado.length = newMilitantes.length;
+    }
+  },
+  { immediate: true }
+);
+
 async function getMilitantes() {
   const service = new MilitantService();
   try {
-    const core = selectedNucleo.value as any;
+    const core = session?.core?.id as any;
     const result = await service.getMilitantes(core ?? 1);
     militantes.value = result.map((m: any) => ({
       ...m,
@@ -279,10 +296,6 @@ const addPerson = () => {
 const removeInvitados = (index: any) => {
   person.value.splice(index, 1);
 };
-
-watch(selectedNucleo, () => {
-  getMilitantes();
-});
 
 onMounted(() => {
   getMilitantes();

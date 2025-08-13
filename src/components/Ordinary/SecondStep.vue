@@ -16,7 +16,7 @@
         </Button>
       </div>
     </div>
-    
+
     <div class="rounded border">
       <table class="w-full">
         <thead>
@@ -68,74 +68,40 @@
   </div>
   <div class="space-y-4">
     <h2 class="text-lg mt-8 mb-4 font-bold">Desarrollo</h2>
-    <div class="">
-      <FormField name="chequeo" v-slot="{ componentField }">
-        <FormItem class="">
-          <FormLabel>1. Chequeo de acuerdos</FormLabel>
-          <FormControl>
-            <Textarea
-              rows="4"
-              v-bind="componentField"
-              placeholder="Chequeo de acuerdos"
-              class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            ></Textarea>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </div>
-    <div class="space-y-2">
-      <FormField name="orientaciones" v-slot="{ componentField }">
-        <FormItem class="">
-          <FormLabel>2. Orientaciones del Organismo Superior</FormLabel>
-          <FormControl>
-            <Textarea
-              rows="6"
-              v-bind="componentField"
-              class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              placeholder="Orientaciones del Organismo Superior"
-            ></Textarea>
-          </FormControl>
-        </FormItem>
-      </FormField>
-    </div>
-    <div>
-      <FormField name="analisis" v-slot="{ componentField }">
-        <FormItem class="">
-          <FormLabel>3. Análisis y discusiones</FormLabel>
-          <FormControl>
-            <Textarea
-              rows="6"
-              v-bind="componentField"
-              class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              placeholder="Análisis y discusiones"
-            ></Textarea>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+    <div v-for="(item, index) in agendaItems">
+      <div>
+        <FormField :name="'development.' + index" v-slot="{ componentField }">
+          <FormItem class="">
+            <FormLabel class="text-md"
+              >{{ index + 1 }}.
+              {{ values.order?.[index] || `Punto ${index + 1}` }}</FormLabel
+            >
+            <FormControl>
+              <Textarea rows="4" v-bind="componentField"></Textarea>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-
+import { watch, ref } from "vue";
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "../ui/button";
 import Textarea from "../ui/textarea/Textarea.vue";
-import { FormField } from "@/components/ui/form";
-import FormItem from "@/components/ui/form/FormItem.vue";
-import FormControl from "@/components/ui/form/FormControl.vue";
-import FormMessage from "@/components/ui/form/FormMessage.vue";
-import FormLabel from "@/components/ui/form/FormLabel.vue";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+  FormLabel,
+} from "@/components/ui/form";
+import { useFormContext } from "vee-validate";
 
-const formData = reactive({
-  ordenDelDia: "",
-  orientaciones: "",
-  chequeo: "",
-  analisis: "",
-});
+const { values } = useFormContext();
 const agendaItems = ref([{ description: "" }]);
 
 const addAgendaItem = () => {

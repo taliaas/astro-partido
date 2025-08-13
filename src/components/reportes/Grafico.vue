@@ -42,11 +42,11 @@
                 class="w-full rounded-md border border-gray-300 p-2 text-sm"
               >
                 <option
-                  v-for="indicador in indicators"
-                  :key="indicador.key"
-                  :value="indicador.name"
+                  v-for="(value, key) in indicators"
+                  :key="key"
+                  :value="key"
                 >
-                  {{ indicador.name }}
+                  {{ value.name }}
                 </option>
               </select>
             </div>
@@ -91,18 +91,19 @@
               Exportar
             </button>
           </div>
-
-          <div ref="chartContainer" class="h-[400px] w-full">
+          <div v-if="barIndicators.includes(selectedIndicator)">
+            <BarChart :data="chartData" :options="stackedChartOptions" />
+          </div>
+          <div v-else ref="chartContainer" class="h-[400px] w-full">
             <LineChart
               class="dark:text-white"
               :data="chartData"
-              :options="chartOptions"
+              :options="lineChartOptions"
             />
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -112,6 +113,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import type { ChartData } from "chart.js";
 import {
+  BarElement,
   CategoryScale,
   Chart as ChartJS,
   Filler,
@@ -122,35 +124,51 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { Line as LineChart } from "vue-chartjs";
+import { Line as LineChart, Bar as BarChart } from "vue-chartjs";
 import { ChevronDownIcon } from "lucide-vue-next";
 import StatusService from "@/services/StatusService.ts";
-import {indicators} from "@/lib/indicadoresKey.ts";
-import {toast} from "vue-sonner";
+import { indicators } from "@/lib/indicadoresKey.ts";
+import { toast } from "vue-sonner";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
-  Filler,
+  Filler
 );
+
 const isFilterVisible = ref(true);
-const selectedIndicator = ref("Orden del Día");
+const selectedIndicator = ref("ptos");
 const current_year = new Date().getFullYear();
 const selectedYear = ref(2025);
 const selectedPeriod = ref("1");
+const barData = ref([]);
 const chartContainer = ref(null);
+const barIndicators = [
+  "atencionFEU",
+  "atencionUJC",
+  "funcionamientoSindicato",
+  "rendicionMilitante",
+  "rendicionDirigente",
+  "rendicionOrganizacionesYOtros",
+];
+
+console.log(selectedIndicator.value)
 
 const chartData = ref<ChartData<"line">>({ labels: [], datasets: [] });
 
+watch(chartData, () => console.log(chartData.value));
+
 const selectedIndicatorText = computed(() => {
-  return (
-    indicators.find((indicator) => indicator.name === selectedIndicator.value) || "N/A"
+  const entry = Object.entries(indicators).find(
+    ([key]) => key === selectedIndicator.value
   );
+  return entry?.[1]?.name ?? "";
 });
 
 const colors = [
@@ -226,15 +244,46 @@ const fetchData = async () => {
             },
           ]
         : [
-            {
-              label: selectedIndicatorText.value,
-              data: semesterData,
-              borderColor: colors[0].border,
-              backgroundColor: colors[0].bg,
-              tension: 0.4,
-              fill: true,
-            },
-          ],
+              "rendicionMilitante",
+              "rendicionDirigente",
+              "rendicionOrganizacionesYOtros",
+            ].includes(selectedIndicator.value)
+          ? [
+              {
+                label: "Rendición de militantes",
+                data: indData["rendicionMilitante"],
+                borderColor: colors[0].border,
+                backgroundColor: colors[0].bg,
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "Rendición de dirigentes",
+                data: indData["rendicionDirigente"],
+                borderColor: colors[1].border,
+                backgroundColor: colors[1].bg,
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "Rendición de organizaciones y otros",
+                data: indData["rendicionOrganizacionesYOtros"],
+                borderColor: colors[2].border,
+                backgroundColor: colors[2].bg,
+                tension: 0.4,
+                fill: true,
+              },
+            ]
+          : [
+              {
+                label: selectedIndicatorText.value,
+                data: semesterData,
+                borderColor: colors[0].border,
+                backgroundColor: colors[0].bg,
+                tension: 0.4,
+                fill: true,
+              },
+            ],
     };
   } catch (error) {
     console.log(error);
@@ -251,11 +300,11 @@ const fetchData = async () => {
         },
       ],
     };
-    toast.error("Error al cargar el indicador", "error");
+    toast.error("Error al cargar el indicador");
   }
 };
 
-const chartOptions = {
+const lineChartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   scales: {
@@ -287,6 +336,35 @@ const chartOptions = {
   },
 };
 
+const stackedChartOptions = {
+  responsive: true,
+  scales: {
+    y: {
+      beginAtZero: true,
+      stacked: true,
+      ticks: {
+        stepSize: 2,
+      },
+      grid: {
+        display: true,
+        color: "rgba(0, 0, 0, 0.05)",
+      },
+    },
+    x: {
+      stacked: true,
+    },
+  },
+  plugins: {
+    legend: {
+      position: "top",
+      labels: {
+        usePointStyle: true,
+        padding: 20,
+      },
+    },
+  },
+};
+
 const exportToPDF = async () => {
   try {
     const canvas = await html2canvas(chartContainer.value);
@@ -301,12 +379,12 @@ const exportToPDF = async () => {
     pdf.text(
       `Indicador: ${selectedIndicatorText.value} - Año: ${selectedYear.value} - Semestre: ${selectedPeriod.value}`,
       14,
-      25,
+      25
     );
     pdf.addImage(imgData, "PNG", 10, 30, pdfWidth - 20, pdfHeight - 20);
 
     pdf.save(
-      `estado-funcionamiento-${selectedYear.value}-S${selectedPeriod.value}.pdf`,
+      `estado-funcionamiento-${selectedYear.value}-S${selectedPeriod.value}.pdf`
     );
   } catch (error) {
     console.error("Error exporting PDF:", error);

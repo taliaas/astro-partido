@@ -2,7 +2,7 @@
 import "../globals.css";
 import { ClientRouter } from "astro:transitions";
 import Header from "@/components/layout/Header.vue";
-import Navigation from "@/components/layout/Navigation.vue";
+import Navigation from "@/components/layout/Navigation.astro";
 import LoadingIndicator from "astro-loading-indicator/component";
 import { Toaster } from "@/components/ui/sonner";
 import CoreService from "@/services/CoreService";
@@ -36,7 +36,7 @@ const cores = await getCore();
     <div class="min-h-screen bg-gray-50">
       <!-- Header -->
       <Header cores={cores} client:load>
-        <Navigation client:load slot="navigation" path={pathName} />
+        <Navigation slot="navigation" />
       </Header>
 
       <div class="flex">

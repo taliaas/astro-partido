@@ -16,7 +16,6 @@ async function getActa() {
     const services = new OrdinaryService()
     try {
         const acta = services.getMinute(id!)
-        console.log(acta)
         return acta
     } catch (e) {
         console.error(e)
@@ -32,7 +31,6 @@ async function getCore() {
 }
 const cores = await getCore();
 const acta = await getActa()
-console.log(cores)
 ---
 
 <RootLayout>

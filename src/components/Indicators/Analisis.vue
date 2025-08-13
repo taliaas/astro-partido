@@ -154,22 +154,22 @@
                     <p class="text-foreground">{{ nucleo.name }}</p>
                   </div>
                   <div class="flex space-x-2">
-                    <p class="text-gray-600">{{ getComputo(nucleo) }}</p>
+                    <p class="text-gray-600">{{ getComputo(nucleo)?.value }}</p>
                     <p>{{ computo.month }}</p>
                     <div
-                      v-if="getComputo(nucleo) > 2"
+                      v-if="getComputo(nucleo)?.value > 2"
                       class="p-1 bg-green-100 rounded-full"
                     >
                       <ArrowUpIcon class="h-4 w-4 text-green-600" />
                     </div>
                     <div
-                      v-else-if="getComputo(nucleo) === 0"
+                      v-else-if="getComputo(nucleo)?.value === 0"
                       class="flex items-center justify-center p-2 rounded-full bg-gray-100"
                     >
                       <Separator class="h-0.5 w-3 bg-gray-400" />
                     </div>
                     <div
-                      v-else-if="getComputo(nucleo) < 2"
+                      v-else-if="getComputo(nucleo)?.value < 2"
                       class="bg-red-100 rounded-full p-1"
                     >
                       <ArrowDownIcon class="h-4 w-4 text-red-600" />
@@ -187,24 +187,24 @@
                             </h2>
                             <div class="flex">
                               <p class="font-medium text-xl mr-2">
-                                {{ getComputo(nucleo) }}
+                                {{ getComputo(nucleo)?.value }}
                               </p>
                               <div
-                                v-if="getComputo(nucleo) > 2"
+                                v-if="getComputo(nucleo)?.value > 2"
                                 class="flex items-center justify-center space-x-1"
                               >
                                 <ArrowUpIcon class="h-4 w-4 text-green-600" />
                                 <p class="text-green-600">Incremento</p>
                               </div>
                               <div
-                                v-else-if="getComputo(nucleo) === 0"
+                                v-else-if="getComputo(nucleo)?.value === 0"
                                 class="flex items-center justify-center space-x-1"
                               >
                                 <Separator class="h-0.5 w-3 bg-gray-400" />
                                 <p class="text-gray-600">Sin cambios</p>
                               </div>
                               <div
-                                v-else-if="getComputo(nucleo) < 2"
+                                v-else-if="getComputo(nucleo)?.value < 2"
                                 class="flex items-center justify-center space-x-1"
                               >
                                 <ArrowDownIcon class="h-4 w-4 text-red-600" />
@@ -219,27 +219,11 @@
                             <h2 class="font-medium text-lg text-foreground">
                               Descripción
                             </h2>
-                            Aquí va la descripción
+                            <p class="text-gray-600">
+                              {{ getComputo(nucleo)?.text }}
+                            </p>
                           </SheetDescription>
                         </SheetHeader>
-
-                        <div class="pt-8">
-                          <div class="border-b p-2">
-                            <div class="flex justify-between mb-1">
-                              <span class="font-medium text-lg">
-                                Responsable
-                              </span>
-                              <span>Nombre</span>
-                            </div>
-                            <p class="text-sm text-gray-600">Cargo</p>
-                          </div>
-                          <div class="border-b p-2">
-                            <div class="flex justify-between mb-1">
-                              <span class="font-medium text-lg"> Fecha </span>
-                              <span>date</span>
-                            </div>
-                          </div>
-                        </div>
                       </SheetContent>
                     </Sheet>
                   </div>
@@ -255,39 +239,39 @@
 
 <script setup lang="ts">
 import Asistencia from "@/components/Indicators/Asistencia.vue";
-import { categories, indicators } from "@/utils/indicators.ts";
 import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+Collapsible,
+CollapsibleContent,
+CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+Select,
+SelectContent,
+SelectGroup,
+SelectItem,
+SelectTrigger,
+SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
+Sheet,
+SheetContent,
+SheetDescription,
+SheetHeader,
+SheetTitle,
+SheetTrigger,
 } from "@/components/ui/sheet";
+import { categories, indicators } from "@/utils/indicators.ts";
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  ChevronDownIcon,
-  EyeIcon,
-  Search,
-  XIcon,
+ArrowDownIcon,
+ArrowUpIcon,
+ChevronDownIcon,
+EyeIcon,
+Search,
+XIcon,
 } from "lucide-vue-next";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
@@ -314,14 +298,14 @@ const getComputo = (nucleo: { id: string }) => {
     (c) => c.month == month && c.year == year && c.core?.id === nucleo.id
   );
 
-  return c?.indicators?.find((i) => i.key === indicator)?.value;
+  return c?.indicators?.find((i) => i.key === indicator);
 };
 
 const setTotal = (comite: { core: { id: string }[] }) => {
   let total = 0;
 
   for (const nucleo of comite.core) {
-    total += getComputo(nucleo);
+    total += getComputo(nucleo)?.value ?? 0;
   }
 
   return total;

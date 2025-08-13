@@ -131,7 +131,7 @@ import type MinuteOrdinary from "@/interface/MinuteOrdinary.ts";
 import type MinutePolitical from "@/interface/MinutePolitical.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { exportar } from "@/lib/export_cp.ts";
-import { ChevronRight, Download, XIcon } from "lucide-vue-next";
+import { ChevronRight, Download } from "lucide-vue-next";
 import { ref } from "vue";
 
 const { documents } = defineProps<{ documents: any[] }>();
@@ -139,6 +139,7 @@ const { documents } = defineProps<{ documents: any[] }>();
 const isOpen = ref(false);
 const currentMinute = ref(null);
 const getType = (doc: AppDocument) => {
+  if (doc?.name === "Acta Ordinaria") return "Ordinaria";
   return doc?.type === "ro" ? "Ordinaria" : "Círculo Político";
 };
 

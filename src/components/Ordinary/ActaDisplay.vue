@@ -18,7 +18,6 @@
             <!-- Información General -->
             <section>
               <div class="flex text-lg gap-6 w-full justify-between">
-                
                 <div class="card">
                   <span class="font-medium text-gray-700">Núcleo:</span>
                   {{ acta.core?.name }}
@@ -53,8 +52,8 @@
             <!-- Asistencia -->
             <section title="Miembros" class="gap-2">
               <div class="text-2xl font-semibold text-gray-800 mb-2">
-                  <h2>Militantes</h2>
-                </div>
+                <h2>Militantes</h2>
+              </div>
               <Table
                 v-if="acta.militante.length"
                 class="text-md rounded-lg border border-gray-300"
@@ -74,12 +73,10 @@
                     <TableCell>{{ miembro.firstname }}</TableCell>
                     <TableCell>{{ miembro.lastname }}</TableCell>
                     <TableCell class="text-center">
-                      <Badge
-                        v-if="miembro.ausente === 'ausente'"
+                      <Badge v-if="miembro.ausente === 'ausente'"
                         >Ausente
                       </Badge>
-                      <Badge
-                        v-else-if="miembro.presente === 'Virtual'"
+                      <Badge v-else-if="miembro.presente === 'Virtual'"
                         >Virtual
                       </Badge>
                       <span v-else>Presente</span>
@@ -113,39 +110,28 @@
               <h2 class="text-2xl font-semibold text-gray-800 mb-2">
                 Desarrollo de la reunión
               </h2>
-              <Accordion type="single" collapsible >
-                <AccordionItem value="item-1" v-if="acta.chequeo.length !== 0">
-                  <AccordionTrigger class="text-lg"> Chequeo de acuerdos</AccordionTrigger>
-                  <AccordionContent>
-                    <h3 class="text-lg mb-2">
-                      {{ acta.chequeo }}
-                    </h3>
-                  </AccordionContent>
-                </AccordionItem>
+              <Accordion type="single" collapsible>
                 <AccordionItem
-                  value="item-2"
-                  v-if="acta.orientaciones.length !== 0"
+                  value="item-1"
+                  v-if="acta.development.length !== 0"
+                  v-for="(item, index) in acta.order"
                 >
                   <AccordionTrigger class="text-lg">
-                    Orientaciones del Organismo Superior
-                  </AccordionTrigger>
+                    {{ index + 1 }}. {{ item }}</AccordionTrigger
+                  >
                   <AccordionContent>
-                    <p class="text-lg">
-                      {{ acta.orientaciones }}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-3" v-if="acta.analisis.length !== 0">
-                  <AccordionTrigger class="text-lg"> Análisis</AccordionTrigger>
-                  <AccordionContent>
-                    <p class="text-lg">{{ acta.analisis }}</p>
+                    <h3 class="text-lg mb-2">
+                      {{ acta.development[index] }}
+                    </h3>
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem
                   value="item-4"
                   v-if="acta.agreements.length !== 0"
                 >
-                  <AccordionTrigger > Acuerdos</AccordionTrigger>
+                  <AccordionTrigger class="text-lg">
+                    Acuerdos
+                  </AccordionTrigger>
                   <AccordionContent>
                     <ul class="space-y-4">
                       <li
@@ -166,40 +152,6 @@
                             >Fecha de cumplimiento:</span
                           >
                           {{ acuerdo.fecha }}
-                        </div>
-                      </li>
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem
-                  value="item-5"
-                  v-if="acta.extranjero.length !== 0"
-                >
-                  <AccordionTrigger> Salidas al extranjero</AccordionTrigger>
-                  <AccordionContent>
-                    <ul class="space-y-4">
-                      <li
-                        v-for="(salida, index) in acta.extranjero"
-                        :key="index"
-                        class="pb-4"
-                      >
-                        <div class="flex gap-4">
-                          <p class="font-medium text-lg">
-                            Salida {{ salida.id }}:
-                          </p>
-                          <p class="text-lg">{{ salida.nombre }}</p>
-                        </div>
-                        <div class="flex gap-4">
-                          <span class="font-medium text-lg"
-                            >Motivo del viaje:</span
-                          >
-                          <p class="text-lg">{{ salida.motivo }}</p>
-                        </div>
-                        <div class="mt-2 text-lg gap-4">
-                          <span class="font-medium">País:</span>
-                          {{ salida.destino }} |
-                          <span class="font-medium">Fechas:</span>
-                          {{ salida.fechaIda }} al {{ salida.fechaRegreso }}
                         </div>
                       </li>
                     </ul>
@@ -232,14 +184,19 @@
                     >Fecha del Próximo Círculo de Estudios Políticos:</span
                   >
                   {{ acta.fechaCP }}
-                </div>
+                </div> 
               </div>
             </section>
           </div>
         </CardContent>
         <CardFooter class="flex justify-end border-t p-6">
           <div class="flex gap-5" v-if="acta.status === 'Pendiente'">
-            <button @click="openProcesar" class="px-4 py-2 text-md font-medium bg-primary rounded-lg text-white">Procesar</button>
+            <button
+              @click="openProcesar"
+              class="px-4 py-2 text-md font-medium bg-primary rounded-lg text-white"
+            >
+              Procesar
+            </button>
           </div>
           <div v-else-if="existsCP">
             <Button
@@ -261,13 +218,31 @@
 <script setup lang="ts">
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { ArrowRight, DownloadIcon } from "lucide-vue-next";
 import { ref } from "vue";
 import { navigate } from "astro:transitions/client";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "../ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 const { acta, existsCP } = defineProps<{
   acta: any;
@@ -289,9 +264,8 @@ const exportar = () => {
 const list = () => {
   return acta.militante.map((militante: any) => {
     const ausencia = acta.abscents.find(
-      (a: any) => a.militante?.id === militante?.id,
+      (a: any) => a.militante?.id === militante?.id
     );
-    console.log(acta.abscents);
     return {
       ...militante,
       reason: ausencia?.reason,
@@ -299,7 +273,7 @@ const list = () => {
   });
 };
 
-function openProcesar(){
+function openProcesar() {
   navigate(`/indicadores/${acta.id}`);
 }
 </script>

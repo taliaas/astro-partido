@@ -19,7 +19,6 @@ export default defineConfig({
         rememberMe: {},
       },
       async authorize(credentials) {
-        console.log(credentials);
         const res = await fetch(`${API_URL}/auth/login`, {
           method: "POST",
           headers: {
