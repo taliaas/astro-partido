@@ -52,7 +52,6 @@ async function getCore() {
         console.error(e);
     }
 }
-console.log(query);
 const actas = Array.from(Object.entries(query)).length === 0
     ? await getActas()
     : await getActasByQuery();

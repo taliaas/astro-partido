@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import { navigate } from "astro:transitions/client";
 import {
   BellIcon,
-  CheckIcon,
-  XIcon,
   InfoIcon,
   AlertTriangleIcon,
   AlertCircleIcon,
@@ -18,6 +16,7 @@ const { notifications } = defineProps<{
     page: number;
     limit: number;
     total: number;
+    all: number;
   };
 }>();
 
@@ -54,9 +53,9 @@ function previous() {
                 </h1>
                 <p class="text-sm text-gray-600 mt-1">
                   {{
-                    notifications?.total === 1
+                    notifications?.all === 1
                       ? "1 notificación"
-                      : (notifications?.data.length || 0) + " notificaciones"
+                      : (notifications?.all || 0) + " notificaciones"
                   }}
                 </p>
               </div>

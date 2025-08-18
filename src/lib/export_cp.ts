@@ -14,7 +14,6 @@ export function exportar(acta: any) {
   pdf.text("Información General", 14, 25);
   pdf.setFontSize(10);
   pdf.text(`Núcleo: ${acta.core?.name}`, 14, 35);
-  console.log(acta.core)
   pdf.text(`Fecha: ${acta.fecha}`, 14, 40);
   pdf.text(`Lugar: ${acta.lugar}`, 14, 45);
   pdf.text(`Hora: ${acta.hora}`, 14, 50);

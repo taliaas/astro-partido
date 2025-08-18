@@ -292,7 +292,6 @@ const formData = ref({
 });
 
 const cerrar = async () => {
-  console.log("minutes");
   await navigate("/minutes/");
 };
 

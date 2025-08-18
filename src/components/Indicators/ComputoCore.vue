@@ -13,18 +13,17 @@ import { computed } from "vue";
 
 const searchTerm = ref("");
 const selectedCategory = ref("");
-const fecha = ref("2025-07");
 const { computo } = defineProps<{
   computo: any;
 }>();
 
+const fecha = ref(`2025-09`);
+
 const getComputo = (key: string) => {
   const value = fecha.value;
-  const [year, month] = value.split("-");
+  const [anno, mes] = value.split("-");
 
-  const c = computo.find(
-    (item: any) => item.month == month && item.year == year
-  );
+  const c = computo.find((item: any) => item.month == mes && item.year == anno);
   const ind = c?.indicators?.find((i: any) => i.key === key)?.value;
   return ind;
 };

@@ -477,7 +477,6 @@ const saveTransfer = async () => {
   isLoading.value = true;
   try {
     if (!isEdit.value) {
-      console.log(currentTransfer.value);
       await actions.transfer.createTransfer(currentTransfer.value as any);
       toast.success("Traslado creado correctamente");
     } else {

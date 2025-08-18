@@ -24,7 +24,6 @@ export const createEvent = defineAction({
       },
     });
     const data = await res.json()
-    console.log("Data: ", data)
     if (res.status === 401) {
       throw new ActionError({ code: "UNAUTHORIZED" });
     }

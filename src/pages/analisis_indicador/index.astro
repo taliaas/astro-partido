@@ -6,6 +6,9 @@ import RootLayout from "../../layouts/RootLayout.astro";
 
 const session: any = await getSession(Astro.request);
 const id = session.user?.core?.id;
+const searchParams = Astro.url.searchParams
+const mes = searchParams.get("mes") || 4
+const anno = searchParams.get("anno") || 2025
 
 async function getComputo() {
   const service = new ComputoService();

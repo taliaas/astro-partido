@@ -23,7 +23,6 @@ async function getActas(tipo: string, page: any) {
         throw error;
     }
 }
-console.log(order);
 
 const actas = await getActas(type ?? "all", page ?? 1)
 ---

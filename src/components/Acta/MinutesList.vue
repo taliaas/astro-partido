@@ -84,7 +84,7 @@
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[1] }}
                   </th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[2] }}
                   </th>
                   <th :data-sort="sort" @click="handleSort"
@@ -105,7 +105,7 @@
                           class="hover:bg-gray-50/50 transition-colors duration-200">
                   <TableCell class="font-medium pl-8">{{ index + 1 }}</TableCell>
                   <TableCell class="pl-6">{{ acta.name }}</TableCell>
-                  <TableCell class=" pl-6 text-left"> {{ acta.core?.name }}</TableCell>
+                  <TableCell class=" pl-6 text-center"> {{ acta.core?.name }}</TableCell>
                   <TableCell class="text-left">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-center">
                     <Badge :class="getStatusClass(acta.status)">
@@ -132,7 +132,7 @@
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="
                           acta.type === 'ro' &&
-                          acta.status === 'Pendiente'
+                          (acta.status === 'Pendiente' || acta.status === 'Procesada')
                         " @click="handleAction('procesar', acta)">
                           <Edit class="h-4 w-4"/>
                           Procesar
@@ -292,7 +292,7 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
         <form @submit.prevent="handleDelete" class="space-y-4 p-4">
           <div>¿Estás seguro que desea eliminar el acta?
-            <p class="font-semibold">{{ currentsMinute.name }}</p>
+            <p class="font-semibold">{{ currentsMinute.name }} {{ currentsMinute.id }}</p>
           </div>
           <div class="flex justify-end space-x-3">
             <button type="submit"
@@ -330,7 +330,7 @@ PlusIcon,
 SearchIcon,
 Trash2Icon,
 TrashIcon,
-UploadCloudIcon
+UploadCloudIcon, 
 } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
@@ -363,9 +363,9 @@ const selectType = ref("");
 const selectFecha = ref('');
 const selectedNucleo = ref("");
 const selectedStatus = ref("");
-const sort = ref<"ASC" | "DESC">(order);
+const sort = ref<"ASC" | "DESC" | null >(order);
 
-const formatFileSize = (bytes) => {
+const formatFileSize = (bytes: any) => {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB']
@@ -373,7 +373,7 @@ const formatFileSize = (bytes) => {
   return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-const removeFile = (fileName) => {
+const removeFile = (fileName: any) => {
   uploadedFiles.value = uploadedFiles.value.filter((file) => file.name !== fileName)
 }
 
@@ -398,19 +398,19 @@ function handleSort() {
 }
 
 const nucleos = computed(() => {
-  return [...new Set(actas?.data?.map((item) => item.core?.name))];
+  return [...new Set(actas?.data?.map((item: any) => item.core?.name))];
 });
 const typeMinutes = computed(() => {
-  return [...new Set(actas?.data?.map((item) => item.type))];
+  return [...new Set(actas?.data?.map((item: any) => item.type))];
 });
 
 const statuses = computed(() => {
-  return [...new Set(actas?.data?.map((item) => item.status))];
+  return [...new Set(actas?.data?.map((item: any) => item.status))];
 });
 
 const filteredActas = computed(() => {
   const [year, month] = selectFecha.value.split('-');
-  return actas?.data?.filter((item) => {
+  return actas?.data?.filter((item: any) => {
     return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
         (selectedStatus.value && item.status !== selectedStatus.value) ||
         (selectType.value && item.type !== selectType.value))
@@ -423,7 +423,7 @@ const filters = ref({
   status: "",
 });
 
-const getStatusClass = (status) => {
+const getStatusClass = (status: any) => {
   const classes = {
     Creada: "bg-blue-100 text-blue-800 hover:bg-blue-200",
     Procesando: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
@@ -434,8 +434,9 @@ const getStatusClass = (status) => {
   return classes[status] || "bg-gray-100 text-gray-800 hover:bg-gray-200";
 };
 
-const handleAction = (action, acta) => {
+const handleAction = (action: any, acta: any) => {
   currentsMinute.value = acta;
+  
   if (action === "ver") {
     if (acta.isLoaded) {
       navigate(`/loaded-view/${acta.id}`)
@@ -452,7 +453,12 @@ const handleAction = (action, acta) => {
     }
   } else if (action === "procesar") {
     navigate(`/indicadores/${acta.id}`);
-  } else if (action === "export") {
+  } //else if(action === 'computo'){
+    //const mes = 2 //computo.month
+    //const anno = 2023 //computo.year
+    //navigate(`analisis_indicador?mes=${mes}&anno=${anno}`)
+  //} 
+  else if (action === "export") {
     if (acta.name !== "Acta Ordinaria") {
       exportar(acta);
     } else exportarRO(acta);
@@ -466,10 +472,15 @@ const handleDelete = () => {
 };
 
 async function eliminarActa() {
-  const acta = currentsMinute.value;
-  const id = acta?.id ?? "";
-  const tipo = acta?.type ?? "";
+  const acta: {
+    id: string,
+    type: string,
+  } | null = currentsMinute.value;
 
+  const id = acta?.id;
+  const tipo = acta?.type ?? 'ro';
+
+  console.log('ID', tipo);
   try {
     await actions.minute.deleteMinute({id, type: tipo})
     toast.success("Se eliminó correctamente el acta");
@@ -498,19 +509,18 @@ const handleDrop = async () => {
     uploadedFiles.value = [];
     navigate('/minutes')
   } catch (error) {
-    toast.error("Error al cargar el acta");
-    throw new Error(error);
+    toast.error(`${error.message}`);
   } finally {
     loading.value = false
   }
 };
 
-const handleFileSelect = (event) => {
+const handleFileSelect = (event: any) => {
   const files = Array.from(event.target.files);
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 };
 
-const handleFiles = (files) => {
+const handleFiles = (files: any) => {
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 }
 

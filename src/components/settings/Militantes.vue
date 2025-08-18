@@ -849,7 +849,6 @@ const closeMemberModal = () => {
 const handleViewDetails = (militante: any) => {
   selectedMilitante.value = militante;
   isModalOpen.value = true;
-  console.log("Entró", isModalOpen.value, selectedMilitante.value);
 };
 
 const closeModal = () => {

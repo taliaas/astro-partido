@@ -30,7 +30,6 @@ export default class SolrService {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const res = await response.json();
-            console.log('Response', res)
             return res
         } catch (error) {
             console.error(error);

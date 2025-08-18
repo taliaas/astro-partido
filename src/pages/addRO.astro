@@ -8,15 +8,11 @@ import MinutesOrdinary from "@/components/Ordinary/MinutesOrdinary.vue";
 const session = await getSession(Astro.request);
 const n_user = session?.user;
 
-console.log(Astro.request.method);
-
 let data;
 if (Astro.request.method === "POST") {
   const formdata = await Astro.request.formData();
-  console.log(formdata.get("data"));
   data = JSON.stringify(formdata.get("data"));
 }
-console.log(data);
 
 async function getUser() {
   const services = new UserService();

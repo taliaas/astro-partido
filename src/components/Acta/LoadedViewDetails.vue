@@ -13,12 +13,12 @@ const { acta } = defineProps<{
 
 <template>
   <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto shadow-md">
+    <div class="max-w-7xl mx-auto">
       <Card class="w-full">
         <CardHeader>
           <div class="flex justify-between items-center">
             <CardTitle class="text-3xl font-bold">
-              {{ acta?.name }} {{ acta?.id }}
+              {{ acta?.name }}
             </CardTitle>
           </div>
         </CardHeader>

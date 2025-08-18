@@ -6,13 +6,14 @@ import MinutesService from "@/services/Minutes.ts";
 
 export const getMinutes = defineAction({
   input: z.object({
-    page: z.number().optional(),
-    type: z.string().optional(),
+    page: z.number(),
+    type: z.string(),
+    order: z.string()
   }),
-  async handler({ page, type }, ctx) {
+  async handler({ page, type, order }, ctx) {
     const session = await getSession(ctx.request);
     const service = new MinutesService();
-    return service.getAllMinutes(type, page, session);
+    return service.getAllMinutes(type, page, session, order);
   },
 });
 
@@ -43,8 +44,7 @@ export const uploadMinutes = defineAction({
     );
     const data = await res.json();
     if (!res.ok) {
-      console.error(data);
-      throw new Error(`HTTP error! status: ${res.status}`);
+      throw new ActionError({ code: "UNAUTHORIZED", message: data.message});
     }
     return data;
   },
@@ -52,13 +52,15 @@ export const uploadMinutes = defineAction({
 
 export const deleteMinute = defineAction({
   input: z.object({
-    id: z.number(),
+    id: z.string(),
     type: z.string().refine((val) => ["ro", "cp"].includes(val)),
   }),
   async handler({ id, type }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
+    console.log(id, type );
+    
     const res = await fetch(`${API_URL}/minutes/delete/${id}?type=${type}`, {
       method: "POST",
       headers: {

@@ -159,7 +159,6 @@ const form = useForm({
 
 const submitForm = form.handleSubmit(async (data: FormSchema) => {
   data.core = { id: data.core };
-  console.log('llega:', data);
   
   try {
     await actions.ordinary.createMinute({
