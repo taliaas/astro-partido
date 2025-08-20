@@ -43,8 +43,12 @@ export const uploadMinutes = defineAction({
       },
     );
     const data = await res.json();
+    console.log('Data',data);
+    
     if (!res.ok) {
-      throw new ActionError({ code: "UNAUTHORIZED", message: data.message});
+      console.log();
+      
+      throw new ActionError({ code: "UNAUTHORIZED", message: data.message });
     }
     return data;
   },
@@ -52,15 +56,12 @@ export const uploadMinutes = defineAction({
 
 export const deleteMinute = defineAction({
   input: z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     type: z.string().refine((val) => ["ro", "cp"].includes(val)),
   }),
   async handler({ id, type }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
-    console.log(id, type );
-    
     const res = await fetch(`${API_URL}/minutes/delete/${id}?type=${type}`, {
       method: "POST",
       headers: {
@@ -70,6 +71,5 @@ export const deleteMinute = defineAction({
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-    return res.json();
   },
 });

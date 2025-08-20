@@ -292,7 +292,7 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
         <form @submit.prevent="handleDelete" class="space-y-4 p-4">
           <div>¿Estás seguro que desea eliminar el acta?
-            <p class="font-semibold">{{ currentsMinute.name }} {{ currentsMinute.id }}</p>
+            <p class="font-semibold">{{ currentsMinute.name }}</p>
           </div>
           <div class="flex justify-end space-x-3">
             <button type="submit"
@@ -314,25 +314,26 @@
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { usePermissions } from "@/utils/auth-client.ts";
+import { useSse } from "@/utils/sse";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import {
-ArrowDown,
-ArrowUp,
-Download,
-Edit,
-Eye,
-FileTextIcon,
-Loader2,
-MoreVerticalIcon,
-Pencil,
-PlusIcon,
-SearchIcon,
-Trash2Icon,
-TrashIcon,
-UploadCloudIcon, 
+  ArrowDown,
+  ArrowUp,
+  Download,
+  Edit,
+  Eye,
+  FileTextIcon,
+  Loader2,
+  MoreVerticalIcon,
+  Pencil,
+  PlusIcon,
+  SearchIcon,
+  Trash2Icon,
+  TrashIcon,
+  UploadCloudIcon,
 } from "lucide-vue-next";
-import { computed, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { toast } from "vue-sonner";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -341,12 +342,21 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "../ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
 
-const {actas, type, page, order} = defineProps<{
+const {actas: actasResponse, type, page, order} = defineProps<{
   actas: any;
   type: string;
   page: number;
   order: any;
 }>();
+
+const actas = reactive(actasResponse)
+
+useSse("minute.upload.status",({id,status})=>{
+  const acta = actas?.data?.find((acta: any)=>acta.id == id)
+  if (acta) {
+    acta.status = status
+  }  
+})
 
 const mode = ref('spacy')
 const hasPermission = usePermissions()
@@ -480,7 +490,6 @@ async function eliminarActa() {
   const id = acta?.id;
   const tipo = acta?.type ?? 'ro';
 
-  console.log('ID', tipo);
   try {
     await actions.minute.deleteMinute({id, type: tipo})
     toast.success("Se eliminó correctamente el acta");

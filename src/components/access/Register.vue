@@ -220,8 +220,8 @@ const handleSubmit = form.handleSubmit(async (data: RegisterData) => {
     await navigate("/home");
     localStorage.removeItem("register-form");
   } catch (error) {
-    console.error("Registration error:", error);
-    toast.error("Ha ocurrido un error al iniciar sesión");
+    console.error("Registration error:", error.message);
+    toast.error(error.message);
   } finally {
     isLoading.value = false;
   }
