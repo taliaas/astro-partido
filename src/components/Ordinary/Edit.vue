@@ -1,103 +1,128 @@
 <template>
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
-    <div
-        class="max-w-7xl mx-auto p-6 shadow-md border rounded-lg border-gray-300"
-    >
+    <div class="max-w-7xl mx-auto">
       <div class="space-x-4">
         <div class="space-y-2 text-center">
+          {{ acta }}
+
           <h2 class="font-bold text-2xl">{{ acta.name }} {{ acta.id }}</h2>
           <h3 class="font-semibold text-xl text-gray-500">PCC CUJAE</h3>
         </div>
 
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1" class="pb-4">
-            <AccordionTrigger class="text-xl">1. Informacion General</AccordionTrigger>
+            <AccordionTrigger class="text-xl"
+              >1. Informacion General</AccordionTrigger
+            >
             <AccordionContent>
-              <div class="space-x-2">
-                <div class="w-1/3 p-2">
-                  <label
+              <div class="space-y-4">
+                <div class="flex">
+                  <div class="w-1/3 space-y-1.5">
+                    <label
                       for="nucleo"
                       class="block text-md font-medium text-gray-700"
-                  >Núcleo</label
-                  >
-                  <select
+                      >Núcleo</label
+                    >
+                    <Select
                       name="nucleo"
                       v-model="acta.core.name"
-                      class="w-3/4 px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  >
-                    <option
-                        v-for="nucleo in cores"
-                        :key="nucleo.id"
-                        :value="nucleo.name"
+                      class="w-3/4 px-1 py-2"
                     >
-                      {{ nucleo?.name }}
-                    </option>
-                  </select>
-                </div>
-                <!-- 2. Presidencia -->
-                <div class="mt-4">
-                  <label
+                      <SelectTrigger class="w-2/3">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            v-for="nucleo in cores"
+                            :key="nucleo.id"
+                            :value="nucleo.name"
+                            >{{ nucleo.name }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <!-- 2. Presidencia -->
+                  <div class="w-1/3 space-y-1.5">
+                    <label
                       for="secretario"
                       class="block text-md font-medium text-gray-700"
-                  >Nombre del Secretario General</label
-                  >
-                  <Input
+                      >Nombre del Secretario General</label
+                    >
+                    <Input
                       type="text"
                       id="secretario"
                       name="secretario"
                       v-model="acta.secretarioGeneral"
                       required
-                      class="mt-1 block w-3/4 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                  />
+                      class="block w-3/4"
+                    />
+                  </div>
                 </div>
-
-                <div class="mt-4">
-                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="w-3/4">
-                      <label
-                          for="fecha"
-                          class="block text-md font-medium text-gray-700"
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="w-3/4">
+                    <label
+                      for="fecha"
+                      class="block text-md font-medium text-gray-700"
                       >Fecha de la reunión</label
-                      >
-                      <Input
-                          type="date"
-                          id="fecha"
-                          name="fecha"
-                          v-model="acta.fecha"
-                          required
-                          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                      />
-                    </div>
-                    <div class="w-3/4">
-                      <label
-                          for="hora"
-                          class="block text-md font-medium text-gray-700"
+                    >
+                    <Input
+                      type="date"
+                      id="fecha"
+                      name="fecha"
+                      v-model="acta.fecha"
+                      required
+                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                    />
+                  </div>
+                  <div class="w-3/4">
+                    <label
+                      for="hora"
+                      class="block text-md font-medium text-gray-700"
                       >Hora</label
-                      >
-                      <Input
-                          type="time"
-                          id="hora"
-                          name="hora"
-                          v-model="acta.hora"
-                          required
-                          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                      />
-                    </div>
-                    <div class="w-3/4">
-                      <label
-                          for="lugar"
-                          class="block text-md font-medium text-gray-700"
+                    >
+                    <Input
+                      type="time"
+                      id="hora"
+                      name="hora"
+                      v-model="acta.hora"
+                      required
+                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                    />
+                  </div>
+                  <div class="w-3/4">
+                    <label
+                      for="lugar"
+                      class="block text-md font-medium text-gray-700"
                       >Lugar</label
-                      >
-                      <Input
-                          type="text"
-                          id="lugar"
-                          name="lugar"
-                          v-model="acta.lugar"
-                          required
-                          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                      />
-                    </div>
+                    >
+                    <Input
+                      type="text"
+                      id="lugar"
+                      name="lugar"
+                      v-model="acta.lugar"
+                      required
+                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                    />
+                  </div>
+                </div>
+                <div class="flex">
+                  <div>
+                    <label
+                      for="lugar"
+                      class="block text-md font-medium text-gray-700"
+                      >Ausentes</label
+                    >
+                    <Input></Input>
+                  </div>
+                  <div>
+                    <label
+                      for="lugar"
+                      class="block text-md font-medium text-gray-700"
+                      >Invitados</label
+                    >
+                    <Input type="text"/>
                   </div>
                 </div>
               </div>
@@ -106,66 +131,49 @@
 
           <AccordionItem value="item-2" class="pb-4">
             <AccordionTrigger class="text-xl">2. Desarrollo</AccordionTrigger>
-            <AccordionContent class="p-2">
+            <AccordionContent class="p-2 space-y-4">
               <div class="space-y-2">
+                <label for="order" class="block text-md font-medium text-gray-700">Orden del Día</label>
+                <Textarea id="order" name="order" v-model="acta.order" rows="4"></Textarea>
+              </div>
+              <div class="space-y-2" v-if="acta.development">
                 <label
-                    for="chequeo"
-                    class="block text-md font-medium text-gray-700"
-                >1. Chequeo de acuerdos</label
+                  for="chequeo"
+                  class="block text-md font-medium text-gray-700"
+                  >1. {{ acta?.order[0] }}</label
                 >
                 <Textarea
-                    id="chequeo"
-                    name="chequeo"
-                    v-model="acta.chequeo"
-                    rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    placeholder="Chequeo de acuerdos"
+                  id="chequeo"
+                  name="chequeo"
+                  v-model="acta.development"
+                  rows="4"
+                  class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  placeholder="Chequeo de acuerdos"
                 >
                 </Textarea>
               </div>
               <div class="space-y-2">
                 <label
-                    for="orient"
-                    class="block text-md font-medium text-gray-700"
-                >2. Orientaciones del Organismo Superior</label
+                  for="agreements"
+                  class="block text-md font-medium text-gray-700"
                 >
-                <Textarea
-                    id="orient"
-                    name="orientaciones"
-                    v-model="acta.orientaciones"
-                    rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    placeholder="Orientaciones del Organismo Superior"
-                ></Textarea>
+                  Acuerdos
+                </label>
+                <Textarea v-model="acta.agreements"></Textarea>
               </div>
               <div class="space-y-2">
                 <label
-                    for="analisis"
-                    class="block text-md font-medium text-gray-700"
-                >3. Análisis y discusiones</label
-                >
-                <Textarea
-                    id="analisis"
-                    name="analisis"
-                    v-model="acta.analisis"
-                    rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    placeholder="Análisis y discusiones"
-                ></Textarea>
-              </div>
-              <div class="space-y-2">
-                <label
-                    for="observaciones"
-                    class="block text-md font-medium text-gray-700"
+                  for="observaciones"
+                  class="block text-md font-medium text-gray-700"
                 >
                   Observaciones generales
                 </label>
                 <Textarea
-                    id="observaciones"
-                    name="observaciones"
-                    v-model="acta.observaciones"
-                    rows="4"
-                    class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  id="observaciones"
+                  name="observaciones"
+                  v-model="acta.observaciones"
+                  rows="4"
+                  class="mt-1 block w-full rounded border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 ></Textarea>
               </div>
             </AccordionContent>
@@ -173,53 +181,53 @@
           <AccordionItem value="item-3">
             <AccordionTrigger class="text-xl">3. Fechas</AccordionTrigger>
             <AccordionContent>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="w-3/4 space-y-2">
                   <label
-                      for="proxima"
-                      class="block text-md font-medium text-gray-700"
+                    for="proxima"
+                    class="block text-md font-medium text-gray-700"
                   >
                     Próxima reunión
                   </label>
                   <Input
-                      type="date"
-                      required
-                      id="proxima"
-                      name="fechaProx"
-                      v-model="acta.fechaProx"
-                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    type="date"
+                    required
+                    id="proxima"
+                    name="fechaProx"
+                    v-model="acta.fechaProx"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   />
                 </div>
                 <div class="w-3/4 space-y-2">
                   <label
-                      for="preparacion"
-                      class="block text-md font-medium text-gray-700"
+                    for="preparacion"
+                    class="block text-md font-medium text-gray-700"
                   >
                     Preparación próxima reunión
                   </label>
                   <Input
-                      type="date"
-                      required
-                      id="preparacion"
-                      name="fechaPrep"
-                      v-model="acta.fechaPrep"
-                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    type="date"
+                    required
+                    id="preparacion"
+                    name="fechaPrep"
+                    v-model="acta.fechaPrep"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   />
                 </div>
                 <div class="w-3/4 space-y-2">
                   <label
-                      for="circulo"
-                      class="block text-md font-medium text-gray-700"
+                    for="circulo"
+                    class="block text-md font-medium text-gray-700"
                   >
                     Próximo círculo de estudios políticos
                   </label>
                   <Input
-                      type="date"
-                      required
-                      id="circulo"
-                      name="fechaCP"
-                      v-model="acta.fechaCP"
-                      class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    type="date"
+                    required
+                    id="circulo"
+                    name="fechaCP"
+                    v-model="acta.fechaCP"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   />
                 </div>
               </div>
@@ -228,10 +236,12 @@
         </Accordion>
 
         <div class="flex justify-end gap-4">
-          <button @click="resetData" class="p-2 rounded border">Cancelar</button>
+          <button @click="resetData" class="p-2 rounded border">
+            Cancelar
+          </button>
           <button
-              @click="update"
-              class="p-2 rounded border bg-primary hover:bg-blue-700 text-white"
+            @click="update"
+            class="p-2 rounded border bg-primary hover:bg-blue-700 text-white"
           >
             Guardar
           </button>
@@ -242,26 +252,37 @@
 </template>
 
 <script setup lang="ts">
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { toast } from "vue-sonner";
 import Input from "../ui/input/Input.vue";
 import Textarea from "../ui/textarea/Textarea.vue";
+import Select from "@/components/ui/select/Select.vue";
+import SelectGroup from "@/components/ui/select/SelectGroup.vue";
+import SelectItem from "@/components/ui/select/SelectItem.vue";
+import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
+import SelectValue from "@/components/ui/select/SelectValue.vue";
+import SelectContent from "@/components/ui/select/SelectContent.vue";
 
-const {cores, acta} = defineProps<{ cores: any[]; acta: any }>();
+const { cores, acta } = defineProps<{ cores: any[]; acta: any }>();
 
 async function update() {
   try {
-    await actions.ordinary.updateMinute({id: acta.id, data: acta})
-    toast.success("Se actualizó el acta correctamente")
+    await actions.ordinary.updateMinute({ id: acta.id, data: acta });
+    toast.success("Se actualizó el acta correctamente");
   } catch (e) {
     console.error(e);
-    toast.error("Ocurrió un error al actualizar el acta. Inténtalo de nuevo")
+    toast.error("Ocurrió un error al actualizar el acta. Inténtalo de nuevo");
   }
 }
 
-async function resetData(){
-  navigate('/')
+async function resetData() {
+  navigate("/");
 }
 </script>

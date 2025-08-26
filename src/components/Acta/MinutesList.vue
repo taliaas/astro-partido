@@ -42,33 +42,47 @@
               <div class="space-y-1.5">
                 <div class="relative">
                   <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"/>
-                  <Input id="search" v-model="filters.search" placeholder="Buscar por nombre..." class="pl-9"/>
+                  <Input id="search" :value="searchParams.name ?? ''" placeholder="Buscar por nombre..." @update:model-value="handleFilterByValue('name', $event)" class="pl-9"/>
                 </div>
               </div>
               <div class="gap-4 flex">
-                <select v-model="selectType" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
-                  <option value="">Todas las actas</option>
-                  <option v-for="type in typeMinutes" :key="type" :value="type">
-                    {{ type === 'ro' ? 'Acta Ordinaria' : type === 'cp' ? 'Círculo Político' : type }}
-                  </option>
-                </select>
+                <Select :default-value="searchParams.type ?? 'all'" @update:model-value="handleFilterByValue('type', $event)">
+                    <SelectTrigger class="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem v-for="type in typeMinutes" :key="type.value" :value="type.value">{{ type.name }}</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 <!-- Nucleo -->
-                <select v-model="selectedNucleo" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
-                  <option value="">Todos los núcleos</option>
-                  <option v-for="nucleo in nucleos" :key="nucleo" :value="nucleo">
-                    {{ nucleo }}
-                  </option>
-                </select>
+                 <Select v-if="nucleos" :default-value="searchParams.core ?? 'all'" @update:model-value="handleFilterByValue('core', $event)">
+                    <SelectTrigger class="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="all">Todos los núcleos</SelectItem>
+                        <SelectItem v-for="nucleo in nucleos" :key="nucleo.id" :value="nucleo.name">{{ nucleo.name }}</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 <!-- Status -->
-                <select v-model="selectedStatus" class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full">
-                  <option value="">Todos los estados</option>
-                  <option v-for="status in statuses" :key="status" :value="status">
-
-                    {{ status }}
-                  </option>
-                </select>
+                 <Select :default-value="searchParams.status ?? 'all'" @update:model-value="handleFilterByValue('status', $event)">
+                    <SelectTrigger class="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="all">Todos los estados</SelectItem>
+                        <SelectItem v-for="status in statuses" :key="status" :value="status">{{ status }}</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                
                 <!-- Date -->
-                <input type="month" v-model="selectFecha" class="border rounded-md p-2"></input>
+                <input type="month" :value="searchParams.fecha ?? '2025-01'" class="border rounded-md px-2 text-sm" @change="handleFilter('fecha',$event)"></input>
               </div>
             </div>
           </div>
@@ -88,11 +102,11 @@
                     {{ tableHeaders[2] }}
                   </th>
                   <th :data-sort="sort" @click="handleSort"
-                      class="group cursor-pointer px-6 py-3 flex text-left text-xs font-medium text-gray-500 uppercase tracking-wider justify-between">
+                      class="flex justify-center gap-2 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[3] }}
-                    <ArrowUp v-if="sort === 'DESC' || sort === null" class="w-4 h-4"
-                             :class="{ 'stroke-blue-500': sort === 'DESC' }"/>
-                    <ArrowDown v-if="sort === 'ASC'" class="w-4 h-4 stroke-blue-500"/>
+                    <ArrowUp v-if="sort === 'ASC' || sort === null" class="w-4 h-4"
+                             :class="{ 'stroke-blue-500': sort === 'ASC' }"/>
+                    <ArrowDown v-if="sort === 'DESC'" class="w-4 h-4 stroke-blue-500"/>
                   </th>
                   <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[4] }}
@@ -101,12 +115,12 @@
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow v-for="(acta, index) in filteredActas" :key="acta.id"
+                <TableRow v-for="(acta, index) in actas.data" :key="acta.id"
                           class="hover:bg-gray-50/50 transition-colors duration-200">
                   <TableCell class="font-medium pl-8">{{ index + 1 }}</TableCell>
                   <TableCell class="pl-6">{{ acta.name }}</TableCell>
                   <TableCell class=" pl-6 text-center"> {{ acta.core?.name }}</TableCell>
-                  <TableCell class="text-left">{{ acta.fecha }}</TableCell>
+                  <TableCell class="text-center">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-center">
                     <Badge :class="getStatusClass(acta.status)">
                       <Loader2 v-if="acta.status === 'Procesando'" class="animate-spin"/>
@@ -130,9 +144,14 @@
                           <Pencil class="h-4 w-4"/>
                           Editar
                         </DropdownMenuItem>
+                        <DropdownMenuItem @click="handleAction('retry', acta)"
+                                          v-if="acta.status === Status.INVALIDA">
+                          <RotateCw class="h-4 w-4"/>
+                          Reintentar
+                        </DropdownMenuItem>
                         <DropdownMenuItem v-if="
                           acta.type === 'ro' &&
-                          (acta.status === 'Pendiente' || acta.status === 'Procesada')
+                          (acta.status === 'Pendiente' || acta.status === Status.PROCESADA)
                         " @click="handleAction('procesar', acta)">
                           <Edit class="h-4 w-4"/>
                           Procesar
@@ -156,7 +175,7 @@
             </Table>
 
             <!-- Empty State -->
-            <div v-if="filteredActas?.length === 0" class="text-center py-16">
+            <div v-if="actas.data?.length === 0" class="text-center py-16">
               <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
                 <SearchIcon class="h-6 w-6"/>
               </div>
@@ -170,20 +189,37 @@
 
             <div class="flex justify-between">
               <div v-if="actas?.total === 0"></div>
-              <div v-else class="text-md text-muted-foreground p-4">
-                Mostrando <span class="font-medium">{{ page || 1 }}</span> de <span class="font-medium">{{
-                  actas?.total || 1
-                }}</span> páginas
+              <div v-else class="flex text-md text-muted-foreground p-4 justify-between items-center gap-2">
+                <div>Mostrando <span class="font-medium">{{ page || 1 }}</span> de <span class="font-medium">{{
+                  actas?.page_total || 1
+                }}</span> páginas</div>
               </div>
+              
               <div class="flex justify-end gap-4 p-4">
-                <button class="rounded-md border px-3 py-1" :disabled="currentPage === 1"
-                        :class="{ 'bg-muted': currentPage === 1 }" @click="goToPreviousPage">
-                  Anterior
-                </button>
-                <button class="rounded-md border px-3 py-1" :disabled="currentPage >= hasNextPage"
-                        :class="{ 'bg-muted': currentPage >= hasNextPage }" @click="goToNextPage">
-                  Siguiente
-                </button>
+                <Button size="icon" :disabled="currentPage === 1" variant="outline"
+                         @click="goToPreviousPage">
+                  <ChevronLeft/> 
+                </Button>
+                <Button size="icon" :disabled="currentPage >= hasNextPage" variant="outline"
+                         @click="goToNextPage">
+                  <ChevronRight/> 
+                </Button>
+              
+                <div>
+                  <Select :default-value="searchParams.limit ?? '10'" @update:model-value="handleFilterByValue('limit', $event)">
+                    <SelectTrigger >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="10">10</SelectItem>
+                        <SelectItem value="15">15</SelectItem>
+                        <SelectItem value="20">20</SelectItem>
+                        <SelectItem value="25">25</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
@@ -314,12 +350,14 @@
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { usePermissions } from "@/utils/auth-client.ts";
-import { useSse } from "@/utils/sse";
+import { useSse } from "@/utils/see";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import {
   ArrowDown,
   ArrowUp,
+  ChevronLeft,
+  ChevronRight,
   Download,
   Edit,
   Eye,
@@ -332,6 +370,7 @@ import {
   Trash2Icon,
   TrashIcon,
   UploadCloudIcon,
+  RotateCw
 } from "lucide-vue-next";
 import { computed, reactive, ref } from "vue";
 import { toast } from "vue-sonner";
@@ -341,12 +380,16 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
+import { useUrlSearchParams } from "@vueuse/core";
+import { Status } from "@/enum/Status";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const {actas: actasResponse, type, page, order} = defineProps<{
+const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
   actas: any;
   type: string;
   page: number;
   order: any;
+  nucleos: any;
 }>();
 
 const actas = reactive(actasResponse)
@@ -358,21 +401,19 @@ useSse("minute.upload.status",({id,status})=>{
   }  
 })
 
-const mode = ref('spacy')
+const searchParams = useUrlSearchParams()
 const hasPermission = usePermissions()
+
+const mode = ref('spacy')
 const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
 const showUploadDialog = ref(false);
 const uploadedFiles = ref([]);
 const isDragging = ref(false);
 const showDelete = ref(false);
 const currentPage = ref(page)
-const hasNextPage = ref(actas?.total)
+const hasNextPage = ref(actas?.page_total)
 const loading = ref(false)
 const currentsMinute = ref(null);
-const selectType = ref("");
-const selectFecha = ref('');
-const selectedNucleo = ref("");
-const selectedStatus = ref("");
 const sort = ref<"ASC" | "DESC" | null >(order);
 
 const formatFileSize = (bytes: any) => {
@@ -404,28 +445,33 @@ function handleSort() {
   } else {
     sort.value = "ASC";
   }
-  navigate(`/minutes?type=all&page=${currentPage.value}&order=${sort.value}`)
+  navigate(`/minutes?page=${currentPage.value}&order=${sort.value}`)
 }
 
-const nucleos = computed(() => {
-  return [...new Set(actas?.data?.map((item: any) => item.core?.name))];
-});
-const typeMinutes = computed(() => {
-  return [...new Set(actas?.data?.map((item: any) => item.type))];
-});
+const handleFilter = (filter: string,e: any) => {
+  const value = e.target.value
+  const query = new URLSearchParams(searchParams as any)
+  if (value && value !== "all") {
+    query.set(filter,value)
+  } else {
+    query.delete(filter)
+  }
+  navigate("?"+query.toString())
+}
 
-const statuses = computed(() => {
-  return [...new Set(actas?.data?.map((item: any) => item.status))];
-});
+const handleFilterByValue = (filter: string,value: any) => {
+  const query = new URLSearchParams(searchParams as any)
+  if (value && value !== "all") {
+    query.set(filter,value)
+  } else {
+    query.delete(filter)
+  }
+  navigate("?"+query.toString())
+}
 
-const filteredActas = computed(() => {
-  const [year, month] = selectFecha.value.split('-');
-  return actas?.data?.filter((item: any) => {
-    return !((selectedNucleo.value && item.core?.name !== selectedNucleo.value) ||
-        (selectedStatus.value && item.status !== selectedStatus.value) ||
-        (selectType.value && item.type !== selectType.value))
-  })
-});
+const typeMinutes = [{value: 'all', name: 'Todos'},{value:'ro', name: 'Acta Ordinaria'}, {value:'cp', name: 'Círculo Político'}]
+
+const statuses = [Status.CREATE, Status.INACTIVA, Status.INVALIDA, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING, Status.VALIDADA]
 
 const filters = ref({
   search: "",
@@ -463,11 +509,11 @@ const handleAction = (action: any, acta: any) => {
     }
   } else if (action === "procesar") {
     navigate(`/indicadores/${acta.id}`);
-  } //else if(action === 'computo'){
-    //const mes = 2 //computo.month
-    //const anno = 2023 //computo.year
-    //navigate(`analisis_indicador?mes=${mes}&anno=${anno}`)
-  //} 
+  }
+  else if(action === "retry"){
+    actions.minute.retryModel({actaID: acta.id, mode: mode.value as any})
+    navigate(`minutes`)
+  }
   else if (action === "export") {
     if (acta.name !== "Acta Ordinaria") {
       exportar(acta);
@@ -533,23 +579,27 @@ const handleFiles = (files: any) => {
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 }
 
-const handleFileDrop = (e) => {
+const handleFileDrop = (e:any) => {
   isDragging.value = false
   const files = Array.from(e.dataTransfer.files)
   handleFiles(files)
 }
 
 function goToNextPage() {
+  const query = new URLSearchParams(searchParams as any)
   if (actas.total > currentPage.value) {
     currentPage.value++;
-    navigate(`/minutes?type=all&page=${currentPage.value}`)
+    query.set("page",currentPage.value+"")
+    navigate(`?`+query.toString())
   }
 }
 
 function goToPreviousPage() {
+  const query = new URLSearchParams(searchParams as any)
   if (currentPage.value > 1) {
     currentPage.value--;
-    navigate(`/minutes?type=all&page=${currentPage.value}`)
+    query.set("page",currentPage.value+"")
+    navigate(`?`+query.toString())
   }
 }
 </script>

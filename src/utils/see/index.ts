@@ -1,4 +1,4 @@
-import type { MessageMapper } from "@/utils/sse-types"
+import type { MessageMapper } from "@/utils/see/types"
 import { inject, onMounted, onUnmounted, provide, ref, type Ref } from "vue"
 
 const EVENT_SOURCE = Symbol("event-soruce")
@@ -11,9 +11,9 @@ export function provideSse() {
     })
 
     provide(EVENT_SOURCE, eventSource)
-    // onUnmounted(() => {
-    //     eventSource.value?.close()
-    // })
+    onUnmounted(() => {
+        eventSource.value?.close()
+    })
     return eventSource
 }
 
@@ -37,5 +37,5 @@ export function useSse<
 
 
     onMounted(() => eventSource.value?.addEventListener(event, middleware))
-    // onUnmounted(() => eventSource.value?.removeEventListener(event, middleware))
+    onUnmounted(() => eventSource.value?.removeEventListener(event, middleware))
 }

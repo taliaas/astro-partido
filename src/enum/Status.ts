@@ -4,5 +4,6 @@ export enum Status {
     PENDIENTE = 'Pendiente',
     PROCESADA = 'Procesada',
     VALIDADA = 'Validada',
+    INVALIDA = 'Invalida',
     INACTIVA = 'Inactiva'
 }

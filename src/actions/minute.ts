@@ -4,16 +4,52 @@ import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
 import MinutesService from "@/services/Minutes.ts";
 
+const enumStatus = ['Creada', 'Procesando', 'Pendiente', 'Procesada', 'Validada', 'Invalida', 'Inactiva' ] as const
+
+export const retryModel = defineAction({
+  input: z.object({
+    actaID: z.string(),
+    mode: z.enum(['spacy', 'model']),
+  }),
+  async handler({actaID, mode}, ctx){
+    const session: any = await getSession(ctx.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    
+    console.log('minutes');
+    
+    const res = await fetch(
+      `http://localhost:5000/minutes/retry/${actaID}/${mode}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.jwt}`,
+        },
+      },
+    );
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw new ActionError({ code: "UNAUTHORIZED", message: data.message });
+    }
+    return data;
+  }
+});
+
 export const getMinutes = defineAction({
   input: z.object({
     page: z.number(),
     type: z.string(),
-    order: z.string()
+    order: z.string(),
+    nombre: z.string().optional(), 
+    core: z.string().optional(), 
+    status: z.enum(enumStatus).optional(), 
+    fecha: z.string().optional(), 
+    limit: z.string().optional()
   }),
-  async handler({ page, type, order }, ctx) {
+  async handler({ page, type, order, nombre, core, status, fecha, limit }, ctx) {
     const session = await getSession(ctx.request);
     const service = new MinutesService();
-    return service.getAllMinutes(type, page, session, order);
+    return service.getAllMinutes(type, page, limit, session, order, nombre, core, status, fecha);
   },
 });
 
