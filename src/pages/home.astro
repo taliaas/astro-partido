@@ -2,14 +2,10 @@
 import {getSession} from "auth-astro/server";
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
-import {
-  default as Computo,
-  default as ComputoService,
-} from "../services/Computo";
 import MinutesService from "../services/Minutes";
 const session = (await getSession(Astro.request)) as any;
 
-async function getMinute() {
+async function getLatestMinute() {
   const service = new MinutesService();
   try {
     return service.getLatestMinute(session.jwt);
@@ -18,58 +14,7 @@ async function getMinute() {
   }
 }
 
-const data = [
-  {
-    id: 1,
-    title: "Acuerdos",
-    name: "acuerdos",
-    description: "Comportamiento de acuerdos en el último mes",
-    porcen: 2,
-    trend: 0,
-  },
-  {
-    id: 2,
-    title: "Participantes",
-    name: "participantes",
-    description: "Asistencia de participantes",
-    porcen: 3,
-    trend: 0,
-  },
-  {
-    id: 3,
-    title: "Invitados",
-    name: "invitados",
-    description: "Asistencia de invitados",
-    porcen: 0,
-    trend: 0,
-  },
-  {
-    id: 4,
-    title: "Rendición",
-    name: "rendicion",
-    description: "Rendición de cuentas",
-    porcen: 0,
-    trend: 0,
-  },
-];
-async function getKPIs() {
-  const services = new Computo();
-  try {
-    const kpis = await services.getCompare();
-    return data.map((item) => {
-      const diference = kpis.difference[item.name];
-      const current = kpis.currentInfo[item.name];
-      if (diference !== undefined || current !== undefined) {
-        return { ...item, trend: diference, porcen: current };
-      }
-
-      return item;
-    });
-  } catch (e) {
-    console.error(e);
-  }
-}
-async function getDocument() {
+async function typeDocuments() {
   const service = new MinutesService();
   try {
     return await service.getMinutes(session.jwt);
@@ -78,10 +23,9 @@ async function getDocument() {
   }
 }
 
-const [documents, kpis, list] = await Promise.all([
-  getMinute(),
-  getKPIs(),
-  getDocument(),
+const [documents, list] = await Promise.all([
+  getLatestMinute(),
+  typeDocuments(),
 ]);
 
 const cards = [
@@ -101,13 +45,11 @@ const cards = [
     icon: "Files",
   },
 ];
-
 ---
 
 <RootLayout>
   <DashboardHome
     documents={documents!}
-    kpis={kpis!}
     cards={cards} client:load
   />
 </RootLayout>

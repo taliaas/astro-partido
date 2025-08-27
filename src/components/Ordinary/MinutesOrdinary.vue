@@ -113,7 +113,7 @@ import {
 import SecondStep from "@/components/Ordinary/SecondStep.vue";
 import ThirdStep from "@/components/Ordinary/ThirdStep.vue";
 import { toTypedSchema } from "@vee-validate/zod";
-import { actions } from "astro:actions";
+import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { useForm } from "vee-validate";
@@ -159,9 +159,9 @@ const form = useForm({
 
 const submitForm = form.handleSubmit(async (data: FormSchema) => {
   data.core = { id: data.core };
-  
+
   try {
-    await actions.ordinary.createMinute({
+    await actions.ordinary.createMinute.orThrow({
       data,
       abscents: data.militantes.filter((m) => m.estado === "ausente"),
       invitados: data.invitados ?? [],
@@ -170,8 +170,9 @@ const submitForm = form.handleSubmit(async (data: FormSchema) => {
     toast.success("Se creó el acta correctamente");
     navigate("/minutes");
   } catch (error) {
-    toast.error("Error al crear el acta");
-    throw new Error("Error al crear el acta");
+    if (error instanceof ActionError) {
+      toast.error(error.message);
+    }
   }
 });
 </script>

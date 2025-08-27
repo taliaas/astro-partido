@@ -44,9 +44,8 @@ import { useSearchStore } from "@/utils/store.ts";
 
 const icons = { Activity, FileCheck2, Files, FileText };
 
-const { documents, kpis, cards } = defineProps<{
+const { documents, cards } = defineProps<{
   documents: any[];
-  kpis: any[];
   cards: any;
 }>();
 

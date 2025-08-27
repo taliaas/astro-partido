@@ -81,34 +81,34 @@
           <div class="flex *:flex-1 gap-4">
             <div class="">
               <label
-                  for="total_trabajador"
-                  class="block text-md font-medium text-gray-700"
-              >Cantidad de trabajadores</label
+                for="total_trabajador"
+                class="block text-md font-medium text-gray-700"
+                >Cantidad de trabajadores</label
               >
               <Input
-                  type="number"
-                  id="trabajador"
-                  name="trabajador"
-                  v-model="formData.total_trabajador"
-                  required
-                  min="0"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                type="number"
+                id="trabajador"
+                name="trabajador"
+                v-model="formData.total_trabajador"
+                required
+                min="0"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
               />
             </div>
             <div class="">
               <label
-                  for="total_organismo"
-                  class="block text-md font-medium text-gray-700"
-              >Participantes del Org. Sup.</label
+                for="total_organismo"
+                class="block text-md font-medium text-gray-700"
+                >Participantes del Org. Sup.</label
               >
               <Input
-                  type="number"
-                  id="organismo"
-                  name="organismo"
-                  v-model="formData.total_organismo"
-                  required
-                  min="0"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                type="number"
+                id="organismo"
+                name="organismo"
+                v-model="formData.total_organismo"
+                required
+                min="0"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
               />
             </div>
           </div>
@@ -266,12 +266,13 @@
 
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { actions } from "astro:actions";
+import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
 import { ref } from "vue";
 import Input from "../ui/input/Input.vue";
 import Textarea from "../ui/textarea/Textarea.vue";
+import { toast } from "vue-sonner";
 
 const selectedNucleo = ref(null);
 const { cores } = defineProps<{ cores: any[] }>();
@@ -283,7 +284,7 @@ const formData = ref({
   total_organismo: 0,
   total_trabajador: 0,
   ausentes: 0,
-  causa: [] as { nombre: string, motivo: string }[],
+  causa: [] as { nombre: string; motivo: string }[],
   tema: "",
   planteamientos: "",
   valoracion: "",
@@ -305,15 +306,17 @@ const removeAusencia = (index: number) => {
 
 const submitForm = async () => {
   try {
-    await actions.political.createMinute({
+    await actions.political.createMinute.orThrow({
       ...formData.value,
       core: selectedNucleo.value,
-    }
-    )
-    alert('Se ha creado el acta política correctamente!')
-    await navigate('/minutes')
+    });
+    toast.success("Se creó el acta correctamente");
+
+    await navigate("/minutes");
   } catch (e) {
-    console.log(e);
+    if (e instanceof ActionError) {
+      toast.error(e.message);
+    }
   }
 };
 </script>

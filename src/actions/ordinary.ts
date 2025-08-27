@@ -23,14 +23,14 @@ export const createMinute = defineAction({
       },
       body: JSON.stringify({ ...data, ...rest }),
     });
-    if (res.status === 409) {
-      throw new ActionError({ code: "CONFLICT" })
-    }
-    else if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+    const result = await res.json()
+    console.log(result);
+    
+    if (!res.ok) {
+      throw new ActionError({ code: "INTERNAL_SERVER_ERROR", message: result.message })
     }
 
-    return res.json();
+    return result
   },
 });
 

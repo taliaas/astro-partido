@@ -3,7 +3,6 @@ export enum Status {
     PROCESSING = 'Procesando',
     PENDIENTE = 'Pendiente',
     PROCESADA = 'Procesada',
-    VALIDADA = 'Validada',
     INVALIDA = 'Invalida',
     INACTIVA = 'Inactiva'
 }

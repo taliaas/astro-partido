@@ -1,13 +1,13 @@
 <template>
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
-    <div class="max-w-7xl mx-auto">
-      <div class="space-y-4">
+    <div class="max-w-7xl mx-auto relative ">
+      <form class="space-y-4">
         <div class="space-y-2 text-center">
           <h2 class="font-bold text-2xl">{{ acta.name }} {{ acta.id }}</h2>
           <h3 class="font-semibold text-xl text-gray-500">PCC CUJAE</h3>
         </div>
         <!-- 1. Información general -->
-        <div class="space-y-2">
+        <div class="space-y-2" v-if="currentStep === 1" >
           <h2 class="font-semibold text-2xl">Información general</h2>
           <div class="space-y-4">
             <div class="flex">
@@ -115,7 +115,7 @@
                   id="proxima"
                   name="fechaProx"
                   v-model="acta.fechaProx"
-                  class="mt-1 block w-full rounded shadow-sm focus:border-indigo-300  -indigo-200 -opacity-50"
+                  class="mt-1 block w-full rounded shadow-sm focus:border-indigo-300 -indigo-200 -opacity-50"
                 />
               </div>
               <div class="w-3/4 space-y-2">
@@ -131,7 +131,7 @@
                   id="preparacion"
                   name="fechaPrep"
                   v-model="acta.fechaPrep"
-                  class="mt-1 block w-full rounded shadow-sm focus:border-indigo-300  -indigo-200 -opacity-50"
+                  class="mt-1 block w-full rounded shadow-sm focus:border-indigo-300 -indigo-200 -opacity-50"
                 />
               </div>
               <div class="w-3/4 space-y-2">
@@ -147,15 +147,14 @@
                   id="circulo"
                   name="fechaCP"
                   v-model="acta.fechaCP"
-                  class="mt-1 block w-full rounded shadow-sm focus:border-indigo-300  -indigo-200 -opacity-50"
+                  class="mt-1 block w-full rounded shadow-sm focus:border-indigo-300 -indigo-200 -opacity-50"
                 />
               </div>
             </div>
           </div>
         </div>
-
         <!-- 2. Asistencia -->
-        <div class="space-y-2">
+        <div v-if="currentStep === 2">
           <h2 class="font-semibold text-2xl">Asistencia</h2>
           <div class="space-y-2">
             <Label for="order" class="block text-md font-medium text-gray-700"
@@ -169,7 +168,7 @@
           </div>
         </div>
         <!-- 3. Desarrollo -->
-        <div class="space-y-2">
+        <div class="space-y-2" v-if="currentStep === 3">
           <h2 class="font-semibold text-2xl">Desarrollo</h2>
           <div class="space-y-2">
             <Label for="order" class="block text-md font-medium text-gray-700"
@@ -191,7 +190,7 @@
               name="chequeo"
               v-model="acta.development"
               rows="4"
-              class="mt-1 block w-full rounded focus:border-indigo-300  -indigo-200 -opacity-50"
+              class="mt-1 block w-full rounded focus:border-indigo-300 -indigo-200 -opacity-50"
               placeholder="Chequeo de acuerdos"
             >
             </Textarea>
@@ -217,10 +216,31 @@
               name="observaciones"
               v-model="acta.observaciones"
               rows="4"
-              class="mt-1 block w-full rounded focus:border-indigo-300  -indigo-200 -opacity-50"
+              class="mt-1 block w-full rounded focus:border-indigo-300 -indigo-200 -opacity-50"
             ></Textarea>
           </div>
         </div>
+      </form>
+      <div class=" w-full flex justify-between pt-4">
+        <Button
+          :disabled="currentStep === 1"
+          size="icon"
+          variant="outline"
+          class="rounded-full"
+          @click="currentStep--"
+        >
+          <ChevronLeft />
+        </Button>
+
+        <Button
+          :disabled="currentStep === 3"
+          size="icon"
+          variant="outline"
+          class="rounded-full"
+          @click="currentStep++"
+        >
+          <ChevronRight />
+        </Button>
       </div>
     </div>
   </div>
@@ -236,6 +256,10 @@ import SelectItem from "@/components/ui/select/SelectItem.vue";
 import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
+import Button from "@/components/ui/button/Button.vue";
+import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ref } from "vue";
 
 const { cores, acta } = defineProps<{ cores: any[]; acta: any }>();
+const currentStep = ref(1);
 </script>

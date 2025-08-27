@@ -394,7 +394,7 @@ const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
 
 const actas = reactive(actasResponse)
 
-useSse("minute.upload.status",({id,status})=>{
+useSse("minute.status",({id,status})=>{
   const acta = actas?.data?.find((acta: any)=>acta.id == id)
   if (acta) {
     acta.status = status
@@ -471,7 +471,7 @@ const handleFilterByValue = (filter: string,value: any) => {
 
 const typeMinutes = [{value: 'all', name: 'Todos'},{value:'ro', name: 'Acta Ordinaria'}, {value:'cp', name: 'Círculo Político'}]
 
-const statuses = [Status.CREATE, Status.INACTIVA, Status.INVALIDA, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING, Status.VALIDADA]
+const statuses = [Status.CREATE, Status.INVALIDA, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING]
 
 const filters = ref({
   search: "",
