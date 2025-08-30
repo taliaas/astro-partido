@@ -1,4 +1,5 @@
 import type { Indicadores } from "@/interface/Indicadores.ts";
+import type { Indicators } from "@/utils/indicators";
 import { API_URL } from "astro:env/client";
 
 export default class ComputoService {
@@ -20,9 +21,33 @@ export default class ComputoService {
             throw error;
         }
     }
-    async getAllByCore(token?: string, id: number) {
+
+    async getCompareYears(token: string, key: keyof Indicators) {
         try {
-            const response = await fetch(`${API_URL}/computo/core/${id}`, {
+            const response = await fetch(`${API_URL}/computo/compare_year_graphic/${key}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+    }
+
+
+    async getAllByCore(token?: string, fecha?: string) {
+        const searchParams = new URLSearchParams()
+        if(fecha) searchParams.set('fecha', fecha)
+        try {
+            const response = await fetch(`${API_URL}/computo/all?${searchParams.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

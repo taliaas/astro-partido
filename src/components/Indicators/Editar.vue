@@ -100,7 +100,7 @@ import {
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
-import {indicators} from "@/lib/indicadoresKey.ts";
+import {indicators} from "@/utils/indicators";
 import ComputoService from "@/services/Computo.ts";
 import {toTypedSchema} from "@vee-validate/zod";
 import {z} from "astro:schema";

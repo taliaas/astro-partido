@@ -145,7 +145,7 @@
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('retry', acta)"
-                                          v-if="acta.status === Status.INVALIDA">
+                                          v-if="acta.status === Status.ERROR">
                           <RotateCw class="h-4 w-4"/>
                           Reintentar
                         </DropdownMenuItem>
@@ -471,7 +471,7 @@ const handleFilterByValue = (filter: string,value: any) => {
 
 const typeMinutes = [{value: 'all', name: 'Todos'},{value:'ro', name: 'Acta Ordinaria'}, {value:'cp', name: 'Círculo Político'}]
 
-const statuses = [Status.CREATE, Status.INVALIDA, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING]
+const statuses = [Status.CREATE, Status.ERROR, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING]
 
 const filters = ref({
   search: "",

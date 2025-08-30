@@ -127,7 +127,7 @@ import {
 import { Line as LineChart, Bar as BarChart } from "vue-chartjs";
 import { ChevronDownIcon } from "lucide-vue-next";
 import StatusService from "@/services/StatusService.ts";
-import { indicators } from "@/lib/indicadoresKey.ts";
+import { indicators } from "@/utils/indicators";
 import { toast } from "vue-sonner";
 
 ChartJS.register(
@@ -147,7 +147,6 @@ const selectedIndicator = ref("ptos");
 const current_year = new Date().getFullYear();
 const selectedYear = ref(2025);
 const selectedPeriod = ref("1");
-const barData = ref([]);
 const chartContainer = ref(null);
 const barIndicators = [
   "atencionFEU",
@@ -157,8 +156,6 @@ const barIndicators = [
   "rendicionDirigente",
   "rendicionOrganizacionesYOtros",
 ];
-
-console.log(selectedIndicator.value)
 
 const chartData = ref<ChartData<"line">>({ labels: [], datasets: [] });
 

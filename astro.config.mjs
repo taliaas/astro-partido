@@ -27,6 +27,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   experimental: {
-    clientPrerender: true
-  }
+    clientPrerender: true,
+  },
 });

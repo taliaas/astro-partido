@@ -1,17 +1,18 @@
 ---
 import { getSession } from "auth-astro/server";
 import ComputoService from "../../services/Computo";
-import ComputoCore from "../../components/Indicators/ComputoCore.vue";
+import IndicatorChart from "../../components/Indicators/IndicatorChart.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
+import type { Indicators } from "@/utils/indicators";
 
 const session: any = await getSession(Astro.request);
 const searchParams = Astro.url.searchParams;
-const fecha = searchParams.get("fecha") || "";
+const key = (searchParams.get("key") || "ptos") as keyof Indicators;
 
 async function getComputo() {
   const service = new ComputoService();
   try {
-    return await service.getAllByCore(session?.jwt, fecha);
+    return await service.getCompareYears(session?.jwt, key);
   } catch (e) {
     console.log(e);
   }
@@ -20,5 +21,5 @@ const computo = await getComputo();
 ---
 
 <RootLayout>
-  <ComputoCore computo={computo} client:load />
+  <IndicatorChart computo={computo} client:load />
 </RootLayout>

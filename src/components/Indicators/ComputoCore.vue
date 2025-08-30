@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { indicators, categories } from "@/lib/indicadoresKey.ts";
-import { Search } from "lucide-vue-next";
+import { indicators, categories } from "@/utils/indicators";
+import { BarChart3, EyeIcon, Search } from "lucide-vue-next";
 import Input from "@/components/ui/input/Input.vue";
 import Table from "@/components/ui/table/Table.vue";
 import TableHeader from "@/components/ui/table/TableHeader.vue";
@@ -10,23 +10,43 @@ import TableHead from "@/components/ui/table/TableHead.vue";
 import TableBody from "@/components/ui/table/TableBody.vue";
 import TableCell from "@/components/ui/table/TableCell.vue";
 import { computed } from "vue";
+import { debouncedRef, useUrlSearchParams } from "@vueuse/core";
+import { navigate } from "astro:transitions/client";
+import Sheet from "@/components/ui/sheet/Sheet.vue";
+import SheetTrigger from "@/components/ui/sheet/SheetTrigger.vue";
+import SheetContent from "@/components/ui/sheet/SheetContent.vue";
+import SheetHeader from "@/components/ui/sheet/SheetHeader.vue";
+import SheetTitle from "@/components/ui/sheet/SheetTitle.vue";
+import SheetDescription from "@/components/ui/sheet/SheetDescription.vue";
+import SheetOverlay from "@/components/ui/sheet/SheetOverlay.vue";
+import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
+import Button from "@/components/ui/button/Button.vue";
 
 const searchTerm = ref("");
 const selectedCategory = ref("");
 const { computo } = defineProps<{
-  computo: any;
+  computo: {
+    id: number;
+    year: number;
+    month: number;
+    indicators: any[];
+    minute: any;
+  };
 }>();
+const searchParams = useUrlSearchParams("history");
 
-const fecha = ref(`2025-09`);
+debouncedRef;
 
-const getComputo = (key: string) => {
-  const value = fecha.value;
-  const [anno, mes] = value.split("-");
-
-  const c = computo.find((item: any) => item.month == mes && item.year == anno);
-  const ind = c?.indicators?.find((i: any) => i.key === key)?.value;
-  return ind;
+const getValueIndicators = (key: string) => {
+  return computo?.indicators.find((i) => i.key === key).value;
 };
+const getTextIndicators = (key: string) => {
+  return computo?.indicators.find((i) => i.key === key).text;
+};
+
+function openGraphic(){
+  navigate("/analisis_indicador/chart")
+}
 
 // Computed para filtrar indicadores
 const filteredIndicators = computed(() => {
@@ -57,7 +77,6 @@ const filteredIndicators = computed(() => {
             Lista de indicadores del sistema filtrados por categoría y fecha
           </p>
         </div>
-
         <!-- Filtros -->
         <div class="flex flex-col sm:flex-row gap-4">
           <!-- Búsqueda -->
@@ -87,12 +106,17 @@ const filteredIndicators = computed(() => {
             </select>
           </div>
 
-          <div class="flex flex-col">
-            <input
+          <div class="flex gap-2">
+            <Input
               type="month"
-              v-model="fecha"
+              @change="navigate('')"
+              v-model="searchParams.fecha"
               class="border p-2 rounded-md border-gray-300"
             />
+            <Button variant="outline" @click="openGraphic">
+              <BarChart3 class="size-4" />
+              Ver Gráfico
+            </Button>
           </div>
         </div>
       </div>
@@ -105,13 +129,14 @@ const filteredIndicators = computed(() => {
                 <TableHead>Categoría</TableHead>
                 <TableHead>Descripción</TableHead>
                 <TableHead class="text-center">Valor</TableHead>
+                <TableHead class="text-center">Detalles</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-if="computo.length === 0">
+              <TableRow v-if="computo?.indicators?.length === 0">
                 <TableCell
                   colspan="4"
-                  class="text-center py-8 text-muted-foreground"
+                  class="text-center py-8 text-2xl text-muted-foreground"
                 >
                   No se encontraron indicadores con los filtros aplicados
                 </TableCell>
@@ -131,7 +156,26 @@ const filteredIndicators = computed(() => {
                   {{ indicator.description }}
                 </TableCell>
                 <TableCell class="text-center">
-                  {{ getComputo(key + "") ?? "-" }}
+                  {{ getValueIndicators(key as any) ?? "-" }}
+                </TableCell>
+                <TableCell class="flex justify-center">
+                  <Sheet>
+                    <SheetTrigger><EyeIcon class="size-4" /></SheetTrigger>
+                    <SheetContent class="space-y-4">
+                      <SheetHeader class="space-y-2">
+                        <SheetTitle class="text-2xl">Detalles</SheetTitle>
+                        <SheetDescription class="@container">
+                          <h2 class="text-xl font-medium">Resumen extraído del acta</h2>
+                          <ScrollArea class="h-[90cqh] p-4 @h-3 w-full"
+                            ><p class="text-lg text-justify">
+                              {{ getTextIndicators(key as any) ?? "No encontrado" }}
+                            </p>
+                          </ScrollArea>
+                        </SheetDescription>
+                      </SheetHeader>
+                    </SheetContent>
+                    <SheetOverlay className="fixed inset-0 bg-transparent" />
+                  </Sheet>
                 </TableCell>
               </TableRow>
             </TableBody>
