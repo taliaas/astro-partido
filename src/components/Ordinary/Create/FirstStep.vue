@@ -1,9 +1,9 @@
 <template>
   <div class="space-y-8">
-    <div class="mt-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="mt-4 w-3/4">
+      <div class="flex justify-between gap-4">
         <FormField name="fecha" v-slot="{ componentField }">
-          <FormItem class="w-3/4">
+          <FormItem>
             <FormLabel>Fecha de la reunión</FormLabel>
             <FormControl>
               <Input
@@ -11,14 +11,14 @@
                 id="fecha"
                 required
                 v-bind="componentField"
-                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                class="w-42"
               />
             </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
         <FormField name="hora" v-slot="{ componentField }">
-          <FormItem class="w-3/4">
+          <FormItem>
             <FormLabel>Hora</FormLabel>
             <FormControl>
               <Input
@@ -26,22 +26,22 @@
                 id="hora"
                 required
                 v-bind="componentField"
-                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                class="w-36"
               />
             </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
-        
+
         <FormField name="lugar" v-slot="{ componentField }">
-          <FormItem class="w-3/4">
+          <FormItem>
             <FormLabel>Lugar</FormLabel>
             <FormControl>
               <Input
                 type="text"
                 required
                 v-bind="componentField"
-                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                class="w-min-[300px]"
               />
             </FormControl>
             <FormMessage />
@@ -174,15 +174,15 @@
               {{ militante.lastname }}
             </td>
             <td class="py-4 whitespace-nowrap">
-                <select
+              <select
                 v-model="estado[index]"
                 :name="'militante.' + index + '.estado'"
-                class="px-2 py-2 border-none rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
+                class="px-2 py-2 rounded bg-white"
+              >
                 <option value="presente">Presente</option>
                 <option value="virtual">Virtual</option>
                 <option value="ausente">Ausente</option>
-                </select>
+              </select>
             </td>
             <td
               class="w-1/5 px-6 py-4 whitespace-nowrap"
@@ -228,76 +228,56 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { reactive } from "vue";
-import Input from "../ui/input/Input.vue";
 import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import MilitantService from "@/services/MilitantService.ts";
 import { absenceReasons, cargos } from "@/enum/absenceReasons.ts";
 import { FormField } from "@/components/ui/form";
 import FormItem from "@/components/ui/form/FormItem.vue";
 import FormLabel from "@/components/ui/form/FormLabel.vue";
 import FormControl from "@/components/ui/form/FormControl.vue";
 import FormMessage from "@/components/ui/form/FormMessage.vue";
-import { useSession } from "@/utils/auth-client";
+import Input from "@/components/ui/input/Input.vue";
 
-const session = useSession();
+interface DataMilitante {
+  id: any;
+  firstname: string;
+  lastname: string;
+  selectedCausa?: string;
+}
+
+const { militantes } = defineProps<{
+  militantes: DataMilitante[];
+}>();
+
 defineEmits(["update"]);
 
 const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
-const formData = reactive({
-  fecha: "",
-  hora: "",
-  lugar: "",
-  nucleo: "",
-});
-
 const person = ref([{ nombre: "", cargo: "" }]);
-const militantes = ref<
-  { id: any; firstname: string; lastname: string; selectedCausa?: string }[]
->([]);
-const estado = reactive([]);
+const estado = reactive<string[]>([]);
 
-// Ensure estado is initialized with "presente" for each militante
+// Ensure estado is always synchronized with militantes
 watch(
-  militantes,
+  () => militantes,
   (newMilitantes) => {
-    // Only set if not already set
-    if (estado.length !== newMilitantes.length) {
-      newMilitantes.forEach((_, idx) => {
-        if (!estado[idx]) estado[idx] = "presente";
-      });
-      // Remove extra items if militantes shrinks
+    // Add or update estado values
+    newMilitantes.forEach((_, idx) => {
+      if (!estado[idx]) estado[idx] = "presente";
+    });
+    // Remove extra items if militantes shrinks
+    if (estado.length > newMilitantes.length) {
       estado.length = newMilitantes.length;
     }
   },
   { immediate: true }
 );
 
-async function getMilitantes() {
-  const service = new MilitantService();
-  try {
-    const core = session?.core?.id as any;
-    const result = await service.getMilitantes(core ?? 1);
-    militantes.value = result.map((m: any) => ({
-      ...m,
-      selectedCausa: "",
-    }));
-  } catch (e) {
-    console.error(e);
-  }
-}
-
 const addPerson = () => {
-  person.value.push({ name: "", cargo: "" });
+  person.value.push({ nombre: "", cargo: "" });
 };
 
 const removeInvitados = (index: any) => {
   person.value.splice(index, 1);
 };
-
-onMounted(() => {
-  getMilitantes();
-});
 </script>

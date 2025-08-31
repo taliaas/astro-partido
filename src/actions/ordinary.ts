@@ -24,8 +24,7 @@ export const createMinute = defineAction({
       body: JSON.stringify({ ...data, ...rest }),
     });
     const result = await res.json()
-    console.log(result);
-    
+
     if (!res.ok) {
       throw new ActionError({ code: "INTERNAL_SERVER_ERROR", message: result.message })
     }

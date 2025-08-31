@@ -2,8 +2,8 @@
   <!-- Acuerdos Table -->
   <div class="space-y-4 my-4">
     <div class="flex justify-between">
-      <label for="agreements" class="block text-md font-medium text-gray-700"
-        >Acuerdos</label
+      <Label for="agreements" class="block text-md font-medium text-gray-700"
+        >Acuerdos</Label
       >
       <div class="flex justify-end">
         <Button
@@ -47,10 +47,10 @@
               >
                 <FormItem class="w-3/4">
                   <FormControl>
-                    <input
+                    <Input
                       type="text"
                       v-bind="componentField"
-                      class="w-full bg-transparent focus:outline-none"
+                      class="border-none shadow-none"
                       placeholder="Descripción"
                     />
                   </FormControl>
@@ -65,10 +65,10 @@
               >
                 <FormItem class="w-3/4">
                   <FormControl>
-                    <input
+                    <Input
                       type="text"
                       v-bind="componentField"
-                      class="w-full bg-transparent focus:outline-none"
+                      class="border-none shadow-none"
                       placeholder="Responsable"
                     />
                   </FormControl>
@@ -83,10 +83,10 @@
               >
                 <FormItem class="w-3/4">
                   <FormControl>
-                    <input
+                    <Input
                       type="date"
                       v-bind="componentField"
-                      class="w-1/2 border-none rounded bg-transparent focus:outline-none"
+                      class="border-none shadow-none"
                       :name="'agreements.' + index + '.fecha'"
                     />
                   </FormControl>
@@ -95,13 +95,13 @@
               </FormField>
             </td>
             <td class="p-4 align-middle">
-              <button
+              <Button
                 @click="removeAgreement(index)"
                 type="button"
-                class="text-destructive hover:text-destructive/90"
+                variant="ghost"
               >
                 <TrashIcon class="h-4 w-4" />
-              </button>
+              </Button>
             </td>
           </tr>
         </tbody>
@@ -165,17 +165,21 @@
         </FormField>
       </div>
       <div class="w-3/4 space-y-2">
-        <label for="circulo" class="block text-md font-medium text-gray-700">
-          Próximo círculo de estudios políticos
-        </label>
-        <Input
-          type="date"
-          required
-          id="circulo"
-          name="fechaCP"
-          v-model="formData.circuloEstudios"
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
+        <FormField name="preparacion" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel> Próximo círculo de estudios políticos </FormLabel>
+            <FormControl>
+              <Input
+                type="date"
+                required
+                id="circulo"
+                name="fechaCP"
+                v-model="formData.circuloEstudios"
+                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </FormControl>
+          </FormItem>
+        </FormField>
       </div>
     </div>
   </section>
@@ -183,15 +187,18 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import Textarea from "../ui/textarea/Textarea.vue";
-import Input from "../ui/input/Input.vue";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
-import FormItem from "../ui/form/FormItem.vue";
-import FormMessage from "../ui/form/FormMessage.vue";
-import FormLabel from "../ui/form/FormLabel.vue";
-import FormControl from "../ui/form/FormControl.vue";
-import { FormField } from "@/components/ui/form";
+import {
+  FormItem,
+  FormField,
+  FormMessage,
+  FormLabel,
+  FormControl,
+} from "@/components/ui/form";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import Textarea from "@/components/ui/textarea/Textarea.vue";
 
 const agreements = ref([{ description: "", responsible: "", date: "" }]);
 

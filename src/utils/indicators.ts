@@ -27,7 +27,7 @@ export const indicators = {
         category: "Asistencia",
         name: "Causas de ausencias",
         description: "Estado de Causas de Ausencias",
-        chartType: "donut"
+        chartType: "line"
     },
     ptos: {
         category: "Gestión",

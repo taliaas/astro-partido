@@ -145,16 +145,16 @@
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('retry', acta)"
-                                          v-if="acta.status === Status.ERROR">
-                          <RotateCw class="h-4 w-4"/>
-                          Reintentar
+                                          v-if="acta.status === Status.ERROR || acta.status === Status.CREATE">
+                          <FilePenLine class="h-4 w-4"/>
+                          Procesar
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="
                           acta.type === 'ro' &&
-                          (acta.status === 'Pendiente' || acta.status === Status.PROCESADA)
+                          (acta.status === Status.PENDIENTE || acta.status === Status.PROCESADA)
                         " @click="handleAction('procesar', acta)">
-                          <Edit class="h-4 w-4"/>
-                          Procesar
+                          <FileSearch class="h-4 w-4"/>
+                          Revisar
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('export', acta)"
                                           v-if="hasPermission('Documentos', 'export')">
@@ -370,7 +370,9 @@ import {
   Trash2Icon,
   TrashIcon,
   UploadCloudIcon,
-  RotateCw
+  RotateCw,
+  FilePenLine,
+  FileSearch
 } from "lucide-vue-next";
 import { computed, reactive, ref } from "vue";
 import { toast } from "vue-sonner";

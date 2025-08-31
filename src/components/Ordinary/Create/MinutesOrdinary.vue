@@ -60,7 +60,7 @@
         <div @submit="submitForm" class="space-y-6">
           <!--  Información 1 -->
           <section v-show="currentStep === 1" class="space-y-4">
-            <FirstStep :cores />
+            <FirstStep :militantes />
           </section>
 
           <!--  Información 2 -->
@@ -105,13 +105,13 @@
 </template>
 
 <script setup lang="ts">
-import FirstStep from "@/components/Ordinary/FirstStep.vue";
+import FirstStep from "@/components/Ordinary/Create/FirstStep.vue";
 import {
   form_schema,
   type FormSchema,
 } from "@/components/Ordinary/form_schema";
-import SecondStep from "@/components/Ordinary/SecondStep.vue";
-import ThirdStep from "@/components/Ordinary/ThirdStep.vue";
+import SecondStep from "@/components/Ordinary/Create/SecondStep.vue";
+import ThirdStep from "@/components/Ordinary/Create/ThirdStep.vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -121,7 +121,7 @@ import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
 const currentStep = ref(1);
-const { user, cores } = defineProps<{ user: any; cores: any }>();
+const { user, cores, militantes } = defineProps<{ user: any; cores: any, militantes: any[] }>();
 
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
@@ -145,15 +145,12 @@ const form = useForm({
     invitados: [],
     militantes: [],
     agreements: [],
-    extranjero: [],
-    analisis: "",
+    development: [],
     observaciones: "",
-    chequeo: "",
     fechaCP: new Date(),
     fechaPrep: new Date(),
     fechaProx: new Date(),
     order: [],
-    orientaciones: "",
   },
 });
 
@@ -176,5 +173,3 @@ const submitForm = form.handleSubmit(async (data: FormSchema) => {
   }
 });
 </script>
-
-1

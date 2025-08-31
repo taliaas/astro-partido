@@ -12,12 +12,11 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import { indicators, type Indicators } from "@/utils/indicators";
 import { useUrlSearchParams } from "@vueuse/core";
 import { navigate } from "astro:transitions/client";
-import type { ChartData, ChartOptions } from "chart.js";
+import type { ChartOptions } from "chart.js";
 import {
   BarElement,
   CategoryScale,
   Chart as ChartJS,
-  Filler,
   Legend,
   LinearScale,
   LineElement,
@@ -118,7 +117,7 @@ const data = {
       data: computo.map((s) => s.current),
     },
   ],
-}
+};
 const options: ChartOptions<"bar"> = {
   responsive: true,
   maintainAspectRatio: false,
@@ -143,18 +142,18 @@ const options: ChartOptions<"bar"> = {
 </script>
 
 <template>
-  <div class="max-w-[1600px] mx-auto space-y-2">
-    <div class="flex">
-      <div class="flex gap-4 space-y-2">
-        <h1 class="text-2xl font-semibold text-gray-900">
-          Análisis Gráfico del Núcleo
-        </h1>
-      </div>
-    </div>
+  <div class="max-w-[1600px] mx-auto space-y-2 p-4">
     <div class="space-y-4">
       <!-- Tendencia Temporal podria comparar un ano con el otro -->
       <Card>
         <CardHeader>
+          <div class="flex">
+            <div class="flex gap-4 space-y-2">
+              <h1 class="text-2xl font-semibold text-gray-900">
+                Análisis Gráfico del Núcleo
+              </h1>
+            </div>
+          </div>
           <div class="p-4 rounded">
             <div class="space-y-2">
               <Label
@@ -200,9 +199,7 @@ const options: ChartOptions<"bar"> = {
               indicator.chartType === 'bar'
             "
           >
-            <BarChart
-              :data="data" :options="options"
-            />
+            <BarChart :data="data" :options="options" />
           </div>
         </CardContent>
       </Card>

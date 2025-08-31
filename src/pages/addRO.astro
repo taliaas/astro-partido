@@ -3,7 +3,8 @@ import { getSession } from "auth-astro/server";
 import UserService from "../services/UserService";
 import CoreService from "../services/CoreService";
 import RootLayout from "../layouts/RootLayout.astro";
-import MinutesOrdinary from "@/components/Ordinary/MinutesOrdinary.vue";
+import MinutesOrdinary from "@/components/Ordinary/Create/MinutesOrdinary.vue";
+import MilitantService from "@/services/MilitantService";
 
 const session = await getSession(Astro.request);
 const n_user = session?.user;
@@ -17,7 +18,10 @@ if (Astro.request.method === "POST") {
 async function getUser() {
   const services = new UserService();
   try {
-    return await services.getUserByEmail(n_user?.email ?? "",(session as any).jwt);
+    return await services.getUserByEmail(
+      n_user?.email ?? "",
+      (session as any).jwt
+    );
   } catch (e) {
     console.error(e);
   }
@@ -31,10 +35,27 @@ async function getCore() {
     console.error(e);
   }
 }
+async function getMilitantes() {
+  const service = new MilitantService();
+  try {
+    const result = await service.getMilitantes((session as any).jwt);
+    console.log('result',result);
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+const militantes = await getMilitantes();
 const cores = await getCore();
 const user = await getUser();
 ---
 
 <RootLayout>
-  <MinutesOrdinary user={user} cores={cores} client:load />
+  <MinutesOrdinary
+    user={user}
+    cores={cores}
+    militantes={militantes}
+    client:load
+  />
 </RootLayout>

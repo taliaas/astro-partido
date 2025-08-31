@@ -106,13 +106,12 @@ import {toTypedSchema} from "@vee-validate/zod";
 import {z} from "astro:schema";
 import {navigate} from "astro:transitions/client";
 import {useForm} from "vee-validate";
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {toast} from "vue-sonner";
 
-const {ind, acta, cp} = defineProps<{
+const {ind, acta} = defineProps<{
   ind: any[];
   acta: any;
-  cp: any;
 }>();
 
 type Data = z.infer<typeof schema>;

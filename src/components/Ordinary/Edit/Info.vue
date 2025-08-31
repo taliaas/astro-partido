@@ -202,7 +202,8 @@
             >
               Acuerdos
             </Label>
-            <Textarea v-model="acta.agreements"></Textarea>
+            {{ acta.agreements[0].descripcion }}
+            <Textarea v-model="acta.agreements[0].descripcion"></Textarea>
           </div>
           <div class="space-y-2">
             <Label

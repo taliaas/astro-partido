@@ -21,12 +21,14 @@ export default class MilitantService {
         }
     }
 
-    async getMilitantes(id: number) {
+    async getMilitantes(session: any) {
+        console.log('Session',session)
         try {
-            const response = await fetch(`${API_URL}/militantes/active/${id}`, {
+            const response = await fetch(`${API_URL}/militantes/active/`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session}`,
                 },
             });
             if (!response.ok) {
@@ -39,8 +41,8 @@ export default class MilitantService {
         }
     }
 
-    async createMilitant(session: any, data: any){
-        try{
+    async createMilitant(session: any, data: any) {
+        try {
             const response = await fetch(`${API_URL}/militantes/`, {
                 method: 'POST',
                 headers: {
@@ -52,7 +54,7 @@ export default class MilitantService {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-           return await response.json()
+            return await response.json()
         }
         catch (error) {
             console.log(error)
