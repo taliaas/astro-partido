@@ -494,6 +494,7 @@ const getStatusClass = (status: any) => {
 
 const handleAction = (action: any, acta: any) => {
   currentsMinute.value = acta;
+  console.log(acta);
   
   if (action === "ver") {
     if (acta.isLoaded) {
@@ -504,10 +505,10 @@ const handleAction = (action: any, acta: any) => {
       navigate(`/cp_view/${acta.id}`);
     }
   } else if (action === "editar") {
-    if (acta.name === "Acta Ordinaria") {
-      navigate(`/edit/${acta.id}`);
+    if (acta.type === "ro") {
+      navigate(`/edit_ro/${acta.id}`);
     } else {
-      navigate(`/edit_acta/${acta.id}`);
+      navigate(`/edit_cp/${acta.id}`);
     }
   } else if (action === "procesar") {
     navigate(`/indicadores/${acta.id}`);

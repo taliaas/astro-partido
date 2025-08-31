@@ -109,7 +109,7 @@ import FirstStep from "@/components/Ordinary/Create/FirstStep.vue";
 import {
   form_schema,
   type FormSchema,
-} from "@/components/Ordinary/form_schema";
+} from "@/components/Ordinary/Create/form_schema";
 import SecondStep from "@/components/Ordinary/Create/SecondStep.vue";
 import ThirdStep from "@/components/Ordinary/Create/ThirdStep.vue";
 import { toTypedSchema } from "@vee-validate/zod";

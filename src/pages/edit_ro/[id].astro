@@ -2,8 +2,8 @@
 import CoreService from "../../services/CoreService";
 import OrdinaryService from "../../services/OrdinaryService";
 import RootLayout from "../../layouts/RootLayout.astro";
-import EditContainer from "../../components/Ordinary/Edit/Info.vue";
-import {getSession} from "auth-astro/server.ts";
+import EditContainer from "../../components/Ordinary/Edit/Edit.vue"
+import { getSession } from "auth-astro/server";
 
 const { id } = Astro.params;
 const session = (await getSession(Astro.request)) as any
