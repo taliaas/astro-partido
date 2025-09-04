@@ -41,7 +41,6 @@ export const updateMinute = defineAction({
   async handler({ id, data }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
     const res = await fetch(`${API_URL}/minutes-ordinary/${id}`, {
       method: "PATCH",
       headers: {

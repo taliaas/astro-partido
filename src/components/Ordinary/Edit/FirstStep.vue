@@ -1,23 +1,27 @@
 <template>
   <div class="space-y-8">
-    {{ acta }}
     <div class="mt-4 w-3/4">
       <div class="flex justify-between gap-4">
         <FormField name="core" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Núcleo</FormLabel>
             <FormControl>
-             <!-- Nucleo -->
-                 <Select v-bind="componentField">
-                    <SelectTrigger class="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.name">{{ nucleo.name }}</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+              <!-- Nucleo -->
+              <Select v-bind="componentField">
+                <SelectTrigger class="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      v-for="nucleo in cores"
+                      :key="nucleo.id"
+                      :value="nucleo.id"
+                      >{{ nucleo.name }}</SelectItem
+                    >
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -78,6 +82,7 @@
         >
         <Button
           @click="addPerson"
+          type="button"
           variant="outline"
           class="group inline-flex items-center m-3 justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
         >
@@ -87,7 +92,7 @@
           Agregar
         </Button>
       </div>
-      <table class="min-w-full divide-y rounded-md divide-gray-200">
+      <table class="min-w-full divide-y rounded-md divide-gray-200 border">
         <thead class="bg-gray-100 rounded">
           <tr>
             <th
@@ -109,28 +114,50 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in person" :key="index" class="border-b">
+          <tr v-for="(item, index) of person" :key="index" class="border-b">
             <td class="p-4 align-middle">{{ index + 1 }}</td>
             <td class="p-4 align-middle">
-              <input
-                type="text"
-                v-model="item.nombre"
-                class="w-full px-2 bg-transparent focus:outline-none"
-                placeholder="Nombre"
+              <FormField
                 :name="'invitados.' + index + '.nombre_apellidos'"
-              />
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <Input
+                      type="text"
+                      v-bind="componentField"
+                      class="w-full px-2 shadow-none border-none"
+                      placeholder="Nombre"
+                    />
+                  </FormControl>
+                </FormItem>
+              </FormField>
             </td>
             <td class="p-4 align-middle">
-              <select
-                type="text"
-                v-model="item.cargo"
-                class="px-2 bg-transparent focus:outline-none"
+              <FormField
                 :name="'invitados.' + index + '.cargo'"
+                v-slot="{ componentField }"
               >
-                <option v-for="cargo in cargos" :key="cargo" :value="cargo">
-                  {{ cargo }}
-                </option>
-              </select>
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <select
+                      type="text"
+                      v-bind="componentField"
+                      class="p-2 border rounded"
+                    >
+                      <option value="">Seleccione un cargo</option>
+                      <option
+                        v-for="cargo in cargos"
+                        :key="cargo"
+                        :value="cargo"
+                      >
+                        {{ cargo }}
+                      </option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </td>
             <td class="p-4 text-center align-middle">
               <button
@@ -165,7 +192,7 @@
       <label class="block mb-3 text-md font-medium text-gray-700"
         >Relación de Militantes del Núcleo</label
       >
-      <table class="min-w-full divide-y rounded divide-gray-200">
+      <table class="min-w-full divide-y rounded divide-gray-200 border">
         <thead class="bg-gray-100">
           <tr>
             <th
@@ -178,50 +205,71 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="(militante, index) in militantes" :key="index">
+          <tr v-for="(abs, index) of abscents" :key="index">
             <td class="p-6 text-left whitespace-nowrap">
-              <input
-                class="hidden"
+              <FormField
                 :name="'militante.' + index + '.id'"
-                :value="militante.id"
-              />
+                v-slot="{ componentField }"
+              >
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <Input class="hidden" v-bind="componentField" />
+                  </FormControl>
+                </FormItem>
+              </FormField>
               {{ index + 1 }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ militante.firstname }}
+              {{ abs.militante.firstname }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ militante.lastname }}
+              {{ abs.militante.lastname }}
             </td>
             <td class="py-4 whitespace-nowrap">
-              <select
-                v-model="estado[index]"
-                :name="'militante.' + index + '.estado'"
-                class="px-2 py-2 rounded bg-white"
+              <FormField
+                :name="'abscents.' + index + '.estado'"
+                v-slot="{ componentField }"
               >
-                <option value="presente">Presente</option>
-                <option value="virtual">Virtual</option>
-                <option value="ausente">Ausente</option>
-              </select>
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <select
+                      v-bind="componentField"
+                      class="px-2 py-2 rounded bg-white"
+                    >
+                      <option value="presente">Presente</option>
+                      <option value="virtual">Virtual</option>
+                      <option value="ausente">Ausente</option>
+                    </select>
+                  </FormControl>
+                </FormItem>
+              </FormField>
             </td>
             <td
               class="w-1/5 px-6 py-4 whitespace-nowrap"
               v-if="estado[index] === 'ausente'"
             >
-              <select
-                v-model="militante.selectedCausa"
-                :name="'militante.' + index + '.reason'"
-                class="px-2 py-2 rounded bg-white"
+              <FormField
+                :name="'abscents.' + index + '.reason'"
+                v-slot="{ componentField }"
               >
-                <option
-                  v-for="causa in absenceReasons"
-                  :key="causa"
-                  :value="causa"
-                  class="rounded"
-                >
-                  {{ causa }}
-                </option>
-              </select>
+                <FormItem class="w-3/4">
+                  <FormControl>
+                    <select
+                      v-bind="componentField"
+                      class="px-2 py-2 rounded bg-white"
+                    >
+                      <option
+                        v-for="causa in absenceReasons"
+                        :key="causa"
+                        :value="causa"
+                        class="rounded"
+                      >
+                        {{ causa }}
+                      </option>
+                    </select>
+                  </FormControl>
+                </FormItem>
+              </FormField>
             </td>
             <td class="w-1/5 px-6 py-4 whitespace-nowrap" v-else>
               <!-- Celda vacía para mantener la estructura cuando no es ausente -->
@@ -229,9 +277,10 @@
           </tr>
         </tbody>
       </table>
+
       <!-- Empty State -->
       <div
-        v-if="militantes.length === 0"
+        v-if="abscents.length === 0"
         class="text-center py-16 border border-gray-300 rounded"
       >
         <div
@@ -248,12 +297,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed } from "vue";
 import { reactive } from "vue";
 import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { absenceReasons, cargos } from "@/enum/absenceReasons.ts";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import Input from "@/components/ui/input/Input.vue";
 import Select from "@/components/ui/select/Select.vue";
 import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
@@ -261,24 +316,36 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectGroup from "@/components/ui/select/SelectGroup.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
+import { useFormContext } from "vee-validate";
+import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
 
-const { cores, acta } = defineProps<{
-  cores: any[], 
-  acta: any
+const { cores } = defineProps<{
+  cores: any[];
 }>();
 
 defineEmits(["update"]);
-const militantes = []
-const currentCore = ref(acta.core.name)
 const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
-const person = ref([{ nombre: "", cargo: "" }]);
+const form = useFormContext<FormSchema>();
+const person = computed(() => form.values.invitados);
 const estado = reactive<string[]>([]);
+const abscents = computed(() => form.values.abscents)
 
 const addPerson = () => {
-  person.value.push({ nombre: "", cargo: "" });
+  form.setFieldValue("invitados", [
+    ...form.values.invitados,
+    { nombre_apellidos: "", cargo: "" as any },
+  ]);
 };
 
 const removeInvitados = (index: any) => {
-  person.value.splice(index, 1);
+  if (form.values.invitados.length === 1) form.setFieldValue("invitados", []);
+  else
+    form.setFieldValue("invitados", form.values.invitados.toSpliced(index, 1));
 };
+
+function getAbscents(mili: any) {
+  //return acta.abscents.find(
+  //  (ab, index) => ab.militante.id === mili && ab.estado === "Ausente"
+  //);
+}
 </script>

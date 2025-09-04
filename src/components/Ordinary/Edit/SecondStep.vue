@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4">
+  <div class="space-y-2">
     <div class="flex justify-between">
       <h3 class="text-lg font-medium">Orden del Día</h3>
       <div>
@@ -32,7 +32,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(item, index) in agendaItems"
+            v-for="(item, index) of agendaItems"
             :key="index"
             class="border-b"
           >
@@ -54,10 +54,7 @@
               </FormField>
             </td>
             <td class="p-4 align-middle">
-              <Button
-                @click="removeAgendaItem(index)"
-                variant="ghost"
-              >
+              <Button @click="removeAgendaItem(index)" variant="ghost">
                 <TrashIcon class="h-4 w-4" />
               </Button>
             </td>
@@ -68,13 +65,12 @@
   </div>
   <div class="space-y-4">
     <h2 class="text-lg mt-8 mb-4 font-bold">Desarrollo</h2>
-    <div v-for="(item, index) in agendaItems">
+    <div v-for="(item, index) of agendaItems" :key="index">
       <div>
         <FormField :name="'development.' + index" v-slot="{ componentField }">
           <FormItem class="">
             <FormLabel class="text-md"
-              >{{ index + 1 }}.
-               </FormLabel
+              >{{ index + 1 }}. {{ form.values.order[index] }}</FormLabel
             >
             <FormControl>
               <Textarea rows="4" v-bind="componentField"></Textarea>
@@ -88,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
 import {
   FormField,
@@ -100,14 +96,24 @@ import {
 import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
+import { useFormContext } from "vee-validate";
+import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
 
-const agendaItems = ref([{ description: "" }]);
+const form = useFormContext<FormSchema>();
+
+const agendaItems = computed(() =>form.values.order)
 
 const addAgendaItem = () => {
-  agendaItems.value.push({ description: "" });
+  form.setFieldValue("order", [
+    ...form.values.order,
+    "",
+  ]);
 };
 
 const removeAgendaItem = (index: any) => {
-  agendaItems.value.splice(index, 1);
+  if (form.values.order.length === 1)
+    form.setFieldValue("order", []);
+  else
+    form.setFieldValue("order", form.values.order.toSpliced(index, 1));
 };
 </script>

@@ -122,10 +122,19 @@
                   <TableCell class=" pl-6 text-center"> {{ acta.core?.name }}</TableCell>
                   <TableCell class="text-center">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-center">
-                    <Badge :class="getStatusClass(acta.status)">
-                      <Loader2 v-if="acta.status === 'Procesando'" class="animate-spin"/>
-                      {{ acta.status }}
-                    </Badge>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge :class="getStatusClass(acta.status)">
+                              <Loader2 v-if="acta.status === 'Procesando'" class="animate-spin"/>
+                              {{ acta.status }} 
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent class="max-w-64">
+                            {{ statusMap[acta.status as keyof typeof statusMap].label }}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                   </TableCell>
                   <TableCell class="text-center">
                     <DropdownMenu>
@@ -374,7 +383,7 @@ import {
   FilePenLine,
   FileSearch
 } from "lucide-vue-next";
-import { computed, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { toast } from "vue-sonner";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -385,6 +394,10 @@ import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table
 import { useUrlSearchParams } from "@vueuse/core";
 import { Status } from "@/enum/Status";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
+import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
+import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
 
 const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
   actas: any;
@@ -394,8 +407,6 @@ const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
   nucleos: any;
 }>();
 
-const actas = reactive(actasResponse)
-
 useSse("minute.status",({id,status})=>{
   const acta = actas?.data?.find((acta: any)=>acta.id == id)
   if (acta) {
@@ -403,6 +414,7 @@ useSse("minute.status",({id,status})=>{
   }  
 })
 
+const actas = reactive(actasResponse)
 const searchParams = useUrlSearchParams()
 const hasPermission = usePermissions()
 
@@ -438,6 +450,39 @@ const tableHeaders = [
   "Estado",
   "",
 ];
+
+const statusMap = {
+  [Status.CREATE]: {
+    title: "Creada",
+    label:
+      "El acta ha sido registrada correctamente y está pendiente de procesamiento. Puedes iniciar el procesamiento o cargar archivos adicionales si es necesario.",
+  },
+  [Status.PROCESSING]: {
+    title: "Procesando",
+    label:
+      "El acta se está procesando actualmente. Este proceso puede tardar unos minutos. Evita realizar cambios hasta que finalice.",
+  },
+  [Status.PENDIENTE]: {
+    title: "En Revisión",
+    label:
+      "El acta requiere revisión manual. Revisa el contenido y, si todo está correcto, procede a marcarla como procesada o solicita correcciones.",
+  },
+  [Status.PROCESADA]: {
+    title: "Procesada",
+    label:
+      "El acta fue procesada exitosamente. Puedes visualizarla, exportarla o continuar con los pasos siguientes.",
+  },
+  [Status.ERROR]: {
+    title: "Error",
+    label:
+      "Ocurrió un error al procesar el acta. Intenta reintentar el procesamiento o revisa el archivo original para corregir posibles problemas.",
+  },
+  [Status.INACTIVA]: {
+    title: "Inactiva",
+    label:
+      "El acta está inactiva y no está disponible para acciones. Contacta al administrador si crees que debería reactivarse.",
+  },
+}
 
 function handleSort() {
   if (sort.value === "ASC") {
@@ -494,8 +539,6 @@ const getStatusClass = (status: any) => {
 
 const handleAction = (action: any, acta: any) => {
   currentsMinute.value = acta;
-  console.log(acta);
-  
   if (action === "ver") {
     if (acta.isLoaded) {
       navigate(`/loaded-view/${acta.id}`)
