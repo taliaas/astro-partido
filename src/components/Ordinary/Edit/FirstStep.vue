@@ -220,12 +220,13 @@
               {{ index + 1 }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ abs.militante.firstname }}
+              {{ abs.firstname }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ abs.militante.lastname }}
+              {{ abs.lastname }}
             </td>
             <td class="py-4 whitespace-nowrap">
+             
               <FormField
                 :name="'abscents.' + index + '.estado'"
                 v-slot="{ componentField }"
@@ -243,6 +244,7 @@
                   </FormControl>
                 </FormItem>
               </FormField>
+              
             </td>
             <td
               class="w-1/5 px-6 py-4 whitespace-nowrap"
@@ -328,7 +330,7 @@ const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
 const form = useFormContext<FormSchema>();
 const person = computed(() => form.values.invitados);
 const estado = reactive<string[]>([]);
-const abscents = computed(() => form.values.abscents)
+const abscents = computed(() => form.values.militante)
 
 const addPerson = () => {
   form.setFieldValue("invitados", [
@@ -342,10 +344,4 @@ const removeInvitados = (index: any) => {
   else
     form.setFieldValue("invitados", form.values.invitados.toSpliced(index, 1));
 };
-
-function getAbscents(mili: any) {
-  //return acta.abscents.find(
-  //  (ab, index) => ab.militante.id === mili && ab.estado === "Ausente"
-  //);
-}
 </script>

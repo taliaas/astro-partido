@@ -7,7 +7,11 @@ export function provideSse() {
     const eventSource = ref<EventSource | null>(null)
 
     onMounted(() => {
-        eventSource.value = new EventSource("/api/sse", { withCredentials: true })
+        const es = new EventSource("/api/sse", { withCredentials: true })
+        es.onmessage = (e) => {
+            console.log("Hola")
+        }
+        eventSource.value = es
     })
 
     provide(EVENT_SOURCE, eventSource)

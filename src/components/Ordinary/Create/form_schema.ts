@@ -14,6 +14,16 @@ export const form_schema = z.object({
         nombre_apellidos: z.string(),
         cargo: z.enum(cargos, { message: "Hola" })
     }).array(),
+    militante: z.object({
+        id: z.number(),
+        firstname: z.string(),
+        lastname: z.string(),
+        abscents: z.object({
+            id: z.string(),
+            estado: z.enum(['presente', 'virtual', 'ausente']),
+            absenceReasons: z.enum(absenceReasons)
+        }),
+    }).array(),
     abscents: z.object({
         id: z.string(),
         militante: z.object({ firstname: z.string(), lastname: z.string() }),

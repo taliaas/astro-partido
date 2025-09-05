@@ -8,14 +8,12 @@ const enumStatus = ['Creada', 'Procesando', 'Pendiente', 'Procesada', 'Validada'
 
 export const retryModel = defineAction({
   input: z.object({
-    actaID: z.string(),
+    actaID: z.coerce.string(),
     mode: z.enum(['spacy', 'model']),
   }),
   async handler({actaID, mode}, ctx){
     const session: any = await getSession(ctx.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    
-    console.log('minutes');
     
     const res = await fetch(
       `http://localhost:5000/minutes/retry/${actaID}/${mode}`,

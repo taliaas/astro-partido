@@ -332,6 +332,38 @@
       </DialogContent>
     </Dialog>
 
+    <Dialog :open="openModal" @update:open="openModal = $event">
+      <DialogContent>
+        <h2 class="text-lg font-semibold text-gray-900">Seleccione </h2>
+        <form @submit.prevent="handleRetry">
+          <div class="flex justify-between gap-4 space-y-2">
+            <Label :class="[
+              'flex items-center justify-center border rounded-md cursor-pointer flex-1',
+              mode === 'spacy'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+            ]">
+            <Input type="radio" name="typeModel" value="spacy" v-model="mode" class="sr-only"/>
+            Spacy
+            </Label>
+            <Label :class="[
+              'flex items-center justify-center border rounded-md cursor-pointer flex-1',
+              mode === 'model'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+            ]">
+            <Input type="radio" name="typeModel" value="model" v-model="mode" class="sr-only"/>
+            Model
+            </Label>
+            
+          </div>
+        <DialogFooter class="pt-2">
+          <Button variant="default" type="submit">Aceptar</Button>
+        </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+
     <div v-if="showDelete" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div class="bg-white rounded p-4 w-full max-w-md">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
@@ -398,6 +430,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
 import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
+import Label from "@/components/ui/label/Label.vue";
 
 const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
   actas: any;
@@ -407,18 +440,19 @@ const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
   nucleos: any;
 }>();
 
-useSse("minute.status",({id,status})=>{
-  const acta = actas?.data?.find((acta: any)=>acta.id == id)
-  if (acta) {
-    acta.status = status
-  }  
-})
+// useSse("minute.status",({id,status})=>{
+//   const acta = actas?.data?.find((acta: any)=>acta.id == id)
+//   if (acta) {
+//     acta.status = status
+//   }  
+// })
 
 const actas = reactive(actasResponse)
 const searchParams = useUrlSearchParams()
 const hasPermission = usePermissions()
 
-const mode = ref('spacy')
+const mode = ref('model')
+const openModal = ref(false)
 const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
 const showUploadDialog = ref(false);
 const uploadedFiles = ref([]);
@@ -427,7 +461,7 @@ const showDelete = ref(false);
 const currentPage = ref(page)
 const hasNextPage = ref(actas?.page_total)
 const loading = ref(false)
-const currentsMinute = ref(null);
+const currentsMinute = ref<any>(null);
 const sort = ref<"ASC" | "DESC" | null >(order);
 
 const formatFileSize = (bytes: any) => {
@@ -557,8 +591,7 @@ const handleAction = (action: any, acta: any) => {
     navigate(`/indicadores/${acta.id}`);
   }
   else if(action === "retry"){
-    actions.minute.retryModel({actaID: acta.id, mode: mode.value as any})
-    navigate(`minutes`)
+    openModal.value = true
   }
   else if (action === "export") {
     if (acta.name !== "Acta Ordinaria") {
@@ -568,6 +601,11 @@ const handleAction = (action: any, acta: any) => {
     showDelete.value = true;
   }
 };
+
+const handleRetry = () => {
+  actions.minute.retryModel({actaID: currentsMinute.value?.id, mode: mode.value as any})
+  navigate(`minutes`)
+}
 
 const handleDelete = () => {
   showDelete.value = false;
