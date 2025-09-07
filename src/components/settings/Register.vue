@@ -36,11 +36,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="traza in trazas.logs"
-                :key="traza.id"
-                class="border-b"
-              >
+              <tr v-for="traza in trazas.logs" :key="traza.id" class="border-b">
                 <td class="py-3 px-4 font-medium text-gray-900">
                   {{ traza.module }}
                 </td>
@@ -92,12 +88,24 @@
                 </td>
                 <td colspan="6" class="py-4 text-gray-500 text-md">
                   <div class="space-x-2">
-                    <button class="p-2 border rounded-md" @click="previusPage">
-                      <ArrowLeft class="w-4 h-4" />
-                    </button>
-                    <button class="p-2 border rounded-md" @click="nextPage">
-                      <ArrowRight class="w-4 h-4" />
-                    </button>
+                    <Button
+                      variant="outline"
+                      class="p-2 border rounded-md"
+                      @click="previusPage"
+                      :disabled="currentPage <= 1"
+                      :class="{ 'bg-muted': currentPage === 1 }"
+                    >
+                      <ChevronLeft />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      class="p-2 border rounded-md"
+                      @click="nextPage"
+                      :disabled="currentPage >= trazas.lastPage"
+                      :class="{ 'bg-muted': currentPage >= trazas.lastPage }"
+                    >
+                      <ChevronRight />
+                    </Button>
                   </div>
                 </td>
               </tr>
@@ -253,12 +261,13 @@
 </template>
 
 <script setup lang="ts">
+import Button from "@/components/ui/button/Button.vue";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
-  ArrowLeft,
-  ArrowRight,
   CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
   DatabaseIcon,
   Eye,
   HashIcon,

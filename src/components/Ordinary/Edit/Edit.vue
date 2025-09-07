@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
+    {{ form.values }}
     <form @submit="onSubmit" class="max-w-7xl mx-auto">
       <div class="p-4 flex justify-center">
         <h2 class="font-bold text-2xl">{{ acta.name }} {{ acta.id }}</h2>
@@ -7,7 +8,7 @@
       <div class="space-y-6 min-h-[70vh]">
         <!--  Información 1 -->
         <section v-show="currentStep === 1" class="space-y-4">
-          <FirstStep :cores />
+          <FirstStep :cores edit/>
         </section>
 
         <!--  Información 2 -->
@@ -76,7 +77,6 @@ const form = useForm({
     lugar: acta.lugar,
     invitados: acta.invitados ?? [],
     militante: acta.militante ?? [],
-    abscents: acta.abscents ?? [],
     agreements: acta.agreements,
     development: acta.development,
     observaciones: acta.observaciones,

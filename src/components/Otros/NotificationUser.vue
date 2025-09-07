@@ -8,6 +8,8 @@ import {
   AlertCircleIcon,
   CheckCircleIcon,
   ClockIcon,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-vue-next";
 
 const { notifications } = defineProps<{
@@ -177,20 +179,20 @@ function previous() {
         >
           <div class="flex items-center justify-between text-sm text-gray-600">
             <p>Página{{ notifications.page }} de {{ notifications.total }}</p>
-            
+
             <div class="flex gap-3">
               <Button
                 :disabled="currentPage === 1"
                 variant="secondary"
                 @click="previous"
               >
-                Anterior
+                <ChevronLeft />
               </Button>
               <Button
                 :disabled="currentPage >= notifications.total"
                 @click="next"
               >
-                Siguiente
+                <ChevronRight />
               </Button>
             </div>
           </div>

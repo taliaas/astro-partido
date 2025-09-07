@@ -10,43 +10,46 @@
         </div>
 
         <div
-            v-if="event.data.length === 0"
-            class="p-28 flex flex-col items-center gap-2 border rounded-md bg-white"
+          v-if="event.data.length === 0"
+          class="p-28 flex flex-col items-center gap-2 border rounded-md bg-white"
         >
-          <CalendarIcon class="size-10 text-muted-foreground"/>
-          <p class="text-md text-gray-500">
-            No hay tareas o eventos.
-          </p>
+          <CalendarIcon class="size-10 text-muted-foreground" />
+          <p class="text-md text-gray-500">No hay tareas o eventos.</p>
         </div>
-        <div v-else class="flex pt-4 bg-white border p-12 rounded gap-2 grid grid-cols-1">
+        <div
+          v-else
+          class="flex pt-4 bg-white border p-12 rounded gap-2 grid-cols-1"
+        >
           <div v-for="ev in event.data" :key="ev.id" class="border-b">
             <p class="text-button px-4 font-medium">{{ ev.type }}</p>
             <div class="flex justify-between">
               <h3 class="py-2">Detalles: {{ ev.title }}</h3>
-              <p class="text-gray-400">{{ev.date}}</p>
+              <p class="text-gray-400">{{ ev.date }}</p>
             </div>
           </div>
         </div>
         <!-- Pagination -->
-        <div class="flex items-center justify-between py-4">
-          <button
-              @click="previousPage"
-              :disabled="currentPage === 1"
-              class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
+        <div v-if="event.data.length === 0" class="flex items-center justify-between py-4">
+          <Button
+            variant="outline"
+            @click="previousPage"
+            :disabled="currentPage === 1"
+            class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
           >
-            Anterior
-          </button>
+            <ChevronLeft />
+          </Button>
           <span class="text-md text-gray-500">
             Página <span class="font-bold">{{ currentPage }}</span> de
             <span class="font-bold">{{ event.totalPages }}</span>
           </span>
-          <button
-              @click="nextPage"
-              :disabled="currentPage === event.totalPages"
-              class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
+          <Button
+            variant="outline"
+            @click="nextPage"
+            :disabled="currentPage <= event.totalPages"
+            class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
           >
-            Siguiente
-          </button>
+            <ChevronRight />
+          </Button>
         </div>
       </div>
     </div>
@@ -54,9 +57,10 @@
 </template>
 
 <script setup lang="ts">
-import {navigate} from "astro:transitions/client";
-import {CalendarIcon} from "lucide-vue-next";
-import {ref} from "vue";
+import Button from "@/components/ui/button/Button.vue";
+import { navigate } from "astro:transitions/client";
+import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ref } from "vue";
 
 interface EventItem {
   id: number;
@@ -65,7 +69,7 @@ interface EventItem {
   date: Date;
 }
 
-const {event, page} = defineProps<{
+const { event, page } = defineProps<{
   event: any;
   page: number;
 }>();

@@ -242,7 +242,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
+} from "@/components/ui/accordion";
 
 const { acta, existsCP } = defineProps<{
   acta: any;

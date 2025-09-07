@@ -1,89 +1,86 @@
 <template>
-  <div class="rounded-lg border bg-card shadow-sm">
-    <div class="p-6">
-      <div
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4"
-      >
-        <div>
-          <h4 class="text-lg font-semibold">Matriz de Permisos</h4>
-        </div>
-        <div class="flex items-center gap-2">
-          <Select v-model="selectRole">
-            <SelectTrigger>
-              <SelectValue class="min-w-48" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem v-for="role in roles" :key="role" :value="role"
-                  >{{ role }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button
-            @click="saveClaims"
-            :disabled="!hasChanges || saving"
-            :loading="saving"
-            class="min-w-30"
-          >
-            Guardar
-          </Button>
-        </div>
+  <div class="pb-4">
+    <h2 class="text-2xl font-bold text-gray-900">Matriz de Permisos</h2>
+    <p class="text-gray-600">Administra los permisos del sistema</p>
+  </div>
+  <div class="rounded-lg border bg-card shadow-sm space-y-4 p-6">
+    <div class="flex justify-end">
+      <div class="flex items-center gap-2">
+        <Select v-model="selectRole">
+          <SelectTrigger>
+            <SelectValue class="min-w-48" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem v-for="role in roles" :key="role" :value="role"
+                >{{ role }}
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button
+          @click="saveClaims"
+          :disabled="!hasChanges || saving"
+          :loading="saving"
+          class="min-w-30"
+        >
+          Guardar
+        </Button>
       </div>
+    </div>
 
-      <div class="rounded-md border overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b bg-muted/50">
-              <th class="h-10 w-[200px] px-4 py-4 text-left font-medium">
-                Recurso
-              </th>
-              <th
-                v-for="action in permissionActions"
-                :key="action.id"
-                class="h-10 px-2 text-center font-medium"
-              >
-                {{ action.name }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="resource in permissionResources"
-              :key="resource"
-              class="border-b transition-colors hover:bg-muted/50"
+    <div class="rounded-md border overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b bg-muted/50">
+            <th class="h-10 w-[200px] px-4 py-4 text-left font-medium">
+              Recurso
+            </th>
+            <th
+              v-for="action in permissionActions"
+              :key="action.id"
+              class="h-10 px-2 text-center font-medium"
             >
-              <td class="px-4">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium">{{ resource }}</span>
-                </div>
-              </td>
-              <td
-                v-for="action in permissionActions"
-                :key="action.id"
-                class="p-4 text-center"
-              >
-                <input
-                  type="checkbox"
-                  :id="`${resource}-${action.id}`"
-                  class="rounded border-gray-300"
-                  :checked="isPermissionChecked(resource, action.id)"
-                  @change="togglePermission(resource, action.id)"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              {{ action.name }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="resource in permissionResources"
+            :key="resource"
+            class="border-b transition-colors hover:bg-muted/50"
+          >
+            <td class="px-4">
+              <div class="flex items-center gap-2">
+                <span class="font-medium">{{ resource }}</span>
+              </div>
+            </td>
+            <td
+              v-for="action in permissionActions"
+              :key="action.id"
+              class="p-4 text-center"
+            >
+              <input
+                type="checkbox"
+                :id="`${resource}-${action.id}`"
+                class="rounded border-gray-300"
+                :checked="isPermissionChecked(resource, action.id)"
+                @change="togglePermission(resource, action.id)"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-      <div class="flex items-center justify-between mt-4">
-        <div class="text-md text-muted-foreground flex items-center gap-1">
-          <AlertCircle class="w-4 h-4 bg-secondary" />
-          Editando permisos para:
-          <span class="font-medium">{{
-            roles.find((r) => r === selectRole)
-          }}</span>
-        </div>
+    <div class="flex items-center justify-between mt-4">
+      <div class="text-md text-muted-foreground flex items-center gap-1">
+        <AlertCircle class="w-4 h-4 bg-secondary" />
+        Editando permisos para:
+        <span class="font-medium">{{
+          roles.find((r) => r === selectRole)
+        }}</span>
       </div>
     </div>
   </div>
@@ -134,7 +131,7 @@ const permissionResources = [
   "Reportes",
   "Usuarios",
   "Procesos",
-  "Eventos"
+  "Eventos",
 ];
 
 const saving = ref(false);
@@ -170,7 +167,7 @@ function togglePermission(resource: string, actionId: string) {
       id: Date.now(),
       actions: [actionId as any],
       module: resource,
-      role: {name: selectRole.value},
+      role: { name: selectRole.value },
     });
   }
 }
@@ -190,7 +187,7 @@ function isPermissionChecked(resource: string, actionId: string) {
 // Guardar cambios (ejemplo: emitir evento o llamar API)
 async function saveClaims() {
   saving.value = true;
-  
+
   try {
     // Para cada rol, agrupar sus claims y preparar el objeto para guardar
     const rolesToSave = roles.map((role) => {

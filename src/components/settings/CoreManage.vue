@@ -1,205 +1,206 @@
 <template>
+  <div class="pb-4">
+    <h2 class="text-2xl font-bold text-gray-900">Cómites</h2>
+    <p class="text-gray-600">Administra los cómites y núcleos del sistema</p>
+  </div>
   <div class="rounded-lg border bg-card shadow-sm">
-    <div class="p-6 space-y-6">
-      <div class="p-2">
-        <!-- Sección de Comités -->
-        <div class="flex flex-row items-center justify-between mb-4">
-          <h2 class="font-medium text-xl text-foreground">Cómites</h2>
-          <Button @click="handleAddComite" class="flex items-center gap-1">
-            <PlusIcon class="h-4 w-4 mr-1" />
-            Añadir
-          </Button>
-        </div>
+    <div class="p-6 space-y-4">
+      <!-- Sección de Comités -->
+      <div class="flex justify-end">
+        <Button @click="handleAddComite" class="flex items-center gap-1">
+          <PlusIcon class="h-4 w-4 mr-1" />
+          Añadir
+        </Button>
+      </div>
 
-        <div class="rounded-md border">
-          <table class="w-full text-lg">
-            <thead>
-              <tr class="border-b bg-muted/50 font-medium">
-                <th class="h-10 px-4 text-left">Nombre</th>
-                <th class="h-10 px-4 text-center">Núcleos</th>
-                <th class="h-10 px-4 text-left w-[50px]"></th>
+      <div class="rounded-md border">
+        <table class="w-full text-lg">
+          <thead>
+            <tr class="border-b bg-muted/50 font-medium">
+              <th class="h-10 px-4 text-left">Nombre</th>
+              <th class="h-10 px-4 text-center">Núcleos</th>
+              <th class="h-10 px-4 text-left w-[50px]"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-if="comites?.length === 0">
+              <tr>
+                <td colspan="3" class="p-4 text-center text-muted-foreground">
+                  No hay comités registrados.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <template v-if="comites?.length === 0">
-                <tr>
-                  <td colspan="3" class="p-4 text-center text-muted-foreground">
-                    No hay comités registrados.
-                  </td>
-                </tr>
-              </template>
+            </template>
 
-              <template v-for="comite in comites" :key="comite.id">
-                <!-- Fila del comité -->
-                <tr
-                  class="text-lg border-b transition-colors hover:bg-muted/50"
-                >
-                  <td class="p-4">
-                    <div
-                      class="flex items-center cursor-pointer"
-                      @click="toggleComiteExpansion(comite.id)"
+            <template v-for="comite in comites" :key="comite.id">
+              <!-- Fila del comité -->
+              <tr class="text-lg border-b transition-colors hover:bg-muted/50">
+                <td class="p-4">
+                  <div
+                    class="flex items-center cursor-pointer"
+                    @click="toggleComiteExpansion(comite.id)"
+                  >
+                    <component
+                      :is="
+                        expandedComites.includes(comite.id)
+                          ? ChevronDownIcon
+                          : ChevronRightIcon
+                      "
+                      class="h-4 w-4 mr-2 text-muted-foreground"
+                    />
+                    <span class="font-medium">{{ comite.name }}</span>
+                  </div>
+                </td>
+                <td class="p-4 text-center">
+                  <Badge variant="outline">{{
+                    getNucleosByComite(comite.id).length
+                  }}</Badge>
+                </td>
+                <td class="p-4">
+                  <div class="relative">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      @click="toggleComiteDropdown(comite.id)"
                     >
-                      <component
-                        :is="
-                          expandedComites.includes(comite.id)
-                            ? ChevronDownIcon
-                            : ChevronRightIcon
-                        "
-                        class="h-4 w-4 mr-2 text-muted-foreground"
-                      />
-                      <span class="font-medium">{{ comite.name }}</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <Badge variant="outline">{{ getNucleosByComite(comite.id).length }}</Badge>
-                  </td>
-                  <td class="p-4">
-                    <div class="relative">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        @click="toggleComiteDropdown(comite.id)"
-                      >
-                        <MoreVerticalIcon class="h-4 w-4" />
-                      </Button>
+                      <MoreVerticalIcon class="h-4 w-4" />
+                    </Button>
+                    <div
+                      v-if="activeComiteDropdown === comite.id"
+                      class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
+                    >
                       <div
-                        v-if="activeComiteDropdown === comite.id"
-                        class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
+                        class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
                       >
-                        <div
-                          class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
-                        >
-                          Acciones
-                        </div>
-                        <div class="py-1">
-                          <a
-                            href="#"
-                            class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                            @click.prevent="handleEditComite(comite)"
-                          >
-                            <EditIcon class="h-4 w-4" />
-                            Editar
-                          </a>
-                          <a
-                            href="#"
-                            class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                            @click.prevent="handleAddNucleo(comite.id)"
-                          >
-                            <PlusIcon class="h-4 w-4" />
-                            Añadir Núcleo
-                          </a>
-                          <div class="border-t my-1"></div>
-                          <a
-                            href="#"
-                            class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
-                            @click.prevent="handleDeleteComite(comite.id)"
-                          >
-                            <Trash2Icon class="h-4 w-4" />
-                            Eliminar
-                          </a>
-                        </div>
+                        Acciones
                       </div>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- Núcleos expandidos del comité -->
-                <tr
-                  v-if="expandedComites.includes(comite.id)"
-                  class="bg-muted/10"
-                >
-                  <td colspan="3" class="p-0">
-                    <div class="px-6 py-2 border-t">
-                      <div
-                        v-if="getNucleosByComite(comite.id).length === 0"
-                        class="py-4 text-center text-muted-foreground"
-                      >
-                        No hay núcleos asociados a este comité.
+                      <div class="py-1">
                         <a
                           href="#"
-                          class="text-primary ml-2"
+                          class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
+                          @click.prevent="handleEditComite(comite)"
+                        >
+                          <EditIcon class="h-4 w-4" />
+                          Editar
+                        </a>
+                        <a
+                          href="#"
+                          class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
                           @click.prevent="handleAddNucleo(comite.id)"
                         >
-                          Añadir núcleo
+                          <PlusIcon class="h-4 w-4" />
+                          Añadir Núcleo
+                        </a>
+                        <div class="border-t my-1"></div>
+                        <a
+                          href="#"
+                          class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
+                          @click.prevent="handleDeleteComite(comite.id)"
+                        >
+                          <Trash2Icon class="h-4 w-4" />
+                          Eliminar
                         </a>
                       </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
 
-                      <template v-else>
-                        <div
-                          class="grid grid-cols-12 p-2 text-sm font-bold text-muted-foreground"
-                        >
-                          <div class="col-span-3">Nombre</div>
-                          <div class="col-span-3">Secretario General</div>
-                          <div class="col-span-3">
-                            Secretario de Funcionamiento
-                          </div>
-                          <div class="col-span-2 text-center">Militantes</div>
-                          <div class="col-span-1"></div>
+              <!-- Núcleos expandidos del comité -->
+              <tr
+                v-if="expandedComites.includes(comite.id)"
+                class="bg-muted/10"
+              >
+                <td colspan="3" class="p-0">
+                  <div class="px-6 py-2 border-t">
+                    <div
+                      v-if="getNucleosByComite(comite.id).length === 0"
+                      class="py-4 text-center text-muted-foreground"
+                    >
+                      No hay núcleos asociados a este comité.
+                      <a
+                        href="#"
+                        class="text-primary ml-2"
+                        @click.prevent="handleAddNucleo(comite.id)"
+                      >
+                        Añadir núcleo
+                      </a>
+                    </div>
+
+                    <template v-else>
+                      <div
+                        class="grid grid-cols-12 p-2 text-sm font-bold text-muted-foreground"
+                      >
+                        <div class="col-span-3">Nombre</div>
+                        <div class="col-span-3">Secretario General</div>
+                        <div class="col-span-3">
+                          Secretario de Funcionamiento
                         </div>
+                        <div class="col-span-2 text-center">Militantes</div>
+                        <div class="col-span-1"></div>
+                      </div>
 
-                        <div
-                          v-for="nucleo in getNucleosByComite(comite.id)"
-                          :key="nucleo.id"
-                          class="grid grid-cols-12 p-2 text-sm items-center border-t border-muted/30 hover:bg-muted/20"
-                        >
-                          <div class="col-span-3 flex items-center">
-                            {{ nucleo.name }}
-                          </div>
-                          <div class="col-span-3">
-                            {{ nucleo.secretarioGeneral }}
-                          </div>
-                          <div class="col-span-3">
-                            {{ nucleo.secretarioFuncionamiento }}
-                          </div>
-                          <div class="col-span-2 text-center">
-                            {{ nucleo.militantes?.length }}
-                          </div>
-                          <div class="col-span-1 flex justify-end">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              @click="toggleNucleoDropdown(nucleo.id)"
-                            >
-                              <MoreVerticalIcon class="h-4 w-4" />
-                            </Button>
+                      <div
+                        v-for="nucleo in getNucleosByComite(comite.id)"
+                        :key="nucleo.id"
+                        class="grid grid-cols-12 p-2 text-sm items-center border-t border-muted/30 hover:bg-muted/20"
+                      >
+                        <div class="col-span-3 flex items-center">
+                          {{ nucleo.name }}
+                        </div>
+                        <div class="col-span-3">
+                          {{ nucleo.secretarioGeneral }}
+                        </div>
+                        <div class="col-span-3">
+                          {{ nucleo.secretarioFuncionamiento }}
+                        </div>
+                        <div class="col-span-2 text-center">
+                          {{ nucleo.militantes?.length }}
+                        </div>
+                        <div class="col-span-1 flex justify-end">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            @click="toggleNucleoDropdown(nucleo.id)"
+                          >
+                            <MoreVerticalIcon class="h-4 w-4" />
+                          </Button>
+                          <div
+                            v-if="activeNucleoDropdown === nucleo.id"
+                            class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
+                          >
                             <div
-                              v-if="activeNucleoDropdown === nucleo.id"
-                              class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
+                              class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
                             >
-                              <div
-                                class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
+                              Acciones
+                            </div>
+                            <div class="py-1">
+                              <a
+                                class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
+                                @click.prevent="handleEditNucleo(nucleo)"
                               >
-                                Acciones
-                              </div>
-                              <div class="py-1">
-                                <a
-                                  class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                                  @click.prevent="handleEditNucleo(nucleo)"
-                                >
-                                  <EditIcon class="h-4 w-4" />
-                                  Editar
-                                </a>
-                                <div class="border-t my-1"></div>
-                                <a
-                                  href="#"
-                                  class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
-                                  @click.prevent="handleDeleteNucleo(nucleo.id)"
-                                >
-                                  <Trash2Icon class="h-4 w-4" />
-                                  Eliminar
-                                </a>
-                              </div>
+                                <EditIcon class="h-4 w-4" />
+                                Editar
+                              </a>
+                              <div class="border-t my-1"></div>
+                              <a
+                                href="#"
+                                class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
+                                @click.prevent="handleDeleteNucleo(nucleo.id)"
+                              >
+                                <Trash2Icon class="h-4 w-4" />
+                                Eliminar
+                              </a>
                             </div>
                           </div>
                         </div>
-                      </template>
-                    </div>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+                      </div>
+                    </template>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

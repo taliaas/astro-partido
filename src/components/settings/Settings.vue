@@ -22,7 +22,7 @@
                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             ]"
           >
-            <component :is="item.icon" class="h-4 w-4" />
+            <component class="h-4 w-4" />
             <span>{{ item.title }}</span>
           </a>
         </nav>
@@ -32,7 +32,7 @@
       <div class="flex-1 max-w-7xl">
         <!-- Gestión de Usuarios -->
         <div v-if="activeSection === 'users'" class="space-y-6">
-          <UserManage :users :roles />
+          <UserManage :users :cores :pageUser/>
         </div>
 
         <!-- Gestión de Roles -->
@@ -56,11 +56,11 @@
         </div>
 
         <div v-if="activeSection === 'militantes'" class="space-y-6">
-          <Militantes :militantes />
+          <Militantes :militantes :cores :page="pageMili"/>
         </div>
 
         <div v-if="activeSection === 'trazas'" class="space-y-6">
-          <Register />
+          <Register :trazas/>
         </div>
       </div>
     </div>
@@ -77,13 +77,16 @@ import Notification from "@/components/settings/Notification.vue";
 import Militantes from "@/components/settings/Militantes.vue";
 import Register from "@/components/settings/Register.vue";
 
-const { users, roles, claims, comites, cores, militantes } = defineProps<{
+const { users, roles, claims, comites, cores, militantes, pageUser, pageMili, trazas } = defineProps<{
   users: any;
   roles: any;
   claims: any;
   comites: any;
   cores: any;
   militantes: any;
+  pageUser: any;
+  pageMili: any;
+  trazas: any;
 }>();
 
 // Estado de la aplicación

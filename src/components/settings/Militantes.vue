@@ -1,21 +1,26 @@
 <template>
-  <div class="container mx-auto py-8 px-6 border bg-white rounded-md shadow-xl">
-    <div class="flex justify-between py-4">
-      <h2 class="font-bold text-2xl">Militantes</h2>
+  <div class="pb-4">
+    <h2 class="text-2xl font-bold text-gray-900">Militantes</h2>
+    <p class="text-gray-600">Administra los militantes del sistema</p>
+  </div>
+  <div
+    class="container mx-auto p-6 space-y-4 border bg-white rounded-md shadow-xl"
+  >
+    <div class="flex justify-end">
       <div class="flex justify-end gap-2">
         <button
-        @click="openAddMemberModal"
-        class="inline-flex items-center justify-center bg-button rounded-md text-white px-4 py-2"
-      >
-        Añadir
-      </button>
-      <button
-        @click="downloadMili"
-        class="flex items-center gap-2 border px-4 py-2 rounded-md hover:bg-secondary"
-      >
-      <DownloadIcon class="w-4 h-4" />
-        Exportar
-      </button>
+          @click="openAddMemberModal"
+          class="inline-flex items-center justify-center bg-button rounded-md text-white px-4 py-2"
+        >
+          Añadir
+        </button>
+        <button
+          @click="downloadMili"
+          class="flex items-center gap-2 border px-4 py-2 rounded-md hover:bg-secondary"
+        >
+          <DownloadIcon class="w-4 h-4" />
+          Exportar
+        </button>
       </div>
     </div>
     <!-- Sheet_container and Add -->
@@ -93,9 +98,6 @@
                   <div class="font-medium">
                     {{ member.firstname }} {{ member.lastname }}
                   </div>
-                  <div class="text-md text-muted-foreground">
-                    {{ member.phone }}
-                  </div>
                 </div>
               </div>
             </td>
@@ -149,27 +151,27 @@
     <div class="flex items-center justify-between py-4">
       <div class="text-md text-muted-foreground">
         Mostrando <span class="font-medium">{{ page }}</span> de
-        <span class="font-medium">{{ militantes.total }}</span> páginas
+        <span class="font-medium">{{ militantes.total }}</span> página(s)
       </div>
       <div class="flex items-center space-x-2">
-        <button
+        <Button
+          variant="outline"
           @click="previousPage"
           :disabled="currentPage === 1"
-          class="inline-flex items-center justify-center rounded-md text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
           :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
         >
-          Anterior
-        </button>
-        <button
+          <ChevronLeft />
+        </Button>
+        <Button
+          variant="outline"
           @click="nextPage"
           :disabled="currentPage === totalPages"
-          class="inline-flex items-center justify-center rounded-md text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
           :class="{
             'opacity-50 cursor-not-allowed': currentPage === totalPages,
           }"
         >
-          Siguiente
-        </button>
+          <ChevronRight />
+        </Button>
       </div>
     </div>
 
@@ -636,6 +638,8 @@ import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
   CheckIcon,
+  ChevronLeft,
+  ChevronRight,
   DownloadIcon,
   Eye,
   MoreVerticalIcon,
@@ -706,7 +710,7 @@ const filteredMembers = computed(() => {
       member.email.toLowerCase().includes(query) ||
       member.organization.toLowerCase().includes(query) ||
       member.core.name.toLowerCase().includes(query)
-  )
+  );
 });
 
 // Methods
@@ -734,26 +738,25 @@ async function exportDetails() {
   doc.setFontSize(12);
   doc.text("Información Personal", 14, 26);
   doc.setFontSize(10);
-  doc.text(`Nombre: ${m.firstname || ''} ${m.lastname || ''}`, 14, 34);
-  doc.text(`Carnet de Identidad: ${m.ci || ''}`, 14, 40);
-  doc.text(`Estado: ${m.estado ? 'Activo' : 'Inactivo'}`, 14, 46);
+  doc.text(`Nombre: ${m.firstname || ""} ${m.lastname || ""}`, 14, 34);
+  doc.text(`Carnet de Identidad: ${m.ci || ""}`, 14, 40);
+  doc.text(`Estado: ${m.estado ? "Activo" : "Inactivo"}`, 14, 46);
 
   // Información de Contacto
   doc.setFontSize(12);
   doc.text("Información de Contacto", 14, 56);
   doc.setFontSize(10);
-  doc.text(`Email: ${m.email || ''}`, 14, 64);
-  doc.text(`Teléfono: ${m.phone || ''}`, 14, 70);
-  doc.text(`Dirección: ${m.address || ''}`, 14, 76);
+  doc.text(`Email: ${m.email || ""}`, 14, 64);
+  doc.text(`Teléfono: ${m.phone || ""}`, 14, 70);
+  doc.text(`Dirección: ${m.address || ""}`, 14, 76);
 
   // Información Organizacional
   doc.setFontSize(12);
   doc.text("Información Organizacional", 14, 86);
   doc.setFontSize(10);
-  doc.text(`Organización: ${m.organization || ''}`, 14, 94);
-  doc.text(`Núcleo: ${m.core?.name || ''}`, 14, 100);
+  doc.text(`Organización: ${m.organization || ""}`, 14, 94);
+  doc.text(`Núcleo: ${m.core?.name || ""}`, 14, 100);
 
-  
   let y = 110;
   // Traslados
   doc.setFontSize(12);
@@ -763,12 +766,15 @@ async function exportDetails() {
   if (Array.isArray(m.traslados) && m.traslados.length > 0) {
     m.traslados.forEach((t: any, idx: number) => {
       doc.text(
-        `${idx + 1}. ${t.origen || ''} → ${t.destino || ''} | Fecha: ${t.fecha ? format(t.fecha, 'yyyy-MM-dd') : ''} | Estado: ${t.estado || ''} | Motivo: ${t.details || ''}`,
+        `${idx + 1}. ${t.origen || ""} → ${t.destino || ""} | Fecha: ${t.fecha ? format(t.fecha, "yyyy-MM-dd") : ""} | Estado: ${t.estado || ""} | Motivo: ${t.details || ""}`,
         14,
         y
       );
       y += 6;
-      if (y > 270) { doc.addPage(); y = 20; }
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
     });
   } else {
     doc.text("No hay traslados registrados", 14, y);
@@ -784,19 +790,22 @@ async function exportDetails() {
   if (Array.isArray(m.sanciones) && m.sanciones.length > 0) {
     m.sanciones.forEach((s: any, idx: number) => {
       doc.text(
-        `${idx + 1}. Causa: ${s.causa || ''} | Fecha: ${s.fecha ? format(s.fecha, 'yyyy-MM-dd') : ''} | Severidad: ${s.severidad || ''} | Estado: ${s.estado || ''} | Descripción: ${s.details || ''}`,
+        `${idx + 1}. Causa: ${s.causa || ""} | Fecha: ${s.fecha ? format(s.fecha, "yyyy-MM-dd") : ""} | Severidad: ${s.severidad || ""} | Estado: ${s.estado || ""} | Descripción: ${s.details || ""}`,
         14,
         y
       );
       y += 6;
-      if (y > 270) { doc.addPage(); y = 20; }
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
     });
   } else {
     doc.text("No hay sanciones registradas", 14, y);
     y += 6;
   }
 
-  doc.save(`militante_${m.firstname || ''}_${m.lastname || ''}.pdf`);
+  doc.save(`militante_${m.firstname || ""}_${m.lastname || ""}.pdf`);
   toast.success("Detalles exportados correctamente");
 }
 
@@ -808,23 +817,25 @@ async function downloadMili() {
   const rows = filteredMembers.value.map((member) => [
     `${member.firstname} ${member.lastname}`,
     member.email,
-    member.core?.name || '',
+    member.core?.name || "",
     member.organization,
     member.estado ? "Activo" : "Inactivo",
-    member.phone || '',
-    member.address || ''
+    member.phone || "",
+    member.address || "",
   ]);
 
   autoTable(doc, {
-    head: [[
-      "Nombre",
-      "Correo",
-      "Núcleo",
-      "Organización",
-      "Estado",
-      "Teléfono",
-      "Dirección"
-    ]],
+    head: [
+      [
+        "Nombre",
+        "Correo",
+        "Núcleo",
+        "Organización",
+        "Estado",
+        "Teléfono",
+        "Dirección",
+      ],
+    ],
     body: rows,
     startY: 22,
     styles: { fontSize: 10 },
@@ -906,7 +917,7 @@ function nextPage() {
   if (currentPage.value < totalPages) {
     currentPage.value++;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
     );
   }
 }
@@ -915,7 +926,7 @@ function previousPage() {
   if (currentPage.value > 1) {
     currentPage.value--;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
     );
   }
 }

@@ -2,7 +2,7 @@
   <div class="space-y-8">
     <div class="mt-4 w-3/4">
       <div class="flex justify-between gap-4">
-        <FormField name="core" v-slot="{ componentField }">
+        <FormField v-if="edit" name="core" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Núcleo</FormLabel>
             <FormControl>
@@ -226,9 +226,8 @@
               {{ abs.lastname }}
             </td>
             <td class="py-4 whitespace-nowrap">
-             
               <FormField
-                :name="'abscents.' + index + '.estado'"
+                :name="'militante.' + index + '.abscents.estado'"
                 v-slot="{ componentField }"
               >
                 <FormItem class="w-3/4">
@@ -244,38 +243,42 @@
                   </FormControl>
                 </FormItem>
               </FormField>
-              
             </td>
-            <td
-              class="w-1/5 px-6 py-4 whitespace-nowrap"
-              v-if="estado[index] === 'ausente'"
+            <FormField
+              :name="'militante.' + index + '.abscents.estado'"
+              v-slot="{ field: estado }"
             >
-              <FormField
-                :name="'abscents.' + index + '.reason'"
-                v-slot="{ componentField }"
+              <td
+                class="w-1/5 px-6 py-4 whitespace-nowrap"
+                v-if="estado.value === 'ausente'"
               >
-                <FormItem class="w-3/4">
-                  <FormControl>
-                    <select
-                      v-bind="componentField"
-                      class="px-2 py-2 rounded bg-white"
-                    >
-                      <option
-                        v-for="causa in absenceReasons"
-                        :key="causa"
-                        :value="causa"
-                        class="rounded"
+                <FormField
+                  :name="'militante.' + index + '.abscents.reason'"
+                  v-slot="{ componentField }"
+                >
+                  <FormItem class="w-3/4">
+                    <FormControl>
+                      <select
+                        v-bind="componentField"
+                        class="px-2 py-2 rounded bg-white"
                       >
-                        {{ causa }}
-                      </option>
-                    </select>
-                  </FormControl>
-                </FormItem>
-              </FormField>
-            </td>
-            <td class="w-1/5 px-6 py-4 whitespace-nowrap" v-else>
-              <!-- Celda vacía para mantener la estructura cuando no es ausente -->
-            </td>
+                        <option
+                          v-for="causa in absenceReasons"
+                          :key="causa"
+                          :value="causa"
+                          class="rounded"
+                        >
+                          {{ causa }}
+                        </option>
+                      </select>
+                    </FormControl>
+                  </FormItem>
+                </FormField>
+              </td>
+              <td class="w-1/5 px-6 py-4 whitespace-nowrap" v-else>
+                <!-- Celda vacía para mantener la estructura cuando no es ausente -->
+              </td>
+            </FormField>
           </tr>
         </tbody>
       </table>
@@ -321,8 +324,9 @@ import SelectItem from "@/components/ui/select/SelectItem.vue";
 import { useFormContext } from "vee-validate";
 import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
 
-const { cores } = defineProps<{
-  cores: any[];
+const { cores, edit = false } = defineProps<{
+  cores?: any[];
+  edit?: true;
 }>();
 
 defineEmits(["update"]);
@@ -330,7 +334,7 @@ const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
 const form = useFormContext<FormSchema>();
 const person = computed(() => form.values.invitados);
 const estado = reactive<string[]>([]);
-const abscents = computed(() => form.values.militante)
+const abscents = computed(() => form.values.militante);
 
 const addPerson = () => {
   form.setFieldValue("invitados", [

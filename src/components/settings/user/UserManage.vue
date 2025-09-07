@@ -106,26 +106,26 @@
 
       <div class="flex items-center justify-between mt-4">
         <div class="text-xs text-muted-foreground">
-          Mostrando {{ filteredUsers.length }} de
-          {{ users.data?.length }} usuarios
+          Mostrando {{ users.page }} de {{ users.total }} página(s)
         </div>
         <div class="flex items-center gap-2">
-          <button
-            class="rounded-md border px-3 py-1"
-            :disabled="currentPage === 1"
-            :class="{ 'bg-muted': currentPage === 1 }"
+          <Button
+            variant="outline"
+            :disabled="currentPage <= 1"
+            :class="{ 'opacity-50 cursor-not-allowed': currentPage <= 1 }"
             @click="goToPreviousPage"
           >
-            Anterior
-          </button>
-          <button
-            class="rounded-md border px-3 py-1"
-            :disabled="currentPage >= hasNextPage"
-            :class="{ 'bg-muted': currentPage >= hasNextPage }"
+            <ChevronLeft />
+          </Button>
+          <Button
+            variant="outline"
+            :disabled="currentPage >= totalPages" :class="{
+            'opacity-50 cursor-not-allowed': currentPage >= totalPages,
+          }"
             @click="goToNextPage"
           >
-            Siguiente
-          </button>
+            <ChevronRight />
+          </Button>
         </div>
       </div>
     </div>
@@ -178,7 +178,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { navigate } from "astro:transitions/client";
-import { MoreVerticalIcon, Pencil, SearchIcon } from "lucide-vue-next";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MoreVerticalIcon,
+  Pencil,
+  SearchIcon,
+} from "lucide-vue-next";
 import { computed, ref } from "vue";
 import DropdownMenuTrigger from "../../ui/dropdown-menu/DropdownMenuTrigger.vue";
 import DropdownMenuContent from "../../ui/dropdown-menu/DropdownMenuContent.vue";
@@ -189,20 +195,20 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: { name: string };
   status: string;
   lastLogin: string;
   core?: any;
 }
 
-const { users, page, cores } = defineProps<{
+const { users, pageUser, cores } = defineProps<{
   users: { data: User[]; total: number; page: string };
-  page: number;
+  pageUser: number;
   cores: any;
 }>();
 
-const hasNextPage = ref(users.total);
-const currentPage = ref(page);
+const totalPages = ref(users.total);
+const currentPage = ref(pageUser);
 const searchQuery = ref("");
 const selectedUser = ref<User | null>(null);
 const selectCore = ref("");
@@ -225,16 +231,15 @@ const filteredUsers = computed(() => {
 });
 
 const openEdit = (user: any) => {
-  isEdit.value = true
+  isEdit.value = true;
   createUser.value = true;
   selectedUser.value = user;
-
 };
 
 const openCreate = () => {
-  createUser.value = true
-  isEdit.value = false
-}
+  createUser.value = true;
+  isEdit.value = false;
+};
 
 function goToNextPage() {
   if (users.total > currentPage.value) {

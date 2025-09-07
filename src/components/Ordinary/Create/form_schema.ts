@@ -24,12 +24,6 @@ export const form_schema = z.object({
             absenceReasons: z.enum(absenceReasons)
         }),
     }).array(),
-    abscents: z.object({
-        id: z.string(),
-        militante: z.object({ firstname: z.string(), lastname: z.string() }),
-        estado: z.enum(['presente', 'virtual', 'ausente']),
-        absenceReasons: z.enum(absenceReasons)
-    }).array(),
     order: z.string().array(),
     development: z.string().array(),
     agreements: z.object({

@@ -5,6 +5,7 @@
     >
       <h1 class="text-3xl font-bold text-gray-800 mb-2">Acta Ordinaria</h1>
     </div>
+    {{ form.errors }}
 
     <div class="max-w-7xl mx-auto rounded overflow-hidden p-2">
       <div class="relative">
@@ -60,7 +61,7 @@
         <div @submit="submitForm" class="space-y-6">
           <!--  Información 1 -->
           <section v-show="currentStep === 1" class="space-y-4">
-            <FirstStep :militantes />
+            <FirstStep  :militantes />
           </section>
 
           <!--  Información 2 -->
@@ -105,13 +106,13 @@
 </template>
 
 <script setup lang="ts">
-import FirstStep from "@/components/Ordinary/Create/FirstStep.vue";
+import FirstStep from "@/components/Ordinary/Edit/FirstStep.vue";
 import {
   form_schema,
   type FormSchema,
 } from "@/components/Ordinary/Create/form_schema";
-import SecondStep from "@/components/Ordinary/Create/SecondStep.vue";
-import ThirdStep from "@/components/Ordinary/Create/ThirdStep.vue";
+import SecondStep from "@/components/Ordinary/Edit/SecondStep.vue";
+import ThirdStep from "@/components/Ordinary/Edit/ThirdStep.vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -121,7 +122,11 @@ import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
 const currentStep = ref(1);
-const { user, cores, militantes } = defineProps<{ user: any; cores: any, militantes: any[] }>();
+const { user, cores, militantes } = defineProps<{
+  user: any;
+  cores: any;
+  militantes: any[];
+}>();
 
 const nextStep = () => {
   if (currentStep.value < 3) currentStep.value++;
@@ -138,29 +143,31 @@ const progress = computed(() => {
 const form = useForm({
   validationSchema: toTypedSchema(form_schema),
   initialValues: {
-    fecha: new Date(),
+    fecha: "",
     core: 1,
     hora: "",
     lugar: "",
     invitados: [],
-    militantes: [],
+    militante: militantes ?? [],
     agreements: [],
     development: [],
     observaciones: "",
-    fechaCP: new Date(),
-    fechaPrep: new Date(),
-    fechaProx: new Date(),
+    fechaCP: "",
+    fechaPrep: "",
+    fechaProx: "",
     order: [],
   },
 });
 
 const submitForm = form.handleSubmit(async (data: FormSchema) => {
   data.core = { id: data.core };
+  const abs = data.militante.filter((m) => m.abscents.estado === "ausente");
+  console.log("1", abs, "2", data);
 
   try {
     await actions.ordinary.createMinute.orThrow({
       data,
-      abscents: data.militantes.filter((m) => m.estado === "ausente"),
+      abscents: abs,
       invitados: data.invitados ?? [],
       agreements: data.agreements ?? [],
     });
