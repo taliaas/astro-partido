@@ -31,11 +31,11 @@
         <Search
           class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
         />
-        <input
+        <Input
           v-model="searchQuery"
           type="search"
           placeholder="Buscar miembros..."
-          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-8 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          class="flex h-10 w-full rounded-md border border-Input bg-background px-3 py-2 pl-8 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
     </div>
@@ -180,194 +180,7 @@
       v-if="showMemberModal"
       class="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
     >
-      <div
-        class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg"
-      >
-        <div class="flex flex-col space-y-1.5 text-center sm:text-left py-2">
-          <h2 class="text-xl font-semibold leading-none tracking-tight">
-            {{ isEditing ? "Editar militante" : "Añadir militante" }}
-          </h2>
-          <p class="text-md text-muted-foreground">
-            {{
-              isEditing
-                ? "Actualizar la información de los militantes"
-                : "Complete los datos para agregar un nuevo militante"
-            }}
-          </p>
-        </div>
-        <form @submit.prevent="saveMember" class="space-y-4">
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div class="space-y-2">
-              <label
-                for="firstname"
-                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Nombre</label
-              >
-              <input
-                id="firstname"
-                v-model="currentMember.firstname"
-                type="text"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Nombre"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                for="lastname"
-                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Apellidos</label
-              >
-              <input
-                id="lastname"
-                v-model="currentMember.lastname"
-                type="text"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Apellidos"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label
-              for="email"
-              class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >Correo</label
-            >
-            <input
-              id="email"
-              v-model="currentMember.email"
-              type="email"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Correo"
-              required
-            />
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div class="space-y-2">
-              <label
-                for="organization"
-                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Organización</label
-              >
-              <select
-                id="organization"
-                v-model="currentMember.organization"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                required
-              >
-                <option value="" disabled>Seleccione la organización</option>
-                <option value="PCC">PCC</option>
-                <option value="UJC">UJC</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label
-                for="core"
-                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Núcleo</label
-              >
-              <select
-                id="core"
-                v-model="currentMember.core.id"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                required
-              >
-                <option value="" disabled>Seleccione el núcleo</option>
-                <option
-                  v-for="nucleo in cores"
-                  :key="nucleo.id"
-                  :value="nucleo.id"
-                >
-                  {{ nucleo.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div class="space-y-2">
-              <label
-                for="phone"
-                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Teléfono</label
-              >
-              <input
-                id="phone"
-                v-model="currentMember.phone"
-                type="text"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Número de teléfono"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                for="status"
-                class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >Estado</label
-              >
-              <div class="flex items-center space-x-2 pt-2">
-                <button
-                  type="button"
-                  role="checkbox"
-                  aria-checked="true"
-                  data-state="checked"
-                  value="on"
-                  @click="currentMember.estado = !currentMember.estado"
-                  class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                  :class="{ 'bg-primary': currentMember.estado }"
-                >
-                  <CheckIcon
-                    v-if="currentMember.estado"
-                    class="h-3 w-3 text-white"
-                  />
-                </button>
-                <label
-                  for="status"
-                  class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {{ currentMember.estado ? "Activo" : "Inactivo" }}
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label
-              for="address"
-              class="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >Dirección</label
-            >
-            <input
-              id="address"
-              v-model="currentMember.address"
-              type="text"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Dirección"
-              required
-            />
-          </div>
-
-          <div class="flex justify-end gap-2">
-            <button
-              type="button"
-              @click="closeMemberModal"
-              class="inline-flex items-center justify-center rounded-md text-md font-medium disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="inline-flex items-center justify-center rounded-md text-md font-medium disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-2 py-2"
-            >
-              {{ isEditing ? "Actualizar" : "Añadir" }}
-            </button>
-          </div>
-        </form>
-      </div>
+      <MilitanteForm :currentMember :cores :close />
     </div>
     <!-- Modal -->
     <div
@@ -400,30 +213,30 @@
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="text-sm font-medium text-muted-foreground"
-                  >Nombre</label
+                <Label class="text-sm font-medium text-muted-foreground"
+                  >Nombre</Label
                 >
                 <p class="text-lg font-semibold">
                   {{ selectedMilitante.firstname }}
                 </p>
               </div>
               <div>
-                <label class="text-sm font-medium text-muted-foreground"
-                  >Apellido</label
+                <Label class="text-sm font-medium text-muted-foreground"
+                  >Apellido</Label
                 >
                 <p class="text-lg font-semibold">
                   {{ selectedMilitante.lastname }}
                 </p>
               </div>
               <div>
-                <label class="text-sm font-medium text-muted-foreground"
-                  >Carnet de Identidad</label
+                <Label class="text-sm font-medium text-muted-foreground"
+                  >Carnet de Identidad</Label
                 >
                 <p class="text-lg">{{ selectedMilitante.ci }}</p>
               </div>
               <div>
-                <label class="text-sm font-medium text-muted-foreground"
-                  >Estado</label
+                <Label class="text-sm font-medium text-muted-foreground"
+                  >Estado</Label
                 >
                 <div class="mt-1">
                   <span
@@ -453,8 +266,8 @@
               <div class="flex items-center gap-3">
                 <MailIcon class="w-4 h-4 text-muted-foreground" />
                 <div>
-                  <label class="text-sm font-medium text-muted-foreground"
-                    >Email</label
+                  <Label class="text-sm font-medium text-muted-foreground"
+                    >Email</Label
                   >
                   <p>{{ selectedMilitante.email }}</p>
                 </div>
@@ -462,8 +275,8 @@
               <div class="flex items-center gap-3">
                 <PhoneIcon class="w-4 h-4 text-muted-foreground" />
                 <div>
-                  <label class="text-sm font-medium text-muted-foreground"
-                    >Teléfono</label
+                  <Label class="text-sm font-medium text-muted-foreground"
+                    >Teléfono</Label
                   >
                   <p>{{ selectedMilitante.phone }}</p>
                 </div>
@@ -471,8 +284,8 @@
               <div class="flex items-start gap-3">
                 <MapPinIcon class="w-4 h-4 text-muted-foreground mt-1" />
                 <div>
-                  <label class="text-sm font-medium text-muted-foreground"
-                    >Dirección</label
+                  <Label class="text-sm font-medium text-muted-foreground"
+                    >Dirección</Label
                   >
                   <p>{{ selectedMilitante.address }}</p>
                 </div>
@@ -490,16 +303,16 @@
             </div>
             <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="text-sm font-medium text-muted-foreground"
-                  >Organización</label
+                <Label class="text-sm font-medium text-muted-foreground"
+                  >Organización</Label
                 >
                 <p class="text-lg font-semibold">
                   {{ selectedMilitante.organization }}
                 </p>
               </div>
               <div>
-                <label class="text-sm font-medium text-muted-foreground"
-                  >Núcleo</label
+                <Label class="text-sm font-medium text-muted-foreground"
+                  >Núcleo</Label
                 >
                 <p class="text-lg font-semibold">
                   {{ selectedMilitante.core.name }}
@@ -633,11 +446,9 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
-  CheckIcon,
   ChevronLeft,
   ChevronRight,
   DownloadIcon,
@@ -650,6 +461,16 @@ import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import MilitanteForm from "@/components/settings/militantes/militanteForm.vue";
+import type { Militantes } from "@/interface/Militante";
+
+const { militantes, page, cores } = defineProps<{
+  militantes: { data: Militantes[]; total: number; page: number };
+  page: number;
+  cores: any;
+}>();
 
 // UI state
 const searchQuery = ref("");
@@ -657,8 +478,12 @@ const showMemberModal = ref(false);
 const isEditing = ref(false);
 const isModalOpen = ref(false);
 const selectCore = ref("");
+const totalPages = militantes.total;
+const currentPage = ref(page);
 
-const selectedMilitante = ref({
+const currentMember = ref<Militantes | null>(null);
+
+const selectedMilitante = ref<Militantes>({
   id: 0,
   firstname: "",
   lastname: "",
@@ -670,32 +495,12 @@ const selectedMilitante = ref({
   phone: "",
   core: {
     id: "",
-  },
-});
-
-const { militantes, page, cores } = defineProps<{
-  militantes: any;
-  page: number;
-  cores: any;
-}>();
-
-const totalPages = militantes.total;
-const currentPage = ref(page);
-const currentMember = ref({
-  id: 0,
-  firstname: "",
-  lastname: "",
-  email: "",
-  organization: "",
-  estado: true,
-  address: "",
-  phone: "",
-  core: {
-    id: "",
     name: "",
   },
+  traslados: [],
+  sanciones: [],
+  desactivaciones: [],
 });
-
 // Computed properties
 const filteredMembers = computed(() => {
   if (!searchQuery.value) {
@@ -720,7 +525,6 @@ const getInitials = (member: any) => {
 
 const openAddMemberModal = () => {
   isEditing.value = false;
-  resetCurrentMember();
   showMemberModal.value = true;
 };
 
@@ -852,15 +656,15 @@ const openEditMemberModal = (member: any) => {
   showMemberModal.value = true;
 };
 
-const closeMemberModal = () => {
-  showMemberModal.value = false;
-  resetCurrentMember();
-};
-
 const handleViewDetails = (militante: any) => {
   selectedMilitante.value = militante;
   isModalOpen.value = true;
 };
+
+const close = () => {
+  showMemberModal.value = false
+  currentMember.value = null
+}
 
 const closeModal = () => {
   isModalOpen.value = false;
@@ -876,41 +680,12 @@ const closeModal = () => {
     phone: "",
     core: {
       id: "",
-    },
-  };
-};
-
-const resetCurrentMember = () => {
-  currentMember.value = {
-    id: 0,
-    firstname: "",
-    lastname: "",
-    email: "",
-    organization: "",
-    estado: true,
-    address: "",
-    phone: "",
-    core: {
-      id: "",
       name: "",
     },
+    traslados: [],
+    sanciones: [],
+    desactivaciones: [],
   };
-};
-
-const saveMember = async () => {
-  try {
-    if (isEditing.value) {
-      await actions.militants.updateMember(currentMember.value as any);
-      toast.success("Militante actualizado correctamente");
-    } else {
-      await actions.militants.createMember(currentMember.value as any);
-      toast.success("Militante creado correctamente");
-    }
-    closeMemberModal();
-    navigate("");
-  } catch (error) {
-    throw new Error("Error al guardar al usuario");
-  }
 };
 
 function nextPage() {

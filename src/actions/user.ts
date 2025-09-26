@@ -9,7 +9,6 @@ export const updateUser = defineAction({
     id: z.coerce.string(),
     name: z.string().optional(),
     email: z.string().email().optional(),
-    password: z.string().optional(),
     role: z.string().optional(),
   }),
   async handler({ id, ...input }, context) {

@@ -25,6 +25,29 @@ export const createComite = defineAction({
     }
 })
 
+export const getTotalMiliFromComite = defineAction({
+    input: z.object({
+        comiteId: z.number(),
+    }),
+    async handler({comiteId}, context){
+         const session: any = await getSession(context.request);
+        if (!session) throw new ActionError({code: "UNAUTHORIZED"});
+        const res = await fetch(`${API_URL}/comite/byMilitantes/${comiteId}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${session?.jwt}`,
+                "Content-Type": "application/json",
+            },
+        });
+        if (!res.ok) {
+            throw new Error("Network response was not ok");
+        }
+        const response = await res.json();
+        console.log(response);
+        return response
+    }
+})
+
 export const updateComite = defineAction({
     input: z.object({
         id: z.number(),

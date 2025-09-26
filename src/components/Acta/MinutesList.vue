@@ -336,26 +336,15 @@
       <DialogContent>
         <h2 class="text-lg font-semibold text-gray-900">Seleccione </h2>
         <form @submit.prevent="handleRetry">
-          <div class="flex justify-between gap-4 space-y-2">
-            <Label :class="[
-              'flex items-center justify-center border rounded-md cursor-pointer flex-1',
-              mode === 'spacy'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-            ]">
-            <Input type="radio" name="typeModel" value="spacy" v-model="mode" class="sr-only"/>
-            Spacy
-            </Label>
-            <Label :class="[
-              'flex items-center justify-center border rounded-md cursor-pointer flex-1',
-              mode === 'model'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-            ]">
-            <Input type="radio" name="typeModel" value="model" v-model="mode" class="sr-only"/>
-            Model
-            </Label>
-            
+          <div class="flex justify-center gap-4">
+           <div class="flex gap-2">
+              <Input type="radio" name="typeModel" value="spacy" v-model="mode" class="bg-button shadow-none size-4"/>
+              <Label>Spacy</Label>
+           </div>
+           <div class="flex gap-2">
+              <Input type="radio" name="typeModel" value="model" v-model="mode" class="bg-button shadow-none size-4"/>
+              <Label>Model</Label>
+           </div>
           </div>
         <DialogFooter class="pt-2">
           <Button variant="default" type="submit">Aceptar</Button>
@@ -553,12 +542,6 @@ const handleFilterByValue = (filter: string,value: any) => {
 const typeMinutes = [{value: 'all', name: 'Todos'},{value:'ro', name: 'Acta Ordinaria'}, {value:'cp', name: 'Círculo Político'}]
 
 const statuses = [Status.CREATE, Status.ERROR, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING]
-
-const filters = ref({
-  search: "",
-  nucleo: "",
-  status: "",
-});
 
 const getStatusClass = (status: any) => {
   const classes = {

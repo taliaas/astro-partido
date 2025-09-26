@@ -80,6 +80,7 @@ export const createMember = defineAction({
         firstname: z.string().min(3),
         lastname: z.string().min(3),
         email: z.string().min(10),
+        ci: z.string(),
         organization: z.enum(ORGANIZACION),
         estado: z.boolean(),
         address: z.string(),
@@ -88,7 +89,7 @@ export const createMember = defineAction({
             id: z.number(),
         })
     }),
-    async handler({ firstname, lastname, email, address, core, estado, organization, phone }, context) {
+    async handler({ firstname, lastname, email, address, ci, core, estado, organization, phone }, context) {
         const session: any = await getSession(context.request);
         if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
@@ -97,6 +98,7 @@ export const createMember = defineAction({
             lastname,
             email,
             address,
+            ci,
             core,
             estado,
             organization,

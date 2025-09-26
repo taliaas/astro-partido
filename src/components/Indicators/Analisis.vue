@@ -105,12 +105,11 @@
           </div>
         </div>
         <div v-if="selectedIndicator === 'asistencia'">
-          <Asistencia :comite />
+          <Asistencia :comite :computo />
         </div>
         <div v-else-if="selectedIndicator === 'reason'">
           <ReasonAttendance :selectedMonth="selectedMonth" />
-        </div>
-
+        </div> 
         <div v-else class="space-y-3">
           <div
             v-for="com in comite"
@@ -238,7 +237,7 @@
 </template>
 
 <script setup lang="ts">
-import Asistencia from "@/components/Indicators/Asistencia.vue";
+import Asistencia, { type ComputoData } from "@/components/Indicators/Asistencia.vue";
 import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
 import {
 Collapsible,
@@ -277,7 +276,7 @@ const selectedIndicator = ref("");
 const selectedMonth = ref("2025-01");
 const { comite, computo } = defineProps<{
   comite: any[];
-  computo: any[];
+  computo: ComputoData[];
 }>();
 
 const search = ref("");
@@ -295,7 +294,7 @@ const getComputo = (nucleo: { id: string }) => {
   const indicator = selectedIndicator.value;
 
   const c = computo.find(
-    (c) => c.month == month && c.year == year && c.core?.id === nucleo.id
+    (c) => c.month == Number(month) && c.year == Number(year) && c.core?.id === nucleo.id
   );
 
   return c?.indicators?.find((i) => i.key === indicator);

@@ -14,9 +14,8 @@ export const retryModel = defineAction({
   async handler({actaID, mode}, ctx){
     const session: any = await getSession(ctx.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    
     const res = await fetch(
-      `http://localhost:5000/minutes/retry/${actaID}/${mode}`,
+      `http://localhost:5000/minutes/retry/${actaID}/${mode}`, 
       {
         method: "POST",
         headers: {

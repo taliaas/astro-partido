@@ -15,12 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toTypedSchema } from "@vee-validate/zod";
-import { actions } from "astro:actions";
+import { ActionError, actions } from "astro:actions";
 import { z } from "zod";
 import { navigate } from "astro:transitions/client";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
-import { ActionError } from "astro/actions/runtime/virtual/shared";
 import { roleEnum } from "@/enum/roleEnum";
 
 interface User {
@@ -45,7 +44,7 @@ const userSchema = z.object({
     .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
     .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
   email: z.string().email({ message: "Ingresa un correo electrónico válido." }),
-  //password: passwordSchema,
+  password: z.string().max(8, { message: "La contraseña debe tener al menos 8 carácteres" }),
   role: z.string({ message: "El Rol es requerido" }),
 });
 
@@ -53,6 +52,7 @@ const form = useForm<UserData>({
   initialValues: {
     name: user?.name ?? "",
     email: user?.email ?? "",
+    password: "",
     role: user?.role.name ?? "",
   },
   validationSchema: toTypedSchema(userSchema),
@@ -62,7 +62,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
   onLoadingChange(true);
   if (user) {
     const { error } = await actions.user.updateUser({ ...data, id: user.id });
-    if (error instanceof ActionError) {
+    if (error instanceof ActionError ) {
       toast.error("Hubo un error al intentar actualizar el usuario");
     } else {
       await navigate("");
@@ -100,13 +100,27 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
     </FormField>
     <FormField name="email" v-slot="{ componentField }">
       <FormItem class="grid-cols-3">
-        <FormLabel class="col-span-1"> Email:</FormLabel>
+        <FormLabel class="col-span-1"> Correo:</FormLabel>
         <FormControl>
           <Input
             type="email"
             class="col-span-2"
             placeholder="correo@ejemplo.com"
             :="componentField"
+          />
+        </FormControl>
+        <FormMessage class="col-start-2 col-span-2" />
+      </FormItem>
+    </FormField>
+    <FormField v-if="!user" name="password" v-slot="{ componentField }">
+      <FormItem class="grid-cols-3">
+        <FormLabel class="col-span-1"> Contraseña:</FormLabel>
+        <FormControl>
+          <Input
+            type="password"
+            class="col-span-2"
+            :="componentField"
+            placeholder="********"
           />
         </FormControl>
         <FormMessage class="col-start-2 col-span-2" />

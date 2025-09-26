@@ -10,13 +10,14 @@ export const register = defineAction({
     password: z.string(),
     role: z.string().optional(),
   }),
-  async handler({email, name, password, role}, context) {
+  async handler({ email, name, password, role }, context) {
+
     const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({email, name, password, role}),
+      body: JSON.stringify({ email, name, password, role }),
     });
     if (res.status === 409) {
       throw new ActionError({
@@ -25,7 +26,7 @@ export const register = defineAction({
       });
     }
     const data = await res.json()
-    if (res.status === 404){
+    if (res.status === 404) {
       throw new ActionError({
         code: "NOT_FOUND",
         message: data.message
@@ -45,16 +46,16 @@ export const recoverPassword = defineAction({
   input: z.object({
     email: z.string().email(),
   }),
-  async handler({email}, context){
+  async handler({ email }, context) {
     const res = await fetch(`${API_URL}/auth/recover`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({email}),
+      body: JSON.stringify({ email }),
     });
     const data = await res.json()
-    if (res.status === 404){
+    if (res.status === 404) {
       throw new ActionError({
         code: "NOT_FOUND",
         message: data.message
@@ -67,7 +68,7 @@ export const recoverPassword = defineAction({
       });
     }
     return data
-  }  
+  }
 })
 
 export const profile = defineAction({
@@ -131,13 +132,17 @@ export const updateProfile = defineAction({
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.jwt}`
       },
       body: JSON.stringify(input),
     });
+
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-    return await res.json();
+    const y = await res.json();
+    console.log(y);
+    return y
   },
 });
 

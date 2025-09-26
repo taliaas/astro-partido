@@ -205,7 +205,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="(abs, index) of abscents" :key="index">
+          <tr v-for="(abs, index) of militantes" :key="index">
             <td class="p-6 text-left whitespace-nowrap">
               <FormField
                 :name="'militante.' + index + '.id'"
@@ -227,50 +227,59 @@
             </td>
             <td class="py-4 whitespace-nowrap">
               <FormField
-                :name="'militante.' + index + '.abscents.estado'"
+                :name="'abscents.' + index + '.estado'"
                 v-slot="{ componentField }"
               >
                 <FormItem class="w-3/4">
                   <FormControl>
-                    <select
+                    <Select
                       v-bind="componentField"
                       class="px-2 py-2 rounded bg-white"
                     >
-                      <option value="presente">Presente</option>
-                      <option value="virtual">Virtual</option>
-                      <option value="ausente">Ausente</option>
-                    </select>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Presente">Presente</SelectItem>
+                        <SelectItem value="Virtual">Virtual</SelectItem>
+                        <SelectItem value="Ausente">Ausente</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                 </FormItem>
               </FormField>
             </td>
             <FormField
-              :name="'militante.' + index + '.abscents.estado'"
+              :name="'abscents.' + index + '.estado'"
               v-slot="{ field: estado }"
             >
               <td
                 class="w-1/5 px-6 py-4 whitespace-nowrap"
-                v-if="estado.value === 'ausente'"
+                v-if="estado.value === 'Ausente'"
               >
                 <FormField
-                  :name="'militante.' + index + '.abscents.reason'"
+                  :name="'abscents.' + index + '.reason'"
                   v-slot="{ componentField }"
                 >
                   <FormItem class="w-3/4">
                     <FormControl>
-                      <select
+                      <Select
                         v-bind="componentField"
                         class="px-2 py-2 rounded bg-white"
                       >
-                        <option
-                          v-for="causa in absenceReasons"
-                          :key="causa"
-                          :value="causa"
-                          class="rounded"
-                        >
-                          {{ causa }}
-                        </option>
-                      </select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccione una causa"/>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem
+                            v-for="causa in absenceReasons"
+                            :key="causa"
+                            :value="causa"
+                            class="rounded"
+                            >{{ causa }}</SelectItem
+                          >
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                   </FormItem>
                 </FormField>
@@ -285,7 +294,7 @@
 
       <!-- Empty State -->
       <div
-        v-if="abscents.length === 0"
+        v-if="militantes.length === 0"
         class="text-center py-16 border border-gray-300 rounded"
       >
         <div
@@ -303,7 +312,6 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { reactive } from "vue";
 import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { absenceReasons, cargos } from "@/enum/absenceReasons.ts";
@@ -323,18 +331,22 @@ import SelectGroup from "@/components/ui/select/SelectGroup.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import { useFormContext } from "vee-validate";
 import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
+import type { Militantes } from "@/interface/Militante";
 
-const { cores, edit = false } = defineProps<{
+const {
+  cores,
+  edit = false,
+  militantes,
+} = defineProps<{
   cores?: any[];
   edit?: true;
+  militantes: Militantes[];
 }>();
 
 defineEmits(["update"]);
 const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
 const form = useFormContext<FormSchema>();
 const person = computed(() => form.values.invitados);
-const estado = reactive<string[]>([]);
-const abscents = computed(() => form.values.militante);
 
 const addPerson = () => {
   form.setFieldValue("invitados", [

@@ -61,7 +61,7 @@
         <div @submit="submitForm" class="space-y-6">
           <!--  Información 1 -->
           <section v-show="currentStep === 1" class="space-y-4">
-            <FirstStep  :militantes />
+            <FirstStep :militantes />
           </section>
 
           <!--  Información 2 -->
@@ -120,12 +120,13 @@ import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
+import type { Militantes } from "@/interface/Militante";
 
 const currentStep = ref(1);
 const { user, cores, militantes } = defineProps<{
   user: any;
   cores: any;
-  militantes: any[];
+  militantes: Militantes[];
 }>();
 
 const nextStep = () => {
@@ -148,7 +149,11 @@ const form = useForm({
     hora: "",
     lugar: "",
     invitados: [],
-    militante: militantes ?? [],
+    abscents: militantes.map((m) => ({
+      estado: "Presente" as const,
+      reason: null,
+      militanteId: m.id,
+    })),
     agreements: [],
     development: [],
     observaciones: "",
@@ -161,13 +166,11 @@ const form = useForm({
 
 const submitForm = form.handleSubmit(async (data: FormSchema) => {
   data.core = { id: data.core };
-  const abs = data.militante.filter((m) => m.abscents.estado === "ausente");
-  console.log("1", abs, "2", data);
 
   try {
     await actions.ordinary.createMinute.orThrow({
       data,
-      abscents: abs,
+      abscents: data.abscents ?? [],
       invitados: data.invitados ?? [],
       agreements: data.agreements ?? [],
     });

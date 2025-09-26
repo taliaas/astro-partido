@@ -74,7 +74,7 @@ import RolesManage from "@/components/settings/role/RolesManage.vue";
 import ClaimsManage from "@/components/settings/ClaimsManage.vue";
 import CoreManage from "@/components/settings/CoreManage.vue";
 import Notification from "@/components/settings/Notification.vue";
-import Militantes from "@/components/settings/Militantes.vue";
+import Militantes from "@/components/settings/militantes/Militantes.vue";
 import Register from "@/components/settings/Register.vue";
 
 const { users, roles, claims, comites, cores, militantes, pageUser, pageMili, trazas } = defineProps<{
