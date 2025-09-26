@@ -136,24 +136,27 @@
             <td class="p-4 align-middle">
               <FormField
                 :name="'invitados.' + index + '.cargo'"
-                v-slot="{ componentField }"
+                v-slot="{ componentField, field }"
               >
                 <FormItem class="w-3/4">
                   <FormControl>
-                    <select
+                    <Select
                       type="text"
                       v-bind="componentField"
                       class="p-2 border rounded"
                     >
-                      <option value="">Seleccione un cargo</option>
-                      <option
-                        v-for="cargo in cargos"
-                        :key="cargo"
-                        :value="cargo"
-                      >
-                        {{ cargo }}
-                      </option>
-                    </select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione un cargo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="cargo of cargos"
+                          :key="cargo"
+                          :value="cargo"
+                          >{{ cargo }}</SelectItem
+                        >
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -220,10 +223,10 @@
               {{ index + 1 }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ abs.firstname }}
+              {{ abs?.firstname }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ abs.lastname }}
+              {{ abs?.lastname }}
             </td>
             <td class="py-4 whitespace-nowrap">
               <FormField
@@ -268,7 +271,7 @@
                         class="px-2 py-2 rounded bg-white"
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Seleccione una causa"/>
+                          <SelectValue placeholder="Seleccione una causa" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem
@@ -294,7 +297,7 @@
 
       <!-- Empty State -->
       <div
-        v-if="militantes.length === 0"
+        v-if="militantes?.length === 0"
         class="text-center py-16 border border-gray-300 rounded"
       >
         <div

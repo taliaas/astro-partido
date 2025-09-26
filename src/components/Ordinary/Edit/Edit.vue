@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
-    {{ form.values }}
     <form @submit="onSubmit" class="max-w-7xl mx-auto">
       <div class="p-4 flex justify-center">
         <h2 class="font-bold text-2xl">{{ acta.name }} {{ acta.id }}</h2>
@@ -8,7 +7,7 @@
       <div class="space-y-6 min-h-[70vh]">
         <!--  Información 1 -->
         <section v-show="currentStep === 1" class="space-y-4">
-          <FirstStep :cores edit/>
+          <FirstStep :cores edit :militantes="mili" />
         </section>
 
         <!--  Información 2 -->
@@ -57,6 +56,7 @@ import FirstStep from "@/components/Ordinary/Edit/FirstStep.vue";
 import SecondStep from "@/components/Ordinary/Edit/SecondStep.vue";
 import ThirdStep from "@/components/Ordinary/Edit/ThirdStep.vue";
 import Button from "@/components/ui/button/Button.vue";
+import type { Militantes } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -65,7 +65,34 @@ import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
-const { cores, acta } = defineProps<{ cores: any[]; acta: any }>();
+interface actaData {
+  id: number;
+  name: string;
+  fecha: string;
+  core: any;
+  hora: any;
+  lugar: string;
+  abscents: {
+    id: number;
+    estado: any;
+    reason: null;
+    militante: any;
+  }[];
+  invitados: any[];
+  agreements: any;
+  development: any;
+  observaciones: string;
+  fechaCP: string;
+  fechaPrep: string;
+  fechaProx: string;
+  order: string[];
+}
+
+const { cores, acta, militantes } = defineProps<{
+  cores: any[];
+  acta: actaData;
+  militantes: Militantes[];
+}>();
 const currentStep = ref(1);
 
 const form = useForm({
@@ -75,8 +102,15 @@ const form = useForm({
     core: acta.core.id,
     hora: acta.hora,
     lugar: acta.lugar,
+    abscents:
+      acta.abscents.map((item) => ({
+        id: item.id,
+        estado: item.estado,
+        reason: item.reason,
+        minuteId: acta.id,
+        militanteId: item.militante.id,
+      })) ?? [],
     invitados: acta.invitados ?? [],
-    militante: acta.militante ?? [],
     agreements: acta.agreements,
     development: acta.development,
     observaciones: acta.observaciones,
@@ -86,8 +120,9 @@ const form = useForm({
     order: acta.order,
   },
 });
+const mili = acta.abscents.map((item) => item.militante);
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async (values: any) => {
   try {
     await actions.ordinary.updateMinute({ id: acta.id, data: values });
     toast.success("Se actualizó el acta correctamente");

@@ -38,10 +38,7 @@ async function getCore() {
 async function getMilitantes() {
   const service = new MilitantService();
   try {
-    const result = await service.getMilitantes((session as any).jwt);
-    console.log('result',result);
-
-    return result;
+    return await service.getMilitantes((session as any).jwt);
   } catch (e) {
     console.error(e);
   }

@@ -11,17 +11,21 @@ export const form_schema = z.object({
     hora: z.string().time(),
     lugar: z.string().min(3),
     invitados: z.object({
+        id: z.coerce.number().optional(),
         nombre_apellidos: z.string(),
         cargo: z.enum(cargos, { message: "Hola" })
     }).array(),
     abscents: z.object({
+         id: z.coerce.number().optional(),
         estado: z.enum(['Presente', 'Virtual', 'Ausente']),
         reason: z.enum(absenceReasons).nullable(),
-        militanteId: z.coerce.number(),
+        militanteId: z.coerce.number().optional(),
+        minuteId: z.coerce.number().optional()
     }).array(),
     order: z.string().array(),
     development: z.string().array(),
     agreements: z.object({
+        id: z.coerce.number().optional(),
         descripcion: z.string(),
         responsable: z.string(),
         fecha: z.string().date(),//z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),

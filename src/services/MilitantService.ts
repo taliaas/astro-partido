@@ -22,7 +22,6 @@ export default class MilitantService {
     }
 
     async getMilitantes(session: any) {
-        console.log('Session',session)
         try {
             const response = await fetch(`${API_URL}/militantes/active/`, {
                 method: 'GET',

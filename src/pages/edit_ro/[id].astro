@@ -4,6 +4,7 @@ import OrdinaryService from "../../services/OrdinaryService";
 import RootLayout from "../../layouts/RootLayout.astro";
 import EditContainer from "../../components/Ordinary/Edit/Edit.vue"
 import { getSession } from "auth-astro/server";
+import MilitantService from "@/services/MilitantService";
 
 const { id } = Astro.params;
 const session = (await getSession(Astro.request)) as any
@@ -29,10 +30,19 @@ async function getCore() {
         console.error(e);
     }
 }
+async function getMilitantes() {
+  const service = new MilitantService();
+  try {
+    return await service.getMilitantes((session as any).jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+const militantes = await getMilitantes();
 const cores = await getCore();
 const acta = await getActa();
 ---
 
 <RootLayout>
-    <EditContainer acta={acta} cores={cores} client:load />
+    <EditContainer acta={acta} cores={cores} militantes={militantes} client:load />
 </RootLayout>
