@@ -63,17 +63,25 @@
               </td>
               <td class="p-4 align-middle">
                 <FormField
-                  :name="'agreements.' + index + '.responsable'"
+                  :name="'agreements.' + index + '.responsable.id'"
                   v-slot="{ componentField }"
                 >
                   <FormItem class="w-3/4">
                     <FormControl>
-                      <Input
-                        type="text"
-                        v-bind="componentField"
-                        class="border-none shadow-none"
-                        placeholder="Responsable"
-                      />
+                      <Select :="componentField">
+                        <SelectTrigger
+                          ><SelectValue placeholder="Responsable"
+                        /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem
+                            v-for="militante in militantes"
+                            :key="militante.id"
+                            :value="militante.id"
+                            >{{ militante.firstname }}
+                            {{ militante.lastname }}</SelectItem
+                          >
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -201,6 +209,18 @@ import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useFormContext } from "vee-validate";
 import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
 import { computed } from "vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Militantes } from "@/interface/Militante";
+
+const { militantes } = defineProps<{
+  militantes: Militantes[];
+}>();
 
 const form = useFormContext<FormSchema>();
 const agreements = computed(() => form.values.agreements);
@@ -208,7 +228,7 @@ const agreements = computed(() => form.values.agreements);
 const addAgreement = () => {
   form.setFieldValue("agreements", [
     ...form.values.agreements,
-    { descripcion: "", responsable: "", fecha: "" as any },
+    { descripcion: "", responsable: { id: 0 }, fecha: "" as any },
   ]);
 };
 

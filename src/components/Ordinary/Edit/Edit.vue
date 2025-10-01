@@ -16,7 +16,7 @@
         </section>
         <!--  Información 3 -->
         <section v-show="currentStep === 3" class="space-y-4">
-          <ThirdStep :acta />
+          <ThirdStep :militantes/>
         </section>
       </div>
       <div class="w-full flex justify-between pt-4">

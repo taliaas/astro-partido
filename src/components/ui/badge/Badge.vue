@@ -5,7 +5,6 @@ import type { PrimitiveProps } from "reka-ui";
 import { Primitive } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 import { type BadgeVariants, badgeVariants } from ".";
-import { useEventSource } from "@/utils/see";
 
 const props = defineProps<
   PrimitiveProps & {

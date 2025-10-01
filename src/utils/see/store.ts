@@ -1,9 +1,10 @@
 import { defineStore, } from "pinia"
+import ReconnectingEventSource from "reconnecting-eventsource"
 
-interface SseStore {
-    eventSource: EventSource | null
-}
-
-const sseStore = defineStore("sse", {
-    state: (): SseStore => ,
+export const sseStore = defineStore("sse", {
+    state: () => {
+        const eventSource = new ReconnectingEventSource("/api/sse")
+        eventSource.onerror = (e) => console.log(e)
+        return { eventSource }
+    }
 })

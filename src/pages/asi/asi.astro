@@ -1,0 +1,11 @@
+---
+import Attendance from "@/components/Indicators/Attendance.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+
+
+const text = 'Hola'
+---
+
+<RootLayout>
+  <Attendance text={text} client:load/>
+</RootLayout> 

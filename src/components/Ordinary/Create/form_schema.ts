@@ -16,7 +16,7 @@ export const form_schema = z.object({
         cargo: z.enum(cargos, { message: "Hola" })
     }).array(),
     abscents: z.object({
-         id: z.coerce.number().optional(),
+        id: z.coerce.number().optional(),
         estado: z.enum(['Presente', 'Virtual', 'Ausente']),
         reason: z.enum(absenceReasons).nullable(),
         militanteId: z.coerce.number().optional(),
@@ -27,7 +27,7 @@ export const form_schema = z.object({
     agreements: z.object({
         id: z.coerce.number().optional(),
         descripcion: z.string(),
-        responsable: z.string(),
+        responsable: z.object({ id: z.coerce.number() }),
         fecha: z.string().date(),//z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),
     }).array(),
     observaciones: z.string(),

@@ -25,11 +25,11 @@
               </div>
               <div class="flex gap-3">
                 <a href="/addRO" class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button">
-                  <PlusIcon class="h-4 w-4 mr-2"/>
+                  <PlusIcon class="h-4 w-4 mr-2" />
                   Ordinaria
                 </a>
                 <a href="/addCP" class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium">
-                  <PlusIcon class="h-4 w-4 mr-2"/>
+                  <PlusIcon class="h-4 w-4 mr-2" />
                   C. Político
                 </a>
               </div>
@@ -41,48 +41,55 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1.5">
                 <div class="relative">
-                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"/>
-                  <Input id="search" :value="searchParams.name ?? ''" placeholder="Buscar por nombre..." @update:model-value="handleFilterByValue('name', $event)" class="pl-9"/>
+                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input id="search" :value="searchParams.name ?? ''" placeholder="Buscar por nombre..."
+                    @update:model-value="handleFilterByValue('name', $event)" class="pl-9" />
                 </div>
               </div>
               <div class="gap-4 flex">
-                <Select :default-value="searchParams.type ?? 'all'" @update:model-value="handleFilterByValue('type', $event)">
-                    <SelectTrigger class="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem v-for="type in typeMinutes" :key="type.value" :value="type.value">{{ type.name }}</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                <Select :default-value="searchParams.type ?? 'all'"
+                  @update:model-value="handleFilterByValue('type', $event)">
+                  <SelectTrigger class="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem v-for="type in typeMinutes" :key="type.value" :value="type.value">{{ type.name }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <!-- Nucleo -->
-                 <Select v-if="nucleos" :default-value="searchParams.core ?? 'all'" @update:model-value="handleFilterByValue('core', $event)">
-                    <SelectTrigger class="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="all">Todos los núcleos</SelectItem>
-                        <SelectItem v-for="nucleo in nucleos" :key="nucleo.id" :value="nucleo.name">{{ nucleo.name }}</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                <Select v-if="nucleos" :default-value="searchParams.core ?? 'all'"
+                  @update:model-value="handleFilterByValue('core', $event)">
+                  <SelectTrigger class="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="all">Todos los núcleos</SelectItem>
+                      <SelectItem v-for="nucleo in nucleos" :key="nucleo.id" :value="nucleo.name">{{ nucleo.name }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <!-- Status -->
-                 <Select :default-value="searchParams.status ?? 'all'" @update:model-value="handleFilterByValue('status', $event)">
-                    <SelectTrigger class="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="all">Todos los estados</SelectItem>
-                        <SelectItem v-for="status in statuses" :key="status" :value="status">{{ status }}</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                
+                <Select :default-value="searchParams.status ?? 'all'"
+                  @update:model-value="handleFilterByValue('status', $event)">
+                  <SelectTrigger class="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="all">Todos los estados</SelectItem>
+                      <SelectItem v-for="status in statuses" :key="status" :value="status">{{ status }}</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+
                 <!-- Date -->
-                <input type="month" :value="searchParams.fecha ?? '2025-01'" class="border rounded-md px-2 text-sm" @change="handleFilter('fecha',$event)"></input>
+                <input type="month" :value="searchParams.fecha ?? '2025-01'" class="border rounded-md px-2 text-sm"
+                  @change="handleFilter('fecha',$event)"></input>
               </div>
             </div>
           </div>
@@ -102,11 +109,11 @@
                     {{ tableHeaders[2] }}
                   </th>
                   <th :data-sort="sort" @click="handleSort"
-                      class="flex justify-center gap-2 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="flex justify-center gap-2 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[3] }}
                     <ArrowUp v-if="sort === 'ASC' || sort === null" class="w-4 h-4"
-                             :class="{ 'stroke-blue-500': sort === 'ASC' }"/>
-                    <ArrowDown v-if="sort === 'DESC'" class="w-4 h-4 stroke-blue-500"/>
+                      :class="{ 'stroke-blue-500': sort === 'ASC' }" />
+                    <ArrowDown v-if="sort === 'DESC'" class="w-4 h-4 stroke-blue-500" />
                   </th>
                   <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[4] }}
@@ -116,64 +123,66 @@
               </TableHeader>
               <TableBody>
                 <TableRow v-for="(acta, index) in actas.data" :key="acta.id"
-                          class="hover:bg-gray-50/50 transition-colors duration-200">
+                  class="hover:bg-gray-50/50 transition-colors duration-200">
                   <TableCell class="font-medium pl-8">{{ index + 1 }}</TableCell>
                   <TableCell class="pl-6">{{ acta.name }}</TableCell>
-                  <TableCell class=" pl-6 text-center"> {{ acta.core?.name }}</TableCell>
+                  <TableCell class=" pl-6 text-center">
+                    <Button type="button" variant="ghost" class="font-normal cursor-pointer" @click="openCore(acta)">{{
+                      acta.core?.name || "-"}}</Button>
+                  </TableCell>
                   <TableCell class="text-center">{{ acta.fecha }}</TableCell>
                   <TableCell class="text-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Badge :class="getStatusClass(acta.status)">
-                              <Loader2 v-if="acta.status === 'Procesando'" class="animate-spin"/>
-                              {{ acta.status }} 
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent class="max-w-64">
-                            {{ statusMap[acta.status as keyof typeof statusMap].label }}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge :class="getStatusClass(acta.status)">
+                            <Loader2 v-if="acta.status === 'Procesando'" class="animate-spin" />
+                            {{ acta.status }}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent class="max-w-64">
+                          {{ statusMap[acta.status as keyof typeof statusMap].label }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </TableCell>
                   <TableCell class="text-center">
                     <DropdownMenu>
                       <DropdownMenuTrigger class="focus:outline-none">
                         <Button variant="ghost" size="icon" class="rounded-full">
-                          <MoreVerticalIcon class="h-4 w-4"/>
+                          <MoreVerticalIcon class="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem @click="handleAction('ver', acta)">
-                          <Eye class="h-4 w-4"/>
+                          <Eye class="h-4 w-4" />
                           Ver
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('editar', acta)"
-                                          v-if="hasPermission('Documentos', 'update') && !acta.isLoaded  ">
-                          <Pencil class="h-4 w-4"/>
+                          v-if="hasPermission('Documentos', 'update') && !acta.isLoaded  ">
+                          <Pencil class="h-4 w-4" />
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('retry', acta)"
-                                          v-if="acta.status === Status.ERROR || acta.status === Status.CREATE">
-                          <FilePenLine class="h-4 w-4"/>
+                          v-if="acta.status === Status.ERROR || acta.status === Status.CREATE">
+                          <FilePenLine class="h-4 w-4" />
                           Procesar
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="
                           acta.type === 'ro' &&
                           (acta.status === Status.PENDIENTE || acta.status === Status.PROCESADA)
                         " @click="handleAction('procesar', acta)">
-                          <FileSearch class="h-4 w-4"/>
+                          <FileSearch class="h-4 w-4" />
                           Revisar
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('export', acta)"
-                                          v-if="hasPermission('Documentos', 'export')">
-                          <Download class="h-4 w-4"/>
+                          v-if="hasPermission('Documentos', 'export')">
+                          <Download class="h-4 w-4" />
                           Exportar
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="hasPermission('Documentos', 'delete')"
-                                          @click="handleAction('eliminar', acta)"
-                                          class="text-red-600 border-t focus:text-red-600">
-                          <TrashIcon class="h-4 w-4"/>
+                          @click="handleAction('eliminar', acta)" class="text-red-600 border-t focus:text-red-600">
+                          <TrashIcon class="h-4 w-4" />
                           Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -186,7 +195,7 @@
             <!-- Empty State -->
             <div v-if="actas.data?.length === 0" class="text-center py-16">
               <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
-                <SearchIcon class="h-6 w-6"/>
+                <SearchIcon class="h-6 w-6" />
               </div>
               <h3 class="mt-4 text-sm font-medium text-gray-900">
                 No se encontraron actas
@@ -200,23 +209,22 @@
               <div v-if="actas?.total === 0"></div>
               <div v-else class="flex text-md text-muted-foreground p-4 justify-between items-center gap-2">
                 <div>Mostrando <span class="font-medium">{{ page || 1 }}</span> de <span class="font-medium">{{
-                  actas?.page_total || 1
-                }}</span> páginas</div>
+                    actas?.page_total || 1
+                    }}</span> páginas</div>
               </div>
-              
+
               <div class="flex justify-end gap-4 p-4">
-                <Button size="icon" :disabled="currentPage === 1" variant="outline"
-                         @click="goToPreviousPage">
-                  <ChevronLeft/> 
+                <Button size="icon" :disabled="currentPage === 1" variant="outline" @click="goToPreviousPage">
+                  <ChevronLeft />
                 </Button>
-                <Button size="icon" :disabled="currentPage >= hasNextPage" variant="outline"
-                         @click="goToNextPage">
-                  <ChevronRight/> 
+                <Button size="icon" :disabled="currentPage >= hasNextPage" variant="outline" @click="goToNextPage">
+                  <ChevronRight />
                 </Button>
-              
+
                 <div>
-                  <Select :default-value="searchParams.limit ?? '10'" @update:model-value="handleFilterByValue('limit', $event)">
-                    <SelectTrigger >
+                  <Select :default-value="searchParams.limit ?? '10'"
+                    @update:model-value="handleFilterByValue('limit', $event)">
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -258,7 +266,7 @@
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]">
-              <input type="radio" name="tipoActa" value="ro" v-model="tipoActa" class="sr-only"/>
+              <input type="radio" name="tipoActa" value="ro" v-model="tipoActa" class="sr-only" />
               Acta Ordinaria
             </label>
             <label :class="[
@@ -267,7 +275,7 @@
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             ]">
-              <input type="radio" name="tipoActa" value="cp" v-model="tipoActa" class="sr-only"/>
+              <input type="radio" name="tipoActa" value="cp" v-model="tipoActa" class="sr-only" />
               Círculo Político
             </label>
           </div>
@@ -275,37 +283,39 @@
             Seleccione el tipo de procesamiento:
           </label>
           <div class="space-x-2 ">
-            <Button @click="mode = 'spacy'" :disabled="mode === 'spacy'" :data-disabled="mode === 'spacy'" class="opacity-50 data-[disabled=true]:opacity-100">Spacy</Button>
-            <Button @click="mode = 'model'" :disabled="mode === 'model'" :data-disabled="mode === 'model'" class="opacity-50 data-[disabled=true]:opacity-100">Model</Button>
+            <Button @click="mode = 'spacy'" :disabled="mode === 'spacy'" :data-disabled="mode === 'spacy'"
+              class="opacity-50 data-[disabled=true]:opacity-100">Spacy</Button>
+            <Button @click="mode = 'model'" :disabled="mode === 'model'" :data-disabled="mode === 'model'"
+              class="opacity-50 data-[disabled=true]:opacity-100">Model</Button>
           </div>
         </div>
 
         <!-- Área de arrastre de archivos -->
         <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
-             :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
-             @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
+          :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
+          @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
           <UploadCloudIcon class="mx-auto h-12 w-12 transition-colors duration-200"
-                           :class="isDragging ? 'text-blue-600' : 'text-gray-400'"/>
+            :class="isDragging ? 'text-blue-600' : 'text-gray-400'" />
           <p class="mt-2 text-sm text-gray-600">
             <span class="font-medium hover:text-gray-700">
               Arrastre archivos aquí
             </span>
             o
-            <button @click="$refs.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
+            <button @click="$el.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
               seleccione desde su dispositivo
             </button>
           </p>
           <p class="mt-1 text-xs text-gray-500">DOCX, PDF, hasta 10MB por archivo</p>
-          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect"/>
+          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect" />
         </div>
 
         <!-- Lista de archivos -->
         <div v-if="uploadedFiles.length > 0" class="space-y-3 max-h-32 overflow-y-auto">
           <div v-for="(file, index) in uploadedFiles" :key="index"
-               class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 rounded flex items-center justify-center">
-                <FileTextIcon class="size-5"/>
+                <FileTextIcon class="size-5" />
               </div>
             </div>
             <div class="flex-1 min-w-0">
@@ -315,7 +325,7 @@
               </div>
             </div>
             <button @click="removeFile(file.name)" class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600">
-              <Trash2Icon class="size-4"/>
+              <Trash2Icon class="size-4" />
             </button>
           </div>
         </div>
@@ -325,7 +335,7 @@
             Cancelar
           </Button>
           <Button @click="handleDrop" :disabled="!uploadedFiles.length || loading"
-                  class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
+            class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
             Cargar archivos
           </Button>
         </DialogFooter>
@@ -337,19 +347,41 @@
         <h2 class="text-lg font-semibold text-gray-900">Seleccione </h2>
         <form @submit.prevent="handleRetry">
           <div class="flex justify-center gap-4">
-           <div class="flex gap-2">
-              <Input type="radio" name="typeModel" value="spacy" v-model="mode" class="bg-button shadow-none size-4"/>
+            <div class="flex gap-2">
+              <Input type="radio" name="typeModel" value="spacy" v-model="mode" class="bg-button shadow-none size-4" />
               <Label>Spacy</Label>
-           </div>
-           <div class="flex gap-2">
-              <Input type="radio" name="typeModel" value="model" v-model="mode" class="bg-button shadow-none size-4"/>
+            </div>
+            <div class="flex gap-2">
+              <Input type="radio" name="typeModel" value="model" v-model="mode" class="bg-button shadow-none size-4" />
               <Label>Model</Label>
-           </div>
+            </div>
           </div>
-        <DialogFooter class="pt-2">
-          <Button variant="default" type="submit">Aceptar</Button>
-        </DialogFooter>
+          <DialogFooter class="pt-2">
+            <Button variant="default" type="submit">Aceptar</Button>
+          </DialogFooter>
         </form>
+      </DialogContent>
+    </Dialog>
+
+    <Dialog :open="update" @update:open="update = $event">
+      <DialogContent>
+        <DialogTitle>Seleccione el núcleo</DialogTitle>
+        <div class="flex justify-center p-2">
+          <Select v-model:model-value="selectedCore">
+            <SelectTrigger class="w-full">
+              <SelectValue placeholder="Seleccione el núcleo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="null">Seleccione el núcleo</SelectItem>
+              <SelectItem v-for="value in nucleos" :key="value.id" :value="value.id">
+                {{ value.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div class="flex justify-end">
+          <Button type="submit" variant="default" @click="handleCore">Guardar</Button>
+        </div>
       </DialogContent>
     </Dialog>
 
@@ -362,11 +394,11 @@
           </div>
           <div class="flex justify-end space-x-3">
             <button type="submit"
-                    class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
+              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
               Cancelar
             </button>
             <button class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-                    @click="eliminarActa()">
+              @click="eliminarActa()">
               Aceptar
             </button>
           </div>
@@ -377,10 +409,17 @@
 </template>
 
 <script setup lang="ts">
+import Label from "@/components/ui/label/Label.vue";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
+import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
+import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
+import { Status } from "@/enum/Status";
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { usePermissions } from "@/utils/auth-client.ts";
-import { useSse } from "@/utils/see";
+import { useUrlSearchParams } from "@vueuse/core";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import {
@@ -389,8 +428,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
-  Edit,
   Eye,
+  FilePenLine,
+  FileSearch,
   FileTextIcon,
   Loader2,
   MoreVerticalIcon,
@@ -399,10 +439,7 @@ import {
   SearchIcon,
   Trash2Icon,
   TrashIcon,
-  UploadCloudIcon,
-  RotateCw,
-  FilePenLine,
-  FileSearch
+  UploadCloudIcon
 } from "lucide-vue-next";
 import { reactive, ref } from "vue";
 import { toast } from "vue-sonner";
@@ -412,15 +449,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
-import { useUrlSearchParams } from "@vueuse/core";
-import { Status } from "@/enum/Status";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
-import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
-import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
-import Label from "@/components/ui/label/Label.vue";
+import { useSse } from "@/utils/see";
 
+const emit = defineEmits(["test"])
 const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
   actas: any;
   type: string;
@@ -429,27 +460,30 @@ const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
   nucleos: any;
 }>();
 
-// useSse("minute.status",({id,status})=>{
-//   const acta = actas?.data?.find((acta: any)=>acta.id == id)
-//   if (acta) {
-//     acta.status = status
-//   }  
-// })
+useSse("minute.status",({id,status})=>{
+  const acta = actas?.data?.find((acta: any)=>acta.id == id)
+  if (acta) {
+    acta.status = status
+  }  
+})
 
 const actas = reactive(actasResponse)
 const searchParams = useUrlSearchParams()
 const hasPermission = usePermissions()
 
 const mode = ref('model')
+const currentCore = ref<number>(1)
+const selectedCore = ref(1)
 const openModal = ref(false)
 const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
 const showUploadDialog = ref(false);
-const uploadedFiles = ref([]);
+const uploadedFiles = ref<File[]>([]);
 const isDragging = ref(false);
 const showDelete = ref(false);
 const currentPage = ref(page)
 const hasNextPage = ref(actas?.page_total)
 const loading = ref(false)
+const update = ref(false)
 const currentsMinute = ref<any>(null);
 const sort = ref<"ASC" | "DESC" | null >(order);
 
@@ -528,6 +562,26 @@ const handleFilter = (filter: string,e: any) => {
   }
   navigate("?"+query.toString())
 }
+const openCore = (acta: any) => {
+  currentsMinute.value = acta
+  selectedCore.value = acta?.core?.id
+  currentCore.value = acta?.core?.id  
+  update.value = true
+}
+const handleCore = async () => {
+  console.log(selectedCore.value);
+  
+  if(currentsMinute.value.isLoaded){ 
+    await actions.minute.updateCore({minuteId: currentsMinute.value.id,coreId: selectedCore.value})
+  }
+  else if(currentsMinute.value.type === 'ro' ){
+    await actions.ordinary.updateCore({minuteId: currentsMinute.value.id,coreId: selectedCore.value})
+  }
+   else {
+    await actions.political.updateCore({minuteId: currentsMinute.value.id,coreId: selectedCore.value})
+  }
+  navigate("")
+}
 
 const handleFilterByValue = (filter: string,value: any) => {
   const query = new URLSearchParams(searchParams as any)
@@ -546,12 +600,12 @@ const statuses = [Status.CREATE, Status.ERROR, Status.PENDIENTE, Status.PROCESAD
 const getStatusClass = (status: any) => {
   const classes = {
     Creada: "bg-blue-100 text-blue-800 hover:bg-blue-200",
-    Procesando: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
-    'En Revisión': "bg-purple-100 text-purple-800 hover:bg-purple-200",
+    Pendiente:"bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
     Procesada: "bg-green-100 text-green-800 hover:bg-green-200",
+    Error: "bg-red-100 text-red-800 hover:bg-red-200",
     Validada: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
   };
-  return classes[status] || "bg-gray-100 text-gray-800 hover:bg-gray-200";
+  return classes[status as keyof typeof classes] || "bg-gray-100 text-gray-800 hover:bg-gray-200";
 };
 
 const handleAction = (action: any, acta: any) => {
@@ -600,7 +654,7 @@ async function eliminarActa() {
     type: string,
   } | null = currentsMinute.value;
 
-  const id = acta?.id;
+  const id = acta?.id ?? "";
   const tipo = acta?.type ?? 'ro';
 
   try {
@@ -630,7 +684,7 @@ const handleDrop = async () => {
     showUploadDialog.value = false;
     uploadedFiles.value = [];
     navigate('/minutes')
-  } catch (error) {
+  } catch (error: any) {
     toast.error(`${error.message}`);
   } finally {
     loading.value = false
@@ -639,7 +693,7 @@ const handleDrop = async () => {
 
 const handleFileSelect = (event: any) => {
   const files = Array.from(event.target.files);
-  uploadedFiles.value = [...uploadedFiles.value, ...files];
+  uploadedFiles.value = [...uploadedFiles.value, ...files] as File[];
 };
 
 const handleFiles = (files: any) => {

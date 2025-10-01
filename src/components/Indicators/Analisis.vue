@@ -108,7 +108,7 @@
           <Asistencia :comite :computo />
         </div>
         <div v-else-if="selectedIndicator === 'reason'">
-          <ReasonAttendance :selectedMonth="selectedMonth" />
+          <ReasonAttendance :comite :selectedMonth="selectedMonth" />
         </div> 
         <div v-else class="space-y-3">
           <div

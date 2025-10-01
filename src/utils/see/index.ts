@@ -1,33 +1,12 @@
+import { sseStore } from "@/utils/see/store"
 import type { MessageMapper } from "@/utils/see/types"
-import { inject, onMounted, onUnmounted, provide, ref, type Ref } from "vue"
+import { onMounted, onUnmounted } from "vue"
 
-const EVENT_SOURCE = Symbol("event-soruce")
-
-export function provideSse() {
-    const eventSource = ref<EventSource | null>(null)
-
-    onMounted(() => {
-        const es = new EventSource("/api/sse", { withCredentials: true })
-        es.onmessage = (e) => {
-            console.log("Hola")
-        }
-        eventSource.value = es
-    })
-
-    provide(EVENT_SOURCE, eventSource)
-    onUnmounted(() => {
-        eventSource.value?.close()
-    })
-    return eventSource
-}
-
-export const useEventSource = (): Ref<EventSource | null> => inject(EVENT_SOURCE, ref(null))
 
 export function useSse<
     Event extends keyof MessageMapper,
     Data = MessageMapper[Event],
 >(event: Event, listener: (data: Data) => void) {
-    const eventSource = provideSse()
 
     const middleware = (e: MessageEvent) => {
         let data
@@ -39,7 +18,12 @@ export function useSse<
         listener(data)
     }
 
-
-    onMounted(() => eventSource.value?.addEventListener(event, middleware))
-    onUnmounted(() => eventSource.value?.removeEventListener(event, middleware))
+    onMounted(() => {
+        const sse = sseStore()
+        sse.eventSource?.addEventListener(event, middleware)
+    })
+    onUnmounted(() => {
+        const sse = sseStore()
+        sse.eventSource?.removeEventListener(event, middleware)
+    })
 }

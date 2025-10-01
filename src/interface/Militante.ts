@@ -15,7 +15,13 @@ export interface Sancion {
   estado: string;
   details: string;
 }
-
+export interface Agreements{
+  id: string,
+  descripcion: string,
+	responsable: Militantes,
+	fecha: Date,
+	minute: any
+}
 export interface Militantes {
   id: 0;
   firstname: "";
@@ -32,5 +38,6 @@ export interface Militantes {
   };
   traslados: Transfer[];
   sanciones: Sancion[];
-  desactivaciones: [];
+  desactivaciones: any[];
+  responsableAgreem: Agreements[]
 }

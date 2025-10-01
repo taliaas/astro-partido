@@ -3,6 +3,7 @@ import {getSession} from "auth-astro/server";
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import MinutesService from "../services/Minutes";
+import MilitantService from "@/services/MilitantService";
 const session = (await getSession(Astro.request)) as any;
 
 async function getLatestMinute() {
@@ -18,6 +19,14 @@ async function typeDocuments() {
   const service = new MinutesService();
   try {
     return await service.getMinutes(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+async function getMilitante() {
+  const service = new MilitantService();
+  try {
+    return await service.getMilitante(session.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -45,11 +54,13 @@ const cards = [
     icon: "Files",
   },
 ];
+const militante = await getMilitante()
 ---
 
 <RootLayout>
   <DashboardHome
     documents={documents!}
-    cards={cards} client:load
+    cards={cards} 
+    militante={militante} client:load
   />
 </RootLayout>

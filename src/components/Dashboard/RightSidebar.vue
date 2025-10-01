@@ -3,7 +3,7 @@
     <!-- Calendar and Events Section -->
     <div class="space-y-4">
       <!-- Calendar Select -->
-      <Collapsible default-open >
+      <Collapsible default-open>
         <CollapsibleTrigger
           class="flex items-center w-full justify-between text-lg font-medium"
         >
@@ -75,8 +75,28 @@
           <h3>{{ ev.title }}</h3>
         </div>
       </div>
+      <Collapsible>
+        <CollapsibleTrigger
+          class="flex items-center w-full justify-between text-lg font-medium"
+        >
+          Acuerdos
+          <ChevronDownIcon class="h-4 w-4" />
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div v-if=" militante?.responsableAgreem.length === 0">
+            <p class="text-md text-gray-500">
+              No hay acuerdos como tu responsabilidad.
+            </p>
+          </div>
+          <div v-for="item in militante?.responsableAgreem" :key="item.id">
+            <div class="flex justify-between space-y-2">
+              <p>{{ item.descripcion }}</p>
+              <p class="font-sans text-muted-foreground">{{ item.fecha }}</p>
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
-
   </div>
 </template>
 
@@ -106,7 +126,17 @@ import SelectValue from "../ui/select/SelectValue.vue";
 import { toast } from "vue-sonner";
 import { ActionError } from "astro:actions";
 import { usePermissions } from "@/utils/auth-client";
+import type { Militantes } from "@/interface/Militante";
 
+interface EventData {
+  id: number;
+  type: string;
+  title: string;
+}
+
+const { militante } = defineProps<{
+  militante: Militantes;
+}>();
 const hasPermission = usePermissions();
 
 const newEvent = reactive({
@@ -115,7 +145,7 @@ const newEvent = reactive({
 });
 
 const currentDate = ref(today(getLocalTimeZone())) as Ref<DateValue>;
-const pendingTasks = ref([]);
+const pendingTasks = ref<EventData[]>([]);
 
 async function addEvent() {
   const fecha = currentDate.value.toString();

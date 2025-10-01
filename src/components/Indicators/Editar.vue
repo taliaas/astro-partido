@@ -1,4 +1,5 @@
 <template>
+  {{ indicatorName(1) }}
   <div class="min-h-screen bg-gray-50 p-6">
     <div class="w-11/12 mx-auto bg-gray-50 rounded-xl shadow-lg">
       <!-- Header -->
@@ -10,77 +11,87 @@
           Gestione los valores de los indicadores del sistema
         </p>
       </div>
-
       <div class="flex p-4 gap-4">
         <aside class="p-4 space-y-4">
           <h2 class="font-medium text-2xl">Indicadores</h2>
           <!-- Form -->
           <form @submit="onSubmit" class="pb-12 relative">
-            <div class="grid grid-cols-2 gap-4">
-              <FormField
+            <div v-if="currentIndicator === 1">
+              <Attendance />
+            </div>
+            <template v-else-if="currentIndicator !== 1">
+              <div
+                
+                class="grid grid-cols-2 gap-4"
+              >
+                <FormField
                   v-for="({ key }, index) of ind"
                   :key="key"
                   :name="`indicators.${index}.value`"
                   v-slot="{ componentField }"
-              >
-                <FormItem>
-                  <FormLabel>{{ getName(key) }}</FormLabel>
-                  <FormControl>
-                    <Input
+                >
+                  <FormItem>
+                    <FormLabel>{{ getName(key) }}</FormLabel>
+                    <FormControl>
+                      <Input
                         :="componentField"
                         type="number"
                         min="0"
                         step="1"
-                        @focus="currentIndicator = index"
-                    />
-                  </FormControl>
-                  <div class="flex">
-                    <FormMessage/>
-                    <span class="text-sm invisible">.</span>
-                  </div>
-                </FormItem>
-              </FormField>
-            </div>
+                        @focus="
+                          currentName = getName(key);
+                          currentIndicator = index;
+                        "
+                      />
+                    </FormControl>
+                    <div class="flex">
+                      <FormMessage />
+                      <span class="text-sm invisible">.</span>
+                    </div>
+                  </FormItem>
+                </FormField>
+              </div>
 
-            <!-- Actions -->
-            <div
+              <!-- Actions -->
+              <div
                 class="backdrop-blur-[4px] p-4 px-12 rounded-xl fixed bottom-6 left-30 w-1/3 flex space-x-4 *:flex-1"
-            >
-              <Button type="button" variant="secondary" @click="resetForm">
-                Restablecer
-              </Button>
-              <Button type="submit" :disabled="loading">
-                {{ loading ? "Guardando..." : "Guardar Cambios" }}
-              </Button>
-            </div>
+              >
+                <Button type="button" variant="secondary" @click="resetForm">
+                  Restablecer
+                </Button>
+                <Button type="submit" :disabled="loading">
+                  {{ loading ? "Guardando..." : "Guardar Cambios" }}
+                </Button>
+              </div>
+            </template>
           </form>
         </aside>
         <main class="flex-1 py-4">
-          <div class="sticky top-5">
+          <div class="sticky top-5 space-y-4">
             <FormField
-                :name="`indicators.${currentIndicator}.text`"
-                v-slot="{ componentField }"
+              :name="`indicators.${currentIndicator}.text`"
+              v-slot="{ componentField }"
             >
               <FormItem>
+                <FormLabel class=""> Descripción: {{ currentName }} </FormLabel>
                 <FormControl>
                   <Textarea
-                      :="componentField"
-                      class="w-full resize-none max-h-48"
-                      placeholder="Escriba el texto relacionado al indicador..."
+                    :="componentField"
+                    class="w-full resize-none max-h-48"
+                    placeholder="Escriba el texto relacionado al indicador..."
                   />
                 </FormControl>
               </FormItem>
             </FormField>
             <div>
               <embed
-                  :src="getFile(acta.id)"
-                  type="application/pdf"
-                  width="100%"
-                  height="700"
-                  title="Embedded PDF Viewer"
+                :src="getFile(acta.id)"
+                type="application/pdf"
+                width="100%"
+                height="700"
+                title="Embedded PDF Viewer"
               />
             </div>
-
           </div>
         </main>
       </div>
@@ -89,8 +100,8 @@
 </template>
 
 <script setup lang="ts">
-import {getFile} from "@/utils/files.ts";
-import {Button} from "@/components/ui/button";
+import { getFile } from "@/utils/files.ts";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -98,18 +109,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
-import {indicators} from "@/utils/indicators";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { indicators } from "@/utils/indicators";
 import ComputoService from "@/services/Computo.ts";
-import {toTypedSchema} from "@vee-validate/zod";
-import {z} from "astro:schema";
-import {navigate} from "astro:transitions/client";
-import {useForm} from "vee-validate";
-import {ref} from "vue";
-import {toast} from "vue-sonner";
+import { toTypedSchema } from "@vee-validate/zod";
+import { z } from "astro:schema";
+import { navigate } from "astro:transitions/client";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
+import Attendance from "@/components/Indicators/Attendance.vue";
 
-const {ind, acta} = defineProps<{
+const { ind, acta } = defineProps<{
   ind: any[];
   acta: any;
 }>();
@@ -117,13 +129,13 @@ const {ind, acta} = defineProps<{
 type Data = z.infer<typeof schema>;
 const schema = z.object({
   indicators: z
-      .object({
-        id: z.number().optional(),
-        key: z.string(),
-        value: z.number().nullable(),
-        text: z.string(),
-      })
-      .array(),
+    .object({
+      id: z.number().optional(),
+      key: z.string(),
+      value: z.coerce.number().nullable(),
+      text: z.string(),
+    })
+    .array(),
 });
 
 const form = useForm<Data>({
@@ -132,19 +144,20 @@ const form = useForm<Data>({
     indicators: ind,
   },
   initialErrors: Object.fromEntries(
-      Object.entries(ind).map(([_, {value}], index) => [
-        "indicators." + index + ".value",
-        value === null ? "No encontrado" : undefined,
-      ])
+    Object.entries(ind).map(([_, { value }], index) => [
+      "indicators." + index + ".value",
+      value === null ? "No encontrado" : undefined,
+    ])
   ) as any,
 });
 
 const loading = form.isSubmitting;
-const currentIndicator = ref("ptos");
+const currentIndicator = ref();
+const currentName = ref();
 
 // Reset form to initial values
 const resetForm = () => {
-  form.setValues({indicators: ind});
+  form.setValues({ indicators: ind });
 };
 
 // Save form data
@@ -162,6 +175,8 @@ const onSubmit = form.handleSubmit(async (data: Data) => {
 
 const getName = (key: string) => {
   return Object.entries(indicators).find(([keyInd]) => keyInd === key)?.[1]
-      .name;
+    .name;
 };
+
+const indicatorName = (item: number) => {};
 </script>
