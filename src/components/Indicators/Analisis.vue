@@ -109,7 +109,7 @@
         </div>
         <div v-else-if="selectedIndicator === 'reason'">
           <ReasonAttendance :comite :selectedMonth="selectedMonth" />
-        </div> 
+        </div>
         <div v-else class="space-y-3">
           <div
             v-for="com in comite"
@@ -154,9 +154,11 @@
                   </div>
                   <div class="flex space-x-2">
                     <p class="text-gray-600">{{ getComputo(nucleo)?.value }}</p>
-                    <p>{{ computo.month }}</p>
                     <div
-                      v-if="getComputo(nucleo)?.value > 2"
+                      v-if="
+                        getComputo(nucleo)?.value &&
+                        getComputo(nucleo)!.value > 2
+                      "
                       class="p-1 bg-green-100 rounded-full"
                     >
                       <ArrowUpIcon class="h-4 w-4 text-green-600" />
@@ -168,7 +170,10 @@
                       <Separator class="h-0.5 w-3 bg-gray-400" />
                     </div>
                     <div
-                      v-else-if="getComputo(nucleo)?.value < 2"
+                      v-else-if="
+                        getComputo(nucleo)?.value &&
+                        getComputo(nucleo)!.value < 2
+                      "
                       class="bg-red-100 rounded-full p-1"
                     >
                       <ArrowDownIcon class="h-4 w-4 text-red-600" />
@@ -189,7 +194,10 @@
                                 {{ getComputo(nucleo)?.value }}
                               </p>
                               <div
-                                v-if="getComputo(nucleo)?.value > 2"
+                                v-if="
+                                  getComputo(nucleo)?.value &&
+                                  getComputo(nucleo)!.value > 2
+                                "
                                 class="flex items-center justify-center space-x-1"
                               >
                                 <ArrowUpIcon class="h-4 w-4 text-green-600" />
@@ -203,7 +211,10 @@
                                 <p class="text-gray-600">Sin cambios</p>
                               </div>
                               <div
-                                v-else-if="getComputo(nucleo)?.value < 2"
+                                v-else-if="
+                                  getComputo(nucleo)?.value &&
+                                  getComputo(nucleo)!.value < 2
+                                "
                                 class="flex items-center justify-center space-x-1"
                               >
                                 <ArrowDownIcon class="h-4 w-4 text-red-600" />
@@ -237,38 +248,40 @@
 </template>
 
 <script setup lang="ts">
-import Asistencia, { type ComputoData } from "@/components/Indicators/Asistencia.vue";
+import Asistencia, {
+  type ComputoData,
+} from "@/components/Indicators/Asistencia.vue";
 import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
 import {
-Collapsible,
-CollapsibleContent,
-CollapsibleTrigger,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-Select,
-SelectContent,
-SelectGroup,
-SelectItem,
-SelectTrigger,
-SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
-Sheet,
-SheetContent,
-SheetDescription,
-SheetHeader,
-SheetTitle,
-SheetTrigger,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { categories, indicators } from "@/utils/indicators.ts";
 import {
-ArrowDownIcon,
-ArrowUpIcon,
-ChevronDownIcon,
-EyeIcon,
-Search,
-XIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ChevronDownIcon,
+  EyeIcon,
+  Search,
+  XIcon,
 } from "lucide-vue-next";
 import { ref } from "vue";
 
@@ -294,10 +307,13 @@ const getComputo = (nucleo: { id: string }) => {
   const indicator = selectedIndicator.value;
 
   const c = computo.find(
-    (c) => c.month == Number(month) && c.year == Number(year) && c.core?.id === nucleo.id
+    (c) =>
+      c.month == Number(month) &&
+      c.year == Number(year) &&
+      c.core?.id === nucleo.id
   );
 
-  return c?.indicators?.find((i) => i.key === indicator);
+  return c?.indicators?.find((i) => i.key === indicator) ?? undefined;
 };
 
 const setTotal = (comite: { core: { id: string }[] }) => {

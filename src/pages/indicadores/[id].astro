@@ -5,6 +5,7 @@ import Editar from "../../components/Indicators/Editar.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
 import ComputoService from "../../services/Computo";
 import { indicators } from "../../utils/indicators";
+import MilitantService from "@/services/MilitantService";
 
 const { id } = Astro.params;
 const session = (await getSession(Astro.request)) as any;
@@ -33,8 +34,18 @@ async function obtenerComputo() {
   }
 }
 
+async function getMilitanteByMinute() {
+  const service = new MilitantService();
+  try {
+    return service.getMilitantesByMinute(acta?.core?.id, session.jwt);
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
 const computo = await obtenerComputo();
 const ind = computo.indicators;
+const militantes = await getMilitanteByMinute();
 
 const indList = [];
 for (const key in indicators) {
@@ -49,5 +60,5 @@ for (const key in indicators) {
 ---
 
 <RootLayout>
-  <Editar ind={indList} acta={acta} client:load />
+  <Editar ind={indList} acta={acta} militantes={militantes} client:load />
 </RootLayout>

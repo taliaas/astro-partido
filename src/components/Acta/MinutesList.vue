@@ -301,7 +301,7 @@
               Arrastre archivos aquí
             </span>
             o
-            <button @click="$el.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
+            <button @click="$refs.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
               seleccione desde su dispositivo
             </button>
           </p>
@@ -693,6 +693,8 @@ const handleDrop = async () => {
 
 const handleFileSelect = (event: any) => {
   const files = Array.from(event.target.files);
+  console.log(files);
+  
   uploadedFiles.value = [...uploadedFiles.value, ...files] as File[];
 };
 

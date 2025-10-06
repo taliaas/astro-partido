@@ -86,6 +86,7 @@ export const uploadMinutes = defineAction({
   }),
   async handler({ files, type, mode }, context) {
     const session: any = await getSession(context.request);
+    
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const formData = new FormData();
@@ -105,8 +106,7 @@ export const uploadMinutes = defineAction({
     const data = await res.json();
 
     if (!res.ok) {
-      console.log();
-
+      console.log(data);
       throw new ActionError({ code: "UNAUTHORIZED", message: data.message });
     }
     return data;

@@ -8,110 +8,104 @@
       </p>
     </div>
     <!-- Tarjeta principal -->
-    <div class="bg-white rounded-lg border shadow-md">
-      <div class="p-6">
-        <!-- Tabla de trazas -->
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b text-lg">
-                <th class="text-left py-3 px-4 font-bold text-gray-900">
-                  Módulo
-                </th>
-                <th class="text-left py-3 px-4 font-bold text-gray-900">
-                  Acción
-                </th>
-                <th class="text-left py-3 px-4 font-bold text-gray-900">
-                  Usuario
-                </th>
-                <th class="text-left py-3 px-4 font-bold text-gray-900">
-                  Fecha
-                </th>
-                <th class="text-left py-3 px-4 font-bold text-gray-900">
-                  Hora
-                </th>
-                <th class="text-center py-3 px-4 font-bold text-gray-900 w-24">
-                  Detalles
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="traza in trazas.logs" :key="traza.id" class="border-b">
-                <td class="py-3 px-4 font-medium text-gray-900">
-                  {{ traza.module }}
-                </td>
-                <td class="py-3 px-4">
-                  <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                  >
-                    {{ traza.action }}
-                  </span>
-                </td>
-                <td class="py-3 px-4">
-                  <div class="flex items-center space-x-3">
-                    <div>
-                      <div class="font-medium text-gray-900">
-                        {{ traza.user?.name }}
-                      </div>
-                      <div class="text-md text-gray-500">
-                        {{ traza.user?.email }}
-                      </div>
+    <div class="p-6">
+      <!-- Tabla de trazas -->
+      <div class="bg-white rounded-lg border shadow-md p-4">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b text-lg">
+              <th class="text-center py-3 px-4 font-bold text-gray-900">
+                Módulo
+              </th>
+              <th class="text-left py-3 px-4 font-bold text-gray-900">
+                Acción
+              </th>
+              <th class="text-left py-3 px-4 font-bold text-gray-900">
+                Usuario
+              </th>
+              <th class="text-left py-3 px-4 font-bold text-gray-900">Fecha</th>
+              <th class="text-left py-3 px-4 font-bold text-gray-900">Hora</th>
+              <th class="text-right py-3 px-4 font-bold text-gray-900">
+                Detalles
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="traza in trazas.logs" :key="traza.id" class="border-b">
+              <td class="text-center py-3 px-4 font-medium text-gray-900">
+                {{ traza.module }}
+              </td>
+              <td class="py-3 px-4">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                >
+                  {{ traza.action }}
+                </span>
+              </td>
+              <td class="py-3 px-4">
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="font-medium text-gray-900">
+                      {{ traza.user?.name }}
+                    </div>
+                    <div class="text-md text-gray-500">
+                      {{ traza.user?.email }}
                     </div>
                   </div>
-                </td>
-                <td class="py-3 px-4 text-md text-gray-500">
-                  {{ format(traza.createdAt, "yyyy-MM-dd") }}
-                </td>
-                <td class="py-3 px-4 text-md text-gray-500">
-                  {{ format(traza.createdAt, "HH:mm:ss") }}
-                </td>
-                <td class="text-center py-3 px-4">
-                  <button
-                    @click="abrirDetalle(traza)"
-                    class="text-md hover:text-blue-600 px-3 py-1 rounded-md transition-colors"
+                </div>
+              </td>
+              <td class="py-3 px-4 text-md text-gray-500">
+                {{ format(traza.createdAt, "yyyy-MM-dd") }}
+              </td>
+              <td class="py-3 px-4 text-md text-gray-500">
+                {{ format(traza.createdAt, "HH:mm:ss") }}
+              </td>
+              <td class="text-right py-3 px-4">
+                <Button
+                  variant="ghost"
+                  @click="abrirDetalle(traza)"
+                  class="text-md hover:text-blue-600 rounded-md transition-colors"
+                >
+                  <Eye class="w-4 h-4" />
+                </Button>
+              </td>
+            </tr>
+            <tr v-if="trazas.logs.length === 0">
+              <td colspan="6" class="text-center py-6 text-gray-500">
+                No se encontraron trazas
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6" class="py-4 text-gray-500 text-md">
+                Mostrasndo: {{ trazas.page }} de {{ trazas.lastPage }} página(s)
+              </td>
+              <td colspan="6" class="py-4 text-gray-500 text-md">
+                <div class="space-x-2">
+                  <Button
+                    variant="outline"
+                    class="p-2 border rounded-md"
+                    @click="previusPage"
+                    :disabled="currentPage <= 1"
+                    :class="{ 'bg-muted': currentPage === 1 }"
                   >
-                    <Eye class="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="trazas.logs.length === 0">
-                <td colspan="6" class="text-center py-6 text-gray-500">
-                  No se encontraron trazas
-                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="6" class="py-4 text-gray-500 text-md">
-                  Mostrasndo: {{ trazas.page }} de
-                  {{ trazas.lastPage }} página(s)
-                </td>
-                <td colspan="6" class="py-4 text-gray-500 text-md">
-                  <div class="space-x-2">
-                    <Button
-                      variant="outline"
-                      class="p-2 border rounded-md"
-                      @click="previusPage"
-                      :disabled="currentPage <= 1"
-                      :class="{ 'bg-muted': currentPage === 1 }"
-                    >
-                      <ChevronLeft />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      class="p-2 border rounded-md"
-                      @click="nextPage"
-                      :disabled="currentPage >= trazas.lastPage"
-                      :class="{ 'bg-muted': currentPage >= trazas.lastPage }"
-                    >
-                      <ChevronRight />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+                    <ChevronLeft />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    class="p-2 border rounded-md"
+                    @click="nextPage"
+                    :disabled="currentPage >= trazas.lastPage"
+                    :class="{ 'bg-muted': currentPage >= trazas.lastPage }"
+                  >
+                    <ChevronRight />
+                  </Button>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
 
@@ -144,7 +138,7 @@
 
         <div v-if="trazaSeleccionada" class="p-6 space-y-6">
           <!-- Acción y Módulo -->
-          <div class="flex items-center justify-between">
+          <div class="flex gap-4">
             <div class="space-y-1">
               <div class="text-md font-medium text-gray-500">Acción</div>
               <span

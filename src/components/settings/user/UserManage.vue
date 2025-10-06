@@ -62,11 +62,11 @@
               :key="user.id"
               class="border-b transition-colors hover:bg-muted/50"
             >
-              <td class="p-4">{{ user.name }}</td>
-              <td class="p-4">{{ user.email }}</td>
-              <td class="p-4">{{ user.role?.name }}</td>
-              <td class="p-4">{{ user.core.name }}</td>
-              <td class="p-4">
+              <td class="p-4 text-md">{{ user.name }}</td>
+              <td class="p-4 text-md">{{ user.email }}</td>
+              <td class="p-4 text-md">{{ user.role?.name }}</td>
+              <td class="p-4 text-md">{{ user.core.name }}</td>
+              <td class="p-4 text-md">
                 <span
                   :class="[
                     'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
@@ -105,7 +105,7 @@
       </div>
 
       <div class="flex items-center justify-between mt-4">
-        <div class="text-xs text-muted-foreground">
+        <div class="text-md text-muted-foreground">
           Mostrando {{ users.page }} de {{ users.total }} página(s)
         </div>
         <div class="flex items-center gap-2">

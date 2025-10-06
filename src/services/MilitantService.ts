@@ -20,6 +20,24 @@ export default class MilitantService {
             throw error;
         }
     }
+    async getMilitantesByMinute(coreId: any, session: any) {
+        try {
+            const response = await fetch(`${API_URL}/militantes/byCore/${coreId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+    }
 
     async getMilitantes(session: any) {
         try {
@@ -40,8 +58,6 @@ export default class MilitantService {
         }
     }
     async getMilitante(session: any) {
-        console.log(session);
-        
         try {
             const response = await fetch(`${API_URL}/militantes/byResp`, {
                 method: 'GET',

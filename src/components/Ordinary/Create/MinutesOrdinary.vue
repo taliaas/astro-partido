@@ -5,8 +5,6 @@
     >
       <h1 class="text-3xl font-bold text-gray-800 mb-2">Acta Ordinaria</h1>
     </div>
-    {{ form.errors }}
-
     <div class="max-w-7xl mx-auto rounded overflow-hidden p-2">
       <div class="relative">
         <div

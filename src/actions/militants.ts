@@ -134,9 +134,10 @@ export const updateMember = defineAction({
         phone: z.string(),
         core: z.object({
             id: z.number(),
-        })
+        }),
+        ci: z.string()
     }),
-    async handler({ id, firstname, lastname, email, address, core, estado, organization, phone }, context) {
+    async handler({ id, firstname, lastname, email, address, core, estado, organization, phone, ci }, context) {
         const session: any = await getSession(context.request);
         if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
@@ -149,6 +150,7 @@ export const updateMember = defineAction({
         if (estado !== undefined) updateData.estado = estado;
         if (organization !== undefined) updateData.organization = organization;
         if (phone !== undefined) updateData.phone = phone;
+        if (ci !== undefined) updateData.ci = ci;
 
         const body = JSON.stringify(updateData);
 

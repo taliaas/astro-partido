@@ -8,7 +8,7 @@ export type FormSchema = z.infer<typeof form_schema>;
 export const form_schema = z.object({
     core: z.any(),
     fecha: z.string().date(),//.refine((value)=> new Date(value)).max(today, { message: "La fecha no puede ser mayor a la actual" }),
-    hora: z.string().time(),
+    hora: z.string().time().min(1, { message: "Hora invalida" }),
     lugar: z.string().min(3),
     invitados: z.object({
         id: z.coerce.number().optional(),

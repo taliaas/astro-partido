@@ -19,29 +19,31 @@
                 <span
                   class="text-xs text-white px-3 py-1 rounded-full bg-button"
                 >
-                  {{ getType(doc) }}
+                  {{ doc.type ? "Ordinaria" : "Círculo Político" }}
                 </span>
                 <h4 class="text-base font-semibold ml-2">{{ doc.name }}</h4>
               </div>
               <div>
-                <button
+                <Button
+                  variant="outline"
                   class="p-2 rounded-full hover:bg-gray-50"
                   @click="exportarActa(doc)"
                 >
                   <Download class="w-4 h-4 text-gray-700" />
-                </button>
+                </Button>
               </div>
             </div>
 
             <div class="flex justify-between items-center mt-2">
               <p class="text-sm text-gray-500">{{ doc.fecha }}</p>
-              <button
+              <Button
+                variant="link"
                 class="text-blue-600 text-sm font-medium hover:underline"
                 @click="openMinute(doc)"
               >
                 Ver Detalles
                 <ChevronRight class="w-4 h-4 inline-block ml-1" />
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -97,7 +99,9 @@
 
           <div class="space-y-1">
             <p class="text-sm font-medium text-muted-foreground">Tipo</p>
-            <p class="uppercase">{{ currentMinute.type }}</p>
+            <p class="">
+              {{ currentMinute.type ? "Ordinaria" : "Extraordinaria" }}
+            </p>
           </div>
 
           <div class="space-y-1">
@@ -136,12 +140,16 @@ import { ref } from "vue";
 
 const { documents } = defineProps<{ documents: any[] }>();
 
+interface Data {
+  name: string;
+  type: string;
+  status: string;
+  fecha: Date;
+  core: { id: number; name: string };
+}
+
 const isOpen = ref(false);
-const currentMinute = ref(null);
-const getType = (doc: AppDocument) => {
-  if (doc?.name === "Acta Ordinaria") return "Ordinaria";
-  return doc?.type === "ro" ? "Ordinaria" : "Círculo Político";
-};
+const currentMinute = ref<Data>();
 
 async function openMinute(doc: any) {
   isOpen.value = true;

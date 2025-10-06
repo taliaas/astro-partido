@@ -17,13 +17,10 @@
           <!-- Form -->
           <form @submit="onSubmit" class="pb-12 relative">
             <div v-if="currentIndicator === 1">
-              <Attendance />
+              <Attendance :militantes/>
             </div>
             <template v-else-if="currentIndicator !== 1">
-              <div
-                
-                class="grid grid-cols-2 gap-4"
-              >
+              <div class="grid grid-cols-2 gap-4">
                 <FormField
                   v-for="({ key }, index) of ind"
                   :key="key"
@@ -116,14 +113,16 @@ import ComputoService from "@/services/Computo.ts";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "astro:schema";
 import { navigate } from "astro:transitions/client";
-import { useForm } from "vee-validate";
+import { useForm,useFieldArray } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import Attendance from "@/components/Indicators/Attendance.vue";
+import type { Militantes } from "@/interface/Militante";
 
-const { ind, acta } = defineProps<{
+const { ind, acta, militantes } = defineProps<{
   ind: any[];
   acta: any;
+  militantes: Militantes[];
 }>();
 
 type Data = z.infer<typeof schema>;
@@ -150,6 +149,7 @@ const form = useForm<Data>({
     ])
   ) as any,
 });
+
 
 const loading = form.isSubmitting;
 const currentIndicator = ref();

@@ -121,7 +121,7 @@ function previous() {
 
                     <!-- Message -->
                     <p class="text-lg text-gray-700 leading-relaxed">
-                      Mensaje: {{ notification.menssage }}
+                      Mensaje: {{ notification.message }}
                     </p>
                     <p class="text-lg text-gray-500 leading-relaxed">
                       {{ notification.subject }}

@@ -7,7 +7,7 @@
           <CollapsibleTrigger
             class="flex justify-between items-center group w-full p-2 text-lg font-medium hover:bg-gray-100 bg-gray-50 border border-gray-300 rounded-md group transition-colors"
           >
-            {{ com.name }} 
+            {{ com.name }}
             <div class="flex items-center gap-2">
               <ChevronDownIcon
                 class="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform"
@@ -35,11 +35,19 @@
                   <TableCell>{{ getFechas(nucleo.id).fechaR }}</TableCell>
                   <TableCell>{{ getFechas(nucleo.id).fechaE }}</TableCell>
                   <TableCell class="text-center">{{
-                    nucleo.militantes.length
-                  }}</TableCell>
-                  <TableCell class="text-center">{{
-                    getAttendanceByCore(nucleo.id)?.value ?? "-"
-                  }}</TableCell>
+                    getAttendanceByCore(nucleo.id) ?? "-"
+                  }}</TableCell
+                  ><TableCell class="text-center *:p-1 *:px-2.5">
+                    <div
+                      v-if="nucleo.militantes.length < temp"
+                      class="text-red-700 font-medium bg-red-100 rounded-full w-fit mx-auto"
+                    >
+                      {{ nucleo.militantes.length ?? 0 }}
+                    </div>
+                    <div v-else>
+                      {{ nucleo.militantes.length ?? 0 }}
+                    </div></TableCell
+                  >
                 </TableRow>
               </TableBody>
             </Table>
@@ -86,7 +94,7 @@ export interface ComputoData {
   minuteOrdinary: any;
   minutePolitical: any;
 }
-const total = ref(0);
+let temp = ref();
 const selectDate = ref("2023-01");
 const { comite, computo } = defineProps<{
   comite: Array<{
@@ -105,25 +113,24 @@ const listTable = [
   "NÚCLEO",
   "FECHA REUNIÓN",
   "FECHA ENTREGA",
-  "TOTAL",
   "ASISTENCIA",
-  "AUSENTE",
+  "TOTAL",
 ];
-const asistencia = ref<ComputoData>();
 
 // Función para obtener las asistencias de un núcleo específico
 const getAttendanceByCore = (id: number) => {
   const value = selectDate.value;
   const [year, month] = value.split("-");
 
-  return computo
+  temp.value = computo
     .find(
       (item) =>
         item.year === Number(year) &&
         item.month === Number(month) &&
         item.core.id === id
     )
-    ?.indicators.find((i) => i.key === "asistencia");
+    ?.indicators.find((i) => i.key === "asistencia")?.value;
+  return temp.value;
 };
 
 const getTotalMiembros = (comiteId: number) => {
