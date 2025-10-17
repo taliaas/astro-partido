@@ -88,7 +88,7 @@
                 </Select>
 
                 <!-- Date -->
-                <input type="month" :value="searchParams.fecha ?? '2025-01'" class="border rounded-md px-2 text-sm"
+                <input type="month" :value="searchParams.fecha ?? getDefaultFilterDate()" class="border rounded-md px-2 text-sm"
                   @change="handleFilter('fecha',$event)"></input>
               </div>
             </div>
@@ -499,6 +499,11 @@ const removeFile = (fileName: any) => {
   uploadedFiles.value = uploadedFiles.value.filter((file) => file.name !== fileName)
 }
 
+function getDefaultFilterDate() {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+}
+
 const tableHeaders = [
   "No.",
   "Nombre del acta",
@@ -569,8 +574,6 @@ const openCore = (acta: any) => {
   update.value = true
 }
 const handleCore = async () => {
-  console.log(selectedCore.value);
-  
   if(currentsMinute.value.isLoaded){ 
     await actions.minute.updateCore({minuteId: currentsMinute.value.id,coreId: selectedCore.value})
   }

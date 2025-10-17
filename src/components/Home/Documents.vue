@@ -84,7 +84,7 @@
       <div class="space-y-4">
         <div class="space-y-1 sm:col-span-2">
           <p class="text-sm font-medium text-muted-foreground">Nombre</p>
-          <p>{{ currentMinute.name }}</p>
+          <p>{{ currentMinute?.name }}</p>
         </div>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -93,24 +93,24 @@
             <p
               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
             >
-              {{ currentMinute.status }}
+              {{ currentMinute?.status }}
             </p>
           </div>
 
           <div class="space-y-1">
             <p class="text-sm font-medium text-muted-foreground">Tipo</p>
             <p class="">
-              {{ currentMinute.type ? "Ordinaria" : "Extraordinaria" }}
+              {{ currentMinute?.type ? "Ordinaria" : "Extraordinaria" }}
             </p>
           </div>
 
           <div class="space-y-1">
             <p class="text-sm font-medium text-muted-foreground">Fecha</p>
-            <p>{{ currentMinute.fecha }}</p>
+            <p>{{ currentMinute?.fecha }}</p>
           </div>
           <div class="space-y-1">
             <p class="text-sm font-medium text-muted-foreground">Núcleo</p>
-            <p>{{ currentMinute.core?.name }}</p>
+            <p>{{ currentMinute?.core?.name }}</p>
           </div>
         </div>
       </div>

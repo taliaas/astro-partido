@@ -56,6 +56,7 @@ function goToPreviousPage() {
               {{ found }} coincidencias encontradas
             </p>
           </div>
+          <div>Poner lo q se busca</div>
           <!-- Results -->
 
           <div class="space-y-4">
@@ -75,12 +76,12 @@ function goToPreviousPage() {
               </div>
 
               <!-- Metadata -->
-              <div class="text-green-700 text-sm mb-2">
+              <div class="text-green-700 text-md mb-2">
                 {{ acta.core }}, {{ format(acta.creation_date, 'yyyy-MM-dd') }}
               </div>
 
               <!-- Description -->
-              <div class="text-gray-700 text-sm mb-3 leading-relaxed">
+              <div class="text-gray-700 text-md mb-3 leading-relaxed line-clamp-2 text-justify">
                 {{ acta.text || 'Actas' }}
               </div>
             </div>
@@ -95,11 +96,11 @@ function goToPreviousPage() {
             </div>
             <div class="space-x-4 p-4 flex justify-end">
               <button @click="goToPreviousPage" type="button"
-                      class="flex gap-2 border rounded text-sm font-medium px-4 py-2 mr-4 ">
+                      class="flex gap-2 border rounded text-md font-medium px-4 py-2 mr-4 ">
                 <ArrowLeft class="w-4 h-4"/>
               </button>
               <button @click="goToNextPage" type="button"
-                      class="flex gap-2 rounded border text-sm font-medium px-4 py-2 mr-4 ">
+                      class="flex gap-2 rounded border text-md font-medium px-4 py-2 mr-4 ">
                 <ArrowRight class="w-4 h-4"/>
               </button>
             </div>
