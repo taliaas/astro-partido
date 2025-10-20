@@ -22,11 +22,11 @@ async function getActas() {
     if (!service) {
       throw new Error("Error al leer");
     }
-    
-    return service.getAllMinutes(
+
+    const acta = await service.getAllMinutes(
       type ?? undefined,
-      page?Number(page) : undefined,
-      limit ?? '10',
+      page ? Number(page) : undefined,
+      limit ?? "10",
       session,
       order,
       name ?? undefined,
@@ -34,6 +34,8 @@ async function getActas() {
       status,
       fecha
     );
+    console.log(acta);
+    return acta;
   } catch (error) {
     console.error("Error fetching actas:", error);
     throw error;

@@ -259,6 +259,17 @@
           <label class="block text-sm font-medium text-gray-700 mb-2">
             Seleccione el tipo de acta: <span class="text-red-500">*</span>
           </label>
+          <div>
+            <Select>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ro">Acta Ordinaria</SelectItem>
+                    <SelectItem value="cp">Círculo Político</SelectItem>
+                  </SelectContent>
+                </Select>
+          </div>
           <div class="flex gap-3 text-sm">
             <label :class="[
               'flex items-center justify-center border rounded-md cursor-pointer flex-1',

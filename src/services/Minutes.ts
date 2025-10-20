@@ -3,18 +3,28 @@ import { useUrlSearchParams } from "@vueuse/core";
 import { API_URL } from "astro:env/client";
 
 export default class MinutesService {
-  async getAllMinutes(type?: string, page?: number, limit?: string, session?: any, order?: any, name?: string, core?: string, status?: string, fecha?: string) {
-    const searchParam = new URLSearchParams()
-    if (page) searchParam.set('page', page + '')
-    if (limit) searchParam.set('limit', limit + '')
-    if (order) searchParam.set('order', order)
-    if (name) searchParam.set('name', name)
-    if (core) searchParam.set('core', core)
-    if (status) searchParam.set('status', status)
-    if (type) searchParam.set('type', type)
-    if (fecha) searchParam.set('fecha', fecha)
+  async getAllMinutes(
+    type?: string,
+    page?: number,
+    limit?: string,
+    session?: any,
+    order?: any,
+    name?: string,
+    core?: string,
+    status?: string,
+    fecha?: string
+  ) {
+    const searchParam = new URLSearchParams();
+    if (page) searchParam.set("page", page + "");
+    if (limit) searchParam.set("limit", limit + "");
+    if (order) searchParam.set("order", order);
+    if (name) searchParam.set("name", name);
+    if (core) searchParam.set("core", core);
+    if (status) searchParam.set("status", status);
+    if (type) searchParam.set("type", type);
+    if (fecha) searchParam.set("fecha", fecha);
 
-    const url = `${API_URL}/minutes/?` + searchParam.toString()
+    const url = `${API_URL}/minute/?` + searchParam.toString();
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -39,7 +49,7 @@ export default class MinutesService {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -57,7 +67,7 @@ export default class MinutesService {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -75,7 +85,7 @@ export default class MinutesService {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
