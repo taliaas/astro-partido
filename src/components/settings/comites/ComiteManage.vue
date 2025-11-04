@@ -16,7 +16,7 @@ import type { Comite } from "@/interface/Militante";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-vue-next";
-import { computed, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { toast } from "vue-sonner";
 
 const { comites } = defineProps<{
@@ -28,7 +28,6 @@ const { comites } = defineProps<{
 const openModal = defineModel<boolean>("open", { required: true });
 
 const isEditing = ref(false);
-const isCreate = ref(false);
 const isLoading = ref(false);
 const comiteForm = reactive({
   id: "",

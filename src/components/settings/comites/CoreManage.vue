@@ -1,3 +1,106 @@
+<script setup lang="ts">
+import Badge from "@/components/ui/badge/Badge.vue";
+import Button from "@/components/ui/button/Button.vue";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Comite, Core, Militant } from "@/interface/Militante";
+import { ActionError, actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import { EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-vue-next";
+import { reactive, ref, watch } from "vue";
+import { toast } from "vue-sonner";
+
+const { cores, militants, comites } = defineProps<{
+  cores: { data: Core[] };
+  militants: Militant[];
+  comites: Comite[];
+}>();
+
+const openModal = defineModel<boolean>("open");
+const currentCore = ref<Core>();
+const isEditing = ref(false);
+const isLoading = ref(false);
+const open = ref(false);
+
+const coreForm = reactive<Core>({
+  id: "",
+  name: "",
+  disabled: false,
+  generalSecretary: null as any,
+  operationSecretary: null as any,
+  comite: null as any,
+  militants: [],
+  users: [],
+});
+
+// Watch para actualizar el formulario cuando currentCore cambie
+watch(
+  currentCore,
+  (newCore) => {
+    if (newCore) {
+      coreForm.id = newCore.id;
+      coreForm.name = newCore.name;
+      coreForm.disabled = newCore.disabled;
+      coreForm.generalSecretary = newCore.generalSecretary;
+      coreForm.operationSecretary = newCore.operationSecretary;
+      coreForm.comite = newCore.comite;
+      coreForm.militants = newCore.militants || [];
+      coreForm.users = newCore.users || [];
+    } else {
+      // Resetear el formulario si no hay currentCore
+      coreForm.id = "";
+      coreForm.name = "";
+      coreForm.disabled = false;
+      coreForm.generalSecretary = null as any;
+      coreForm.operationSecretary = null as any;
+      coreForm.comite = null as any;
+      coreForm.militants = [];
+      coreForm.users = [];
+    }
+  },
+  { immediate: true }
+);
+
+const handleEditCore = (core: any) => {
+  currentCore.value = core;
+  isEditing.value = true;
+  openModal.value = true;
+};
+
+const handleDeleteCore = async (coreId: string) => {
+  const { error } = await actions.core.deleteCore(coreId);
+  if (error instanceof ActionError) {
+    console.error(error);
+    toast.error("Error al eliminar el núcleo");
+  } else {
+    toast.success("El núcleo se eliminó con éxito");
+    navigate("");
+  }
+};
+
+function openDetails() {
+  open.value = !open.value;
+}
+
+const saveCore = () => {};
+</script>
+
 <template>
   <div class="p-4">
     <div class="rounded-md border">
@@ -63,11 +166,11 @@
                   >
                     Acciones
                   </div>
-                  <div class="py-1">
+                  <div class="py-1" @click="open = false">
                     <a
                       href="#"
                       class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                      @click.prevent="handleEditCore()"
+                      @click.prevent="handleEditCore(core)"
                     >
                       <EditIcon class="h-4 w-4" />
                       Editar
@@ -90,46 +193,131 @@
         </tbody>
       </table>
     </div>
+    <!-- Diálogo para añadir/editar núcleo -->
+    <Dialog v-model:open="openModal">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle
+            >{{ isEditing ? "Editar Núcleo" : "Añadir Núcleo" }}
+          </DialogTitle>
+          <DialogDescription>
+            {{
+              isEditing
+                ? "Modifica los datos del núcleo seleccionado."
+                : "Completa los datos para crear un nuevo núcleo"
+            }}
+          </DialogDescription>
+        </DialogHeader>
+        <div class="grid gap-4 py-4">
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="name" class="text-left">Nombre</Label>
+            <Input
+              id="name"
+              v-model="coreForm.name"
+              class="col-span-3"
+              placeholder="Nombre del núcleo"
+            />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="secretario-general" class="text-left"
+              >Secretario General</Label
+            >
+            <Select
+              v-bind:default-value="coreForm.generalSecretary?.id"
+              @update:model-value="
+                coreForm.generalSecretary = {
+                  id: $event?.toString() ?? '',
+                } as any
+              "
+              class="col-span-3"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccione el secretario general" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="militant in militants"
+                  :key="militant.id"
+                  :value="militant.id"
+                >
+                  {{ militant.firstname }} {{ militant.lastname }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="secretario-funcionamiento" class="text-left"
+              >Secretario de Funcionamiento</Label
+            >
+            <Select
+              v-bind:default-value="coreForm.operationSecretary?.id"
+              @update:model-value="
+                coreForm.operationSecretary = {
+                  id: $event?.toString() ?? '',
+                } as any
+              "
+              class="col-span-3"
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder="Seleccione el secretario de funcionamiento"
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="militant in militants"
+                  :key="militant.id"
+                  :value="militant.id"
+                >
+                  {{ militant.firstname }} {{ militant.lastname }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="comite" class="text-right">Comité</Label>
+            <Select
+              v-bind:default-value="coreForm.comite?.id"
+              @update:model-value="
+                coreForm.comite = {
+                  id: $event?.toString() ?? '',
+                } as any
+              "
+              class="col-span-3"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar comité" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="comite in comites"
+                  :key="comite.id"
+                  :value="comite.id"
+                >
+                  {{ comite.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <DialogFooter>
+          <DialogClose as-child>
+            <Button variant="outline"> Cancelar </Button>
+          </DialogClose>
+          <Button
+            @click="saveCore"
+            :loading="isLoading"
+            :disabled="
+              !coreForm.name ||
+              !coreForm.generalSecretary ||
+              !coreForm.operationSecretary ||
+              !coreForm.comite.id
+            "
+          >
+            {{ isEditing ? "Guardar cambios" : "Crear núcleo" }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
-<script setup lang="ts">
-import Badge from "@/components/ui/badge/Badge.vue";
-import Button from "@/components/ui/button/Button.vue";
-import type { Core, Militant } from "@/interface/Militante";
-import { ActionError, actions } from "astro:actions";
-import { navigate } from "astro:transitions/client";
-import { EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-vue-next";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-
-const { cores, militants } = defineProps<{
-  cores: { data: Core[] };
-  militants: Militant[];
-}>();
-
-const openModal = defineModel<boolean>("open");
-
-const isEditing = ref(false);
-const isCreate = ref(false);
-const isLoading = ref(false);
-const open = ref(false);
-
-const handleEditCore = () => {
-  isEditing.value = true;
-};
-
-const handleDeleteCore = async (coreId: string) => {
-  const { error } = await actions.core.deleteCore(coreId);
-  if (error instanceof ActionError) {
-    console.error(error);
-    toast.error("Error al eliminar el núcleo");
-  } else {
-    toast.success("El núcleo se eliminó con éxito");
-    navigate("");
-  }
-};
-
-function openDetails() {
-  open.value = !open.value;
-}
-</script>

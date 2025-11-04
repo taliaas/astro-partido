@@ -41,7 +41,12 @@
       <ComiteManage :comites="comites" v-model:open="open" />
     </div>
     <div v-if="!isComite">
-      <CoreManage :cores :militants v-model:open="open" />
+      <CoreManage
+        :cores
+        :militants
+        :comites="comites.data"
+        v-model:open="open"
+      />
     </div>
   </div>
 </template>
@@ -63,7 +68,6 @@ const { comites, cores, militants } = defineProps<{
 }>();
 
 const searchQuery = ref("");
-const isCreateCore = ref(false);
 const open = ref(false);
 const isComite = ref(true);
 

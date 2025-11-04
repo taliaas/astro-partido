@@ -242,6 +242,8 @@ const filteredUsers = computed(() => {
   });
 });
 
+function search() {}
+
 const openEdit = (user: any) => {
   isEdit.value = true;
   createUser.value = true;
