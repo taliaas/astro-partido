@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="flex gap-2">
-          <Button @click="handleAdd" class="flex items-center gap-1">
+          <Button @click="open = true" class="flex items-center gap-1">
             <PlusIcon class="h-4 w-4 mr-1" />
             Añadir
           </Button>
@@ -38,10 +38,10 @@
       </div>
     </div>
     <div v-if="isComite" class="pb-4">
-      <ComiteManage :comites="comites" />
+      <ComiteManage :comites="comites" v-model:open="open" />
     </div>
     <div v-if="!isComite">
-      <CoreManage :cores :militants />
+      <CoreManage :cores :militants v-model:open="open" />
     </div>
   </div>
 </template>
@@ -64,16 +64,12 @@ const { comites, cores, militants } = defineProps<{
 
 const searchQuery = ref("");
 const isCreateCore = ref(false);
-const isCreateComite = ref(false);
+const open = ref(false);
 const isComite = ref(true);
-
-function handleAdd() {
-  if (isComite.value) {
-    isCreateComite.value = true;
-  } else isCreateCore.value = true;
-}
 
 function openCore() {
   isComite.value = !isComite.value;
 }
+
+function search() {}
 </script>

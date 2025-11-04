@@ -30,7 +30,7 @@
               {{ core.operationSecretary.lastname }}
             </td>
             <td class="h-10 px-4 text-center">
-              <Badge>{{ core?.militants?.length }}</Badge>
+              <Badge variant="outline">{{ core?.militants?.length }}</Badge>
             </td>
             <td class="h-10 px-4 text-center">
               <span
@@ -106,6 +106,8 @@ const { cores, militants } = defineProps<{
   cores: { data: Core[] };
   militants: Militant[];
 }>();
+
+const openModal = defineModel<boolean>("open");
 
 const isEditing = ref(false);
 const isCreate = ref(false);

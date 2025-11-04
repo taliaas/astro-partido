@@ -3,6 +3,7 @@ import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -15,7 +16,7 @@ import type { Comite } from "@/interface/Militante";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-vue-next";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { toast } from "vue-sonner";
 
 const { comites } = defineProps<{
@@ -24,10 +25,11 @@ const { comites } = defineProps<{
   };
 }>();
 
+const openModal = defineModel<boolean>("open", { required: true });
+
 const isEditing = ref(false);
 const isCreate = ref(false);
 const isLoading = ref(false);
-const comiteDialogOpen = ref(false);
 const comiteForm = reactive({
   id: "",
   name: "",
@@ -37,6 +39,7 @@ const open = ref(false);
 
 const handleEditComite = () => {
   isEditing.value = true;
+  openModal.value = true;
 };
 
 function openDetails() {
@@ -63,7 +66,8 @@ const saveComite = async () => {
       return toast.error("Error al editar el comité");
     } else {
       toast.success("El Comité se editó con éxito");
-      comiteDialogOpen.value = false;
+      openModal.value = false;
+
       navigate("");
     }
   } else {
@@ -73,7 +77,8 @@ const saveComite = async () => {
       return toast.error("Error al crear el comité");
     } else {
       toast.success("El Comité se creó con éxito");
-      comiteDialogOpen.value = false;
+      openModal.value = false;
+
       navigate("");
     }
   }
@@ -135,7 +140,7 @@ const saveComite = async () => {
                   >
                     Acciones
                   </div>
-                  <div class="py-1">
+                  <div class="py-1" @click="open = false">
                     <a
                       href="#"
                       class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
@@ -165,7 +170,7 @@ const saveComite = async () => {
   </div>
 
   <!-- Diálogo para añadir/editar comité -->
-  <Dialog :open="comiteDialogOpen" @update:open="comiteDialogOpen = $event">
+  <Dialog v-model:open="openModal">
     <DialogContent>
       <DialogHeader>
         <DialogTitle
@@ -191,9 +196,10 @@ const saveComite = async () => {
         </div>
       </div>
       <DialogFooter>
-        <Button variant="outline" @click="comiteDialogOpen = false">
-          Cancelar
-        </Button>
+        <DialogClose as-child>
+          <Button variant="outline"> Cancelar </Button>
+        </DialogClose>
+
         <Button
           @click="saveComite"
           :disabled="!comiteForm.name"
