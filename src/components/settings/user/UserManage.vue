@@ -23,15 +23,19 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <select
-            v-model="selectCore"
-            class="rounded-md border px-3 py-2 mx-1.5 text-sm w-full"
-          >
-            <option value="">Todos los núcleos</option>
-            <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.id">
-              {{ nucleo.name }}
-            </option>
-          </select>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccione el núcleo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="nucleo in cores"
+                :key="nucleo.id"
+                :value="nucleo.id"
+                >{{ nucleo.name }}</SelectItem
+              >
+            </SelectContent>
+          </Select>
           <Button @click="openCreate"> Añadir</Button>
         </div>
       </div>
@@ -119,9 +123,10 @@
           </Button>
           <Button
             variant="outline"
-            :disabled="currentPage >= totalPages" :class="{
-            'opacity-50 cursor-not-allowed': currentPage >= totalPages,
-          }"
+            :disabled="currentPage >= totalPages"
+            :class="{
+              'opacity-50 cursor-not-allowed': currentPage >= totalPages,
+            }"
             @click="goToNextPage"
           >
             <ChevronRight />
@@ -190,6 +195,13 @@ import DropdownMenuTrigger from "../../ui/dropdown-menu/DropdownMenuTrigger.vue"
 import DropdownMenuContent from "../../ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuItem from "../../ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenu from "../../ui/dropdown-menu/DropdownMenu.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface User {
   id: string;

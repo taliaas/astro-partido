@@ -16,7 +16,7 @@
         </section>
         <!--  Información 3 -->
         <section v-show="currentStep === 3" class="space-y-4">
-          <ThirdStep :militantes/>
+          <ThirdStep :militantes />
         </section>
       </div>
       <div class="w-full flex justify-between pt-4">
@@ -51,7 +51,7 @@
 import {
   form_schema,
   type FormSchema,
-} from "@/components/Ordinary/Create/form_schema";
+} from "@/components/Acta/Ordinary/Create/form_schema";
 import FirstStep from "@/components/Ordinary/Edit/FirstStep.vue";
 import SecondStep from "@/components/Ordinary/Edit/SecondStep.vue";
 import ThirdStep from "@/components/Ordinary/Edit/ThirdStep.vue";

@@ -83,12 +83,12 @@
           <ChevronDownIcon class="h-4 w-4" />
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div v-if=" militante?.responsableAgreem.length === 0">
+          <div v-if="militante?.agreements.length === 0">
             <p class="text-md text-gray-500">
-              No hay acuerdos como tu responsabilidad.
+              No hay acuerdos a tu responsabilidad.
             </p>
           </div>
-          <div v-for="item in militante?.responsableAgreem" :key="item.id">
+          <div v-for="item in militante?.agreements" :key="item.id">
             <div class="flex justify-between space-y-2">
               <p>{{ item.descripcion }}</p>
               <p class="font-sans text-muted-foreground">{{ item.fecha }}</p>

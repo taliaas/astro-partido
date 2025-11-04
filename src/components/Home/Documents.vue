@@ -17,9 +17,9 @@
             <div class="flex justify-between">
               <div class="flex items-center">
                 <span
-                  class="text-xs text-white px-3 py-1 rounded-full bg-button"
+                  class="text-sm text-white px-3 py-1 rounded-full bg-button"
                 >
-                  {{ doc.type ? "Ordinaria" : "Círculo Político" }}
+                  {{ doc.type }}
                 </span>
                 <h4 class="text-base font-semibold ml-2">{{ doc.name }}</h4>
               </div>
@@ -35,7 +35,7 @@
             </div>
 
             <div class="flex justify-between items-center mt-2">
-              <p class="text-sm text-gray-500">{{ doc.fecha }}</p>
+              <p class="text-sm text-gray-500">{{ doc.date }}</p>
               <Button
                 variant="link"
                 class="text-blue-600 text-sm font-medium hover:underline"
@@ -106,7 +106,7 @@
 
           <div class="space-y-1">
             <p class="text-sm font-medium text-muted-foreground">Fecha</p>
-            <p>{{ currentMinute?.fecha }}</p>
+            <p>{{ currentMinute?.date }}</p>
           </div>
           <div class="space-y-1">
             <p class="text-sm font-medium text-muted-foreground">Núcleo</p>
@@ -123,6 +123,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -130,11 +131,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import type MinuteOrdinary from "@/interface/MinuteOrdinary.ts";
-import type MinutePolitical from "@/interface/MinutePolitical.ts";
-import { exportarRO } from "@/lib/export_ro.ts";
 import { exportar } from "@/lib/export_cp.ts";
+import { exportarRO } from "@/lib/export_ro.ts";
 import { ChevronRight, Download } from "lucide-vue-next";
 import { ref } from "vue";
 
@@ -144,7 +142,7 @@ interface Data {
   name: string;
   type: string;
   status: string;
-  fecha: Date;
+  date: Date;
   core: { id: number; name: string };
 }
 
@@ -156,8 +154,8 @@ async function openMinute(doc: any) {
   currentMinute.value = doc;
 }
 
-async function exportarActa(doc: MinuteOrdinary | MinutePolitical) {
-  //corregir porque puede ser un acta cargada
+async function exportarActa(doc: any) {
+  //corregir porque puede ser un acta cargada y los tipos no son asi
   if (doc?.type === "ro") {
     exportarRO(doc);
   } else {

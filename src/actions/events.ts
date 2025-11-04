@@ -37,7 +37,7 @@ export const getEvents = defineAction({
     date: z.coerce.date(),
   }),
   async handler({ date }, context) {
-    const response = await fetch(`${API_URL}/event/date/${date}`);
+    const response = await fetch(`${API_URL}/events/date/${date}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

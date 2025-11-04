@@ -207,7 +207,7 @@ import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useFormContext } from "vee-validate";
-import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
+import type { FormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
 import { computed } from "vue";
 import {
   Select,

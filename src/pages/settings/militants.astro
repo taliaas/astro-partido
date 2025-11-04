@@ -1,5 +1,5 @@
 ---
-import Militantes from "../../components/settings/militantes/Militantes.vue"
+import Militantes from "../../components/settings/militantes/Militantes.vue";
 import SettingsLayout from "../../layouts/SettingsLayout.astro";
 import RootLayout from "../../layouts/RootLayout.astro";
 import MilitantService from "../../services/MilitantService";
@@ -12,18 +12,18 @@ const core = Number(searchParams.get("core") ?? 1);
 const page = Number(searchParams.get("page") ?? 1);
 
 async function getMilitantes() {
-    const service = new MilitantService();
-    try {
-        return service.getMilitantesByCore(core, page);
-    } catch (e) {
-        console.error(e);
-    }
+  const service = new MilitantService();
+  try {
+    return service.getMilitantesByCore(core, page);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 async function nucleos() {
   const service = new CoreService();
   try {
-     return await service.getAllCore(session.jwt);
+    return await service.getAllCore(session.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -34,7 +34,7 @@ const militantes = await getMilitantes();
 ---
 
 <RootLayout>
-    <SettingsLayout>
-        <Militantes militantes={militantes} page={page} cores={cores} client:load />
-    </SettingsLayout>
+  <SettingsLayout>
+    <Militantes militantes={militantes} page={page} cores={cores} client:load />
+  </SettingsLayout>
 </RootLayout>

@@ -1,17 +1,29 @@
 ---
-import CoreManage from "@/components/settings/CoreManage.vue";
+import CoreManage from "@/components/settings/comites/ComiteSettings.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import ComiteService from "@/services/ComiteService";
 import CoreService from "@/services/CoreService";
-import {getSession} from "auth-astro/server";
+import MilitantService from "@/services/MilitantService";
+import { getSession } from "auth-astro/server";
 
-const session = (await getSession(Astro.request)) as any
+const session = (await getSession(Astro.request)) as any;
+const searchParams = Astro.url.searchParams;
+const core = Number(searchParams.get("core") ?? 1);
 
 async function getComites() {
   const service = new ComiteService();
   try {
     return service.getAllComite(session?.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function getMilitants() {
+  const service = new MilitantService();
+  try {
+    return service.getAll(core);
   } catch (e) {
     console.error(e);
   }
@@ -27,10 +39,16 @@ async function nucleos() {
 }
 const cores = await nucleos();
 const comites = await getComites();
+const militants = await getMilitants();
 ---
 
 <RootLayout>
   <SettingsLayout>
-    <CoreManage comites={comites} cores={cores} client:load />
+    <CoreManage
+      comites={comites}
+      cores={cores}
+      militants={militants}
+      client:load
+    />
   </SettingsLayout>
 </RootLayout>

@@ -41,26 +41,27 @@ export const createMinute = defineAction({
 export const updateCore = defineAction({
   input: z.object({
     coreId: z.number(),
-    minuteId: z.number()
+    minuteId: z.number(),
   }),
   async handler({ coreId, minuteId }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    const res = await fetch(`http://localhost:5000/minutes-political/updateCore/${minuteId}/${coreId}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${session.jwt}`,
+    const res = await fetch(
+      `http://localhost:5000/minutes-political/updateCore/${minuteId}/${coreId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.jwt}`,
+        },
       }
-    })
+    );
     const data = await res.json();
     if (!res.ok) {
-      console.log();
-
       throw new ActionError({ code: "UNAUTHORIZED", message: data.message });
     }
     return data;
-  }
-})
+  },
+});
 
 export const updateMinute = defineAction({
   input: z.object({
@@ -115,7 +116,5 @@ export const updateStatusMinutes = defineAction({
 export const processMinute = defineAction({
   accept: "form",
   input: z.object({ file: z.instanceof(File) }),
-  handler({ file }, context) {
-
-  },
-})
+  handler({ file }, context) {},
+});

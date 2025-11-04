@@ -11,15 +11,15 @@
       <aside class="md:w-1/4">
         <nav class="grid gap-2 md:sticky md:top-20">
           <a
-              v-for="item in navigationItems"
-              :key="item.id"
-              href="#"
-              @click.prevent="activeSection = item.id"
-              :class="[
+            v-for="item in navigationItems"
+            :key="item.id"
+            href="#"
+            @click.prevent="activeSection = item.id"
+            :class="[
               'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
               activeSection === item.id
                 ? 'bg-muted text-foreground'
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
             ]"
           >
             <component class="h-4 w-4" />
@@ -32,7 +32,7 @@
       <div class="flex-1 max-w-7xl">
         <!-- Gestión de Usuarios -->
         <div v-if="activeSection === 'users'" class="space-y-6">
-          <UserManage :users :cores :pageUser/>
+          <UserManage :users :cores :pageUser />
         </div>
 
         <!-- Gestión de Roles -->
@@ -56,11 +56,11 @@
         </div>
 
         <div v-if="activeSection === 'militantes'" class="space-y-6">
-          <Militantes :militantes :cores :page="pageMili"/>
+          <Militantes :militantes :cores :page="pageMili" />
         </div>
 
         <div v-if="activeSection === 'trazas'" class="space-y-6">
-          <Register :trazas/>
+          <Register :trazas />
         </div>
       </div>
     </div>
@@ -72,12 +72,22 @@ import { ref } from "vue";
 import UserManage from "@/components/settings/user/UserManage.vue";
 import RolesManage from "@/components/settings/role/RolesManage.vue";
 import ClaimsManage from "@/components/settings/ClaimsManage.vue";
-import CoreManage from "@/components/settings/CoreManage.vue";
+import CoreManage from "@/components/settings/comites/ComiteSettings.vue";
 import Notification from "@/components/settings/Notification.vue";
 import Militantes from "@/components/settings/militantes/Militantes.vue";
 import Register from "@/components/settings/Register.vue";
 
-const { users, roles, claims, comites, cores, militantes, pageUser, pageMili, trazas } = defineProps<{
+const {
+  users,
+  roles,
+  claims,
+  comites,
+  cores,
+  militantes,
+  pageUser,
+  pageMili,
+  trazas,
+} = defineProps<{
   users: any;
   roles: any;
   claims: any;
@@ -99,7 +109,6 @@ const navigationItems = [
   { id: "permissions", title: "Permisos" },
   { id: "notifications", title: "Notificaciones" },
   { id: "comites", title: "Cómite CUJAE" },
-  {id: "militantes", title: "Militantes"}
+  { id: "militantes", title: "Militantes" },
 ];
-
 </script>

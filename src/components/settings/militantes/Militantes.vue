@@ -6,28 +6,8 @@
   <div
     class="container mx-auto p-6 space-y-4 border bg-white rounded-md shadow-xl"
   >
-    <div class="flex justify-end">
-      <div class="flex justify-end gap-2">
-        <button
-          @click="openAddMemberModal"
-          class="inline-flex items-center justify-center bg-button rounded-md text-white px-4 py-2"
-        >
-          Añadir
-        </button>
-        <button
-          @click="downloadMili"
-          class="flex items-center gap-2 border px-4 py-2 rounded-md hover:bg-secondary"
-        >
-          <DownloadIcon class="w-4 h-4" />
-          Exportar
-        </button>
-      </div>
-    </div>
-    <!-- Sheet_container and Add -->
-    <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"
-    >
-      <div class="flex-1 relative w-full sm:w-80">
+    <div class="flex justify-between space-x-2">
+      <div class="flex-1 relative w-full">
         <Search
           class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
         />
@@ -37,6 +17,13 @@
           placeholder="Buscar miembros..."
           class="flex h-10 w-full rounded-md border border-Input bg-background px-3 py-2 pl-8 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
+      </div>
+      <div class="flex gap-2">
+        <Button @click="openAddMemberModal" variant="default"> Añadir </Button>
+        <Button @click="downloadMili" variant="outline">
+          <DownloadIcon class="w-4 h-4" />
+          Exportar
+        </Button>
       </div>
     </div>
 
@@ -68,11 +55,6 @@
               Organización
             </th>
             <th
-              class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"
-            >
-              Estado
-            </th>
-            <th
               class="h-12 px-4 text-center align-middle font-medium text-muted-foreground"
             >
               Acciones
@@ -102,22 +84,11 @@
               </div>
             </td>
             <td class="p-4 align-middle">{{ member.email }}</td>
-            <td class="p-4 align-middle">{{ member.core.name }}</td>
+            <td class="p-4 align-middle">{{ member.core?.name }}</td>
             <td class="p-4 align-middle text-center capitalize">
               {{ member.organization }}
             </td>
-            <td class="p-4 align-middle">
-              <span
-                :class="[
-                  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold',
-                  member.estado
-                    ? 'bg-green-50 text-green-700 border border-green-300'
-                    : 'bg-red-50 text-red-700 border border-red-300',
-                ]"
-              >
-                {{ member.estado ? "Activo" : "Inactivo" }}
-              </span>
-            </td>
+
             <td class="p-4 text-center align-middle">
               <DropdownMenu>
                 <DropdownMenuTrigger class="focus:outline-none">
@@ -234,23 +205,6 @@
                 >
                 <p class="text-lg">{{ selectedMilitante.ci }}</p>
               </div>
-              <div>
-                <Label class="text-sm font-medium text-muted-foreground"
-                  >Estado</Label
-                >
-                <div class="mt-1">
-                  <span
-                    :class="
-                      selectedMilitante.estado
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-secondary text-secondary-foreground'
-                    "
-                    class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                  >
-                    {{ selectedMilitante.estado ? "Activo" : "Inactivo" }}
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -321,23 +275,23 @@
             </div>
           </div>
 
-          <!-- Traslados -->
+          <!-- transfer -->
           <div class="bg-white shadow-sm rounded-lg border">
             <div class="p-4 border-b">
               <h3 class="text-lg font-semibold flex items-center gap-2">
                 <ArrowRightLeftIcon class="w-5 h-5" />
-                Historial de Traslados ({{
-                  selectedMilitante.traslados.length
+                Historial de transferencias ({{
+                  selectedMilitante.transfer.length
                 }})
               </h3>
             </div>
             <div class="p-4">
               <div
-                v-if="selectedMilitante.traslados.length > 0"
+                v-if="selectedMilitante.transfer.length > 0"
                 class="space-y-4"
               >
                 <div
-                  v-for="traslado in selectedMilitante.traslados"
+                  v-for="traslado in selectedMilitante.transfer"
                   :key="traslado.id"
                   class="border rounded-lg p-4"
                 >
@@ -363,7 +317,7 @@
                 </div>
               </div>
               <p v-else class="text-muted-foreground text-center py-4">
-                No hay traslados registrados
+                No hay transferencias registradas
               </p>
             </div>
           </div>
@@ -373,18 +327,16 @@
             <div class="p-4 border-b">
               <h3 class="text-lg font-semibold flex items-center gap-2">
                 <AlertTriangleIcon class="w-5 h-5" />
-                Historial de Sanciones ({{
-                  selectedMilitante.sanciones.length
-                }})
+                Historial de Sanciones ({{ selectedMilitante.sancions.length }})
               </h3>
             </div>
             <div class="p-4">
               <div
-                v-if="selectedMilitante.sanciones.length > 0"
+                v-if="selectedMilitante.sancions.length > 0"
                 class="space-y-4"
               >
                 <div
-                  v-for="sancion in selectedMilitante.sanciones"
+                  v-for="sancion in selectedMilitante.sancions"
                   :key="sancion.id"
                   class="border rounded-lg p-4"
                 >
@@ -463,11 +415,10 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
-import MilitanteForm from "@/components/settings/militantes/militanteForm.vue";
-import type { Militantes } from "@/interface/Militante";
+import type { Militant } from "@/interface/Militante";
 
 const { militantes, page, cores } = defineProps<{
-  militantes: { data: Militantes[]; total: number; page: number };
+  militantes: { data: Militant[]; total: number; page: number };
   page: number;
   cores: any;
 }>();
@@ -481,25 +432,27 @@ const selectCore = ref("");
 const totalPages = militantes.total;
 const currentPage = ref(page);
 
-const currentMember = ref<Militantes | null>(null);
+const currentMember = ref<Militant | null>(null);
 
-const selectedMilitante = ref<Militantes>({
-  id: 0,
+const selectedMilitante = ref<Militant>({
+  id: "",
+  ci: "",
   firstname: "",
   lastname: "",
-  ci: "",
   email: "",
   organization: "",
-  estado: true,
   address: "",
   phone: "",
+  abscents: undefined,
+  user: undefined,
   core: {
     id: "",
     name: "",
   },
-  traslados: [],
-  sanciones: [],
-  desactivaciones: [],
+  transfer: [],
+  sancions: [],
+  deactivation: [],
+  agreements: [],
 });
 // Computed properties
 const filteredMembers = computed(() => {
@@ -544,7 +497,7 @@ async function exportDetails() {
   doc.setFontSize(10);
   doc.text(`Nombre: ${m.firstname || ""} ${m.lastname || ""}`, 14, 34);
   doc.text(`Carnet de Identidad: ${m.ci || ""}`, 14, 40);
-  doc.text(`Estado: ${m.estado ? "Activo" : "Inactivo"}`, 14, 46);
+  //doc.text(`Estado: `, 14, 46);
 
   // Información de Contacto
   doc.setFontSize(12);
@@ -562,13 +515,13 @@ async function exportDetails() {
   doc.text(`Núcleo: ${m.core?.name || ""}`, 14, 100);
 
   let y = 110;
-  // Traslados
+  // transfer
   doc.setFontSize(12);
-  doc.text("Historial de Traslados", 14, y);
+  doc.text("Historial de transferencias", 14, y);
   y += 6;
   doc.setFontSize(10);
-  if (Array.isArray(m.traslados) && m.traslados.length > 0) {
-    m.traslados.forEach((t: any, idx: number) => {
+  if (Array.isArray(m.transfer) && m.transfer.length > 0) {
+    m.transfer.forEach((t: any, idx: number) => {
       doc.text(
         `${idx + 1}. ${t.origen || ""} → ${t.destino || ""} | Fecha: ${t.fecha ? format(t.fecha, "yyyy-MM-dd") : ""} | Estado: ${t.estado || ""} | Motivo: ${t.details || ""}`,
         14,
@@ -581,7 +534,7 @@ async function exportDetails() {
       }
     });
   } else {
-    doc.text("No hay traslados registrados", 14, y);
+    doc.text("No hay transferencias registradas", 14, y);
     y += 6;
   }
 
@@ -591,8 +544,8 @@ async function exportDetails() {
   doc.text("Historial de Sanciones", 14, y);
   y += 6;
   doc.setFontSize(10);
-  if (Array.isArray(m.sanciones) && m.sanciones.length > 0) {
-    m.sanciones.forEach((s: any, idx: number) => {
+  if (Array.isArray(m.sancions) && m.sancions.length > 0) {
+    m.sancions.forEach((s: any, idx: number) => {
       doc.text(
         `${idx + 1}. Causa: ${s.causa || ""} | Fecha: ${s.fecha ? format(s.fecha, "yyyy-MM-dd") : ""} | Severidad: ${s.severidad || ""} | Estado: ${s.estado || ""} | Descripción: ${s.details || ""}`,
         14,
@@ -623,7 +576,6 @@ async function downloadMili() {
     member.email,
     member.core?.name || "",
     member.organization,
-    member.estado ? "Activo" : "Inactivo",
     member.phone || "",
     member.address || "",
   ]);
@@ -662,29 +614,31 @@ const handleViewDetails = (militante: any) => {
 };
 
 const close = () => {
-  showMemberModal.value = false
-  currentMember.value = null
-}
+  showMemberModal.value = false;
+  currentMember.value = null;
+};
 
 const closeModal = () => {
   isModalOpen.value = false;
   selectedMilitante.value = {
-    id: 0,
+    id: "",
+    ci: "",
     firstname: "",
     lastname: "",
-    ci: "",
     email: "",
     organization: "",
-    estado: true,
     address: "",
     phone: "",
+    abscents: undefined,
+    user: undefined,
     core: {
       id: "",
       name: "",
     },
-    traslados: [],
-    sanciones: [],
-    desactivaciones: [],
+    transfer: [],
+    sancions: [],
+    deactivation: [],
+    agreements: [],
   };
 };
 

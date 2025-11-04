@@ -68,7 +68,7 @@
           </section>
           <!--  Información 3 -->
           <section v-show="currentStep === 3" class="space-y-4">
-            <ThirdStep :militantes/>
+            <ThirdStep :militantes />
           </section>
 
           <!-- Botones de navegación -->
@@ -81,21 +81,10 @@
             >
               <ArrowLeft class="w-4 h-4 m-2" />
             </button>
-            <button
-              v-if="currentStep < 3"
-              type="button"
-              @click="nextStep"
-              class="px-4 py-2 flex bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
+            <Button v-if="currentStep < 3" type="button" @click="nextStep">
               <ArrowRight class="w-4 h-4 m-2" />
-            </button>
-            <button
-              v-else
-              type="submit"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
-              Enviar
-            </button>
+            </Button>
+            <Button v-else type="submit"> Enviar </Button>
           </div>
         </div>
       </div>
@@ -104,13 +93,10 @@
 </template>
 
 <script setup lang="ts">
-import FirstStep from "@/components/Ordinary/Edit/FirstStep.vue";
 import {
   form_schema,
   type FormSchema,
-} from "@/components/Ordinary/Create/form_schema";
-import SecondStep from "@/components/Ordinary/Edit/SecondStep.vue";
-import ThirdStep from "@/components/Ordinary/Edit/ThirdStep.vue";
+} from "@/components/Acta/Ordinary/Create/form_schema";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -119,6 +105,10 @@ import { useForm } from "vee-validate";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 import type { Militantes } from "@/interface/Militante";
+import FirstStep from "@/components/Acta/Ordinary/Edit/FirstStep.vue";
+import SecondStep from "@/components/Acta/Ordinary/Edit/SecondStep.vue";
+import ThirdStep from "@/components/Acta/Ordinary/Edit/ThirdStep.vue";
+import { Button } from "@/components/ui/button";
 
 const currentStep = ref(1);
 const { user, cores, militantes } = defineProps<{
@@ -168,9 +158,8 @@ const submitForm = form.handleSubmit(async (data: FormSchema) => {
   try {
     await actions.ordinary.createMinute.orThrow({
       data,
-      abscents: data.abscents ?? [],
-      invitados: data.invitados ?? [],
-      agreements: data.agreements ?? [],
+      mode: "Model",
+      type: "Ordinaria",
     });
     toast.success("Se creó el acta correctamente");
     navigate("/minutes");

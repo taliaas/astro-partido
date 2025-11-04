@@ -32,6 +32,10 @@
                   <PlusIcon class="h-4 w-4 mr-2" />
                   C. Político
                 </a>
+                <a href="/addCP" class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium">
+                  <PlusIcon class="h-4 w-4 mr-2" />
+                  Extraordinaria
+                </a>
               </div>
             </div>
           </div>
@@ -130,7 +134,7 @@
                     <Button type="button" variant="ghost" class="font-normal cursor-pointer" @click="openCore(acta)">{{
                       acta.core?.name || "-"}}</Button>
                   </TableCell>
-                  <TableCell class="text-center">{{ acta.fecha }}</TableCell>
+                  <TableCell class="text-center">{{ acta.date }}</TableCell>
                   <TableCell class="text-center">
                     <TooltipProvider>
                       <Tooltip>
@@ -244,114 +248,9 @@
       </div>
     </div>
 
-    <!-- Upload Dialog -->
-    <Dialog :open="showUploadDialog" @update:open="showUploadDialog = $event">
-      <DialogContent class="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Cargar actas</DialogTitle>
-          <DialogDescription>
-            Seleccione o arrastre los archivos que desea cargar
-          </DialogDescription>
-        </DialogHeader>
-
-        <!-- Selector de tipo de acta (obligatorio) -->
-        <div class="">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Seleccione el tipo de acta: <span class="text-red-500">*</span>
-          </label>
-          <div>
-            <Select>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ro">Acta Ordinaria</SelectItem>
-                    <SelectItem value="cp">Círculo Político</SelectItem>
-                  </SelectContent>
-                </Select>
-          </div>
-          <div class="flex gap-3 text-sm">
-            <label :class="[
-              'flex items-center justify-center border rounded-md cursor-pointer flex-1',
-              tipoActa === 'ro'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-            ]">
-              <input type="radio" name="tipoActa" value="ro" v-model="tipoActa" class="sr-only" />
-              Acta Ordinaria
-            </label>
-            <label :class="[
-              'flex items-center justify-center py-1.5 border rounded-md cursor-pointer flex-1',
-              tipoActa === 'cp'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-            ]">
-              <input type="radio" name="tipoActa" value="cp" v-model="tipoActa" class="sr-only" />
-              Círculo Político
-            </label>
-          </div>
-          <label class="block text-sm font-medium text-gray-700 mb-2 mt-2">
-            Seleccione el tipo de procesamiento:
-          </label>
-          <div class="space-x-2 ">
-            <Button @click="mode = 'spacy'" :disabled="mode === 'spacy'" :data-disabled="mode === 'spacy'"
-              class="opacity-50 data-[disabled=true]:opacity-100">Spacy</Button>
-            <Button @click="mode = 'model'" :disabled="mode === 'model'" :data-disabled="mode === 'model'"
-              class="opacity-50 data-[disabled=true]:opacity-100">Model</Button>
-          </div>
-        </div>
-
-        <!-- Área de arrastre de archivos -->
-        <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
-          :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
-          @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
-          <UploadCloudIcon class="mx-auto h-12 w-12 transition-colors duration-200"
-            :class="isDragging ? 'text-blue-600' : 'text-gray-400'" />
-          <p class="mt-2 text-sm text-gray-600">
-            <span class="font-medium hover:text-gray-700">
-              Arrastre archivos aquí
-            </span>
-            o
-            <button @click="$refs.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
-              seleccione desde su dispositivo
-            </button>
-          </p>
-          <p class="mt-1 text-xs text-gray-500">DOCX, PDF, hasta 10MB por archivo</p>
-          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect" />
-        </div>
-
-        <!-- Lista de archivos -->
-        <div v-if="uploadedFiles.length > 0" class="space-y-3 max-h-32 overflow-y-auto">
-          <div v-for="(file, index) in uploadedFiles" :key="index"
-            class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 rounded flex items-center justify-center">
-                <FileTextIcon class="size-5" />
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900 truncate">{{ file.name }}</p>
-              <div class="flex items-center gap-2 mt-1">
-                <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</p>
-              </div>
-            </div>
-            <button @click="removeFile(file.name)" class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600">
-              <Trash2Icon class="size-4" />
-            </button>
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button type="reset" variant="outline" @click="showUploadDialog = false">
-            Cancelar
-          </Button>
-          <Button @click="handleDrop" :disabled="!uploadedFiles.length || loading"
-            class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
-            Cargar archivos
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <div>
+      <UploadMinute :show-dialog="showUploadDialog" />
+    </div>
 
     <Dialog :open="openModal" @update:open="openModal = $event">
       <DialogContent>
@@ -396,30 +295,33 @@
       </DialogContent>
     </Dialog>
 
-    <div v-if="showDelete" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white rounded p-4 w-full max-w-md">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Eliminar</h3>
-        <form @submit.prevent="handleDelete" class="space-y-4 p-4">
-          <div>¿Estás seguro que desea eliminar el acta?
-            <p class="font-semibold">{{ currentsMinute.name }}</p>
+    <Dialog :open="showDelete" @update:open="showDelete = $event">
+      <DialogContent>
+        <DialogTitle>Eliminar</DialogTitle>
+        <DialogDescription>
+        <form @submit.prevent="handleDelete" class="space-y-4">
+          <div>
+            <p class="text-lg text-foreground">¿Estás seguro que desea eliminar <span class="font-semibold ">{{ currentsMinute.name }} {{ currentsMinute.id }}</span>?</p>
           </div>
           <div class="flex justify-end space-x-3">
-            <button type="submit"
-              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Button type="submit" variant="outline">
               Cancelar
-            </button>
-            <button class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
+            </Button>
+            <Button variant="destructive"
               @click="eliminarActa()">
               Aceptar
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
+        </DialogDescription>
+      </DialogContent>
+    </Dialog>
+
   </div>
 </template>
 
 <script setup lang="ts">
+import { statusMap } from "@/components/Acta/status";
 import Label from "@/components/ui/label/Label.vue";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -430,6 +332,7 @@ import { Status } from "@/enum/Status";
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { usePermissions } from "@/utils/auth-client.ts";
+import { useSse } from "@/utils/see";
 import { useUrlSearchParams } from "@vueuse/core";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -442,25 +345,22 @@ import {
   Eye,
   FilePenLine,
   FileSearch,
-  FileTextIcon,
   Loader2,
   MoreVerticalIcon,
   Pencil,
   PlusIcon,
   SearchIcon,
-  Trash2Icon,
-  TrashIcon,
-  UploadCloudIcon
+  TrashIcon
 } from "lucide-vue-next";
 import { reactive, ref } from "vue";
 import { toast } from "vue-sonner";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
-import { useSse } from "@/utils/see";
+import UploadMinute from "@/components/Acta/UploadMinute.vue";
 
 const emit = defineEmits(["test"])
 const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
@@ -481,34 +381,17 @@ useSse("minute.status",({id,status})=>{
 const actas = reactive(actasResponse)
 const searchParams = useUrlSearchParams()
 const hasPermission = usePermissions()
-
 const mode = ref('model')
 const currentCore = ref<number>(1)
 const selectedCore = ref(1)
 const openModal = ref(false)
-const tipoActa = ref('ro'); // Valor por defecto: Acta Ordinaria
 const showUploadDialog = ref(false);
-const uploadedFiles = ref<File[]>([]);
-const isDragging = ref(false);
 const showDelete = ref(false);
 const currentPage = ref(page)
 const hasNextPage = ref(actas?.page_total)
-const loading = ref(false)
 const update = ref(false)
 const currentsMinute = ref<any>(null);
 const sort = ref<"ASC" | "DESC" | null >(order);
-
-const formatFileSize = (bytes: any) => {
-  if (bytes === 0) return '0 Bytes'
-  const k = 1024
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
-
-const removeFile = (fileName: any) => {
-  uploadedFiles.value = uploadedFiles.value.filter((file) => file.name !== fileName)
-}
 
 function getDefaultFilterDate() {
   const now = new Date()
@@ -523,39 +406,6 @@ const tableHeaders = [
   "Estado",
   "",
 ];
-
-const statusMap = {
-  [Status.CREATE]: {
-    title: "Creada",
-    label:
-      "El acta ha sido registrada correctamente y está pendiente de procesamiento. Puedes iniciar el procesamiento o cargar archivos adicionales si es necesario.",
-  },
-  [Status.PROCESSING]: {
-    title: "Procesando",
-    label:
-      "El acta se está procesando actualmente. Este proceso puede tardar unos minutos. Evita realizar cambios hasta que finalice.",
-  },
-  [Status.PENDIENTE]: {
-    title: "En Revisión",
-    label:
-      "El acta requiere revisión manual. Revisa el contenido y, si todo está correcto, procede a marcarla como procesada o solicita correcciones.",
-  },
-  [Status.PROCESADA]: {
-    title: "Procesada",
-    label:
-      "El acta fue procesada exitosamente. Puedes visualizarla, exportarla o continuar con los pasos siguientes.",
-  },
-  [Status.ERROR]: {
-    title: "Error",
-    label:
-      "Ocurrió un error al procesar el acta. Intenta reintentar el procesamiento o revisa el archivo original para corregir posibles problemas.",
-  },
-  [Status.INACTIVA]: {
-    title: "Inactiva",
-    label:
-      "El acta está inactiva y no está disponible para acciones. Contacta al administrador si crees que debería reactivarse.",
-  },
-}
 
 function handleSort() {
   if (sort.value === "ASC") {
@@ -607,7 +457,7 @@ const handleFilterByValue = (filter: string,value: any) => {
   navigate("?"+query.toString())
 }
 
-const typeMinutes = [{value: 'all', name: 'Todos'},{value:'ro', name: 'Acta Ordinaria'}, {value:'cp', name: 'Círculo Político'}]
+const typeMinutes = [{value: 'all', name: 'Todos'},{value:'ro', name: 'Acta Ordinaria'}, {value:'cp', name: 'Círculo Político'}, {value:'ex', name: 'Acta Extraordinaria'}]
 
 const statuses = [Status.CREATE, Status.ERROR, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING]
 
@@ -679,47 +529,6 @@ async function eliminarActa() {
     toast.error("Error al eliminar el acta")
     console.error(e);
   }
-}
-
-//cargar acta
-const handleDrop = async () => {
-  isDragging.value = false;
-  loading.value = true
-  const files = Array.from(uploadedFiles.value ?? []);
-  
-  const formData = new FormData();
-  formData.append("type", tipoActa.value);
-  formData.append("mode", mode.value);
-  files.forEach((f) => {
-    formData.append("files", f);
-  });
-  try {
-    await actions.minute.uploadMinutes.orThrow(formData)
-    showUploadDialog.value = false;
-    uploadedFiles.value = [];
-    navigate('/minutes')
-  } catch (error: any) {
-    toast.error(`${error.message}`);
-  } finally {
-    loading.value = false
-  }
-};
-
-const handleFileSelect = (event: any) => {
-  const files = Array.from(event.target.files);
-  console.log(files);
-  
-  uploadedFiles.value = [...uploadedFiles.value, ...files] as File[];
-};
-
-const handleFiles = (files: any) => {
-  uploadedFiles.value = [...uploadedFiles.value, ...files];
-}
-
-const handleFileDrop = (e:any) => {
-  isDragging.value = false
-  const files = Array.from(e.dataTransfer.files)
-  handleFiles(files)
 }
 
 function goToNextPage() {

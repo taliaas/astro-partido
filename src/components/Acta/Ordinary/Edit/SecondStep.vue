@@ -97,23 +97,18 @@ import Button from "@/components/ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useFormContext } from "vee-validate";
-import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
+import type { FormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
 
 const form = useFormContext<FormSchema>();
 
-const agendaItems = computed(() =>form.values.order)
+const agendaItems = computed(() => form.values.order);
 
 const addAgendaItem = () => {
-  form.setFieldValue("order", [
-    ...form.values.order,
-    "",
-  ]);
+  form.setFieldValue("order", [...form.values.order, ""]);
 };
 
 const removeAgendaItem = (index: any) => {
-  if (form.values.order.length === 1)
-    form.setFieldValue("order", []);
-  else
-    form.setFieldValue("order", form.values.order.toSpliced(index, 1));
+  if (form.values.order.length === 1) form.setFieldValue("order", []);
+  else form.setFieldValue("order", form.values.order.toSpliced(index, 1));
 };
 </script>

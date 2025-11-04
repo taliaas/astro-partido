@@ -333,7 +333,7 @@ import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectGroup from "@/components/ui/select/SelectGroup.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import { useFormContext } from "vee-validate";
-import type { FormSchema } from "@/components/Ordinary/Create/form_schema";
+import type { FormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
 import type { Militantes } from "@/interface/Militante";
 
 const {

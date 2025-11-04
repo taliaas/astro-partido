@@ -26,7 +26,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: { name: string };
   status: string;
   lastLogin: string;
   core?: any;
@@ -44,7 +44,9 @@ const userSchema = z.object({
     .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
     .max(50, { message: "El nombre no puede exceder los 50 caracteres." }),
   email: z.string().email({ message: "Ingresa un correo electrónico válido." }),
-  password: z.string().max(8, { message: "La contraseña debe tener al menos 8 carácteres" }),
+  password: z
+    .string()
+    .max(8, { message: "La contraseña debe tener al menos 8 carácteres" }),
   role: z.string({ message: "El Rol es requerido" }),
 });
 
@@ -53,7 +55,7 @@ const form = useForm<UserData>({
     name: user?.name ?? "",
     email: user?.email ?? "",
     password: "",
-    role: user?.role.name ?? "",
+    role: user?.role?.name ?? "",
   },
   validationSchema: toTypedSchema(userSchema),
 });
@@ -62,7 +64,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
   onLoadingChange(true);
   if (user) {
     const { error } = await actions.user.updateUser({ ...data, id: user.id });
-    if (error instanceof ActionError ) {
+    if (error instanceof ActionError) {
       toast.error("Hubo un error al intentar actualizar el usuario");
     } else {
       await navigate("");
