@@ -10,6 +10,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Input from "@/components/ui/input/Input.vue";
 import Label from "@/components/ui/label/Label.vue";
 import {
@@ -22,7 +29,12 @@ import {
 import type { Comite, Core, Militant } from "@/interface/Militante";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-vue-next";
+import {
+  EditIcon,
+  MoreVerticalIcon,
+  Pencil,
+  Trash2Icon,
+} from "lucide-vue-next";
 import { reactive, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
@@ -106,17 +118,44 @@ const saveCore = () => {};
     <div class="rounded-md border">
       <table class="w-full text-md">
         <thead>
-          <tr class="border-b bg-muted/50 font-semibold">
-            <th class="h-10 px-4 text-left">Nombre</th>
-            <th class="h-10 px-4 text-center">Secretario General</th>
-            <th class="h-10 px-4 text-center">Secretario del Funcionamiento</th>
-            <th class="h-10 px-4 text-center">Militantes</th>
-            <th class="h-10 px-4 text-center">Estado</th>
-            <th class="h-10 px-4 text-left w-[50px]"></th>
+          <tr class="border-b font-semibold">
+            <th
+              class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
+            >
+              Nombre
+            </th>
+            <th
+              class="h-10 px-4 text-center align-middle font-medium text-muted-foreground"
+            >
+              Cómite
+            </th>
+            <th
+              class="h-10 px-4 text-center align-middle font-medium text-muted-foreground"
+            >
+              Secretario General
+            </th>
+            <th
+              class="h-10 px-4 text-center align-middle font-medium text-muted-foreground"
+            >
+              Secretario del Funcionamiento
+            </th>
+            <th
+              class="h-10 px-4 text-center align-middle font-medium text-muted-foreground"
+            >
+              Militantes
+            </th>
+            <th
+              class="h-10 px-4 text-center align-middle font-medium text-muted-foreground"
+            >
+              Estado
+            </th>
+            <th
+              class="h-10 px-4 text-left align-middle font-medium text-muted-foreground w-[50px]"
+            ></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-if="cores.data.length === 0">
+          <tr v-if="cores.data?.length === 0">
             <td colspan="3" class="p-4 text-center text-muted-foreground">
               No hay núcleos registrados.
             </td>
@@ -124,6 +163,7 @@ const saveCore = () => {};
 
           <tr v-for="core in cores.data" :key="core.id" class="p-2">
             <td class="h-10 px-4 text-left">{{ core.name }}</td>
+            <td class="h-10 px-4 text-center">{{ core.comite.name }}</td>
             <td class="h-10 px-4 text-center">
               {{ core.generalSecretary.firstname }}
               {{ core.generalSecretary.lastname }}
@@ -148,46 +188,27 @@ const saveCore = () => {};
               </span>
             </td>
             <td class="h-10 px-4 text-left w-[50px]">
-              <div class="relative">
-                <Button
-                  variant="ghost"
-                  class="rounded-full"
-                  size="icon"
-                  @click="openDetails"
-                >
-                  <MoreVerticalIcon class="h-4 w-4" />
-                </Button>
-                <div
-                  v-if="open"
-                  class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
-                >
-                  <div
-                    class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
+              <DropdownMenu>
+                <DropdownMenuTrigger class="focus:outline-none">
+                  <Button variant="ghost" size="icon" class="rounded-full">
+                    <MoreVerticalIcon class="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem @click="handleEditCore(core)">
+                    <Pencil class="h-4 w-4" />
+                    Editar
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    @click="handleDeleteCore(core.id)"
+                    variant="destructive"
                   >
-                    Acciones
-                  </div>
-                  <div class="py-1" @click="open = false">
-                    <a
-                      href="#"
-                      class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                      @click.prevent="handleEditCore(core)"
-                    >
-                      <EditIcon class="h-4 w-4" />
-                      Editar
-                    </a>
-
-                    <div class="border-t my-1"></div>
-                    <a
-                      href="#"
-                      class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
-                      @click.prevent="handleDeleteCore(core.id)"
-                    >
-                      <Trash2Icon class="h-4 w-4" />
-                      Eliminar
-                    </a>
-                  </div>
-                </div>
-              </div>
+                    <Trash2Icon class="h-4 w-4" />
+                    Eliminar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </td>
           </tr>
         </tbody>

@@ -4,28 +4,44 @@ import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import CoreService from "@/services/CoreService";
 import UserService from "@/services/UserService";
+import { undefined } from "astro:schema";
 import { getSession } from "auth-astro/server";
 
-const session = (await getSession(Astro.request)) as any
+const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
 const page = Number(searchParams.get("page") ?? 1);
+const order = searchParams.get("order") as any;
+const name = searchParams.get("name") as any;
+const role = searchParams.get("role") as any;
+const email = searchParams.get("email") as any;
+const core = searchParams.get("core") as any;
+const status = searchParams.get("status") as any;
 
 async function getAllUsers() {
   const service = new UserService();
   try {
-    return service.getAllUser(page,session.jwt);
+    return service.getAllUser(
+      page,
+      session.jwt,
+      name ?? undefined,
+      email ?? undefined,
+      core,
+      order,
+      status,
+      role
+    );
   } catch (e) {
     console.error(e);
   }
 }
 
 async function getCore() {
-    const service = new CoreService();
-    try {
-        return await service.getAllCore(session.jwt);
-    } catch (e) {
-        console.error(e);
-    }
+  const service = new CoreService();
+  try {
+    return await service.getAllCore(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 const users = await getAllUsers();
@@ -34,6 +50,6 @@ const cores = await getCore();
 
 <RootLayout>
   <SettingsLayout>
-    <UserManage users={users} cores={cores} page={Number(page || 1)} client:load />
+    <UserManage users={users} cores={cores} client:load />
   </SettingsLayout>
 </RootLayout>

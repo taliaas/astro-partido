@@ -10,6 +10,7 @@ import { getSession } from "auth-astro/server";
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
 const core = Number(searchParams.get("core") ?? 1);
+const page = Number(searchParams.get("page") ?? 1);
 
 async function getComites() {
   const service = new ComiteService();
@@ -29,15 +30,15 @@ async function getMilitants() {
   }
 }
 
-async function nucleos() {
+async function getCores() {
   const service = new CoreService();
   try {
-    return service.getAllCore(session?.jwt);
+    return service.getAllCoreByPage(page, session?.jwt);
   } catch (e) {
     console.error(e);
   }
 }
-const cores = await nucleos();
+const cores = await getCores();
 const comites = await getComites();
 const militants = await getMilitants();
 ---

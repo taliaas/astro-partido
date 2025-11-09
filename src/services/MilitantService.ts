@@ -95,17 +95,31 @@ export default class MilitantService {
     }
   }
 
-  async getMilitantesByCore(id: number, page: number) {
+  async getMilitantesByCore(
+    name: string,
+    org: string,
+    email: string,
+    status: string,
+    core: string,
+    page: number
+  ) {
+    const searchParam = new URLSearchParams();
+    if (page) searchParam.set("page", page + "");
+    if (name) searchParam.set("name", name);
+    if (core) searchParam.set("core", core);
+    if (status) searchParam.set("status", status);
+    if (org) searchParam.set("org", org);
+    if (email) searchParam.set("fecha", email);
+
+    const url = `${API_URL}/militant/core/?` + searchParam.toString();
+
     try {
-      const response = await fetch(
-        `${API_URL}/militant/core/${id}?page=${page}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

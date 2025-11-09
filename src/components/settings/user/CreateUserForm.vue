@@ -21,16 +21,7 @@ import { navigate } from "astro:transitions/client";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
 import { roleEnum } from "@/enum/roleEnum";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: { name: string };
-  status: string;
-  lastLogin: string;
-  core?: any;
-}
+import type { User } from "@/interface/Militante";
 
 const { onLoadingChange, user } = defineProps<{
   onLoadingChange: (value: boolean) => void;

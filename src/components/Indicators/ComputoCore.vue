@@ -35,8 +35,6 @@ const { computo } = defineProps<{
 }>();
 const searchParams = useUrlSearchParams("history");
 
-debouncedRef;
-
 const getValueIndicators = (key: string) => {
   return computo?.indicators.find((i) => i.key === key).value;
 };
@@ -44,8 +42,8 @@ const getTextIndicators = (key: string) => {
   return computo?.indicators.find((i) => i.key === key).text;
 };
 
-function openGraphic(){
-  navigate("/analisis_indicador/chart")
+function openGraphic() {
+  navigate("/analisis_indicador/chart");
 }
 
 // Computed para filtrar indicadores
@@ -165,10 +163,14 @@ const filteredIndicators = computed(() => {
                       <SheetHeader class="space-y-2">
                         <SheetTitle class="text-2xl">Detalles</SheetTitle>
                         <SheetDescription class="@container">
-                          <h2 class="text-xl font-medium">Resumen extraído del acta</h2>
+                          <h2 class="text-xl font-medium">
+                            Resumen extraído del acta
+                          </h2>
                           <ScrollArea class="h-[90cqh] p-4 @h-3 w-full"
                             ><p class="text-lg text-justify">
-                              {{ getTextIndicators(key as any) ?? "No encontrado" }}
+                              {{
+                                getTextIndicators(key as any) ?? "No encontrado"
+                              }}
                             </p>
                           </ScrollArea>
                         </SheetDescription>

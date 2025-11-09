@@ -20,7 +20,6 @@
       >
         <User class="mr-2 h-4 w-4" />
         <span>Mi Cuenta </span>
-        
       </DropdownMenuItem>
 
       <DropdownMenuItem
@@ -34,10 +33,7 @@
 
       <DropdownMenuSeparator class="bg-gray-200 border dark:border-gray-400" />
 
-      <DropdownMenuItem
-        @click="showSesionModal = true"
-        class="text-red-500 hover:bg-gray-200 hover:text-red-700 dark:hover:bg-zinc-600"
-      >
+      <DropdownMenuItem @click="showSesionModal = true" variant="destructive">
         <LogOut class="mr-2 h-4 w-4 text-red-500" />
         <span>Cerrar Sesión</span>
       </DropdownMenuItem>

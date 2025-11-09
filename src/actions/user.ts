@@ -14,7 +14,7 @@ export const updateUser = defineAction({
   async handler({ id, ...input }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    
+
     const res = await fetch(`${API_URL}/user/${id}`, {
       method: "PATCH",
       headers: {
@@ -27,15 +27,38 @@ export const updateUser = defineAction({
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     return await res.json();
-  }
-})
+  },
+});
+
+export const activeUser = defineAction({
+  input: z.object({
+    id: z.string(),
+  }),
+  handler: async ({ id }, context) => {
+    const session: any = await getSession(context.request);
+    const res = await fetch(`${API_URL}/user/activate/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + session?.jwt,
+      },
+    });
+    if (!res.ok) {
+      throw new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `HTTP error! status: ${res.status}`,
+      });
+    }
+    return res.json();
+  },
+});
 
 export const deactiveUser = defineAction({
-  input: z.number(),
+  input: z.string(),
   handler: async (input, context) => {
     const session: any = await getSession(context.request);
     const res = await fetch(`${API_URL}/user/deactivate/${input}`, {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + session?.jwt,

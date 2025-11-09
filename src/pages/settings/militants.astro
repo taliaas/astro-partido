@@ -1,26 +1,30 @@
 ---
-import Militantes from "../../components/settings/militantes/Militantes.vue";
 import SettingsLayout from "../../layouts/SettingsLayout.astro";
 import RootLayout from "../../layouts/RootLayout.astro";
 import MilitantService from "../../services/MilitantService";
 import CoreService from "@/services/CoreService";
 import { getSession } from "auth-astro/server";
+import Militantes from "@/components/settings/militantes/Militantes.vue";
 
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
-const core = Number(searchParams.get("core") ?? 1);
+const core = searchParams.get("core") as any;
 const page = Number(searchParams.get("page") ?? 1);
+const name = searchParams.get("name") as any;
+const org = searchParams.get("org") as any;
+const email = searchParams.get("email") as any;
+const status = searchParams.get("status") as any;
 
 async function getMilitantes() {
   const service = new MilitantService();
   try {
-    return service.getMilitantesByCore(core, page);
+    return service.getMilitantesByCore(name, org, email, status, core, page);
   } catch (e) {
     console.error(e);
   }
 }
 
-async function nucleos() {
+async function getCore() {
   const service = new CoreService();
   try {
     return await service.getAllCore(session.jwt);
@@ -29,12 +33,12 @@ async function nucleos() {
   }
 }
 
-const cores = await nucleos();
+const cores = await getCore();
 const militantes = await getMilitantes();
 ---
 
 <RootLayout>
   <SettingsLayout>
-    <Militantes militantes={militantes} page={page} cores={cores} client:load />
+    <Militantes militants={militantes} cores={cores} client:load />
   </SettingsLayout>
 </RootLayout>

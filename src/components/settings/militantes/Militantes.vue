@@ -7,22 +7,72 @@
     class="container mx-auto p-6 space-y-4 border bg-white rounded-md shadow-xl"
   >
     <div class="flex justify-between space-x-2">
-      <div class="flex-1 relative w-full">
+      <div class="flex-1 relative w-full flex">
         <Search
           class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
         />
         <Input
-          v-model="searchQuery"
-          type="search"
+          id="search"
+          v-model:model-value="searchParams.name as string"
+          @update:model-value="search"
+          class="pl-9"
           placeholder="Buscar miembros..."
-          class="flex h-10 w-full rounded-md border border-Input bg-background px-3 py-2 pl-8 text-md ring-offset-background file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          autofocus
         />
       </div>
       <div class="flex gap-2">
-        <Button @click="openAddMemberModal" variant="default"> Añadir </Button>
-        <Button @click="downloadMili" variant="outline">
-          <DownloadIcon class="w-4 h-4" />
-          Exportar
+        <Select
+          :default-value="searchParams.core ?? 'all'"
+          @update:model-value="handleFilterByValue('core', $event)"
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Seleccione el núcleo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all"> Todos los núcleos</SelectItem>
+            </SelectGroup>
+            <SelectItem
+              v-for="nucleo in cores"
+              :key="nucleo.name"
+              :value="nucleo.name"
+              >{{ nucleo.name }}</SelectItem
+            >
+          </SelectContent>
+        </Select>
+        <!-- Status -->
+        <Select
+          :default-value="searchParams.status ?? 'all'"
+          @update:model-value="handleFilterByValue('status', $event)"
+        >
+          <SelectTrigger class="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all">Todos los estados</SelectItem>
+              <SelectItem
+                v-for="(status, index) in statuses"
+                :key="index"
+                :value="status"
+                >{{ status }}</SelectItem
+              >
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
+        <Button
+          class="cursor-pointer"
+          variant="outline"
+          @click="exportAll"
+          :disabled="exporting"
+        >
+          <FileDown class="size-4" />
+          <span v-if="exporting">Exportando ...</span
+          ><span v-else>Exportar todo</span></Button
+        ><Button @click="open = true" class="cursor-pointer" variant="default">
+          <UserPlus class="size-4" />
+          Añadir
         </Button>
       </div>
     </div>
@@ -57,13 +107,18 @@
             <th
               class="h-12 px-4 text-center align-middle font-medium text-muted-foreground"
             >
+              Estado
+            </th>
+            <th
+              class="h-12 px-4 text-center align-middle font-medium text-muted-foreground"
+            >
               Acciones
             </th>
           </tr>
         </thead>
         <tbody class="[&_tr:last-child]:border-0">
           <tr
-            v-for="member in filteredMembers"
+            v-for="member in militants.data"
             :key="member.id"
             class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
           >
@@ -85,11 +140,22 @@
             </td>
             <td class="p-4 align-middle">{{ member.email }}</td>
             <td class="p-4 align-middle">{{ member.core?.name }}</td>
-            <td class="p-4 align-middle text-center capitalize">
+            <td class="p-4 align-middle text-center">
               {{ member.organization }}
             </td>
-
-            <td class="p-4 text-center align-middle">
+            <td class="p-4 align-middle text-center capitalize">
+              <span
+                :class="[
+                  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                  member.deactivation === null
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800',
+                ]"
+              >
+                {{ member.deactivation === null ? "Activo" : "Inactivo" }}
+              </span>
+            </td>
+            <td class="p-4 text-center align-middle cursor-context-menu">
               <DropdownMenu>
                 <DropdownMenuTrigger class="focus:outline-none">
                   <Button variant="ghost" size="icon" class="rounded-full">
@@ -97,19 +163,23 @@
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem @click="handleViewDetails(member)">
+                  <DropdownMenuItem @click="handleView(member)">
                     <Eye class="h-4 w-4" />
                     Detalles
                   </DropdownMenuItem>
-                  <DropdownMenuItem @click="openEditMemberModal(member)">
-                    <Pencil class="h-4 w-4" />
+                  <DropdownMenuItem @click="handleEdit(member)">
+                    <UserPen class="h-4 w-4" />
                     Editar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem @click="handleView(member)">
+                    <Download class="h-4 w-4" />
+                    Exportar
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </td>
           </tr>
-          <tr v-if="filteredMembers.length === 0">
+          <tr v-if="militants.data.length === 0">
             <td colspan="6" class="p-4 text-center text-muted-foreground">
               No hay militantes.
             </td>
@@ -121,24 +191,24 @@
     <!-- Pagination -->
     <div class="flex items-center justify-between py-4">
       <div class="text-md text-muted-foreground">
-        Mostrando <span class="font-medium">{{ page }}</span> de
-        <span class="font-medium">{{ militantes.total }}</span> página(s)
+        Mostrando <span class="font-medium">{{ currentPage }}</span> de
+        <span class="font-medium">{{ totalPages }}</span> página(s)
       </div>
       <div class="flex items-center space-x-2">
         <Button
           variant="outline"
+          :disabled="currentPage <= 1"
+          :class="{ 'opacity-50 cursor-not-allowed': currentPage <= 1 }"
           @click="previousPage"
-          :disabled="currentPage === 1"
-          :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
         >
           <ChevronLeft />
         </Button>
         <Button
           variant="outline"
           @click="nextPage"
-          :disabled="currentPage === totalPages"
+          :disabled="currentPage >= totalPages"
           :class="{
-            'opacity-50 cursor-not-allowed': currentPage === totalPages,
+            'opacity-50 cursor-not-allowed': currentPage >= totalPages,
           }"
         >
           <ChevronRight />
@@ -146,504 +216,125 @@
       </div>
     </div>
 
-    <!-- Member Form Modal -->
-    <div
-      v-if="showMemberModal"
-      class="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
-    >
-      <MilitanteForm :currentMember :cores :close />
+    <div v-if="open">
+      <MilitanteForm :cores :close :current-member="currentMember" />
     </div>
-    <!-- Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center"
-    >
-      <!-- Overlay -->
-      <div class="fixed inset-0 bg-black/50" @click="closeModal"></div>
-
-      <!-- Modal Content -->
-      <div
-        class="relative bg-white rounded-lg shadow-lg max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
-      >
-        <div class="p-6 border-b">
-          <h2 class="text-2xl font-semibold">Detalles del Militante</h2>
-          <p class="text-muted-foreground mt-1">
-            Información completa de {{ selectedMilitante?.firstname }}
-            {{ selectedMilitante?.lastname }}
-          </p>
-        </div>
-
-        <div class="p-6 space-y-6" v-if="selectedMilitante">
-          <!-- Información Personal -->
-          <div class="bg-white shadow-sm rounded-lg border">
-            <div class="p-4 border-b">
-              <h3 class="text-lg font-semibold flex items-center gap-2">
-                <UsersIcon class="w-5 h-5" />
-                Información Personal
-              </h3>
-            </div>
-            <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label class="text-sm font-medium text-muted-foreground"
-                  >Nombre</Label
-                >
-                <p class="text-lg font-semibold">
-                  {{ selectedMilitante.firstname }}
-                </p>
-              </div>
-              <div>
-                <Label class="text-sm font-medium text-muted-foreground"
-                  >Apellido</Label
-                >
-                <p class="text-lg font-semibold">
-                  {{ selectedMilitante.lastname }}
-                </p>
-              </div>
-              <div>
-                <Label class="text-sm font-medium text-muted-foreground"
-                  >Carnet de Identidad</Label
-                >
-                <p class="text-lg">{{ selectedMilitante.ci }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Información de Contacto -->
-          <div class="bg-white shadow-sm rounded-lg border">
-            <div class="p-4 border-b">
-              <h3 class="text-lg font-semibold flex items-center gap-2">
-                <MailIcon class="w-5 h-5" />
-                Información de Contacto
-              </h3>
-            </div>
-            <div class="p-4 space-y-4">
-              <div class="flex items-center gap-3">
-                <MailIcon class="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <Label class="text-sm font-medium text-muted-foreground"
-                    >Email</Label
-                  >
-                  <p>{{ selectedMilitante.email }}</p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <PhoneIcon class="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <Label class="text-sm font-medium text-muted-foreground"
-                    >Teléfono</Label
-                  >
-                  <p>{{ selectedMilitante.phone }}</p>
-                </div>
-              </div>
-              <div class="flex items-start gap-3">
-                <MapPinIcon class="w-4 h-4 text-muted-foreground mt-1" />
-                <div>
-                  <Label class="text-sm font-medium text-muted-foreground"
-                    >Dirección</Label
-                  >
-                  <p>{{ selectedMilitante.address }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Información Organizacional -->
-          <div class="bg-white shadow-sm rounded-lg border">
-            <div class="p-4 border-b">
-              <h3 class="text-lg font-semibold flex items-center gap-2">
-                <BuildingIcon class="w-5 h-5" />
-                Información Organizacional
-              </h3>
-            </div>
-            <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label class="text-sm font-medium text-muted-foreground"
-                  >Organización</Label
-                >
-                <p class="text-lg font-semibold">
-                  {{ selectedMilitante.organization }}
-                </p>
-              </div>
-              <div>
-                <Label class="text-sm font-medium text-muted-foreground"
-                  >Núcleo</Label
-                >
-                <p class="text-lg font-semibold">
-                  {{ selectedMilitante.core.name }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- transfer -->
-          <div class="bg-white shadow-sm rounded-lg border">
-            <div class="p-4 border-b">
-              <h3 class="text-lg font-semibold flex items-center gap-2">
-                <ArrowRightLeftIcon class="w-5 h-5" />
-                Historial de transferencias ({{
-                  selectedMilitante.transfer.length
-                }})
-              </h3>
-            </div>
-            <div class="p-4">
-              <div
-                v-if="selectedMilitante.transfer.length > 0"
-                class="space-y-4"
-              >
-                <div
-                  v-for="traslado in selectedMilitante.transfer"
-                  :key="traslado.id"
-                  class="border rounded-lg p-4"
-                >
-                  <div class="flex justify-between items-start mb-2">
-                    <div>
-                      <p class="font-semibold">
-                        {{ traslado.origen }} → {{ traslado.destino }}
-                      </p>
-                      <p class="text-sm text-muted-foreground">
-                        Fecha: {{ format(traslado.fecha, "yyyy-MM-dd") }}
-                      </p>
-                    </div>
-                    <span
-                      class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold"
-                    >
-                      {{ traslado.estado }}
-                    </span>
-                  </div>
-                  <p class="text-sm">
-                    <span class="font-medium">Motivo:</span>
-                    {{ traslado.details }}
-                  </p>
-                </div>
-              </div>
-              <p v-else class="text-muted-foreground text-center py-4">
-                No hay transferencias registradas
-              </p>
-            </div>
-          </div>
-
-          <!-- Sanciones -->
-          <div class="bg-white shadow-sm rounded-lg border">
-            <div class="p-4 border-b">
-              <h3 class="text-lg font-semibold flex items-center gap-2">
-                <AlertTriangleIcon class="w-5 h-5" />
-                Historial de Sanciones ({{ selectedMilitante.sancions.length }})
-              </h3>
-            </div>
-            <div class="p-4">
-              <div
-                v-if="selectedMilitante.sancions.length > 0"
-                class="space-y-4"
-              >
-                <div
-                  v-for="sancion in selectedMilitante.sancions"
-                  :key="sancion.id"
-                  class="border rounded-lg p-4"
-                >
-                  <div class="flex justify-between items-start mb-2">
-                    <div>
-                      <p class="font-semibold">Causa: {{ sancion.causa }}</p>
-                      <p class="text-sm text-muted-foreground">
-                        Fecha: {{ format(sancion.fecha, "yyyy-MM-dd") }}
-                      </p>
-                    </div>
-                    <div class="flex gap-2">
-                      <span
-                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                      >
-                        {{ sancion.severidad }}
-                      </span>
-                      <span
-                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                      >
-                        {{ sancion.estado }}
-                      </span>
-                    </div>
-                  </div>
-                  <p class="text-sm">
-                    <span class="font-medium">Descripción:</span>
-                    {{ sancion.details }}
-                  </p>
-                </div>
-              </div>
-              <p v-else class="text-muted-foreground text-center py-4">
-                No hay sanciones registradas
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-6 border-t flex justify-end gap-2">
-          <button
-            @click="closeModal"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium border px-4 py-2"
-          >
-            Cerrar
-          </button>
-          <button
-            @click="exportDetails"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-          >
-            Exportar
-          </button>
-        </div>
-      </div>
+    <div v-if="openView">
+      {{ openView }}
+      <MilitantView :militants="currentMember" :closeModal />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import MilitanteForm from "@/components/settings/militantes/MilitanteForm.vue";
+import MilitantView from "@/components/settings/militantes/MilitantView.vue";
 import Button from "@/components/ui/button/Button.vue";
-import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
-import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Input from "@/components/ui/input/Input.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Militant } from "@/interface/Militante";
+import { useDebounceFn, useUrlSearchParams } from "@vueuse/core";
 import { navigate } from "astro:transitions/client";
-import { format } from "date-fns";
 import {
   ChevronLeft,
   ChevronRight,
-  DownloadIcon,
+  Download,
   Eye,
+  FileDown,
   MoreVerticalIcon,
-  Pencil,
   Search,
+  UserPen,
+  UserPlus,
 } from "lucide-vue-next";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { toast } from "vue-sonner";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import Input from "@/components/ui/input/Input.vue";
-import Label from "@/components/ui/label/Label.vue";
-import type { Militant } from "@/interface/Militante";
 
-const { militantes, page, cores } = defineProps<{
-  militantes: { data: Militant[]; total: number; page: number };
-  page: number;
+const { militants, cores } = defineProps<{
+  militants: { data: Militant[]; total: number; page: number };
   cores: any;
 }>();
 
 // UI state
-const searchQuery = ref("");
-const showMemberModal = ref(false);
-const isEditing = ref(false);
-const isModalOpen = ref(false);
+const searchParams = useUrlSearchParams("history", { removeFalsyValues: true });
 const selectCore = ref("");
-const totalPages = militantes.total;
-const currentPage = ref(page);
-
+const exporting = ref(false);
+const open = ref(false);
+const openView = ref(false);
 const currentMember = ref<Militant | null>(null);
-
-const selectedMilitante = ref<Militant>({
-  id: "",
-  ci: "",
-  firstname: "",
-  lastname: "",
-  email: "",
-  organization: "",
-  address: "",
-  phone: "",
-  abscents: undefined,
-  user: undefined,
-  core: {
-    id: "",
-    name: "",
-  },
-  transfer: [],
-  sancions: [],
-  deactivation: [],
-  agreements: [],
-});
-// Computed properties
-const filteredMembers = computed(() => {
-  if (!searchQuery.value) {
-    return militantes.data;
-  }
-  if (!Array.isArray(militantes.data)) return [];
-  const query = searchQuery.value.toLowerCase();
-  return militantes?.data?.filter(
-    (member: any) =>
-      member.firstname.toLowerCase().includes(query) ||
-      member.lastname.toLowerCase().includes(query) ||
-      member.email.toLowerCase().includes(query) ||
-      member.organization.toLowerCase().includes(query) ||
-      member.core.name.toLowerCase().includes(query)
-  );
-});
+const totalPages = ref(militants.total);
+const currentPage = ref(militants.page);
+const statuses = ["Activo", "Inactivo"];
 
 // Methods
+const search = useDebounceFn(async () => {
+  await navigate("");
+  setTimeout(() => {
+    const e = document.querySelector<HTMLInputElement>("#search");
+    if (e) {
+      e.focus();
+    }
+  }, 500);
+}, 1000);
+
 const getInitials = (member: any) => {
   return `${member.firstname.charAt(0)}${member.lastname.charAt(0)}`;
 };
 
-const openAddMemberModal = () => {
-  isEditing.value = false;
-  showMemberModal.value = true;
-};
-
-async function exportDetails() {
-  if (!selectedMilitante.value) {
-    toast.error("No hay militante seleccionado");
-    return;
-  }
-  const m = selectedMilitante.value;
-  const doc = new jsPDF();
-  doc.setFontSize(16);
-  doc.text("Detalles del Militante", 14, 16);
-
-  // Información Personal
-  doc.setFontSize(12);
-  doc.text("Información Personal", 14, 26);
-  doc.setFontSize(10);
-  doc.text(`Nombre: ${m.firstname || ""} ${m.lastname || ""}`, 14, 34);
-  doc.text(`Carnet de Identidad: ${m.ci || ""}`, 14, 40);
-  //doc.text(`Estado: `, 14, 46);
-
-  // Información de Contacto
-  doc.setFontSize(12);
-  doc.text("Información de Contacto", 14, 56);
-  doc.setFontSize(10);
-  doc.text(`Email: ${m.email || ""}`, 14, 64);
-  doc.text(`Teléfono: ${m.phone || ""}`, 14, 70);
-  doc.text(`Dirección: ${m.address || ""}`, 14, 76);
-
-  // Información Organizacional
-  doc.setFontSize(12);
-  doc.text("Información Organizacional", 14, 86);
-  doc.setFontSize(10);
-  doc.text(`Organización: ${m.organization || ""}`, 14, 94);
-  doc.text(`Núcleo: ${m.core?.name || ""}`, 14, 100);
-
-  let y = 110;
-  // transfer
-  doc.setFontSize(12);
-  doc.text("Historial de transferencias", 14, y);
-  y += 6;
-  doc.setFontSize(10);
-  if (Array.isArray(m.transfer) && m.transfer.length > 0) {
-    m.transfer.forEach((t: any, idx: number) => {
-      doc.text(
-        `${idx + 1}. ${t.origen || ""} → ${t.destino || ""} | Fecha: ${t.fecha ? format(t.fecha, "yyyy-MM-dd") : ""} | Estado: ${t.estado || ""} | Motivo: ${t.details || ""}`,
-        14,
-        y
-      );
-      y += 6;
-      if (y > 270) {
-        doc.addPage();
-        y = 20;
-      }
-    });
-  } else {
-    doc.text("No hay transferencias registradas", 14, y);
-    y += 6;
-  }
-
-  // Sanciones
-  y += 6;
-  doc.setFontSize(12);
-  doc.text("Historial de Sanciones", 14, y);
-  y += 6;
-  doc.setFontSize(10);
-  if (Array.isArray(m.sancions) && m.sancions.length > 0) {
-    m.sancions.forEach((s: any, idx: number) => {
-      doc.text(
-        `${idx + 1}. Causa: ${s.causa || ""} | Fecha: ${s.fecha ? format(s.fecha, "yyyy-MM-dd") : ""} | Severidad: ${s.severidad || ""} | Estado: ${s.estado || ""} | Descripción: ${s.details || ""}`,
-        14,
-        y
-      );
-      y += 6;
-      if (y > 270) {
-        doc.addPage();
-        y = 20;
-      }
-    });
-  } else {
-    doc.text("No hay sanciones registradas", 14, y);
-    y += 6;
-  }
-
-  doc.save(`militante_${m.firstname || ""}_${m.lastname || ""}.pdf`);
-  toast.success("Detalles exportados correctamente");
-}
-
-async function downloadMili() {
-  const doc = new jsPDF();
-  doc.setFontSize(16);
-  doc.text("Listado de Militantes", 14, 16);
-
-  const rows = filteredMembers.value.map((member) => [
-    `${member.firstname} ${member.lastname}`,
-    member.email,
-    member.core?.name || "",
-    member.organization,
-    member.phone || "",
-    member.address || "",
-  ]);
-
-  autoTable(doc, {
-    head: [
-      [
-        "Nombre",
-        "Correo",
-        "Núcleo",
-        "Organización",
-        "Estado",
-        "Teléfono",
-        "Dirección",
-      ],
-    ],
-    body: rows,
-    startY: 22,
-    styles: { fontSize: 10 },
-    headStyles: { fillColor: [41, 128, 185] },
-  });
-
-  doc.save("militantes.pdf");
-  toast.success("Militantes exportados correctamente");
-}
-
-const openEditMemberModal = (member: any) => {
-  isEditing.value = true;
-  currentMember.value = member;
-  showMemberModal.value = true;
-};
-
-const handleViewDetails = (militante: any) => {
-  selectedMilitante.value = militante;
-  isModalOpen.value = true;
-};
-
 const close = () => {
-  showMemberModal.value = false;
+  open.value = false;
   currentMember.value = null;
 };
 
 const closeModal = () => {
-  isModalOpen.value = false;
-  selectedMilitante.value = {
-    id: "",
-    ci: "",
-    firstname: "",
-    lastname: "",
-    email: "",
-    organization: "",
-    address: "",
-    phone: "",
-    abscents: undefined,
-    user: undefined,
-    core: {
-      id: "",
-      name: "",
-    },
-    transfer: [],
-    sancions: [],
-    deactivation: [],
-    agreements: [],
-  };
+  openView.value = false;
+  currentMember.value = null;
+};
+
+const handleFilterByValue = (filter: string, value: any) => {
+  const query = new URLSearchParams(searchParams as any);
+  if (value && value !== "all") {
+    query.set(filter, value);
+  } else {
+    query.delete(filter);
+  }
+  navigate("?" + query.toString());
+};
+
+const exportAll = () => {
+  exporting.value = true;
+  setTimeout(() => {
+    toast.success("Todos los militantes fueron exportados correctamente", {
+      duration: 5000,
+    });
+    toast.error("Error al exportar todos los militantes", { duration: 2000 });
+    exporting.value = false;
+  }, 5000);
+};
+
+const handleEdit = (member: Militant) => {
+  currentMember.value = member;
+  open.value = true;
+};
+const handleView = (member: Militant) => {
+  currentMember.value = member;
+  openView.value = true;
 };
 
 function nextPage() {
-  if (currentPage.value < totalPages) {
+  if (currentPage.value < totalPages.value) {
     currentPage.value++;
     navigate(
       `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`

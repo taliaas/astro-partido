@@ -27,12 +27,11 @@
           </div>
         </div>
         <div class="flex gap-2">
-          <Button @click="open = true" class="flex items-center gap-1">
+          <Button variant="outline" @click="openCore">
+            {{ isComite ? "Núcleos" : "Cómites" }} </Button
+          ><Button @click="open = true" class="flex items-center gap-1">
             <PlusIcon class="h-4 w-4 mr-1" />
             Añadir
-          </Button>
-          <Button variant="outline" @click="openCore">
-            {{ isComite ? "Núcleos" : "Cómites" }}
           </Button>
         </div>
       </div>
@@ -69,7 +68,7 @@ const { comites, cores, militants } = defineProps<{
 
 const searchQuery = ref("");
 const open = ref(false);
-const isComite = ref(true);
+const isComite = ref(false);
 
 function openCore() {
   isComite.value = !isComite.value;
