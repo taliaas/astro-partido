@@ -11,7 +11,6 @@ export const register = defineAction({
     role: z.string().optional(),
   }),
   async handler({ email, name, password, role }, context) {
-
     const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
@@ -25,12 +24,12 @@ export const register = defineAction({
         message: `User with email ${email} already exists`,
       });
     }
-    const data = await res.json()
+    const data = await res.json();
     if (res.status === 404) {
       throw new ActionError({
         code: "NOT_FOUND",
-        message: data.message
-      })
+        message: data.message,
+      });
     }
     if (!res.ok) {
       throw new ActionError({
@@ -38,7 +37,7 @@ export const register = defineAction({
         message: data.message,
       });
     }
-    return data
+    return data;
   },
 });
 
@@ -54,12 +53,12 @@ export const recoverPassword = defineAction({
       },
       body: JSON.stringify({ email }),
     });
-    const data = await res.json()
+    const data = await res.json();
     if (res.status === 404) {
       throw new ActionError({
         code: "NOT_FOUND",
-        message: data.message
-      })
+        message: data.message,
+      });
     }
     if (!res.ok) {
       throw new ActionError({
@@ -67,9 +66,9 @@ export const recoverPassword = defineAction({
         message: data.message,
       });
     }
-    return data
-  }
-})
+    return data;
+  },
+});
 
 export const profile = defineAction({
   async handler(_, context) {
@@ -127,12 +126,11 @@ export const updateProfile = defineAction({
   async handler(input, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
     const res = await fetch(`${API_URL}/user/${session.user?.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${session.jwt}`
+        Authorization: `Bearer ${session.jwt}`,
       },
       body: JSON.stringify(input),
     });
@@ -142,7 +140,7 @@ export const updateProfile = defineAction({
     }
     const y = await res.json();
     console.log(y);
-    return y
+    return y;
   },
 });
 
@@ -153,5 +151,3 @@ export const me = defineAction({
     return session.user;
   },
 });
-
-

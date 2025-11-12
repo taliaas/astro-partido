@@ -1,5 +1,9 @@
 <template>
-  <form @submit="submitForm" class="min-h-screen bg-gray-50 p-6">
+  <form
+    @submit.prevent="submitForm"
+    class="min-h-screen bg-gray-50 p-6"
+    id="minuteForm"
+  >
     <div
       class="mb-8 text-center transform transition-all duration-500 hover:scale-102"
     >
@@ -18,7 +22,7 @@
         />
         <!-- Steps -->
         <div class="relative flex justify-between">
-          <div v-for="step in 3" :key="step" class="flex flex-col items-center">
+          <div v-for="step in 2" :key="step" class="flex flex-col items-center">
             <!-- Step Circle -->
             <button
               class="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 ease-in-out relative"
@@ -56,7 +60,7 @@
         </div>
       </div>
       <div class="p-2 mt-4">
-        <div @submit="submitForm" class="space-y-6">
+        <div class="space-y-6">
           <!--  Información 1 -->
           <section v-show="currentStep === 1" class="space-y-4">
             <FirstStep :militantes />
@@ -64,61 +68,95 @@
 
           <!--  Información 2 -->
           <section v-show="currentStep === 2" class="space-y-4">
-            <SecondStep />
-          </section>
-          <!--  Información 3 -->
-          <section v-show="currentStep === 3" class="space-y-4">
-            <ThirdStep :militantes />
+            <SecondStep :militants="militantes" />
           </section>
 
           <!-- Botones de navegación -->
           <div class="flex justify-between mt-8">
-            <button
-              @click="prevStep"
-              type="button"
-              :disabled="currentStep === 1"
-              class="px-4 py-2 flex bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50"
-            >
-              <ArrowLeft class="w-4 h-4 m-2" />
-            </button>
-            <Button v-if="currentStep < 3" type="button" @click="nextStep">
-              <ArrowRight class="w-4 h-4 m-2" />
+            <div class="space-x-2">
+              <Button
+                variant="outline"
+                @click="prevStep"
+                type="button"
+                :disabled="currentStep === 1"
+              >
+                <ArrowLeft class="w-4 h-4" />
+              </Button>
+              <Button
+                :disabled="currentStep === 2"
+                type="button"
+                variant="outline"
+                @click="nextStep"
+              >
+                <ArrowRight class="w-4 h-4" />
+              </Button>
+            </div>
+            <Button type="button" @click="open = true">
+              Enviar
+              <SendHorizonal class="size-4" />
             </Button>
-            <Button v-else type="submit"> Enviar </Button>
           </div>
         </div>
       </div>
     </div>
   </form>
+
+  <Dialog :open @update:open="open = $event">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{{
+          isValid ? "true" : "Esta acta sera guardada como borrador"
+        }}</DialogTitle>
+        <DialogDescription>{{
+          isValid ? "true" : "Hay campos que deben ser llenados"
+        }}</DialogDescription>
+      </DialogHeader>
+      <DialogFooter>
+        <DialogClose>
+          <Button type="button" variant="outline">Cancelar</Button>
+        </DialogClose>
+        <Button type="submit" form="minuteForm" variant="default">
+          Guardar</Button
+        >
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
+import { form_schema } from "@/components/Acta/Ordinary/Create/form_schema";
+import FirstStep from "@/components/Acta/Ordinary/Edit/FirstStep.vue";
+import SecondStep from "@/components/Acta/Ordinary/Edit/SecondStep.vue";
+import { Button } from "@/components/ui/button";
 import {
-  form_schema,
-  type FormSchema,
-} from "@/components/Acta/Ordinary/Create/form_schema";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Status } from "@/enum/Status";
+import type { Agreements, Militant } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { ArrowLeft, ArrowRight } from "lucide-vue-next";
+import { ArrowLeft, ArrowRight, SendHorizonal } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
-import type { Militantes } from "@/interface/Militante";
-import FirstStep from "@/components/Acta/Ordinary/Edit/FirstStep.vue";
-import SecondStep from "@/components/Acta/Ordinary/Edit/SecondStep.vue";
-import ThirdStep from "@/components/Acta/Ordinary/Edit/ThirdStep.vue";
-import { Button } from "@/components/ui/button";
 
-const currentStep = ref(1);
-const { user, cores, militantes } = defineProps<{
-  user: any;
-  cores: any;
-  militantes: Militantes[];
+const { agreements, militantes } = defineProps<{
+  agreements: Agreements[];
+  militantes: Militant[];
 }>();
 
+const open = ref(false);
+const currentStep = ref(1);
+
 const nextStep = () => {
-  if (currentStep.value < 3) currentStep.value++;
+  if (currentStep.value < 2) currentStep.value++;
 };
 
 const prevStep = () => {
@@ -126,7 +164,7 @@ const prevStep = () => {
 };
 // Calculate progress percentage
 const progress = computed(() => {
-  return ((currentStep.value - 1) / (3 - 1)) * 100;
+  return ((currentStep.value - 1) / (2 - 1)) * 100;
 });
 
 const form = useForm({
@@ -136,29 +174,31 @@ const form = useForm({
     core: 1,
     hora: "",
     lugar: "",
+    status: "",
     invitados: [],
-    abscents: militantes.map((m) => ({
-      estado: "Presente" as const,
-      reason: null,
-      militanteId: m.id,
-    })),
     agreements: [],
     development: [],
-    observaciones: "",
     fechaCP: "",
     fechaPrep: "",
     fechaProx: "",
-    order: [],
+    order: ["Chequeo de acuerdos", "Orientaciones del Organismo Superior"],
   },
 });
 
-const submitForm = form.handleSubmit(async (data: FormSchema) => {
-  data.core = { id: data.core };
+const isValid = computed(() => {
+  return !Object.entries(form.errors.value).length;
+});
 
+const submitForm = async () => {
+  const data = form.values;
+  const validate = await form.validate();
+  const status = validate.valid ? Status.CREATE : Status.ERASER;
+  data.core = { id: data.core };
+  data.status = status;
   try {
     await actions.ordinary.createMinute.orThrow({
       data,
-      mode: "Model",
+      mode: "Model", //cambiar y pedir al usuario que lo cree
       type: "Ordinaria",
     });
     toast.success("Se creó el acta correctamente");
@@ -168,5 +208,5 @@ const submitForm = form.handleSubmit(async (data: FormSchema) => {
       toast.error(error.message);
     }
   }
-});
+};
 </script>

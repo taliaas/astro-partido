@@ -71,6 +71,30 @@ export const getMinutes = defineAction({
   },
 });
 
+export const addObversation = defineAction({
+  input: z.object({
+    minuteId: z.string(),
+    observations: z.string(),
+  }),
+  async handler({ observations, minuteId }, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+
+    const res = await fetch(`${API_URL}/minute/${minuteId}/add-observations`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.jwt}`,
+      },
+      body: observations,
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new ActionError({ code: "UNAUTHORIZED", message: data.message });
+    }
+    return data;
+  },
+});
+
 export const updateCore = defineAction({
   input: z.object({
     coreId: z.number(),
@@ -81,7 +105,7 @@ export const updateCore = defineAction({
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
     const res = await fetch(
-      `http://localhost:5000/minutes/updateCore/${minuteId}/${coreId}`,
+      `${API_URL}/minute/updateCore/${minuteId}/${coreId}`,
       {
         method: "POST",
         headers: {

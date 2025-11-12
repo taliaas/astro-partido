@@ -1,9 +1,9 @@
 ---
 import { getSession } from "auth-astro/server";
-import List from "../components/Acta/MinutesList.vue";
-import RootLayout from "../layouts/RootLayout.astro";
-import MinutesService from "../services/Minutes";
 import CoreService from "@/services/CoreService";
+import MinutesService from "@/services/Minutes";
+import RootLayout from "@/layouts/RootLayout.astro";
+import MinutesList from "@/components/Acta/MinutesList.vue";
 
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
@@ -55,7 +55,8 @@ const actas = await getActas();
 ---
 
 <RootLayout>
-  <List
+  <MinutesList
+    session={session.user}
     actas={actas}
     type={type ?? "all"}
     page={Number(page || 1)}

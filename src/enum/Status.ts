@@ -1,4 +1,5 @@
 export enum Status {
+  ERASER = "Borrador",
   CREATE = "Creada",
   PROCESSING = "Procesando",
   PENDIENTE = "Pendiente",

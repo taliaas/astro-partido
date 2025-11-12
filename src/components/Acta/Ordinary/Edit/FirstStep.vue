@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-8">
-    <div class="mt-4 w-3/4">
-      <div class="flex justify-between gap-4">
+    <div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <FormField v-if="edit" name="core" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Núcleo</FormLabel>
@@ -71,21 +71,66 @@
             <FormMessage />
           </FormItem>
         </FormField>
+
+        <!-- Fechas Relevantes -->
+
+        <div class="w-3/4 space-y-2">
+          <FormField name="fechaProx" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel> Próxima reunión </FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  required
+                  v-bind="componentField"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+        <div class="w-3/4 space-y-2">
+          <FormField name="fechaPrep" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel> Preparación próxima reunión </FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  required
+                  v-bind="componentField"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+        <div class="w-3/4 space-y-2">
+          <FormField name="fechaCP" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel> Próximo círculo de estudios políticos </FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  required
+                  id="circulo"
+                  v-bind="componentField"
+                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+              </FormControl>
+            </FormItem>
+          </FormField>
+        </div>
       </div>
     </div>
-
     <!-- 3. Invitados -->
     <div class="rounded">
       <div class="flex justify-between">
-        <label class="block my-2 text-md font-medium text-gray-700"
-          >Invitados y Participantes</label
+        <Label class="block my-2 text-md font-medium text-gray-700"
+          >Invitados y Participantes</Label
         >
-        <Button
-          @click="addPerson"
-          type="button"
-          variant="outline"
-          class="group inline-flex items-center m-3 justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
-        >
+        <Button @click="addPerson" type="button" variant="outline">
           <PlusIcon
             class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
           />
@@ -177,16 +222,12 @@
       <!-- Empty State -->
       <div
         v-if="person.length === 0"
-        class="text-center py-16 border border-gray-300 rounded"
+        class="text-center border rounded p-4 text-muted-foreground"
       >
-        <div
-          class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
-        >
-          <SearchIcon class="h-6 w-6" />
+        <div class="flex justify-center">
+          <SearchIcon class="size-4" />
         </div>
-        <h3 class="font-medium text-gray-500">
-          No hay invitados o participantes
-        </h3>
+        <h3 class="font-medium">No hay invitados ni participantes</h3>
       </div>
     </div>
 
@@ -232,6 +273,7 @@
               <FormField
                 :name="'abscents.' + index + '.estado'"
                 v-slot="{ componentField }"
+                model-value="Presente"
               >
                 <FormItem class="w-3/4">
                   <FormControl>
@@ -334,7 +376,8 @@ import SelectGroup from "@/components/ui/select/SelectGroup.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import { useFormContext } from "vee-validate";
 import type { FormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
-import type { Militantes } from "@/interface/Militante";
+import type { Militant } from "@/interface/Militante";
+import { Label } from "@/components/ui/label";
 
 const {
   cores,
@@ -343,7 +386,7 @@ const {
 } = defineProps<{
   cores?: any[];
   edit?: true;
-  militantes: Militantes[];
+  militantes: Militant[];
 }>();
 
 defineEmits(["update"]);

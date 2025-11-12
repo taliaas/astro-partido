@@ -108,9 +108,7 @@ const { claims } = defineProps<{ claims: Claims[] }>();
 const roles: roleEnum[] = [
   roleEnum.Admin,
   roleEnum.Cmte,
-  roleEnum.Func,
   roleEnum.Gnral,
-  roleEnum.Ideologico,
   roleEnum.mtte,
 ];
 const selectRole = ref(roles[0]);

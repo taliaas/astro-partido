@@ -57,9 +57,9 @@ export default class UserService {
     }
   }
 
-  async getUserByEmail(email: string, token: string) {
+  async getUserByEmail(token: string) {
     try {
-      const response = await fetch(`${API_URL}/user/data/${email}`, {
+      const response = await fetch(`${API_URL}/auth/verify/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

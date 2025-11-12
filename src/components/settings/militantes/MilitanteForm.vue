@@ -188,17 +188,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FormField } from "@/components/ui/form";
-import FormControl from "@/components/ui/form/FormControl.vue";
-import FormItem from "@/components/ui/form/FormItem.vue";
-import FormLabel from "@/components/ui/form/FormLabel.vue";
-import FormMessage from "@/components/ui/form/FormMessage.vue";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import Input from "@/components/ui/input/Input.vue";
-import Select from "@/components/ui/select/Select.vue";
-import SelectContent from "@/components/ui/select/SelectContent.vue";
-import SelectItem from "@/components/ui/select/SelectItem.vue";
-import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
-import SelectValue from "@/components/ui/select/SelectValue.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Militant } from "@/interface/Militante";
 import {
   militanteSchema,

@@ -165,12 +165,12 @@ const saveCore = () => {};
             <td class="h-10 px-4 text-left">{{ core.name }}</td>
             <td class="h-10 px-4 text-center">{{ core.comite.name }}</td>
             <td class="h-10 px-4 text-center">
-              {{ core.generalSecretary.firstname }}
-              {{ core.generalSecretary.lastname }}
+              {{ core.generalSecretary?.firstname }}
+              {{ core.generalSecretary?.lastname }}
             </td>
             <td class="h-10 px-4 text-center">
-              {{ core.operationSecretary.firstname }}
-              {{ core.operationSecretary.lastname }}
+              {{ core.operationSecretary?.firstname }}
+              {{ core.operationSecretary?.lastname }}
             </td>
             <td class="h-10 px-4 text-center">
               <Badge variant="outline">{{ core?.militants?.length }}</Badge>

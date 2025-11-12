@@ -48,8 +48,8 @@
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <!-- First Name -->
                   <div>
-                    <label class="block text-sm font-medium text-gray-700"
-                      >Nombre</label
+                    <Label class="block text-sm font-medium text-gray-700"
+                      >Nombre</Label
                     >
                     <Input
                       v-model="user.name"
@@ -59,8 +59,8 @@
                   </div>
                   <!-- Email -->
                   <div>
-                    <label class="block text-sm font-medium text-gray-700"
-                      >Correo</label
+                    <Label class="block text-sm font-medium text-gray-700"
+                      >Correo</Label
                     >
                     <Input
                       v-model="user.email"
@@ -70,8 +70,8 @@
                   </div>
                   <!-- Nucleo -->
                   <div>
-                    <label class="block text-sm font-medium text-gray-700"
-                      >Núcleo</label
+                    <Label class="block text-sm font-medium text-gray-700"
+                      >Núcleo</Label
                     >
                     <Input
                       v-model="user.core.name"
@@ -82,8 +82,8 @@
                   </div>
                   <!-- Role (Read-only) -->
                   <div>
-                    <label class="block text-sm font-medium text-gray-700"
-                      >Rol</label
+                    <Label class="block text-sm font-medium text-gray-700"
+                      >Rol</Label
                     >
                     <Input
                       type="text"
@@ -95,22 +95,19 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4 border-t my-5">
-                  <button
+                <div class="flex justify-end space-x-4">
+                  <Button
+                    variant="outline"
                     type="button"
                     @click="openChangePasswordModal"
-                    class="inline-flex m-2 items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     <LockIcon class="w-4 h-4 mr-2" />
                     Cambiar contraseña
-                  </button>
-                  <button
-                    type="submit"
-                    class="inline-flex m-2 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
+                  </Button>
+                  <Button variant="default" type="submit">
                     <SaveIcon class="w-4 h-4 mr-2" />
                     Guardar
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -118,7 +115,7 @@
         </div>
       </div>
       <div v-if="activeSection === 'sanciones'" class="flex-1">
-        <Sanciones :sanctions="user.militante.sanciones"/>
+        <Sanciones :sanctions="user.militante.sanciones" />
       </div>
 
       <div v-if="activeSection === 'traslados'" class="flex-1">
@@ -137,8 +134,8 @@
         </h3>
         <form @submit.prevent="handlePasswordChange" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Contraseña actual</label
+            <Label class="block text-sm font-medium text-gray-700"
+              >Contraseña actual</Label
             >
             <Input
               v-model="passwordForm.current"
@@ -147,8 +144,8 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Nueva contraseña</label
+            <Label class="block text-sm font-medium text-gray-700"
+              >Nueva contraseña</Label
             >
             <Input
               v-model="passwordForm.new"
@@ -157,8 +154,8 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Confirmar nueva contraseña</label
+            <Label class="block text-sm font-medium text-gray-700"
+              >Confirmar nueva contraseña</Label
             >
             <Input
               v-model="passwordForm.confirm"
@@ -167,18 +164,10 @@
             />
           </div>
           <div class="flex justify-end space-x-3">
-            <button
-              @click="showPasswordModal = false"
-              class="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
+            <Button variant="outline" @click="showPasswordModal = false">
               Cancel
-            </button>
-            <button
-              type="submit"
-              class="px-4 py-2 mr-4 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700"
-            >
-              Guardar
-            </button>
+            </Button>
+            <Button variant="default" type="submit"> Guardar </Button>
           </div>
         </form>
       </div>
@@ -193,6 +182,8 @@ import { reactive, ref } from "vue";
 import Input from "../ui/input/Input.vue";
 import Sanciones from "@/components/Profile/Sanciones.vue";
 import Traslados from "@/components/Profile/Traslados.vue";
+import Button from "@/components/ui/button/Button.vue";
+import { Label } from "@/components/ui/label";
 
 const { user: data } = defineProps<{ user: any }>();
 

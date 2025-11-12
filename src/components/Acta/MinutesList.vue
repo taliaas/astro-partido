@@ -58,6 +58,7 @@
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
+                      <SelectItem value="all">Todos los tipos</SelectItem>
                       <SelectItem v-for="type in typeMinutes" :key="type.value" :value="type.value">{{ type.name }}
                       </SelectItem>
                     </SelectGroup>
@@ -122,11 +123,11 @@
                   <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ tableHeaders[4] }}
                   </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow v-for="(acta, index) in actas.data" :key="acta.id"
+                <TableRow v-for="(acta, index) in actas?.data" :key="acta.id"
                   class="hover:bg-gray-50/50 transition-colors duration-200">
                   <TableCell class="font-medium pl-8">{{ index + 1 }}</TableCell>
                   <TableCell class="pl-6">{{ acta.name }}</TableCell>
@@ -169,7 +170,7 @@
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('retry', acta)"
                           v-if="acta.status === Status.ERROR || acta.status === Status.CREATE">
-                          <FilePenLine class="h-4 w-4" />
+                          <FileCheck class="size-4"/>
                           Procesar
                         </DropdownMenuItem>
                         <DropdownMenuItem v-if="
@@ -179,13 +180,20 @@
                           <FileSearch class="h-4 w-4" />
                           Revisar
                         </DropdownMenuItem>
+                        <DropdownMenuItem v-if=" currentUser.role.name === roleEnum.Cmte &&
+                          acta.status !== Status.ERASER 
+                        " @click="handleAction('observation', acta)">
+                        <FilePenLine class="h-4 w-4" />
+                          Observaciones
+                        </DropdownMenuItem>
                         <DropdownMenuItem @click="handleAction('export', acta)"
                           v-if="hasPermission('Documentos', 'export')">
                           <Download class="h-4 w-4" />
                           Exportar
                         </DropdownMenuItem>
-                        <DropdownMenuItem v-if="hasPermission('Documentos', 'delete')"
-                          @click="handleAction('eliminar', acta)" class="text-red-600 border-t focus:text-red-600">
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem v-if="hasPermission('Documentos', 'delete')" variant="destructive"
+                          @click="handleAction('eliminar', acta)">
                           <TrashIcon class="h-4 w-4" />
                           Eliminar
                         </DropdownMenuItem>
@@ -197,8 +205,8 @@
             </Table>
 
             <!-- Empty State -->
-            <div v-if="actas.data?.length === 0" class="text-center py-16">
-              <div class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
+            <div v-if="actas?.data?.length === 0" class="text-center border p-4">
+              <div class="mx-auto h-10 w-10 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center">
                 <SearchIcon class="h-6 w-6" />
               </div>
               <h3 class="mt-4 text-sm font-medium text-gray-900">
@@ -317,17 +325,20 @@
       </DialogContent>
     </Dialog>
 
+    <Observation :minute-id="currentsMinute" v-model:open="openModalObserv"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import { statusMap } from "@/components/Acta/status";
+import UploadMinute from "@/components/Acta/UploadMinute.vue";
 import Label from "@/components/ui/label/Label.vue";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
 import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
 import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
+import { roleEnum } from "@/enum/roleEnum";
 import { Status } from "@/enum/Status";
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
@@ -343,6 +354,7 @@ import {
   ChevronRight,
   Download,
   Eye,
+  FileCheck,
   FilePenLine,
   FileSearch,
   Loader2,
@@ -356,19 +368,20 @@ import { reactive, ref } from "vue";
 import { toast } from "vue-sonner";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "../ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from "../ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../ui/table";
-import UploadMinute from "@/components/Acta/UploadMinute.vue";
+import Observation from "@/components/Acta/Ordinary/Observation.vue";
 
 const emit = defineEmits(["test"])
-const {actas: actasResponse, type, page, order, nucleos } = defineProps<{
+const {actas: actasResponse, type, page, order, nucleos, session } = defineProps<{
   actas: any;
   type: string;
   page: number;
   order: any;
   nucleos: any;
+  session: any
 }>();
 
 useSse("minute.status",({id,status})=>{
@@ -378,19 +391,21 @@ useSse("minute.status",({id,status})=>{
   }  
 })
 
+const currentUser = session
+const currentPage = ref(page)
+const currentsMinute = ref<any>(null);
+const currentCore = ref<number>(1)
 const actas = reactive(actasResponse)
 const searchParams = useUrlSearchParams()
 const hasPermission = usePermissions()
 const mode = ref('model')
-const currentCore = ref<number>(1)
 const selectedCore = ref(1)
 const openModal = ref(false)
 const showUploadDialog = ref(false);
+const openModalObserv = ref(false)
 const showDelete = ref(false);
-const currentPage = ref(page)
 const hasNextPage = ref(actas?.page_total)
 const update = ref(false)
-const currentsMinute = ref<any>(null);
 const sort = ref<"ASC" | "DESC" | null >(order);
 
 function getDefaultFilterDate() {
@@ -457,7 +472,7 @@ const handleFilterByValue = (filter: string,value: any) => {
   navigate("?"+query.toString())
 }
 
-const typeMinutes = [{value: 'all', name: 'Todos'},{value:'ro', name: 'Acta Ordinaria'}, {value:'cp', name: 'Círculo Político'}, {value:'ex', name: 'Acta Extraordinaria'}]
+const typeMinutes = [{value:'Ordinaria', name: 'Acta Ordinaria'}, {value:'Circulo Politico', name: 'Círculo Político'}, {value:'Extraordinaria', name: 'Acta Extraordinaria'}]
 
 const statuses = [Status.CREATE, Status.ERROR, Status.PENDIENTE, Status.PROCESADA, Status.PROCESSING]
 
@@ -493,6 +508,9 @@ const handleAction = (action: any, acta: any) => {
   }
   else if(action === "retry"){
     openModal.value = true
+  }
+  else if( action === "observation"){
+    openModalObserv.value = true
   }
   else if (action === "export") {
     if (acta.name !== "Acta Ordinaria") {
