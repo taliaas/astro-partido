@@ -96,7 +96,7 @@ export interface ComputoData {
 }
 let temp = ref();
 const selectDate = ref("2023-01");
-const { comite, computo } = defineProps<{
+const { comite, computos } = defineProps<{
   comite: Array<{
     id: number;
     name: string;
@@ -106,7 +106,7 @@ const { comite, computo } = defineProps<{
       militantes: any[];
     }>;
   }>;
-  computo: ComputoData[];
+  computos: ComputoData[];
 }>();
 
 const listTable = [
@@ -122,7 +122,7 @@ const getAttendanceByCore = (id: number) => {
   const value = selectDate.value;
   const [year, month] = value.split("-");
 
-  temp.value = computo
+  temp.value = computos
     .find(
       (item) =>
         item.year === Number(year) &&
@@ -149,7 +149,7 @@ const getFechas = (id: number) => {
 
   let fechaE: Date;
   let fechaR: Date;
-  const data = computo.find(
+  const data = computos.find(
     (item) =>
       item.year === Number(year) &&
       item.month === Number(month) &&

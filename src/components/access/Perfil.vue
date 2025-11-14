@@ -74,7 +74,7 @@
                       >Núcleo</Label
                     >
                     <Input
-                      v-model="user.core.name"
+                      v-model="user.militant.core.name"
                       type="text"
                       readonly
                       class="mt-1 block w-full rounded border-gray-300 shadow-sm bg-gray-50"

@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -20,19 +21,17 @@ import {
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { FileTextIcon, Trash2Icon, UploadCloudIcon } from "lucide-vue-next";
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { toast } from "vue-sonner";
 
-const { showDialog } = defineProps<{
-  showDialog: boolean;
-}>();
+const open = defineModel<boolean>("open");
 
-const tipoActa = ref("ro");
-const mode = ref("model");
+const inputRef = useTemplateRef("inputRef");
+const tipoActa = ref("Ordinaria");
+const mode = ref("Model");
 const uploadedFiles = ref<File[]>([]);
 const loading = ref(false);
 const isDragging = ref(false);
-const showUploadDialog = ref(showDialog);
 
 //cargar acta
 const handleDrop = async () => {
@@ -48,7 +47,7 @@ const handleDrop = async () => {
   });
   try {
     await actions.minute.uploadMinutes.orThrow(formData);
-    showUploadDialog.value = false;
+    open.value = false;
     uploadedFiles.value = [];
     navigate("/minutes");
   } catch (error: any) {
@@ -93,7 +92,7 @@ const close = () => {};
 </script>
 
 <template>
-  <Dialog :open="showUploadDialog" @update:open="showUploadDialog = $event">
+  <Dialog v-model:open="open">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>Cargar actas</DialogTitle>
@@ -113,9 +112,11 @@ const close = () => {};
               <SelectValue placeholder="Seleccione" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ro">Acta Ordinaria</SelectItem>
-              <SelectItem value="cp">Círculo Político</SelectItem>
-              <SelectItem value="ex">Acta Extraordinaria</SelectItem>
+              <SelectItem value="Ordinaria">Acta Ordinaria</SelectItem>
+              <SelectItem value="Circulo Politico">Círculo Político</SelectItem>
+              <SelectItem value="Extraordinaria"
+                >Acta Extraordinaria</SelectItem
+              >
             </SelectContent>
           </Select>
         </div>
@@ -123,18 +124,10 @@ const close = () => {};
           Seleccione el procesamiento:
         </Label>
         <div class="space-x-2">
-          <Button
-            @click="mode = 'spacy'"
-            :disabled="mode === 'spacy'"
-            :data-disabled="mode === 'spacy'"
-            class="opacity-50 data-[disabled=true]:opacity-100"
+          <Button @click="mode = 'Spacy'" :disabled="mode !== 'Spacy'"
             >Spacy</Button
           >
-          <Button
-            @click="mode = 'model'"
-            :disabled="mode === 'model'"
-            :data-disabled="mode === 'model'"
-            class="opacity-50 data-[disabled=true]:opacity-100"
+          <Button @click="mode = 'Model'" :disabled="mode !== 'Model'"
             >Model</Button
           >
         </div>
@@ -160,7 +153,7 @@ const close = () => {};
           o
           <Button
             variant="link"
-            @click="$refs.fileInput.click()"
+            @click="inputRef?.click()"
             class="font-medium text-blue-600 hover:text-blue-500"
           >
             seleccione desde su dispositivo
@@ -169,8 +162,8 @@ const close = () => {};
         <p class="mt-1 text-xs text-gray-500">
           DOCX, PDF, hasta 10MB por archivo
         </p>
-        <Input
-          ref="fileInput"
+        <input
+          ref="inputRef"
           type="file"
           multiple
           accept=".pdf,.docx"
@@ -206,7 +199,9 @@ const close = () => {};
           </div>
           <Button
             @click="removeFile(file.name)"
-            class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600"
+            size="icon"
+            variant="ghost"
+            class="hover:text-destructive-foreground cursor-pointer"
           >
             <Trash2Icon class="size-4" />
           </Button>
@@ -214,13 +209,11 @@ const close = () => {};
       </div>
 
       <DialogFooter>
-        <Button
-          type="reset"
-          variant="outline"
-          @click="showUploadDialog = false"
+        <DialogClose
+          ><Button type="reset" variant="outline" @click="open = false">
+            Cancelar
+          </Button></DialogClose
         >
-          Cancelar
-        </Button>
         <Button
           @click="handleDrop"
           :disabled="!uploadedFiles.length || loading"

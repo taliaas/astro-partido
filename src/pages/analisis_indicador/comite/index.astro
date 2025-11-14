@@ -1,0 +1,11 @@
+---
+import Analisis from "@/components/Indicators/Analisis.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import { getSession } from "auth-astro/server.ts";
+
+const session: any = await getSession(Astro.request);
+---
+
+<RootLayout>
+  <Analisis client:load />
+</RootLayout>

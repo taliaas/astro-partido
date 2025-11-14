@@ -42,6 +42,24 @@ export default class MinutesService {
     }
   }
 
+  async getAgreements(jwt: any) {
+    try {
+      const response = await fetch(`${API_URL}/minute/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   //obtener las actas recientes
   async getLatestMinute(token: any) {
     try {

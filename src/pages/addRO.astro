@@ -1,10 +1,9 @@
 ---
-import { getSession } from "auth-astro/server";
-import UserService from "../services/UserService";
-import CoreService from "../services/CoreService";
-import RootLayout from "../layouts/RootLayout.astro";
 import MinutesOrdinary from "@/components/Acta/Ordinary/Create/MinutesOrdinary.vue";
 import MilitantService from "@/services/MilitantService";
+import MinutesService from "@/services/Minutes";
+import { getSession } from "auth-astro/server";
+import RootLayout from "../layouts/RootLayout.astro";
 
 const session = await getSession(Astro.request);
 const n_user = session?.user;
@@ -15,29 +14,6 @@ if (Astro.request.method === "POST") {
   data = JSON.stringify(formdata.get("data"));
 }
 
-async function getUser() {
-  const services = new UserService();
-  try {
-    return await services.getUserByEmail(
-      n_user?.email ?? "",
-      (session as any).jwt
-    );
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-async function getCore() {
-  const service = new CoreService();
-  try {
-    return await service.getAllCore((session as any).jwt);
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-const user = await getUser();
-
 async function getMilitantes() {
   const service = new MilitantService();
   try {
@@ -46,14 +22,21 @@ async function getMilitantes() {
     console.error(e);
   }
 }
+async function getAgreements() {
+  const service = new MinutesService();
+  try {
+    return await service.getAgreements((session as any).jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+const agreements = await getAgreements();
 const militantes = await getMilitantes();
-const cores = await getCore();
 ---
 
 <RootLayout>
   <MinutesOrdinary
-    user={user}
-    cores={cores}
+    agreements={agreements}
     militantes={militantes}
     client:load
   />

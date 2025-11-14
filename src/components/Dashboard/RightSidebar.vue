@@ -75,41 +75,22 @@
           <h3>{{ ev.title }}</h3>
         </div>
       </div>
-      <Collapsible>
-        <CollapsibleTrigger
-          class="flex items-center w-full justify-between text-lg font-medium"
-        >
-          Acuerdos
-          <ChevronDownIcon class="h-4 w-4" />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div v-if="militante?.agreements.length === 0">
-            <p class="text-md text-gray-500">
-              No hay acuerdos a tu responsabilidad.
-            </p>
-          </div>
-          <div v-for="item in militante?.agreements" :key="item.id">
-            <div class="flex justify-between space-y-2">
-              <p>{{ item.descripcion }}</p>
-              <p class="font-sans text-muted-foreground">{{ item.fecha }}</p>
-            </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { usePermissions } from "@/utils/auth-client";
 import {
   type DateValue,
   getLocalTimeZone,
   today,
 } from "@internationalized/date";
-import { actions } from "astro:actions";
+import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { ChevronDownIcon } from "lucide-vue-next";
 import { onMounted, reactive, ref, type Ref, watch } from "vue";
+import { toast } from "vue-sonner";
 import Button from "../ui/button/Button.vue";
 import Calendar from "../ui/calendar/Calendar.vue";
 import {
@@ -123,10 +104,6 @@ import SelectContent from "../ui/select/SelectContent.vue";
 import SelectItem from "../ui/select/SelectItem.vue";
 import SelectTrigger from "../ui/select/SelectTrigger.vue";
 import SelectValue from "../ui/select/SelectValue.vue";
-import { toast } from "vue-sonner";
-import { ActionError } from "astro:actions";
-import { usePermissions } from "@/utils/auth-client";
-import type { Militantes } from "@/interface/Militante";
 
 interface EventData {
   id: number;
@@ -134,9 +111,6 @@ interface EventData {
   title: string;
 }
 
-const { militante } = defineProps<{
-  militante: Militantes;
-}>();
 const hasPermission = usePermissions();
 
 const newEvent = reactive({

@@ -1,26 +1,16 @@
-
-export interface Militante {
-    id: number;
-    firstname: string;
-    lastname: string;
-    email: string;
-    organization: string;
-    estado: boolean;
-    address: string;
-    phone: string;
-}
+import type { Militant } from "@/interface/Militante";
 
 export interface CauseDetails {
-    count: number;
-    total: number;
-    militantes: Militante[];
-    porcent: number;
+  count: number;
+  total: number;
+  militantes: Militant[];
+  porcent: number;
 }
 
 export interface AbsentCausesWithMilitante {
-    [cause: string]: {
-        [comite: string]: {
-            [nucleo: string]: CauseDetails;
-        };
+  [cause: string]: {
+    [comite: string]: {
+      [nucleo: string]: CauseDetails;
     };
+  };
 }

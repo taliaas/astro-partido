@@ -23,7 +23,7 @@ export const retryModel = defineAction({
     const session: any = await getSession(ctx.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
     const res = await fetch(
-      `http://localhost:5000/minutes/retry/${actaID}/${mode}`,
+      `http://localhost:5000/minute/retry/${actaID}/${mode}`,
       {
         method: "POST",
         headers: {
@@ -125,8 +125,12 @@ export const uploadMinutes = defineAction({
   accept: "form",
   input: z.object({
     files: z.any().array(),
-    type: z.string().refine((val) => ["ro", "cp"].includes(val)),
-    mode: z.enum(["spacy", "model"]),
+    type: z
+      .string()
+      .refine((val) =>
+        ["Ordinaria", "Circulo Politico", "Extraordinaria"].includes(val)
+      ),
+    mode: z.enum(["Spacy", "Model"]),
   }),
   async handler({ files, type, mode }, context) {
     const session: any = await getSession(context.request);
@@ -138,7 +142,7 @@ export const uploadMinutes = defineAction({
       formData.append("files", f);
     });
     const res = await fetch(
-      `http://localhost:5000/minutes/upload/${mode}?type=${type}`,
+      `http://localhost:5000/minute/upload?type=${type}&mode=${mode}`,
       {
         method: "POST",
         body: formData,

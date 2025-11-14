@@ -1,5 +1,5 @@
 ---
-import {getSession} from "auth-astro/server";
+import { getSession } from "auth-astro/server";
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import MinutesService from "../services/Minutes";
@@ -41,7 +41,7 @@ const cards = [
   {
     title: "Documentos Pendientes",
     value: list?.pending ?? 0,
-    icon: "FileText",
+    icon: "FileClock",
   },
   {
     title: "Documentos Procesados",
@@ -54,13 +54,9 @@ const cards = [
     icon: "Files",
   },
 ];
-const militante = await getMilitante()
+const militante = await getMilitante();
 ---
 
 <RootLayout>
-  <DashboardHome
-    documents={documents!}
-    cards={cards} 
-    militante={militante} client:load
-  />
+  <DashboardHome documents={documents!} cards={cards} client:load />
 </RootLayout>

@@ -1,0 +1,46 @@
+---
+import IndicatorDesc from "@/components/Indicators/IndicatorDesc.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import ComiteService from "@/services/ComiteService";
+import ComputoService from "@/services/Computo";
+import { getSession } from "auth-astro/server";
+
+const session: any = await getSession(Astro.request);
+const { indicator } = Astro.params;
+const searchParams = Astro.url.searchParams;
+const date = searchParams.get("date") ?? "";
+const [year, month] = date.split("-");
+
+if (!indicator) {
+  throw new Error("No id provided");
+}
+
+async function getComite() {
+  const service = new ComiteService();
+  try {
+    return service.getAllComite(session?.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+async function getComputo() {
+  const service = new ComputoService();
+  try {
+    return await service.getAll(month, year, indicator ?? "", session?.jwt);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+const comite = await getComite();
+const computos = await getComputo();
+---
+
+<RootLayout>
+  <IndicatorDesc
+    indicator={indicator}
+    computos={computos}
+    comite={comite}
+    client:load
+  />
+</RootLayout>

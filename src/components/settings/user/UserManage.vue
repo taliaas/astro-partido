@@ -141,7 +141,7 @@
             >
               <td class="p-4 text-md">{{ user.name }}</td>
               <td class="p-4 text-md">{{ user.email }}</td>
-              <td class="p-4 text-md">{{ user.core.name }}</td>
+              <td class="p-4 text-md">{{ user.militant.core.name }}</td>
               <td class="p-4 text-md text-center">{{ user.role?.name }}</td>
               <td class="p-4 text-md">
                 <span

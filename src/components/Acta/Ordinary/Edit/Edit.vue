@@ -12,11 +12,7 @@
 
         <!--  Información 2 -->
         <section v-show="currentStep === 2" class="space-y-4">
-          <SecondStep :acta />
-        </section>
-        <!--  Información 3 -->
-        <section v-show="currentStep === 3" class="space-y-4">
-          <ThirdStep :militantes />
+          <SecondStep :militants="militantes" :acta />
         </section>
       </div>
       <div class="w-full flex justify-between pt-4">
@@ -48,19 +44,15 @@
 </template>
 
 <script setup lang="ts">
-import {
-  form_schema,
-  type FormSchema,
-} from "@/components/Acta/Ordinary/Create/form_schema";
-import FirstStep from "@/components/Ordinary/Edit/FirstStep.vue";
-import SecondStep from "@/components/Ordinary/Edit/SecondStep.vue";
-import ThirdStep from "@/components/Ordinary/Edit/ThirdStep.vue";
+import { form_schema } from "@/components/Acta/Ordinary/Create/form_schema";
+import FirstStep from "@/components/Acta/Ordinary/Edit/FirstStep.vue";
+import SecondStep from "@/components/Acta/Ordinary/Edit/SecondStep.vue";
 import Button from "@/components/ui/button/Button.vue";
-import type { Militantes } from "@/interface/Militante";
+import type { Militant } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { ChevronLeft, ChevronRight, Upload } from "lucide-vue-next";
+import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -91,7 +83,7 @@ interface actaData {
 const { cores, acta, militantes } = defineProps<{
   cores: any[];
   acta: actaData;
-  militantes: Militantes[];
+  militantes: Militant[];
 }>();
 const currentStep = ref(1);
 
@@ -113,7 +105,6 @@ const form = useForm({
     invitados: acta.invitados ?? [],
     agreements: acta.agreements,
     development: acta.development,
-    observaciones: acta.observaciones,
     fechaCP: acta.fechaCP,
     fechaPrep: acta.fechaPrep,
     fechaProx: acta.fechaProx,

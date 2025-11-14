@@ -2,13 +2,14 @@ import type { roleEnum } from "@/enum/roleEnum";
 
 export const modules = [
   "Documentos",
+  "Acuerdos",
   "Análisis",
   "Reportes",
   "Usuarios",
   "Militantes",
   "Núcleos",
   "Procesos",
-  "Eventos"
+  "Eventos",
 ] as const;
 export type Module = (typeof modules)[number];
 
@@ -27,16 +28,12 @@ export function hasPermissions(module: string, action: string, claims: any[]) {
     (claim: any) =>
       claim.module === module &&
       Array.isArray(claim.actions) &&
-      claim.actions.includes(action),
-  )
+      claim.actions.includes(action)
+  );
   return check;
 }
 
 export function hasRoles(roles: roleEnum[], user: any) {
-  const role = user?.role?.name
+  const role = user?.role?.name;
   return roles.includes(role as roleEnum);
 }
-
-
-
-

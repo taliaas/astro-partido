@@ -35,7 +35,7 @@
           <Documents :documents />
         </div>
         <div class="w-fit pt-12">
-          <RightSidebar :militante />
+          <RightSidebar />
         </div>
       </div>
     </div>
@@ -44,19 +44,23 @@
 
 <script setup lang="ts">
 import { watch, ref } from "vue";
-import { Activity, FileCheck2, Files, FileText } from "lucide-vue-next";
+import {
+  Activity,
+  FileCheck2,
+  FileClock,
+  Files,
+  FileText,
+} from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Documents from "../Home/Documents.vue";
 import RightSidebar from "./RightSidebar.vue";
 import { useSearchStore } from "@/utils/store.ts";
-import type { Militantes } from "@/interface/Militante";
 
-const icons = { Activity, FileCheck2, Files, FileText };
+const icons = { Activity, FileCheck2, Files, FileText, FileClock };
 
-const { documents, cards, militante } = defineProps<{
+const { documents, cards } = defineProps<{
   documents: any[];
   cards: any;
-  militante: Militantes;
 }>();
 
 const searchStore = useSearchStore();
