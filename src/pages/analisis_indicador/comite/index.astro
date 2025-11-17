@@ -1,11 +1,25 @@
 ---
 import Analisis from "@/components/Indicators/Analisis.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
+import ComputoService from "@/services/Computo";
 import { getSession } from "auth-astro/server.ts";
 
 const session: any = await getSession(Astro.request);
+const searchParams = Astro.url.searchParams;
+const date = searchParams.get("date") ?? "";
+const [year, month] = date.split("-");
+
+async function getComputo() {
+  const service = new ComputoService();
+  try {
+    return await service.getAll(month, year, "", session?.jwt);
+  } catch (e) {
+    console.log(e);
+  }
+}
+const computos = await getComputo();
 ---
 
 <RootLayout>
-  <Analisis client:load />
+  <Analisis computos={computos} year={year} client:load />
 </RootLayout>

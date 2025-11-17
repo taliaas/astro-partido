@@ -1,9 +1,13 @@
-import type { Indicadores } from "@/interface/Indicadores.ts";
 import type { Indicators } from "@/utils/indicators";
 import { API_URL } from "astro:env/client";
 
 export default class ComputoService {
-  async getAll(month: string, year: string, indicator: string, token?: string) {
+  async getAll(
+    month?: string,
+    year?: string,
+    indicator?: string,
+    token?: string
+  ) {
     const searchParam = new URLSearchParams();
     if (month) searchParam.set("month", month);
     if (year) searchParam.set("year", year);
@@ -132,7 +136,7 @@ export default class ComputoService {
     }
   }
 
-  async updateComputo(id: any, data: Indicadores) {
+  async updateComputo(id: any, data: any) {
     try {
       const response = await fetch(`${API_URL}/computo/${id}`, {
         method: "PATCH",

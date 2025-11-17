@@ -1,31 +1,10 @@
-import type {Invitados} from "@/interface/Invitados.ts";
+import type { Invitados } from "@/interface/Invitados.ts";
+import type { indicators } from "@/utils/indicators";
 
-export interface Indicadores{
-    ptos: number;
-    invitados: Invitados[]
-    cp: number;
-    cp_agree: number;
-    totalDeAcuerdos: number;
-    participacionOrgSup: number;
-    rendicion: number;
-    usoComisiones: number;
-    implOrtcsOrgSup: number;
-    analisisActFtal: number;
-    discusionDelitoCorrupcion: number;
-    analisisObjs: number;
-    politicaDeCuadros: number;
-    atencionFEU: number;
-    atencionUJC: number;
-    funcionamientoSindicato: number;
-    reglamentosEstatutos: number;
-    analisisAusenciasRO: number;
-    otrosAnalisisDisciplinarios: number;
-    planDeTrabajo: number;
-    sanciones: number;
-    crecimiento: number;
-    desactivacion: number;
-    evaluacion: number;
-    guardiaPCC: number;
-    acuerdosSalidasExternas: number;
-    trasladosIncorporaciones: number;
+export interface Indicator {
+  id: string;
+  key: keyof typeof indicators;
+  value: number | null;
+  text: string;
+  sub: any;
 }
