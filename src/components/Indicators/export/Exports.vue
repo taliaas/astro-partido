@@ -9,18 +9,22 @@
 
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
-import { buildExcel, type DataComputo } from "@/utils/excel";
+import type { Computo } from "@/interface/Indicadores";
+import { buildExcel } from "@/utils/excel";
 import { Download } from "lucide-vue-next";
 import { ref } from "vue";
 
-const { computos } = defineProps<{ computos: DataComputo[] }>();
+const { computos, month } = defineProps<{
+  computos: Computo[];
+  month: string;
+}>();
 const loading = ref(false);
 
 // Función básica de exportación
 const exportToExcel = async (filename: string = "Asistencia.xlsx") => {
   try {
     loading.value = true;
-    const workbook = buildExcel(computos);
+    const workbook = buildExcel(computos, month);
     // Generar y descargar
     const buffer = await workbook.xlsx.writeBuffer();
     downloadExcel(buffer, filename);

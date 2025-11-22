@@ -1,6 +1,6 @@
 ---
 import CoreService from "../../services/CoreService";
-import Desactivaciones from "../../components/Process/Desactivacion.vue"
+import Desactivaciones from "../../components/Process/Desactivacion.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
 import ProcessLayout from "../../layouts/ProcessLayout.astro";
 import DeactivationService from "../../services/DeactivationService";
@@ -8,43 +8,47 @@ import MilitantService from "@/services/MilitantService";
 import { getSession } from "auth-astro/server";
 
 const session = (await getSession(Astro.request)) as any;
-const searchParams = Astro.url.searchParams
-const page = searchParams.get("page") || 1
+const searchParams = Astro.url.searchParams;
+const page = searchParams.get("page") || 1;
 
 async function getCore() {
-    const service = new CoreService();
-    try {
-        return await service.getAllCore(session.jwt);
-    } catch (e) {
-        console.error(e);
-    }
+  const service = new CoreService();
+  try {
+    return await service.getAllCore(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
-async function getDesactivation(page: any, session: any){
-    const service = new DeactivationService();
-    try {
-        return await service.getAllDesactivation(page, session);
-    } catch (e) {
-        console.error(e);
-    }
+async function getDesactivation(page: any, session: any) {
+  const service = new DeactivationService();
+  try {
+    return await service.getAllDesactivation(page, session);
+  } catch (e) {
+    console.error(e);
+  }
 }
-async function getMembers(): Promise<any[]>{
-    const service = new MilitantService()
-    try{
-        return await service.getAll()
-    }
-    catch(error){
-        console.error(error)
-        throw new Error()
-    }
+async function getMembers(): Promise<any[]> {
+  const service = new MilitantService();
+  try {
+    return await service.getAll(session.jwt, session.user.militant.core.id);
+  } catch (error) {
+    console.error(error);
+    throw new Error();
+  }
 }
-const members = await getMembers();
 
+const members = await getMembers();
 const cores = await getCore();
 const desactivations = await getDesactivation(page, session?.user);
 ---
 
 <RootLayout>
-    <ProcessLayout>
-        <Desactivaciones cores={cores} desactivations={desactivations} members={members} client:load/>
-    </ProcessLayout>
+  <ProcessLayout>
+    <Desactivaciones
+      cores={cores}
+      desactivations={desactivations}
+      members={members}
+      client:load
+    />
+  </ProcessLayout>
 </RootLayout>

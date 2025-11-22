@@ -31,7 +31,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="traza in trazas.logs" :key="traza.id" class="border-b">
+            <tr v-for="traza in trazas?.logs" :key="traza.id" class="border-b">
               <td class="text-center py-3 px-4 font-medium text-gray-900">
                 {{ traza.module }}
               </td>
@@ -290,7 +290,7 @@ const trazaSeleccionada = ref({
   expiresAt: "",
 });
 const modalAbierto = ref(false);
-const currentPage = ref(trazas.page);
+const currentPage = ref(trazas?.page);
 
 // Mantener currentPage sincronizado con trazas.page
 watch(

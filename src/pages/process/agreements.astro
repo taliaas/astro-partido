@@ -1,0 +1,28 @@
+---
+import { getSession } from "auth-astro/server";
+import ProcessLayout from "../../layouts/ProcessLayout.astro";
+import RootLayout from "../../layouts/RootLayout.astro";
+import ListAgreements from "@/components/Process/agreements/ListAgreements.vue";
+import MinutesService from "@/services/Minutes";
+
+const session = (await getSession(Astro.request)) as any;
+const searchParams = Astro.url.searchParams;
+const page = Number(searchParams.get("page") ?? 1);
+
+async function getAgreements() {
+  const service = new MinutesService();
+  try {
+    return await service.getAgreements(session.jwt);
+  } catch (error) {
+    console.error(error);
+    throw new Error();
+  }
+}
+const agreements = await getAgreements();
+---
+
+<RootLayout>
+  <ProcessLayout>
+    <ListAgreements client:load />
+  </ProcessLayout>
+</RootLayout>

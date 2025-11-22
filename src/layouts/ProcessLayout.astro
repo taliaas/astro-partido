@@ -10,19 +10,37 @@ const navigationItems = [
     id: "sancion",
     title: "Sanciones",
     route: "/process/",
-    enabled: await hasServerRoles([roleEnum.Cmte], Astro.request),
+    enabled: await hasServerRoles(
+      [roleEnum.Cmte, roleEnum.Admin, roleEnum.Gnral],
+      Astro.request
+    ),
   },
   {
     id: "traslado",
     title: "Traslados",
     route: "/process/trasfer",
-    enabled: await hasServerRoles([roleEnum.Cmte], Astro.request),
+    enabled: await hasServerRoles(
+      [roleEnum.Cmte, roleEnum.Admin, roleEnum.Gnral],
+      Astro.request
+    ),
   },
   {
     id: "desactivaciones",
     title: "Desactivaciones",
     route: "/process/deactivation",
-    enabled: await hasServerRoles([roleEnum.Cmte], Astro.request),
+    enabled: await hasServerRoles(
+      [roleEnum.Cmte, roleEnum.Admin, roleEnum.Gnral],
+      Astro.request
+    ),
+  },
+  {
+    id: "agreements",
+    title: "Acuerdos",
+    route: "/process/agreements/",
+    enabled: await hasServerRoles(
+      [roleEnum.Cmte, roleEnum.Admin, roleEnum.Gnral],
+      Astro.request
+    ),
   },
 ];
 ---
@@ -38,7 +56,7 @@ const navigationItems = [
 
   <div class="flex flex-col gap-8 md:flex-row">
     <!-- Barra lateral de navegación -->
-    <aside class="md:w-1/4">
+    <aside class="w-1/5">
       <nav class="grid gap-2 md:sticky md:top-20">
         {
           navigationItems.map(

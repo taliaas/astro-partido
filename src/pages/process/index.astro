@@ -21,22 +21,21 @@ async function getSanciones() {
   }
 }
 async function getCore() {
-    const service = new CoreService();
-    try {
-        return await service.getAllCore(session.jwt);
-    } catch (e) {
-        console.error(e);
-    }
+  const service = new CoreService();
+  try {
+    return await service.getAllCore(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
-async function getMembers(){
-  const service = new MilitantService()
-    try{
-    return await service.getAll()
-    }
-    catch(error){
-      console.error(error)
-      throw new Error()
-    }
+async function getMembers() {
+  const service = new MilitantService();
+  try {
+    return await service.getAll(session.jwt, session.user.militant.core.id);
+  } catch (error) {
+    console.error(error);
+    throw new Error();
+  }
 }
 const cores = await getCore();
 const sanciones = await getSanciones();
@@ -45,6 +44,11 @@ const members = await getMembers();
 
 <RootLayout>
   <ProcessLayout>
-    <Sanciones sanciones={sanciones} members={members} cores={cores} client:load />
+    <Sanciones
+      sanciones={sanciones}
+      members={members}
+      cores={cores}
+      client:load
+    />
   </ProcessLayout>
 </RootLayout>

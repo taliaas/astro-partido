@@ -1,3 +1,4 @@
+import type { Computo } from "@/interface/Indicadores";
 import ExcelJS, { type Workbook } from "exceljs";
 
 export interface DataComputo {
@@ -9,32 +10,60 @@ export interface DataComputo {
   difference: number;
 }
 
-export function buildExcel(computos: DataComputo[]) {
+const meses = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
+
+export function buildExcel(computos: Computo[], month: string) {
   const workbook = new ExcelJS.Workbook();
   workbook.calcProperties.fullCalcOnLoad = true;
-  const asistenciaWorkSheet = buildAsistenciaSheet(workbook);
-  for
-
-  const computoWorkSheet = buildComputoSheet(workbook);
-
+  const asistenciaWorkSheet = buildAsistenciaSheet(workbook, month);
+  computos.forEach((computo, index) => {
+    const total = computo.minute?.core?.militants?.length ?? 0;
+    const parte =
+      computo.indicators.find((ind) => ind.key === "asistencia")?.value ?? 0;
+    const resto = total - parte;
+    asistenciaWorkSheet.addRow([
+      index + 1,
+      computo.minute.core?.comite.name,
+      computo.minute.core?.name,
+      computo.minute.date,
+      computo.minute.createdAt,
+      total,
+      parte,
+      resto,
+    ]);
+  });
+  const computoWorkSheet = buildComputoSheet(workbook, month);
   return workbook;
 }
 
-function buildAsistenciaSheet(workbook: Workbook) {
+function buildAsistenciaSheet(workbook: Workbook, month: string) {
   const worksheet = workbook.addWorksheet(`Asistencia`);
   const $ = (key: string) => worksheet.getCell(key);
 
   worksheet.columns = [
-    { key: "empty", width: 1 },
-    { key: "id", width: 10 },
-    { key: "nombre", width: 25 },
-    { key: "email", width: 30 },
+    { key: "no", width: 5 },
+    { key: "cores", width: 10 },
+    { key: "date", width: 25 },
+    { key: "createdAt", width: 30 },
     { key: "edad", width: 10 },
     { key: "fechaRegistro", width: 15 },
   ];
 
   worksheet.mergeCells("B1:C1");
-  $("B1").value = "Mes";
+  $("B1").value = `Mes: ${meses[Number(month) - 1]}`;
 
   worksheet.mergeCells("D1:H1");
   $("D1").value = "CONTROL ASISTENCIA MILITANCIA PCC";
@@ -83,9 +112,19 @@ function buildAsistenciaSheet(workbook: Workbook) {
   return worksheet;
 }
 
-function buildComputoSheet(workbook: Workbook) {
+function buildComputoSheet(workbook: Workbook, month: string) {
   const worksheet = workbook.addWorksheet(`Computo`);
   const $ = (key: string) => worksheet.getCell(key);
+
+  worksheet.mergeCells("B21:Z1");
+  $("B1").value =
+    'UNIVERSIDAD TECNOLÓGICA DE LA HABANA  "JOSÉ ANTONIO ECHEVERRÍA". CUJAE';
+  $("B1").font = {
+    color: { argb: "FF0000" },
+    bold: true,
+    size: 10,
+    name: "Arial",
+  };
 
   return worksheet;
 }

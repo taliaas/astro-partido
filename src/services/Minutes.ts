@@ -44,7 +44,7 @@ export default class MinutesService {
 
   async getAgreements(jwt: any) {
     try {
-      const response = await fetch(`${API_URL}/minute/`, {
+      const response = await fetch(`${API_URL}/minute/agreements`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

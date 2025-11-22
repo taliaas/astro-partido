@@ -212,7 +212,9 @@
                       >{{ acta.core?.name || "-" }}</Button
                     >
                   </TableCell>
-                  <TableCell class="text-center">{{ acta.date }}</TableCell>
+                  <TableCell class="text-center">{{
+                    acta.createdAt
+                  }}</TableCell>
                   <TableCell class="text-center">
                     <TooltipProvider>
                       <Tooltip>
@@ -612,7 +614,7 @@ const tableHeaders = [
   "No.",
   "Nombre del acta",
   "Núcleo",
-  "Fecha",
+  "Fecha de Creación",
   "Estado",
   "",
 ];

@@ -1,7 +1,7 @@
 ---
 import MilitantService from "../../services/MilitantService";
-import {getSession} from "auth-astro/server";
-import Transfer from "../../components/Process/Traslado.vue"
+import { getSession } from "auth-astro/server";
+import Transfer from "../../components/Process/Traslado.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
 import ProcessLayout from "../../layouts/ProcessLayout.astro";
 import TrasladoService from "../../services/TrasladoService";
@@ -12,40 +12,44 @@ const searchParams = Astro.url.searchParams;
 const page = Number(searchParams.get("page") ?? 1);
 
 async function getTraslado(): Promise<any> {
-    const traslado = new TrasladoService();
-    try {
-        return await traslado.getAll(page, session);
-    } catch (e) {
-        console.error(e);
-    }
+  const traslado = new TrasladoService();
+  try {
+    return await traslado.getAll(page, session);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 async function getCore() {
-    const service = new CoreService();
-    try {
-        return await service.getAllCore(session.jwt);
-    } catch (e) {
-        console.error(e);
-    }
+  const service = new CoreService();
+  try {
+    return await service.getAllCore(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-async function getMembers(): Promise<any[]>{
-    const service = new MilitantService()
-    try{
-        return await service.getAll()
-    }
-    catch(error){
-        console.error(error)
-        throw new Error()
-    }
+async function getMembers(): Promise<any[]> {
+  const service = new MilitantService();
+  try {
+    return await service.getAll(session.jwt, session.user.militant.core.id);
+  } catch (error) {
+    console.error(error);
+    throw new Error();
+  }
 }
-const members = await getMembers()
-const traslados = await getTraslado()
+const members = await getMembers();
+const traslados = await getTraslado();
 const cores = await getCore();
 ---
 
 <RootLayout>
-    <ProcessLayout>
-        <Transfer traslados={traslados} members={members} cores={cores} client:load/>
-    </ProcessLayout>
+  <ProcessLayout>
+    <Transfer
+      traslados={traslados}
+      members={members}
+      cores={cores}
+      client:load
+    />
+  </ProcessLayout>
 </RootLayout>

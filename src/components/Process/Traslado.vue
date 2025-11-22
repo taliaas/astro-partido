@@ -357,8 +357,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -372,7 +370,14 @@ import Input from "@/components/ui/input/Input.vue";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
-import { Eye, MoreVerticalIcon, Pencil, PlusIcon, UploadIcon, XIcon } from "lucide-vue-next";
+import {
+  Eye,
+  MoreVerticalIcon,
+  Pencil,
+  PlusIcon,
+  UploadIcon,
+  XIcon,
+} from "lucide-vue-next";
 import { ref, computed } from "vue";
 import { toast } from "vue-sonner";
 
@@ -413,7 +418,7 @@ const currentTransfer = ref({
 
 // Computed
 const filteredTransfers = computed(() => {
-  return traslados.data.filter((transfer: any) => {
+  return traslados?.data?.filter((transfer: any) => {
     const matchesSearch =
       transfer?.militante.firstname
         .toLowerCase()
@@ -492,7 +497,5 @@ const saveTransfer = async () => {
   }
 };
 
-const saveMinute = async () => {
-
-}
+const saveMinute = async () => {};
 </script>

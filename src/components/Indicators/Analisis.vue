@@ -6,7 +6,6 @@
         <div class="flex justify-between p-2">
           <h1 class="text-2xl font-bold mb-6">Análisis por Indicador</h1>
         </div>
-
         {{ computos }}
         <div class="flex gap-4">
           <div class="relative flex-1">
@@ -27,7 +26,7 @@
             :model-value="searchParams.date as string"
             @update:model-value="handleModelFilter('date', $event as string)"
           />
-          <Exports :computos />
+          <Exports :computos :month />
         </div>
       </div>
       <!-- Indicators List with Collapsible Sections -->
@@ -76,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import Exports from "@/components/Indicators/Exports.vue";
+import Exports from "@/components/Indicators/export/Exports.vue";
 import {
   Collapsible,
   CollapsibleContent,
@@ -90,7 +89,7 @@ import { ChevronDownIcon, Search } from "lucide-vue-next";
 import { computed } from "vue";
 
 const selectedIndicator = computed(() => searchParams.indicator);
-const { computos, year } = defineProps<{ computos: any; year: string }>();
+const { computos, month } = defineProps<{ computos: any; month: string }>();
 
 const searchParams = useUrlSearchParams("history", {
   removeFalsyValues: true,

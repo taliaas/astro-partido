@@ -15,7 +15,10 @@ const navigationItems = [
     href: "/process",
     enabled:
       (await hasServerPermissions("Procesos", "read", Astro.request)) &&
-      (await hasServerRoles([roleEnum.Cmte], Astro.request)),
+      (await hasServerRoles(
+        [roleEnum.Cmte, roleEnum.Admin, roleEnum.Gnral],
+        Astro.request
+      )),
   },
   {
     name: "Cómputo",

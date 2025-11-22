@@ -513,7 +513,7 @@ const selectSanction = ref({
 
 // Computed
 const filteredSanctions = computed(() => {
-  return sanciones?.data.filter((sanction: any) => {
+  return sanciones?.data?.filter((sanction: any) => {
     const matchesSearch =
       sanction?.militante.firstname
         .toLowerCase()
