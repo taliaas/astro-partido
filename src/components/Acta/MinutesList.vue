@@ -147,28 +147,28 @@
           <div class="overflow-x-auto p-6">
             <Table class="p-2">
               <TableHeader
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left border font-medium text-gray-500 uppercase tracking-wider"
               >
                 <TableRow>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[0] }}
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[1] }}
                   </th>
                   <th
-                    class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-4 py-3 text-center text-xs border font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[2] }}
                   </th>
                   <th
                     :data-sort="sort"
                     @click="handleSort"
-                    class="flex justify-center gap-2 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="flex justify-center gap-2 px-6 py-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[3] }}
                     <ArrowUp
@@ -182,12 +182,12 @@
                     />
                   </th>
                   <th
-                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-center text-xs border font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[4] }}
                   </th>
                   <th
-                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-center border text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Acciones
                   </th>
@@ -755,10 +755,11 @@ async function eliminarActa() {
   } | null = currentsMinute.value;
 
   const id = acta?.id ?? "";
-  const tipo = acta?.type ?? "ro";
 
   try {
-    await actions.minute.deleteMinute({ id, type: tipo });
+    console.log("Id", id);
+
+    await actions.minute.deleteMinute({ id });
     toast.success("Se eliminó correctamente el acta");
     navigate("/minutes");
   } catch (e) {

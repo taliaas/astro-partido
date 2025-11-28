@@ -163,12 +163,11 @@ export const uploadMinutes = defineAction({
 export const deleteMinute = defineAction({
   input: z.object({
     id: z.coerce.string(),
-    type: z.string().refine((val) => ["ro", "cp"].includes(val)),
   }),
-  async handler({ id, type }, context) {
+  async handler({ id }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    const res = await fetch(`${API_URL}/minutes/delete/${id}?type=${type}`, {
+    const res = await fetch(`${API_URL}/minute/delete/${id}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${session.jwt}`,

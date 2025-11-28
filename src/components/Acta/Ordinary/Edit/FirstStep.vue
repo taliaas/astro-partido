@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-8">
+    {{ form.values }}
     <div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <FormField v-if="edit" name="core" v-slot="{ componentField }">
@@ -224,9 +225,6 @@
         v-if="person.length === 0"
         class="text-center border rounded p-4 text-muted-foreground"
       >
-        <div class="flex justify-center">
-          <SearchIcon class="size-4" />
-        </div>
         <h3 class="font-medium">No hay invitados ni participantes</h3>
       </div>
     </div>

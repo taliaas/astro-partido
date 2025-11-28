@@ -27,14 +27,22 @@ export const form_schema = z.object({
       minuteId: z.coerce.number().optional(),
     })
     .array(),
-  order: z.string().array(),
-  development: z.string().array(),
-  agreements: z
+  order: z
+    .string()
+
+    .array(),
+  development: z
     .object({
-      id: z.coerce.number().optional(),
-      descripcion: z.string(),
-      responsable: z.object({ id: z.coerce.number() }),
-      fecha: z.string().date(), //z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),
+      content: z.string(),
+      agreements: z
+        .object({
+          id: z.coerce.number().optional(),
+          descripcion: z.string(),
+          responsable: z.object({ id: z.coerce.number() }),
+          fecha: z.string().date(), //z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),
+        })
+        .array()
+        .default([]),
     })
     .array(),
   fechaProx: z.string().date("La fecha no es válida"), //.min(today, { message: "La fecha no puede ser menor a la actual" }),
