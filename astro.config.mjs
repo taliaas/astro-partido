@@ -29,4 +29,5 @@ export default defineConfig({
   experimental: {
     clientPrerender: true,
   },
+  server: { port: 4000 },
 });

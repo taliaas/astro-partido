@@ -255,7 +255,7 @@
                         <DropdownMenuItem
                           @click="handleAction('editar', acta)"
                           v-if="
-                            hasPermission('Documentos', 'update') && acta.file
+                            hasPermission('Documentos', 'update') && !acta.file
                           "
                         >
                           <Pencil class="h-4 w-4" />
@@ -716,7 +716,7 @@ const handleAction = (action: any, acta: any) => {
       navigate(`/cp_view/${acta.id}`);
     }
   } else if (action === "editar") {
-    if (acta.type === "ro") {
+    if (acta.type === "Ordinaria") {
       navigate(`/edit_ro/${acta.id}`);
     } else {
       navigate(`/edit_cp/${acta.id}`);

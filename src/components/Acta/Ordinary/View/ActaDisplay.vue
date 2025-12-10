@@ -130,10 +130,18 @@
                   <AccordionContent class="space-y-2">
                     <div>
                       <span class="text-lg font-medium">
-                        Debate:
-                        <span class="font-normal">{{
-                          minute?.ordinary?.development[index].content
-                        }}</span>
+                        <span
+                          class="font-normal text-muted-foreground"
+                          v-if="!minute?.ordinary?.development[index]?.content"
+                        >
+                          No hay contenido
+                        </span>
+                        <span v-else class="font-normal">
+                          Debate:
+                          {{
+                            minute?.ordinary?.development[index].content
+                          }}</span
+                        >
                       </span>
                     </div>
                     <div class="space-y-2">

@@ -2,33 +2,33 @@
 import CoreService from "../../services/CoreService";
 import OrdinaryService from "../../services/OrdinaryService";
 import RootLayout from "../../layouts/RootLayout.astro";
-import EditContainer from "../../components/Ordinary/Edit/Edit.vue"
 import { getSession } from "auth-astro/server";
 import MilitantService from "@/services/MilitantService";
+import Edit from "@/components/Acta/Ordinary/Edit/Edit.vue";
 
 const { id } = Astro.params;
-const session = (await getSession(Astro.request)) as any
+const session = (await getSession(Astro.request)) as any;
 
 if (!id) {
-    throw new Error("No id provided");
+  throw new Error("No id provided");
 }
 
 async function getActa() {
-    const services = new OrdinaryService()
-    try {
-        const acta = services.getMinute(id!)
-        return acta
-    } catch (e) {
-        console.error(e)
-    }
+  const services = new OrdinaryService();
+  try {
+    const acta = services.getMinute(id!, session.jwt);
+    return acta;
+  } catch (e) {
+    console.error(e);
+  }
 }
 async function getCore() {
-    const service = new CoreService();
-    try {
-        return await service.getAllCore(session.jwt);
-    } catch (e) {
-        console.error(e);
-    }
+  const service = new CoreService();
+  try {
+    return await service.getAllCore(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
 async function getMilitantes() {
   const service = new MilitantService();
@@ -41,8 +41,9 @@ async function getMilitantes() {
 const militantes = await getMilitantes();
 const cores = await getCore();
 const acta = await getActa();
+console.log("Acta", acta);
 ---
 
 <RootLayout>
-    <EditContainer acta={acta} cores={cores} militantes={militantes} client:load />
+  <Edit acta={acta} cores={cores} militantes={militantes} client:load />
 </RootLayout>

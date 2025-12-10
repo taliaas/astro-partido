@@ -1,5 +1,24 @@
 <script setup lang="ts">
 import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogTrigger,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import {
   Table,
   TableBody,
   TableCell,
@@ -7,6 +26,45 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { Agreements } from "@/interface/Militante";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import {
+  Download,
+  Eye,
+  MoreVerticalIcon,
+  PencilIcon,
+  Trash,
+} from "lucide-vue-next";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
+
+const { agreements } = defineProps<{
+  agreements: { data: Agreements[] };
+}>();
+
+const loading = ref(false);
+const openDelete = ref(false);
+
+const handleAction = (action: string, agreement: Agreements) => {
+  if (action === "view") navigate(`/process/agreements/view/${agreement.id}`);
+  else if (action === "edit")
+    navigate(`/process/agreements/edit/${agreement.id}`);
+  else if (action === "delete") deleteAgreement(agreement.id);
+};
+
+async function deleteAgreement(id: string) {
+  loading.value = true;
+  try {
+    await actions.agreements.deleteAgreement.orThrow(+id);
+    toast.success("Acuerdo elimnado exitosamente");
+    navigate("");
+  } catch (e) {
+    console.error(e);
+    toast.error("Ah ocurrido un error al intentar de eliminar el acuerdo");
+  }
+  loading.value = false;
+}
 </script>
 <template>
   <div class="p-2 space-y-6">
@@ -17,25 +75,126 @@ import {
           Administra los acuerdos de las actas del núcleo
         </p>
       </div>
+      <div>
+        <Button variant="outline" @click="">
+          <Download class="size-4" />
+          Exportar
+        </Button>
+      </div>
     </div>
     <div>
-      <Table class="border rounded-">
-        <TableHeader>
-          <TableRow class="font-medium text-left">
-            <TableHead>Acta</TableHead>
-            <TableHead>Descripcion</TableHead>
-            <TableHead>Responsable</TableHead>
-            <TableHead>Participantes</TableHead>
-            <TableHead>Fecha Creado</TableHead>
-            <TableHead>Fucha de Cumplimiento</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          ><TableRow> <TableCell></TableCell> </TableRow
-        ></TableBody>
-      </Table>
+      <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <Table class="w-full">
+            <TableHeader>
+              <TableRow class="font-medium text-left">
+                <TableHead class="px-2 text-center">Acta</TableHead>
+                <TableHead>Descripcion</TableHead>
+                <TableHead>Responsable</TableHead>
+                <TableHead class="text-center">Participantes</TableHead>
+                <TableHead>Fecha Creado</TableHead>
+                <TableHead>Fecha de Cumplimiento</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead class="text-center">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="agreement in agreements.data"
+                :key="agreement.id"
+                class="hover:bg-gray-50"
+              >
+                <TableCell class="font-medium text-center">{{
+                  agreement.development.minute.id
+                }}</TableCell>
+                <TableCell
+                  class="overflow-hidden text-ellipsis whitespace-nowrap w-[150px] max-w-[150px]"
+                >
+                  {{ agreement.descripcion }}
+                </TableCell>
+                <TableCell
+                  >{{ agreement.responsable.firstname
+                  }}{{ agreement.responsable.lastname }}</TableCell
+                >
+                <TableCell
+                  class="text-center overflow-hidden text-ellipsis whitespace-nowrap w-[150px] max-w-[150px]"
+                >
+                  <span
+                    v-if="agreement.participants.length"
+                    v-for="participant in agreement.participants"
+                    :key="participant.id"
+                  >
+                    {{ participant.firstname }} {{ participant.lastname }}
+                  </span>
+                  <span v-else>-</span>
+                </TableCell>
+                <TableCell>{{ agreement.created }}</TableCell>
+                <TableCell>{{ agreement.enddate }}</TableCell>
+                <TableCell>{{ agreement.status }}</TableCell>
+                <TableCell class="text-center">
+                  <AlertDialog>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger class="focus:outline-none">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          class="rounded-full"
+                        >
+                          <MoreVerticalIcon class="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem
+                          @click="handleAction('view', agreement)"
+                        >
+                          <Eye class="h-4 w-4" />
+                          Ver
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          @click="handleAction('edit', agreement)"
+                        >
+                          <PencilIcon class="size-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <Separator />
+                        <AlertDialogTrigger as-child>
+                          <DropdownMenuItem variant="destructive" class="p-2">
+                            <Trash class="h-4 w-4" />
+                            Eliminar
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Eliminar acuerdo</AlertDialogTitle>
+                        <AlertDialogDescription
+                          >Esta acción eliminará el acuerdo de forma permanente.
+                          ¿Desea continuar?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel> Cancelar </AlertDialogCancel>
+
+                        <Button
+                          @click="handleAction('delete', agreement)"
+                          variant="destructive"
+                        >
+                          Eliminar
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+                <TableCell v-if="agreements.data.length === 0"
+                  >No hay acuerdos</TableCell
+                >
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -143,7 +143,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Status } from "@/enum/Status";
+import { MinuteStatus } from "@/enum/Estado";
 import type { Agreements, Militant } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
@@ -161,7 +161,7 @@ const { agreements, militantes } = defineProps<{
 const agreements_list = agreements.data;
 
 const open = ref(false);
-const currentStep = ref(2);
+const currentStep = ref(1);
 const loading = ref(false);
 
 const nextStep = () => {
@@ -188,12 +188,15 @@ const form = useForm({
       reason: null,
       militanteId: i.id,
     })),
-    status: "",
+    status: MinuteStatus.ERASER,
     militants: militantes,
     invitados: [],
     development: [
       {
-        content: agreements_list.map((item) => item.descripcion),
+        content: agreements_list.map(
+          (item: Agreements, index: number) =>
+            `${index + 1}. ${item.descripcion} - Responsable: ${item.responsable.firstname} ${item.responsable.lastname} - Participantes: ${item.participants?.map((i) => i.firstname)} - ${item.enddate} - ${item.status}`
+        ),
         workplan: [],
         agreements: [],
       },
@@ -220,11 +223,11 @@ const submitForm = async () => {
   data.core = { id: data.core };
 
   const validate = await form.validate();
-  data.status = validate.valid ? Status.CREATE : Status.ERASER;
-  console.log("Acta borrador", data.status);
+  data.status = validate.valid ? MinuteStatus.CREATE : MinuteStatus.ERASER;
+  console.log("Acta", data);
   try {
     await actions.ordinary.createMinute.orThrow({
-      ...data,
+      data,
       mode: "Model", //cambiar y pedir al usuario que lo cree
       type: "Ordinaria",
     });

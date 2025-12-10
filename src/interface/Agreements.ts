@@ -11,4 +11,5 @@ export interface Agreements {
   responsable: Militant;
   participants: Militant[];
   minute: Minute;
+  pto: string;
 }

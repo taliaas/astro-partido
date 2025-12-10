@@ -1,5 +1,3 @@
-import type { Status } from "@/enum/Status";
-import { useUrlSearchParams } from "@vueuse/core";
 import { API_URL } from "astro:env/client";
 
 export default class MinutesService {
@@ -42,6 +40,23 @@ export default class MinutesService {
     }
   }
 
+  async getAgreementsId(id: string, token: any) {
+    try {
+      const response = await fetch(`${API_URL}/agreements/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  }
   async getAgreements(jwt: any) {
     try {
       const response = await fetch(`${API_URL}/agreements/minutes`, {

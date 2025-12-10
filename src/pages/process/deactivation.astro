@@ -30,7 +30,7 @@ async function getDesactivation(page: any, session: any) {
 async function getMembers(): Promise<any[]> {
   const service = new MilitantService();
   try {
-    return await service.getAll(session.jwt, session.user.militant.core.id);
+    return await service.getAll(session);
   } catch (error) {
     console.error(error);
     throw new Error();

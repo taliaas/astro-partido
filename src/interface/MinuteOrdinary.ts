@@ -20,10 +20,12 @@ export interface WorkPlan {
   status: PlanStatus;
   responsable: Militant;
   participants: Militant[];
+  pto: string;
 }
 export interface Development {
   id: string;
   agreements: Agreements[];
   workplan: WorkPlan[];
   content: string;
+  minute: MinuteOrdinary;
 }

@@ -1,4 +1,5 @@
-import type { UserStatus } from "@/enum/Status";
+import type { AgreementStatus, UserStatus } from "@/enum/Status";
+import type { Development } from "@/interface/MinuteOrdinary";
 
 export interface Transfer {
   id: string;
@@ -21,8 +22,12 @@ export interface Agreements {
   id: string;
   descripcion: string;
   responsable: Militant;
-  fecha: Date;
+  participants: Militant[];
+  created: Date;
+  enddate: Date;
+  status: AgreementStatus;
   minute: any;
+  development: Development;
 }
 
 export interface Comite {

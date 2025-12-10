@@ -10,7 +10,7 @@ export default class MilitantService {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session}`,
+          Authorization: `Bearer ${session.jwt}`,
         },
       });
       if (!response.ok) {

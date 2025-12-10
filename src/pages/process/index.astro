@@ -31,7 +31,7 @@ async function getCore() {
 async function getMembers() {
   const service = new MilitantService();
   try {
-    return await service.getAll(session.jwt, session.user.militant.core.id);
+    return await service.getAll(session);
   } catch (error) {
     console.error(error);
     throw new Error();

@@ -31,4 +31,8 @@ export const statusMap = {
     label:
       "El acta está inactiva y no está disponible para acciones. Contacta al administrador si crees que debería reactivarse.",
   },
+  [MinuteStatus.ERASER]: {
+    title: "Borrador",
+    label: "El acta está incompleta.",
+  },
 };

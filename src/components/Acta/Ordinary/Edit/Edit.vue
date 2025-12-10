@@ -44,11 +44,15 @@
 </template>
 
 <script setup lang="ts">
-import { form_schema } from "@/components/Acta/Ordinary/Create/form_schema";
+import {
+  editFormSchema,
+  form_schema,
+} from "@/components/Acta/Ordinary/Create/form_schema";
 import FirstStep from "@/components/Acta/Ordinary/Edit/FirstStep.vue";
 import SecondStep from "@/components/Acta/Ordinary/Edit/SecondStep.vue";
 import Button from "@/components/ui/button/Button.vue";
 import type { Militant } from "@/interface/Militante";
+import type Minute from "@/interface/Minute";
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -57,65 +61,34 @@ import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
-interface actaData {
-  id: number;
-  name: string;
-  fecha: string;
-  core: any;
-  hora: any;
-  lugar: string;
-  abscents: {
-    id: number;
-    estado: any;
-    reason: null;
-    militante: any;
-  }[];
-  invitados: any[];
-  agreements: any;
-  development: any;
-  observaciones: string;
-  fechaCP: string;
-  fechaPrep: string;
-  fechaProx: string;
-  order: string[];
-}
-
 const { cores, acta, militantes } = defineProps<{
   cores: any[];
-  acta: actaData;
+  acta: Minute;
   militantes: Militant[];
 }>();
 const currentStep = ref(1);
 
 const form = useForm({
-  validationSchema: toTypedSchema(form_schema),
+  validationSchema: toTypedSchema(editFormSchema),
   initialValues: {
-    fecha: acta.fecha,
-    core: acta.core.id,
-    hora: acta.hora,
-    lugar: acta.lugar,
-    abscents:
-      acta.abscents.map((item) => ({
-        id: item.id,
-        estado: item.estado,
-        reason: item.reason,
-        minuteId: acta.id,
-        militanteId: item.militante.id,
-      })) ?? [],
+    date: acta.date?.toString() ?? "",
+    core: acta.core,
+    hour: acta.hour,
+    place: acta.place,
+    abscents: acta.abscents ?? [],
     invitados: acta.invitados ?? [],
-    agreements: acta.agreements,
-    development: acta.development,
-    fechaCP: acta.fechaCP,
-    fechaPrep: acta.fechaPrep,
-    fechaProx: acta.fechaProx,
-    order: acta.order,
+    development: acta.ordinary?.development,
+    fechaCP: acta.ordinary?.fechaCP?.toString() ?? "",
+    fechaPrep: acta.ordinary?.fechaPrep?.toString() ?? "",
+    fechaProx: acta.ordinary?.fechaProx?.toString() ?? "",
+    order: acta.ordinary?.order ?? [],
   },
 });
-const mili = acta.abscents.map((item) => item.militante);
+const mili = acta.abscents.map((item) => item.militant);
 
 const onSubmit = form.handleSubmit(async (values: any) => {
   try {
-    await actions.ordinary.updateMinute({ id: acta.id, data: values });
+    await actions.ordinary.updateMinute({ id: +acta.id, data: values });
     toast.success("Se actualizó el acta correctamente");
     navigate("/minutes");
   } catch (e) {

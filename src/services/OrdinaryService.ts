@@ -1,12 +1,13 @@
 import { API_URL } from "astro:env/client";
 
 export default class OrdinaryService {
-  async getMinute(id: string) {
+  async getMinute(id: string, token: string) {
     try {
       const response = await fetch(`${API_URL}/minute/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {

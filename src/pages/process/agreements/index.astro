@@ -1,9 +1,9 @@
 ---
 import { getSession } from "auth-astro/server";
-import ProcessLayout from "../../layouts/ProcessLayout.astro";
-import RootLayout from "../../layouts/RootLayout.astro";
 import ListAgreements from "@/components/Process/agreements/ListAgreements.vue";
 import MinutesService from "@/services/Minutes";
+import RootLayout from "@/layouts/RootLayout.astro";
+import ProcessLayout from "@/layouts/ProcessLayout.astro";
 
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
@@ -23,6 +23,6 @@ const agreements = await getAgreements();
 
 <RootLayout>
   <ProcessLayout>
-    <ListAgreements client:load />
+    <ListAgreements agreements={agreements} client:load />
   </ProcessLayout>
 </RootLayout>

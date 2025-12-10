@@ -1,0 +1,32 @@
+---
+import ViewAgreements from "@/components/Process/agreements/ViewAgreements.vue";
+import ProcessLayout from "@/layouts/ProcessLayout.astro";
+import RootLayout from "@/layouts/RootLayout.astro";
+import MinutesService from "@/services/Minutes";
+import { getSession } from "auth-astro/server.ts";
+
+const { id } = Astro.params;
+const session = (await getSession(Astro.request)) as any;
+
+if (!id) {
+  throw new Error("No id provided");
+}
+
+async function getAgreements() {
+  const services = new MinutesService();
+  try {
+    const agreements = services.getAgreementsId(id!, session.jwt);
+    console.log(agreements);
+    return agreements;
+  } catch (e) {
+    console.error(e);
+  }
+}
+const agreements = await getAgreements();
+---
+
+<RootLayout>
+  <ProcessLayout>
+    <ViewAgreements agreements={agreements} client:load />
+  </ProcessLayout>
+</RootLayout>
