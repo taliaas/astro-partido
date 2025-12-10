@@ -29,12 +29,7 @@ import {
 import type { Comite, Core, Militant } from "@/interface/Militante";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import {
-  EditIcon,
-  MoreVerticalIcon,
-  Pencil,
-  Trash2Icon,
-} from "lucide-vue-next";
+import { MoreVerticalIcon, Pencil, Trash2Icon } from "lucide-vue-next";
 import { reactive, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
@@ -106,10 +101,6 @@ const handleDeleteCore = async (coreId: string) => {
   }
 };
 
-function openDetails() {
-  open.value = !open.value;
-}
-
 const saveCore = () => {};
 </script>
 
@@ -161,16 +152,22 @@ const saveCore = () => {};
             </td>
           </tr>
 
-          <tr v-for="core in cores.data" :key="core.id" class="p-2">
-            <td class="h-10 px-4 text-left">{{ core.name }}</td>
+          <tr v-for="core in cores.data" :key="core.id" class="p-2 border">
+            <td class="h-10 px-6 py-4 text-left">{{ core.name }}</td>
             <td class="h-10 px-4 text-center">{{ core.comite.name }}</td>
             <td class="h-10 px-4 text-center">
-              {{ core.generalSecretary?.firstname }}
-              {{ core.generalSecretary?.lastname }}
+              <span v-if="core.generalSecretary?.id"
+                >{{ core.generalSecretary?.firstname }}
+                {{ core.generalSecretary?.lastname }}</span
+              >
+              <span v-else>-</span>
             </td>
             <td class="h-10 px-4 text-center">
-              {{ core.operationSecretary?.firstname }}
-              {{ core.operationSecretary?.lastname }}
+              <span v-if="core.operationSecretary?.id">
+                {{ core.operationSecretary?.firstname }}
+                {{ core.operationSecretary?.lastname }}</span
+              >
+              <span v-else>-</span>
             </td>
             <td class="h-10 px-4 text-center">
               <Badge variant="outline">{{ core?.militants?.length }}</Badge>

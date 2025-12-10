@@ -14,6 +14,8 @@ export const createMinute = defineAction({
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
+    console.log(data);
+
     const res = await fetch(
       `${API_URL}/minute/create?type=${type}&mode=${mode}`,
       {

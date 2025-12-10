@@ -9,13 +9,13 @@ import { getSession } from "auth-astro/server";
 
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
-const core = Number(searchParams.get("core") ?? 1);
+const core = searchParams.get("core");
 const page = Number(searchParams.get("page") ?? 1);
 
 async function getComites() {
   const service = new ComiteService();
   try {
-    return service.getAllComite(session?.jwt);
+    return service.getAllComite(page, session?.jwt);
   } catch (e) {
     console.error(e);
   }
@@ -24,7 +24,7 @@ async function getComites() {
 async function getMilitants() {
   const service = new MilitantService();
   try {
-    return service.getAll(core);
+    return service.getAll(session);
   } catch (e) {
     console.error(e);
   }

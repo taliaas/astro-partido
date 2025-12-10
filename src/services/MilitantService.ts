@@ -2,7 +2,9 @@ import type { AbsentCausesWithMilitante } from "@/interface/AbsentCausesWithMili
 import { API_URL } from "astro:env/client";
 
 export default class MilitantService {
-  async getAll(session: any, core?: any) {
+  async getAll(session: any) {
+    const core = session.user?.militant?.core?.id;
+
     try {
       const response = await fetch(`${API_URL}/militant/all/${core}`, {
         method: "GET",

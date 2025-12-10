@@ -10,13 +10,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { Comite } from "@/interface/Militante";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-vue-next";
-import { reactive, ref } from "vue";
+import { MoreVerticalIcon, Pencil, Trash2Icon } from "lucide-vue-next";
+import { reactive, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
 const { comites } = defineProps<{
@@ -29,21 +42,21 @@ const openModal = defineModel<boolean>("open", { required: true });
 
 const isEditing = ref(false);
 const isLoading = ref(false);
-const comiteForm = reactive({
+const currentComite = ref<Comite>();
+const comiteForm = reactive<Comite>({
   id: "",
   name: "",
+  disabled: false,
+  cores: [],
 });
 
 const open = ref(false);
 
-const handleEditComite = () => {
+const handleEditComite = (comite: Comite) => {
+  currentComite.value = comite;
   isEditing.value = true;
   openModal.value = true;
 };
-
-function openDetails() {
-  open.value = !open.value;
-}
 
 const handleDeleteComite = async (comiteId: string) => {
   const { error } = await actions.comite.deleteComite(comiteId);
@@ -83,30 +96,69 @@ const saveComite = async () => {
   }
   isLoading.value = false;
 };
+
+watch(
+  currentComite,
+  (newComite) => {
+    if (newComite) {
+      comiteForm.id = newComite.id;
+      comiteForm.name = newComite.name;
+      comiteForm.disabled = newComite.disabled;
+      comiteForm.cores = newComite.cores;
+    } else {
+      // Resetear el formulario si no hay currentCore
+      comiteForm.id = "";
+      comiteForm.name = "";
+      comiteForm.disabled = false;
+      comiteForm.cores = [];
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
   <div class="p-4">
     <div class="rounded-md border">
-      <table class="w-full text-lg">
+      <table class="w-full text-md">
         <thead>
-          <tr class="border-b bg-muted/50 font-medium">
-            <th class="h-10 px-4 text-left">Nombre</th>
-            <th class="h-10 px-4 text-center">Núcleos</th>
-            <th class="h-10 px-4 text-center">Estado</th>
+          <tr class="border-b font-semibold">
+            <th class="h-10 px-4 text-left text-muted-foreground">Nombre</th>
+            <th class="h-10 px-4 text-center text-muted-foreground">Núcleos</th>
+            <th class="h-10 px-4 text-center text-muted-foreground">Estado</th>
             <th class="h-10 px-4 text-left w-[50px]"></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-if="comites.data.length === 0">
+          <tr v-if="comites.data?.length === 0">
             <td colspan="3" class="p-4 text-center text-muted-foreground">
               No hay comités registrados.
             </td>
           </tr>
           <tr v-for="comite in comites.data" :key="comite.id" class="p-2">
-            <td class="h-10 px-4 text-left">{{ comite.name }}</td>
+            <td class="h-10 px-4 py-4 text-left">{{ comite.name }}</td>
             <td class="h-10 px-4 text-center">
-              <Badge variant="outline">{{ comite.cores?.length }}</Badge>
+              <TooltipProvider>
+                <Tooltip
+                  class="hover:bg-muted dark:hover:bg-gray-700 rounded-full"
+                >
+                  <TooltipTrigger as-child>
+                    <Badge variant="outline">{{ comite.cores?.length }}</Badge>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    align="center"
+                    side="top"
+                    :align-offset="0"
+                    :collision-padding="0"
+                    :arrow-padding="0"
+                    sticky="always"
+                  >
+                    <div v-for="item in comite.cores">
+                      <p>{{ item.name }}</p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </td>
             <td class="h-10 px-4 text-center">
               <span
@@ -121,46 +173,27 @@ const saveComite = async () => {
               </span>
             </td>
             <td class="h-10 px-4 text-left w-[50px]">
-              <div class="relative">
-                <Button
-                  variant="ghost"
-                  class="rounded-full"
-                  size="icon"
-                  @click="openDetails"
-                >
-                  <MoreVerticalIcon class="h-4 w-4" />
-                </Button>
-                <div
-                  v-if="open"
-                  class="absolute right-0 z-10 mt-2 w-56 rounded-md border bg-background shadow-lg"
-                >
-                  <div
-                    class="py-2 px-3 text-sm font-medium text-muted-foreground border-b bg-muted"
+              <DropdownMenu>
+                <DropdownMenuTrigger class="focus:outline-none">
+                  <Button variant="ghost" size="icon" class="rounded-full">
+                    <MoreVerticalIcon class="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem @click="handleEditComite(comite)">
+                    <Pencil class="h-4 w-4" />
+                    Editar
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    @click="handleDeleteComite(comite.id)"
+                    variant="destructive"
                   >
-                    Acciones
-                  </div>
-                  <div class="py-1" @click="open = false">
-                    <a
-                      href="#"
-                      class="px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                      @click.prevent="handleEditComite()"
-                    >
-                      <EditIcon class="h-4 w-4" />
-                      Editar
-                    </a>
-
-                    <div class="border-t my-1"></div>
-                    <a
-                      href="#"
-                      class="px-4 py-2 text-sm text-red-600 hover:bg-muted flex items-center gap-2"
-                      @click.prevent="handleDeleteComite(comite.id)"
-                    >
-                      <Trash2Icon class="h-4 w-4" />
-                      Eliminar
-                    </a>
-                  </div>
-                </div>
-              </div>
+                    <Trash2Icon class="h-4 w-4" />
+                    Eliminar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </td>
           </tr>
         </tbody>

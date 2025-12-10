@@ -105,7 +105,7 @@
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{{
-          isValid ? "true" : "Esta acta sera guardada como borrador"
+          isValid ? "true" : "Esta acta será guardada como borrador"
         }}</DialogTitle>
         <DialogDescription>{{
           isValid ? "true" : "Hay campos que deben ser llenados"
@@ -115,7 +115,13 @@
         <DialogClose>
           <Button type="button" variant="outline">Cancelar</Button>
         </DialogClose>
-        <Button type="submit" form="minuteForm" variant="default">
+        <Button
+          :disabled="loading"
+          type="submit"
+          form="minuteForm"
+          variant="default"
+        >
+          <Loader2 v-if="loading" class="animate-spin" />
           Guardar</Button
         >
       </DialogFooter>
@@ -142,18 +148,21 @@ import type { Agreements, Militant } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { ArrowLeft, ArrowRight, SendHorizonal } from "lucide-vue-next";
+import { ArrowLeft, ArrowRight, Loader2, SendHorizonal } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
 const { agreements, militantes } = defineProps<{
-  agreements: Agreements[];
+  agreements: any;
   militantes: Militant[];
 }>();
 
+const agreements_list = agreements.data;
+
 const open = ref(false);
-const currentStep = ref(1);
+const currentStep = ref(2);
+const loading = ref(false);
 
 const nextStep = () => {
   if (currentStep.value < 2) currentStep.value++;
@@ -170,13 +179,30 @@ const progress = computed(() => {
 const form = useForm({
   validationSchema: toTypedSchema(form_schema),
   initialValues: {
-    fecha: "",
+    date: "",
     core: 1,
-    hora: "",
-    lugar: "",
+    hour: "",
+    place: "",
+    abscents: militantes.map((i) => ({
+      estado: "Presente" as const,
+      reason: null,
+      militanteId: i.id,
+    })),
     status: "",
+    militants: militantes,
     invitados: [],
-    development: [{ content: "Hola", agreements: [] }],
+    development: [
+      {
+        content: agreements_list.map((item) => item.descripcion),
+        workplan: [],
+        agreements: [],
+      },
+      {
+        content: "",
+        workplan: [],
+        agreements: [],
+      },
+    ],
     fechaCP: "",
     fechaPrep: "",
     fechaProx: "",
@@ -185,24 +211,27 @@ const form = useForm({
 });
 
 const isValid = computed(() => {
-  return !Object.entries(form.errors.value).length;
+  return form.meta.value.valid;
 });
 
 const submitForm = async () => {
+  loading.value = true;
   const data = form.values;
-  const validate = await form.validate();
-  const status = validate.valid ? Status.CREATE : Status.ERASER;
   data.core = { id: data.core };
-  data.status = status;
+
+  const validate = await form.validate();
+  data.status = validate.valid ? Status.CREATE : Status.ERASER;
+  console.log("Acta borrador", data.status);
   try {
     await actions.ordinary.createMinute.orThrow({
-      data,
+      ...data,
       mode: "Model", //cambiar y pedir al usuario que lo cree
       type: "Ordinaria",
     });
     toast.success("Se creó el acta correctamente");
     navigate("/minutes");
   } catch (error) {
+    loading.value = false;
     if (error instanceof ActionError) {
       toast.error(error.message);
     }

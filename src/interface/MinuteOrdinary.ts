@@ -1,26 +1,29 @@
-import { Status } from "@/enum/Status.ts";
-import type { Invitados } from "@/interface/Invitados.ts";
-import type { Asistencia } from "@/interface/Asistencia.ts";
+import type { PlanStatus } from "@/enum/Estado";
+import type { Agreements } from "@/interface/Agreements";
+import type { Militant } from "@/interface/Militante";
+import type Minute from "@/interface/Minute";
 
-export default interface MinuteOrdinary {
-  id: number;
-  name: string;
-  status: Status;
-  computo: number;
-  fecha: any;
-  fechaProx: any;
-  fechaPrep: any;
-  fechaCP: any;
-  hora: string;
-  lugar: string;
-  core: string;
-  secretarioGeneral: string;
-  abscents: Asistencia[];
-  order: string[];
-  agreements: string[];
-  extranjero: string[];
-  militante: any[];
-  invitados: Invitados[];
-  participantes: string[];
-  orientaciones: string;
+export interface MinuteOrdinary {
+  id: string;
+  fechaProx: Date | null;
+  fechaPrep: Date | null;
+  fechaCP: Date | null;
+  order: string[] | null;
+  development: Development[];
+  minute: Minute;
+}
+export interface WorkPlan {
+  id: string;
+  descripcion: string;
+  created: Date;
+  enddate: Date;
+  status: PlanStatus;
+  responsable: Militant;
+  participants: Militant[];
+}
+export interface Development {
+  id: string;
+  agreements: Agreements[];
+  workplan: WorkPlan[];
+  content: string;
 }

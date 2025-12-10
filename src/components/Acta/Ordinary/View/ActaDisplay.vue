@@ -5,7 +5,8 @@
         <CardHeader>
           <div class="flex justify-between items-center">
             <CardTitle class="text-3xl font-bold">
-              {{ acta.name }} {{ acta.id }}
+              {{ minute?.name }} {{ minute?.id }}
+              <Badge variant="outline">{{ minute.status }}</Badge>
             </CardTitle>
             <Button variant="outline" @click="exportar">
               <DownloadIcon class="w-4 h-4 mr-2" />
@@ -14,33 +15,36 @@
           </div>
         </CardHeader>
         <CardContent>
-          <div ref="infoActa" class="space-y-8">
+          <div ref="info" class="space-y-8">
             <!-- Información General -->
             <section>
               <div class="flex text-lg gap-6 w-full justify-between">
                 <div class="card">
                   <span class="font-medium text-gray-700">Núcleo:</span>
-                  {{ acta.core?.name }}
+                  {{ minute?.core?.name }}
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Lugar:</span>
-                  {{ acta.lugar }}
+                  {{ minute?.place }}
+                  <span v-if="!minute.place">-</span>
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Fecha:</span>
-                  {{ acta.fecha }}
+                  {{ minute?.date }}
+                  <span v-if="!minute.date">-</span>
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Hora:</span>
-                  {{ acta.hora }}
+                  {{ minute?.hour }}
+                  <span v-if="!minute.hour">-</span>
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Ausentes:</span>
-                  {{ acta.abscents.length }}
+                  {{ abscents?.length }}
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Total:</span>
-                  {{ acta.militante.length }}
+                  {{ minute?.core?.militants?.length }}
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Porciento:</span>
@@ -52,10 +56,10 @@
             <!-- Asistencia -->
             <section title="Miembros" class="gap-2">
               <div class="text-2xl font-semibold text-gray-800 mb-2">
-                <h2>Militantes</h2>
+                <h2>Relación de asistencia</h2>
               </div>
               <Table
-                v-if="acta.militante.length"
+                v-if="minute?.core?.militants?.length"
                 class="text-md rounded-lg border border-gray-300"
               >
                 <TableHeader class="bg-gray-100">
@@ -96,7 +100,7 @@
               </h2>
               <ol class="list-decimal list-inside space-y-1 text-blue-600">
                 <li
-                  v-for="(item, index) in acta.order"
+                  v-for="(item, index) in minute?.ordinary?.order"
                   :key="index"
                   class="text-lg text-gray-800 pl-4"
                 >
@@ -112,49 +116,177 @@
               </h2>
               <Accordion type="single" collapsible>
                 <AccordionItem
-                  value="item-1"
-                  v-if="acta.development.length !== 0"
-                  v-for="(item, index) in acta.order"
+                  v-if="minute?.ordinary?.development?.length !== 0"
+                  v-for="(item, index) in minute?.ordinary?.development"
+                  :key="item.id"
+                  :value="item.id"
                 >
                   <AccordionTrigger class="text-lg">
-                    {{ index + 1 }}. {{ item }}</AccordionTrigger
+                    {{ index + 1 }}.
+                    {{
+                      minute?.ordinary?.order?.[index] || ""
+                    }}</AccordionTrigger
                   >
-                  <AccordionContent>
-                    <h3 class="text-lg mb-2">
-                      {{ acta.development[index] }}
-                    </h3>
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem
-                  value="item-4"
-                  v-if="acta.agreements.length !== 0"
-                >
-                  <AccordionTrigger class="text-lg">
-                    Acuerdos
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul class="space-y-4">
-                      <li
-                        v-for="(acuerdo, index) in acta.agreements"
-                        :key="index"
-                        class="border-t pb-4"
+                  <AccordionContent class="space-y-2">
+                    <div>
+                      <span class="text-lg font-medium">
+                        Debate:
+                        <span class="font-normal">{{
+                          minute?.ordinary?.development[index].content
+                        }}</span>
+                      </span>
+                    </div>
+                    <div class="space-y-2">
+                      <h2
+                        v-if="
+                          minute.ordinary?.development[index].agreements.length
+                        "
+                        class="text-lg font-medium"
                       >
-                        <div class="flex gap-4 text-lg mt-2">
-                          <span class="font-medium"
-                            >Acuerdo {{ acuerdo.id }}:</span
-                          >
-                          <p class="text-lg">{{ acuerdo.descripcion }}</p>
-                        </div>
-                        <div class="mt-2 text-lg">
-                          <span class="font-medium">Responsable:</span>
-                          {{ acuerdo.responsable }} |
-                          <span class="font-medium"
-                            >Fecha de cumplimiento:</span
-                          >
-                          {{ acuerdo.fecha }}
-                        </div>
-                      </li>
-                    </ul>
+                        Acuerdos
+                      </h2>
+                      <h2 v-else class="text-muted-foreground">
+                        No hay acuerdos asociados a este punto
+                      </h2>
+                      <ul class="text-lg">
+                        <li
+                          v-for="(agreement, i) in minute.ordinary?.development[
+                            index
+                          ].agreements"
+                          :key="agreement.id"
+                        >
+                          <div class="space-x-2">
+                            <Badge variant="outline">{{
+                              agreement.status
+                            }}</Badge>
+                            <span>
+                              {{ i + 1 }}. {{ agreement.descripcion }}</span
+                            >
+                          </div>
+                          <div class="flex space-x-3 font-medium">
+                            <span
+                              >Responsable:
+                              <span
+                                class="font-normal"
+                                v-if="
+                                  agreement.responsable?.firstname &&
+                                  agreement.responsable?.lastname
+                                "
+                              >
+                                {{ agreement.responsable?.firstname }}
+                                {{ agreement.responsable?.lastname }}
+                              </span>
+                              <span class="font-normal" v-else>-</span>
+                            </span>
+                            <div class="flex space-x-2">
+                              Participantes:
+                              <span
+                                v-if="!agreement.participants.length"
+                                class="font-normal"
+                                >-</span
+                              >
+                              <span v-for="item in agreement.participants">
+                                <span
+                                  class="font-normal"
+                                  v-if="item.firstname && item.lastname"
+                                >
+                                  {{ item.firstname }}
+                                  {{ item.lastname }}
+                                </span>
+                                <span class="font-normal" v-else>-</span>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="flex space-x-3 font-medium">
+                            <span>
+                              Fecha de creación:
+                              <span class="font-normal">{{
+                                agreement.created || "-"
+                              }}</span>
+                            </span>
+                            <span
+                              >Fecha de finalización:
+                              <span class="font-normal">{{
+                                agreement.enddate || "-"
+                              }}</span></span
+                            >
+                          </div>
+                        </li>
+                        {{}}
+                      </ul>
+                    </div>
+                    <div class="space-y-2">
+                      <h2
+                        v-if="
+                          minute.ordinary?.development[index].workplan?.length
+                        "
+                        class="text-lg font-medium"
+                      >
+                        Plan de trabajo
+                      </h2>
+                      <ul class="text-lg">
+                        <li
+                          v-for="(plan, i) in minute.ordinary?.development[
+                            index
+                          ].workplan"
+                          :key="plan.id"
+                        >
+                          <div class="space-x-2">
+                            <Badge variant="outline">{{ plan.status }}</Badge>
+                            <span> {{ i + 1 }}. {{ plan.descripcion }}</span>
+                          </div>
+                          <div class="flex space-x-3 font-medium">
+                            <span
+                              >Responsable:
+                              <span
+                                class="font-normal"
+                                v-if="
+                                  plan.responsable?.firstname &&
+                                  plan.responsable?.lastname
+                                "
+                              >
+                                {{ plan.responsable?.firstname }}
+                                {{ plan.responsable?.lastname }}
+                              </span>
+                              <span class="font-normal" v-else>-</span>
+                            </span>
+                            <div class="flex space-x-2">
+                              Participantes:
+                              <span
+                                v-if="!plan.participants.length"
+                                class="font-normal"
+                                >-</span
+                              >
+                              <span v-for="item in plan.participants">
+                                <span
+                                  class="font-normal"
+                                  v-if="item.firstname && item.lastname"
+                                >
+                                  {{ item.firstname }}
+                                  {{ item.lastname }}
+                                </span>
+                                <span class="font-normal" v-else>-</span>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="flex space-x-3 font-medium">
+                            <span>
+                              Fecha de creación:
+                              <span class="font-normal">{{
+                                plan.created || "-"
+                              }}</span>
+                            </span>
+                            <span
+                              >Fecha de finalización:
+                              <span class="font-normal">{{
+                                plan.enddate || "-"
+                              }}</span></span
+                            >
+                          </div>
+                        </li>
+                        {{}}
+                      </ul>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -170,35 +302,30 @@
                   <span class="font-medium"
                     >Fecha de la Próxima Reunión Ordinaria:</span
                   >
-                  {{ acta.fechaProx }}
+                  {{ minute?.ordinary?.fechaProx || "-" }}
                 </div>
                 <div class="flex gap-3">
                   <span class="font-medium"
                     >Fecha de la Preparación de la Próxima Reunión
                     Ordinaria:</span
                   >
-                  {{ acta.fechaPrep }}
+                  {{ minute?.ordinary?.fechaPrep || "-" }}
                 </div>
                 <div class="flex gap-3">
                   <span class="font-medium"
                     >Fecha del Próximo Círculo de Estudios Políticos:</span
                   >
-                  {{ acta.fechaCP }}
-                </div> 
+                  {{ minute?.ordinary?.fechaCP || "-" }}
+                </div>
               </div>
             </section>
           </div>
         </CardContent>
         <CardFooter class="flex justify-end border-t p-6">
-          <div class="flex gap-5" v-if="acta.status === 'Pendiente'">
-            <button
-              @click="openProcesar"
-              class="px-4 py-2 text-md font-medium bg-primary rounded-lg text-white"
-            >
-              Procesar
-            </button>
+          <div class="flex gap-5" v-if="minute?.status === 'Pendiente'">
+            <Button @click="openProcesar"> Procesar </Button>
           </div>
-          <div v-else-if="existsCP">
+          <div v-if="existsCP">
             <Button
               type="button"
               variant="ghost"
@@ -216,6 +343,12 @@
 </template>
 
 <script setup lang="ts">
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -233,37 +366,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type Minute from "@/interface/Minute";
 import { exportarRO } from "@/lib/export_ro.ts";
+import { navigate } from "astro:transitions/client";
 import { ArrowRight, DownloadIcon } from "lucide-vue-next";
 import { ref } from "vue";
-import { navigate } from "astro:transitions/client";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
-const { acta, existsCP } = defineProps<{
-  acta: any;
+const { minute, existsCP, abscents } = defineProps<{
+  minute: Minute;
   existsCP?: boolean;
+  abscents: any[];
 }>();
 
 defineEmits(["move"]);
 
-const infoActa = ref<HTMLElement | null>(null);
-const totalMilitantes = acta.militante?.length || 0;
-const totalAusentes = acta.abscents.length || 0;
-const presente = totalMilitantes - totalAusentes;
-const porciento = totalMilitantes > 0 ? (presente * 100) / totalMilitantes : 0;
+const info = ref<HTMLElement | null>(null);
+let porciento = 0;
+if (minute?.core?.militants?.length) {
+  porciento =
+    abscents?.length === 0
+      ? 100
+      : (abscents.length * 100) / minute.core.militants.length;
+}
 
 const exportar = () => {
-  exportarRO(acta);
+  exportarRO(minute);
 };
 
 const list = () => {
-  return acta.militante.map((militante: any) => {
-    const ausencia = acta.abscents.find(
+  return minute.core?.militants?.map((militante: any) => {
+    const ausencia = minute.abscents?.find(
       (a: any) => a.militante?.id === militante?.id
     );
     return {
@@ -274,6 +406,6 @@ const list = () => {
 };
 
 function openProcesar() {
-  navigate(`/indicadores/${acta.id}`);
+  navigate(`/indicadores/${minute.id}`);
 }
 </script>

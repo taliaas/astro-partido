@@ -147,28 +147,28 @@
           <div class="overflow-x-auto p-6">
             <Table class="p-2">
               <TableHeader
-                class="px-6 py-3 text-left border font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left font-medium border text-gray-500 uppercase tracking-wider"
               >
                 <TableRow>
                   <th
-                    class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[0] }}
                   </th>
                   <th
-                    class="px-6 py-3 text-left border text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[1] }}
                   </th>
                   <th
-                    class="px-4 py-3 text-center text-xs border font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[2] }}
                   </th>
                   <th
                     :data-sort="sort"
                     @click="handleSort"
-                    class="flex justify-center gap-2 px-6 py-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="flex justify-center gap-2 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[3] }}
                     <ArrowUp
@@ -182,12 +182,12 @@
                     />
                   </th>
                   <th
-                    class="px-6 py-3 text-center text-xs border font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {{ tableHeaders[4] }}
                   </th>
                   <th
-                    class="px-6 py-3 text-center border text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Acciones
                   </th>
@@ -255,8 +255,7 @@
                         <DropdownMenuItem
                           @click="handleAction('editar', acta)"
                           v-if="
-                            hasPermission('Documentos', 'update') &&
-                            !acta.isLoaded
+                            hasPermission('Documentos', 'update') && acta.file
                           "
                         >
                           <Pencil class="h-4 w-4" />
@@ -265,8 +264,8 @@
                         <DropdownMenuItem
                           @click="handleAction('retry', acta)"
                           v-if="
-                            acta.status === Status.ERROR ||
-                            acta.status === Status.CREATE
+                            acta.status === MinuteStatus.ERROR ||
+                            acta.status === MinuteStatus.CREATE
                           "
                         >
                           <FileCheck class="size-4" />
@@ -274,9 +273,9 @@
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           v-if="
-                            acta.type === 'ro' &&
-                            (acta.status === Status.PENDIENTE ||
-                              acta.status === Status.PROCESADA)
+                            acta.type === MinuteType[0] &&
+                            (acta.status === MinuteStatus.PENDIENTE ||
+                              acta.status === MinuteStatus.PROCESADA)
                           "
                           @click="handleAction('procesar', acta)"
                         >
@@ -286,7 +285,7 @@
                         <DropdownMenuItem
                           v-if="
                             currentUser.role.name === roleEnum.Cmte &&
-                            acta.status !== Status.ERASER
+                            acta.status !== MinuteStatus.ERASER
                           "
                           @click="handleAction('observation', acta)"
                         >
@@ -295,7 +294,7 @@
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           v-if="
-                            acta.status !== Status.ERASER &&
+                            acta.status !== MinuteStatus.ERASER &&
                             hasPermission('Acuerdos', 'create')
                           "
                           @click="handleAction('agreements', acta)"
@@ -494,6 +493,7 @@
 </template>
 
 <script setup lang="ts">
+import Observation from "@/components/Acta/Ordinary/Observation.vue";
 import { statusMap } from "@/components/Acta/status";
 import UploadMinute from "@/components/Acta/UploadMinute.vue";
 import Label from "@/components/ui/label/Label.vue";
@@ -509,8 +509,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
 import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
 import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
-import { roleEnum } from "@/enum/roleEnum";
-import { Status } from "@/enum/Status";
+import { MinuteType, roleEnum } from "@/enum/roleEnum";
+import type Minute from "@/interface/Minute";
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { usePermissions } from "@/utils/auth-client.ts";
@@ -562,7 +562,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import Observation from "@/components/Acta/Ordinary/Observation.vue";
+import { MinuteStatus } from "@/enum/Estado";
 
 const emit = defineEmits(["test"]);
 const {
@@ -573,7 +573,7 @@ const {
   nucleos,
   session,
 } = defineProps<{
-  actas: any;
+  actas: { data: Minute[]; page_total: number; total: number };
   type: string;
   page: number;
   order: any;
@@ -582,7 +582,7 @@ const {
 }>();
 
 useSse("minute.status", ({ id, status }) => {
-  const acta = actas?.data?.find((acta: any) => acta.id == id);
+  const acta = actas?.data?.find((acta: Minute) => acta.id == id);
   if (acta) {
     acta.status = status;
   }
@@ -684,11 +684,11 @@ const typeMinutes = [
 ];
 
 const statuses = [
-  Status.CREATE,
-  Status.ERROR,
-  Status.PENDIENTE,
-  Status.PROCESADA,
-  Status.PROCESSING,
+  MinuteStatus.CREATE,
+  MinuteStatus.ERROR,
+  MinuteStatus.PENDIENTE,
+  MinuteStatus.PROCESADA,
+  MinuteStatus.PROCESSING,
 ];
 
 const getStatusClass = (status: any) => {
@@ -710,7 +710,7 @@ const handleAction = (action: any, acta: any) => {
   if (action === "ver") {
     if (acta.isLoaded) {
       navigate(`/loaded-view/${acta.id}`);
-    } else if (acta.name === "Acta Ordinaria") {
+    } else if (acta.type === "Ordinaria") {
       navigate(`/view/${acta.id}`);
     } else {
       navigate(`/cp_view/${acta.id}`);
@@ -728,7 +728,7 @@ const handleAction = (action: any, acta: any) => {
   } else if (action === "observation") {
     openModalObserv.value = true;
   } else if (action === "export") {
-    if (acta.name !== "Acta Ordinaria") {
+    if (acta.type !== "Ordinaria") {
       exportar(acta);
     } else exportarRO(acta);
   } else if (action === "eliminar") {

@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-8">
-    {{ form.values }}
     <div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <FormField v-if="edit" name="core" v-slot="{ componentField }">
@@ -27,14 +26,13 @@
             <FormMessage />
           </FormItem>
         </FormField>
-        <FormField name="fecha" v-slot="{ componentField }">
+        <FormField name="date" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Fecha de la reunión</FormLabel>
             <FormControl>
               <Input
                 type="date"
                 id="fecha"
-                required
                 v-bind="componentField"
                 class="w-42"
               />
@@ -42,14 +40,13 @@
             <FormMessage />
           </FormItem>
         </FormField>
-        <FormField name="hora" v-slot="{ componentField }">
+        <FormField name="hour" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Hora</FormLabel>
             <FormControl>
               <Input
                 type="time"
-                id="hora"
-                required
+                id="hour"
                 v-bind="componentField"
                 class="w-36"
               />
@@ -58,15 +55,15 @@
           </FormItem>
         </FormField>
 
-        <FormField name="lugar" v-slot="{ componentField }">
+        <FormField name="place" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Lugar</FormLabel>
             <FormControl>
               <Input
                 type="text"
-                required
                 v-bind="componentField"
-                class="w-min-[300px]"
+                class="max-w-2/3"
+                placeholder="Ej: Aula 303"
               />
             </FormControl>
             <FormMessage />
@@ -80,12 +77,7 @@
             <FormItem>
               <FormLabel> Próxima reunión </FormLabel>
               <FormControl>
-                <Input
-                  type="date"
-                  required
-                  v-bind="componentField"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
+                <Input type="date" v-bind="componentField" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,12 +88,7 @@
             <FormItem>
               <FormLabel> Preparación próxima reunión </FormLabel>
               <FormControl>
-                <Input
-                  type="date"
-                  required
-                  v-bind="componentField"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
+                <Input type="date" v-bind="componentField" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -112,13 +99,7 @@
             <FormItem>
               <FormLabel> Próximo círculo de estudios políticos </FormLabel>
               <FormControl>
-                <Input
-                  type="date"
-                  required
-                  id="circulo"
-                  v-bind="componentField"
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
+                <Input type="date" id="circulo" v-bind="componentField" />
               </FormControl>
             </FormItem>
           </FormField>
@@ -131,7 +112,11 @@
         <Label class="block my-2 text-md font-medium text-gray-700"
           >Invitados y Participantes</Label
         >
-        <Button @click="addPerson" type="button" variant="outline">
+        <Button
+          @click="invitados.push({ nombre_apellidos: '', cargo: '' as any })"
+          type="button"
+          variant="outline"
+        >
           <PlusIcon
             class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
           />
@@ -160,7 +145,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) of person" :key="index" class="border-b">
+          <tr
+            v-for="(item, index) of invitados.fields.value"
+            :key="index"
+            class="border-b"
+          >
             <td class="p-4 align-middle">{{ index + 1 }}</td>
             <td class="p-4 align-middle">
               <FormField
@@ -210,7 +199,7 @@
             </td>
             <td class="p-4 text-center align-middle">
               <button
-                @click="removeInvitados(index)"
+                @click="invitados.remove(index)"
                 type="button"
                 class="text-destructive hover:text-destructive/90"
               >
@@ -222,7 +211,7 @@
       </table>
       <!-- Empty State -->
       <div
-        v-if="person.length === 0"
+        v-if="invitados.fields.value.length === 0"
         class="text-center border rounded p-4 text-muted-foreground"
       >
         <h3 class="font-medium">No hay invitados ni participantes</h3>
@@ -250,7 +239,7 @@
           <tr v-for="(abs, index) of militantes" :key="index">
             <td class="p-6 text-left whitespace-nowrap">
               <FormField
-                :name="'militante.' + index + '.id'"
+                :name="'militant.' + index + '.id'"
                 v-slot="{ componentField }"
               >
                 <FormItem class="w-3/4">
@@ -271,7 +260,6 @@
               <FormField
                 :name="'abscents.' + index + '.estado'"
                 v-slot="{ componentField }"
-                model-value="Presente"
               >
                 <FormItem class="w-3/4">
                   <FormControl>
@@ -372,7 +360,7 @@ import SelectValue from "@/components/ui/select/SelectValue.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectGroup from "@/components/ui/select/SelectGroup.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
-import { useFormContext } from "vee-validate";
+import { useFormContext, useFieldArray } from "vee-validate";
 import type { FormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
 import type { Militant } from "@/interface/Militante";
 import { Label } from "@/components/ui/label";
@@ -389,19 +377,6 @@ const {
 
 defineEmits(["update"]);
 const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
-const form = useFormContext<FormSchema>();
-const person = computed(() => form.values.invitados);
 
-const addPerson = () => {
-  form.setFieldValue("invitados", [
-    ...form.values.invitados,
-    { nombre_apellidos: "", cargo: "" as any },
-  ]);
-};
-
-const removeInvitados = (index: any) => {
-  if (form.values.invitados.length === 1) form.setFieldValue("invitados", []);
-  else
-    form.setFieldValue("invitados", form.values.invitados.toSpliced(index, 1));
-};
+const invitados = useFieldArray<FormSchema["invitados"][number]>("invitados");
 </script>

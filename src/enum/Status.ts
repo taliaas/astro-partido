@@ -1,13 +1,3 @@
-export enum Status {
-  ERASER = "Borrador",
-  CREATE = "Creada",
-  PROCESSING = "Procesando",
-  PENDIENTE = "Pendiente",
-  PROCESADA = "Procesada",
-  ERROR = "Error",
-  INACTIVA = "Inactiva",
-}
-
 export enum UserStatus {
   Activo = "ACTIVO",
   Inactivo = "INACTIVO",

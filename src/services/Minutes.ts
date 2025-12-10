@@ -44,11 +44,29 @@ export default class MinutesService {
 
   async getAgreements(jwt: any) {
     try {
-      const response = await fetch(`${API_URL}/minute/agreements`, {
+      const response = await fetch(`${API_URL}/agreements/minutes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${jwt}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getAbscents(id: string, token: any) {
+    try {
+      const response = await fetch(`${API_URL}/minute/abscents/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -99,7 +117,7 @@ export default class MinutesService {
 
   async getMinute(id: string, token: string) {
     try {
-      const response = await fetch(`${API_URL}/minutes/${id}`, {
+      const response = await fetch(`${API_URL}/minute/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

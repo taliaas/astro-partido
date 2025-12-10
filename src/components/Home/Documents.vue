@@ -33,9 +33,8 @@
                 </Button>
               </div>
             </div>
-
             <div class="flex justify-between items-center mt-2">
-              <p class="text-sm text-gray-500">{{ doc.date }}</p>
+              <p class="text-sm text-gray-500">{{ doc.createdAt }}</p>
               <Button
                 variant="link"
                 class="text-blue-600 text-sm font-medium hover:underline"

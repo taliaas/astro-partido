@@ -1,26 +1,38 @@
 ---
-import OrdinaryService from "../../services/OrdinaryService";
+import ActaDisplay from "@/components/Acta/Ordinary/View/ActaDisplay.vue";
+import MinutesService from "@/services/Minutes";
+import { getSession } from "auth-astro/server";
 import RootLayout from "../../layouts/RootLayout.astro";
-import Display from "../../components/Ordinary/View/ActaDisplay.vue"
 
-const {id} = Astro.params;
+const session: any = await getSession(Astro.request);
+const { id } = Astro.params;
 
 if (!id) {
-    throw new Error("No id provided");
+  throw new Error("No id provided");
 }
 
 async function getActa() {
-    const services = new OrdinaryService()
-    try {
-        return services.getMinute(id!)
-    } catch (e) {
-        console.error(e)
-    }
+  const services = new MinutesService();
+  try {
+    return services.getMinute(id!, session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-const acta = await getActa()
+async function getAbscents() {
+  const service = new MinutesService();
+  try {
+    return service.getAbscents(id!, session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const acta = await getActa();
+const abscents = await getAbscents();
 ---
 
 <RootLayout>
-    <Display client:load acta={acta}/>
+  <ActaDisplay client:load minute={acta} abscents={abscents} />
 </RootLayout>

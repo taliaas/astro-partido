@@ -8,59 +8,106 @@
       </p>
     </div>
     <!-- Tarjeta principal -->
-    <div class="p-6">
-      <!-- Tabla de trazas -->
-      <div class="bg-white rounded-lg border shadow-md p-4">
-        <table class="w-full">
-          <thead>
-            <tr class="border-b text-lg">
-              <th class="text-center py-3 px-4 font-bold text-gray-900">
+    <div class="bg-white rounded-lg border shadow-md p-4">
+      <div class="p-6">
+        <!-- Tabla de trazas -->
+        <div class="flex py-3 gap-2">
+          <Input type="search" placeholder="Buscar ..."></Input>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Todos los usuarios" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="(user, index) in users" :value="index">
+                <span v-if="user === null"> - </span>
+                {{ user?.name }}</SelectItem
+              >
+            </SelectContent>
+          </Select>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Todos los usuarios" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="(item, index) in modules" :value="index">
+                <span v-if="item === null"> - </span>
+                {{ item?.name }}</SelectItem
+              >
+            </SelectContent>
+          </Select>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Todos los usuarios" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="(item, index) in actions" :value="index">
+                <span v-if="item === null"> - </span>
+                {{ item?.name }}</SelectItem
+              >
+            </SelectContent>
+          </Select>
+          <Input type="date"></Input>
+        </div>
+
+        <table class="w-full caption-bottom text-md border rounded">
+          <thead class="">
+            <tr
+              class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+            >
+              <th
+                class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
+              >
                 Módulo
               </th>
-              <th class="text-left py-3 px-4 font-bold text-gray-900">
+              <th
+                class="text-left align-middle font-medium text-muted-foreground"
+              >
                 Acción
               </th>
-              <th class="text-left py-3 px-4 font-bold text-gray-900">
+              <th
+                class="text-left align-middle font-medium text-muted-foreground"
+              >
                 Usuario
               </th>
-              <th class="text-left py-3 px-4 font-bold text-gray-900">Fecha</th>
-              <th class="text-left py-3 px-4 font-bold text-gray-900">Hora</th>
-              <th class="text-right py-3 px-4 font-bold text-gray-900">
+              <th
+                class="text-center align-middle font-medium text-muted-foreground"
+              >
+                Fecha
+              </th>
+              <th
+                class="text-center align-middle font-medium text-muted-foreground"
+              >
+                Hora
+              </th>
+              <th
+                class="text-center align-middle font-medium text-muted-foreground"
+              >
                 Detalles
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="traza in trazas?.logs" :key="traza.id" class="border-b">
-              <td class="text-center py-3 px-4 font-medium text-gray-900">
-                {{ traza.module }}
+            <tr v-if="trazas.data?.length === 0">
+              <td colspan="6" class="text-center py-6 text-muted-foreground">
+                No se encontraron trazas
               </td>
-              <td class="py-3 px-4">
-                <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                >
-                  {{ traza.action }}
-                </span>
-              </td>
-              <td class="py-3 px-4">
-                <div class="flex items-center space-x-3">
-                  <div>
-                    <div class="font-medium text-gray-900">
-                      {{ traza.user?.name }}
-                    </div>
-                    <div class="text-md text-gray-500">
-                      {{ traza.user?.email }}
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td class="py-3 px-4 text-md text-gray-500">
+            </tr>
+            <tr
+              v-for="traza in trazas.data"
+              :key="traza.id"
+              class="border rounded"
+            >
+              <td>{{ traza.user?.name }}</td>
+              <td>{{ traza.user?.email }}</td>
+              <td></td>
+              <td class="text-center">
                 {{ format(traza.createdAt, "yyyy-MM-dd") }}
               </td>
-              <td class="py-3 px-4 text-md text-gray-500">
+              <td class="text-center">
                 {{ format(traza.createdAt, "HH:mm:ss") }}
               </td>
-              <td class="text-right py-3 px-4">
+
+              <td class="text-muted-foreground text-center py-2">
                 <Button
                   variant="ghost"
                   @click="abrirDetalle(traza)"
@@ -70,42 +117,32 @@
                 </Button>
               </td>
             </tr>
-            <tr v-if="trazas.logs.length === 0">
-              <td colspan="6" class="text-center py-6 text-gray-500">
-                No se encontraron trazas
-              </td>
-            </tr>
           </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="6" class="py-4 text-gray-500 text-md">
-                Mostrasndo: {{ trazas.page }} de {{ trazas.lastPage }} página(s)
-              </td>
-              <td colspan="6" class="py-4 text-gray-500 text-md">
-                <div class="space-x-2">
-                  <Button
-                    variant="outline"
-                    class="p-2 border rounded-md"
-                    @click="previusPage"
-                    :disabled="currentPage <= 1"
-                    :class="{ 'bg-muted': currentPage === 1 }"
-                  >
-                    <ChevronLeft />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    class="p-2 border rounded-md"
-                    @click="nextPage"
-                    :disabled="currentPage >= trazas.lastPage"
-                    :class="{ 'bg-muted': currentPage >= trazas.lastPage }"
-                  >
-                    <ChevronRight />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          </tfoot>
         </table>
+
+        {{ trazas }}
+        Mostrando: {{ trazas.page }} de {{ trazas.total }} página(s)
+
+        <div class="space-x-2">
+          <Button
+            variant="outline"
+            class="p-2 border rounded-md"
+            @click="previusPage"
+            :disabled="currentPage <= 1"
+            :class="{ 'bg-muted': currentPage === 1 }"
+          >
+            <ChevronLeft />
+          </Button>
+          <Button
+            variant="outline"
+            class="p-2 border rounded-md"
+            @click="nextPage"
+            :disabled="currentPage >= trazas.lastPage"
+            :class="{ 'bg-muted': currentPage >= trazas.lastPage }"
+          >
+            <ChevronRight />
+          </Button>
+        </div>
       </div>
     </div>
 
@@ -256,6 +293,14 @@
 
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
@@ -268,14 +313,16 @@ import {
   UserIcon,
   XIcon,
 } from "lucide-vue-next";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 const Action = ["CREATE", "UPDATE", "DELETE", "LOGIN"] as const;
 
-const { trazas } = defineProps<{
-  trazas: any;
+const { trazas, users } = defineProps<{
+  trazas: { data: any[]; page: number; total: number; limit: number };
 }>();
 
+const modules = []
+const actions = any[]
 const trazaSeleccionada = ref({
   id: 0,
   action: Action[0],
@@ -291,6 +338,10 @@ const trazaSeleccionada = ref({
 });
 const modalAbierto = ref(false);
 const currentPage = ref(trazas?.page);
+const users = computed(() => {
+  return trazas.data.map((item) => item.user);
+});
+
 
 // Mantener currentPage sincronizado con trazas.page
 watch(
@@ -315,7 +366,7 @@ const previusPage = () => {
 };
 
 const nextPage = () => {
-  if (trazas.lastPage > currentPage.value) {
+  if (trazas.total > currentPage.value) {
     currentPage.value++;
     const limit = 10;
     navigate(`register?page=${currentPage.value}&limit=${limit}`);

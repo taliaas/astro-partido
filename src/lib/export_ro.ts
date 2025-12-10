@@ -1,114 +1,329 @@
+import type Minute from "@/interface/Minute";
 import { jsPDF } from "jspdf";
 
-export function exportarRO(acta: any) {
+export function exportarRO(acta: Minute) {
   const pdf = new jsPDF();
-  let yPos = 5;
+  let yPosition = 20;
+  const margin = 20;
+  const pageWidth = pdf.internal.pageSize.width;
+  const contentWidth = pageWidth - 2 * margin;
+  const lineHeight = 7;
 
-  // Título
-  pdf.setFontSize(18);
-  pdf.text(`Acta ${acta.name} ${acta.id}`, 14, 15);
-
-  // Información General
-  pdf.setFontSize(12);
-  pdf.text(`Núcleo: ${acta.core?.name}`, 14, 20);
-  const text = `En la CUJAE, Municipio Marianao, el día ${acta.fecha} a las ${acta.hora}, en ${acta.lugar} se reúne el núcleo del PCC, siendo presidida por el compañero ${acta.secretarioGeneral}, en su carácter de Secretario General del núcleo. Se encuentran presentes ${acta.fecha} miembros de un total de ${acta.militantes?.length} posibles para un ${acta.fecha}% de asistencia. `;
-  const splitIntro = pdf.splitTextToSize(text, 180);
-  pdf.text(splitIntro, 14, 30);
-  yPos += 35 + splitIntro.length * 5;
-
-  //tabla de militantes
-  // pdf.addImage()
-
-  //invitados o participantes
-
-  // Orden del día
-  pdf.setFontSize(14);
-  pdf.text("Orden del día", 14, yPos + 5);
-  yPos += 5;
-  acta.order.forEach((item: any, index: number) => {
-    pdf.setFontSize(10);
-    const split = pdf.splitTextToSize(item, 180);
-    pdf.text(`${index + 1}. ${split}`, 14, yPos + 5);
-    yPos += 5;
-  });
-  pdf.addPage();
-  // Desarrollo de la reunión
-  pdf.setFontSize(14);
-  pdf.text("Desarrollo de la reunión", 14, 15);
-
-  // Chequeo de acuerdos
-  pdf.setFontSize(12)
-  pdf.text("Chequeo de acuerdos", 14, 25)
-  pdf.setFontSize(10)
-  const splitChequeo = pdf.splitTextToSize(acta.chequeo, 180)
-  pdf.text(splitChequeo, 14, 30)
-
-  // Orientaciones y Análisis
-  pdf.setFontSize(12);
-  pdf.text("Orientaciones del Organismo Superior", 14, 45);
-  pdf.setFontSize(10);
-  const splitOrientaciones = pdf.splitTextToSize(acta.orientaciones, 180);
-  pdf.text(splitOrientaciones, 14, 50);
-
-  pdf.setFontSize(12);
-  pdf.text("Análisis", 14, 60);
-  pdf.setFontSize(10);
-  const splitAnalisis = pdf.splitTextToSize(acta.analisis, 180);
-  pdf.text(splitAnalisis, 14, 65)
-
-  // Acuerdos
-  pdf.setFontSize(12);
-  pdf.text("Acuerdos", 14, 75);
-  yPos = 80
-  acta.agreements?.forEach((acuerdo: any) => {
-    pdf.setFontSize(11);
-    const splitAcuerdo = pdf.splitTextToSize(acuerdo.descripcion, 180);
-    pdf.text(`Responsable: ${splitAcuerdo}`, 14, yPos + 5);
-    pdf.text(
-        `Responsable: ${acuerdo.responsable} | Fecha de cumplimiento: ${acuerdo.fecha}`,
-        14,
-        yPos + 10 + splitAcuerdo.length * 5,
+  // Función para verificar si un valor está vacío o nulo
+  const isEmpty = (value: any): boolean => {
+    return (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      (Array.isArray(value) && value.length === 0) ||
+      (typeof value === "object" && Object.keys(value).length === 0)
     );
-    yPos += 20 + splitAcuerdo.length * 5;
-  });
-  // Salidas al extranjero
-  pdf.setFontSize(14);
-  yPos += 5
-  pdf.text("5. Salidas al extranjero", 14, yPos+5);
-  yPos += 5;
-  acta.extranjero?.forEach((salida: any) => {
-    pdf.setFontSize(11);
-    yPos += 5
-    pdf.text(`Salida: ${salida.id}`, 14, yPos + 5);
-    pdf.text(`Nombre: ${salida.nombre}`, 14, yPos + 10);
-    pdf.text(`Motivo de viaje: ${salida.motivo}`, 14, yPos + 15);
-    pdf.setFontSize(10);
-    pdf.text(`País: ${salida.destino} | Fecha: ${salida.fechaIda} - ${salida.fechaRegreso}`, 14, yPos + 20);
-    pdf.text(`Estado: ${salida.estado}`, 14, yPos + 25);
-    yPos += 20
-  });
+  };
 
-  // Próximas fechas
-  pdf.setFontSize(14);
-  yPos += 10;
-  pdf.text("Próximas fechas", 14, yPos + 5);
-  pdf.setFontSize(10);
-  pdf.text(
-    `Fecha de la Próxima Reunión Ordinaria: ${acta.fechaProx}`,
-    14,
-    yPos + 10,
+  // Función para añadir texto con manejo de campos vacíos
+  const addText = (label: string, value: any, isBold = false) => {
+    if (value !== null && value !== undefined && value !== "") {
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", isBold ? "bold" : "normal");
+
+      // Si el valor es muy largo, dividirlo en líneas
+      const text = `${label}: ${value}`;
+      const lines = pdf.splitTextToSize(text, contentWidth);
+
+      // Si no hay espacio suficiente, añadir nueva página
+      if (yPosition + lines.length * lineHeight > 280) {
+        pdf.addPage();
+        yPosition = 20;
+      }
+
+      lines.forEach((line: string) => {
+        pdf.text(line, margin, yPosition);
+        yPosition += lineHeight;
+      });
+    }
+  };
+
+  // Función para añadir título de sección
+  const addSectionTitle = (title: string) => {
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = 20;
+    }
+
+    yPosition += 10;
+    pdf.setFontSize(14);
+    pdf.setFont("helvetica", "bold");
+    pdf.text(title, margin, yPosition);
+    yPosition += 10;
+  };
+
+  // ========== ENCABEZADO DEL ACTA ==========
+  pdf.setFontSize(18);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("ACTA DE REUNIÓN", pageWidth / 2, yPosition, { align: "center" });
+  yPosition += 15;
+
+  // Información básica
+  pdf.setFontSize(12);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("INFORMACIÓN BÁSICA", margin, yPosition);
+  yPosition += 10;
+
+  addText("Nombre del Acta", acta.name, false);
+  if (acta.core && !isEmpty(acta.core))
+    addText("Nombre del Núcleo", acta.core.name, true);
+  addText(
+    "Fecha",
+    acta.date ? new Date(acta.date).toLocaleDateString() : null,
+    false
   );
-  pdf.text(
-    `Fecha de la Preparación de la Próxima Reunión Ordinaria: ${acta.fechaPrep}`,
-    14,
-    yPos + 15,
+  addText("Hora", acta.hour, false);
+  addText("Lugar", acta.place, false);
+  addText("Tipo de Reunión", acta.type, false);
+  addText("Estado", acta.status, false);
+  addText(
+    "Fecha de Creación",
+    acta.createdAt ? new Date(acta.createdAt).toLocaleDateString() : null,
+    false
   );
-  pdf.text(
-    `Fecha del Próximo Círculo de Estudios Políticos: ${acta.fechaCP}`,
-    14,
-    yPos + 20,
-  );
+
+  // ========== ASISTENCIA ==========
+  addSectionTitle("ASISTENCIA");
+
+  // Miembros presentes (del núcleo)
+  if (acta.abscents && acta.abscents.length > 0) {
+    pdf.setFontSize(11);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Relación de asistencia:", margin, yPosition);
+    yPosition += lineHeight;
+
+    pdf.setFont("helvetica", "normal");
+    acta.abscents.forEach((abscent: any, index: number) => {
+      if (!isEmpty(abscent.estado)) {
+        pdf.setFont("helvetica", "normal");
+        let absenciaText = ` ${abscent.estado}`;
+
+        if (!isEmpty(abscent.reason)) {
+          absenciaText += ` - Razón: ${abscent.reason}`;
+        }
+
+        if (yPosition > 280) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+        pdf.text(
+          `${index + 1}. ${abscent.militant.firstname || ""} ${abscent.militant.lastname || ""} ${absenciaText}`,
+          margin + 10,
+          yPosition
+        );
+      }
+      yPosition += lineHeight;
+    });
+  }
+
+  // ========== ORDEN DEL DÍA ==========
+  if (acta.ordinary && acta.ordinary.order && acta.ordinary.order.length > 0) {
+    addSectionTitle("ORDEN DEL DÍA");
+
+    acta.ordinary.order.forEach((item: string, index: number) => {
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = 20;
+      }
+      pdf.text(`${index + 1}. ${item}`, margin, yPosition);
+      yPosition += lineHeight;
+    });
+  }
+
+  // ========== DESARROLLO ==========
+  if (
+    acta.ordinary &&
+    acta.ordinary.development &&
+    acta.ordinary.development.length > 0
+  ) {
+    addSectionTitle("DESARROLLO DE LA REUNIÓN");
+
+    acta.ordinary.development.forEach((desarrollo: any, index: number) => {
+      if (!isEmpty(desarrollo.content)) {
+        yPosition += 5;
+        pdf.setFontSize(12);
+        pdf.setFont("helvetica", "bold");
+        if (yPosition > 280) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+        pdf.text(`Punto ${index + 1}:`, margin, yPosition);
+        yPosition += lineHeight;
+
+        // Contenido del punto
+        pdf.setFontSize(11);
+        pdf.setFont("helvetica", "normal");
+        const contentLines = pdf.splitTextToSize(
+          desarrollo.content,
+          contentWidth
+        );
+
+        contentLines.forEach((line: string) => {
+          if (yPosition > 280) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+          pdf.text(line, margin, yPosition);
+          yPosition += lineHeight;
+        });
+
+        // Acuerdos de este punto
+        if (desarrollo.agreements && desarrollo.agreements.length > 0) {
+          yPosition += 5;
+          pdf.setFontSize(11);
+          pdf.setFont("helvetica", "bold");
+          pdf.text("Acuerdos:", margin, yPosition);
+          yPosition += lineHeight;
+
+          desarrollo.agreements.forEach(
+            (acuerdo: any, acuerdoIndex: number) => {
+              pdf.setFont("helvetica", "normal");
+
+              // Descripción del acuerdo
+              if (!isEmpty(acuerdo.descripcion)) {
+                if (yPosition > 280) {
+                  pdf.addPage();
+                  yPosition = 20;
+                }
+                pdf.text(
+                  `${acuerdoIndex + 1}. ${acuerdo.descripcion}`,
+                  margin + 10,
+                  yPosition
+                );
+                yPosition += lineHeight;
+              }
+
+              // Responsable
+              if (acuerdo.responsable && !isEmpty(acuerdo.responsable)) {
+                const responsableText = `   Responsable: ${acuerdo.responsable.firstname || ""} ${acuerdo.responsable.lastname || ""}`;
+                if (yPosition > 280) {
+                  pdf.addPage();
+                  yPosition = 20;
+                }
+                pdf.text(responsableText, margin + 10, yPosition);
+                yPosition += lineHeight;
+              }
+
+              // Fecha de vencimiento
+              if (!isEmpty(acuerdo.enddate)) {
+                const fechaText = `   Fecha límite: ${new Date(acuerdo.enddate).toLocaleDateString()}`;
+                if (yPosition > 280) {
+                  pdf.addPage();
+                  yPosition = 20;
+                }
+                pdf.text(fechaText, margin + 10, yPosition);
+                yPosition += lineHeight;
+              }
+
+              // Estado
+              if (!isEmpty(acuerdo.status)) {
+                const estadoText = `   Estado: ${acuerdo.status}`;
+                if (yPosition > 280) {
+                  pdf.addPage();
+                  yPosition = 20;
+                }
+                pdf.text(estadoText, margin + 10, yPosition);
+                yPosition += lineHeight;
+              }
+
+              yPosition += 3; // Espacio entre acuerdos
+            }
+          );
+        }
+
+        yPosition += 10; // Espacio entre puntos de desarrollo
+      }
+    });
+  }
+
+  // ========== OBSERVACIONES ==========
+  if (!isEmpty(acta.observaciones)) {
+    addSectionTitle("OBSERVACIONES GENERALES");
+
+    pdf.setFontSize(11);
+    pdf.setFont("helvetica", "normal");
+    const observacionesLines = pdf.splitTextToSize(
+      acta.observaciones ?? "",
+      contentWidth
+    );
+
+    observacionesLines.forEach((line: string) => {
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = 20;
+      }
+      pdf.text(line, margin, yPosition);
+      yPosition += lineHeight;
+    });
+  }
+
+  // ========== FECHAS IMPORTANTES ==========
+  if (
+    acta.ordinary &&
+    (acta.ordinary.fechaProx ||
+      acta.ordinary.fechaPrep ||
+      acta.ordinary.fechaCP)
+  ) {
+    addSectionTitle("FECHAS IMPORTANTES");
+
+    if (!isEmpty(acta.ordinary.fechaProx)) {
+      addText(
+        "Próxima reunión",
+        acta.ordinary.fechaProx
+          ? new Date(acta.ordinary.fechaProx).toLocaleDateString()
+          : null,
+        false
+      );
+    }
+
+    if (!isEmpty(acta.ordinary.fechaPrep)) {
+      addText(
+        "Fecha de preparación",
+        acta.ordinary.fechaPrep
+          ? new Date(acta.ordinary.fechaPrep).toLocaleDateString()
+          : null,
+        false
+      );
+    }
+
+    if (!isEmpty(acta.ordinary.fechaCP)) {
+      addText(
+        "Fecha CP",
+        acta.ordinary.fechaCP
+          ? new Date(acta.ordinary.fechaCP).toLocaleDateString()
+          : null,
+        false
+      );
+    }
+  }
+
+  // ========== PIE DE PÁGINA ==========
+  const pageCount = pdf.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    pdf.setPage(i);
+    pdf.setFontSize(10);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(`Página ${i} de ${pageCount}`, pageWidth / 2, 290, {
+      align: "center",
+    });
+
+    // Fecha de generación
+    pdf.text(`Generado el: ${new Date().toLocaleDateString()}`, margin, 290);
+  }
 
   // Guardar el PDF
-  pdf.save(`${acta.name}-${acta.fecha}.pdf`);
+  const fileName =
+    `${acta.name || "acta"}-${acta.date || acta.createdAt || "sin-fecha"}.pdf`.replace(
+      /[^a-zA-Z0-9-_\.]/g,
+      "-"
+    ); // Limpiar caracteres inválidos
+
+  pdf.save(fileName);
 }

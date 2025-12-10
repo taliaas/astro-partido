@@ -4,7 +4,7 @@
       <h3 class="text-lg font-medium">Orden del Día</h3>
       <div>
         <Button
-          @click="addAgendaItem"
+          @click="agendaItems.push('')"
           type="button"
           variant="outline"
           class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
@@ -32,7 +32,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(item, index) of agendaItems"
+            v-for="(item, index) of agendaItems.fields.value"
             :key="index"
             class="border-b"
           >
@@ -43,7 +43,6 @@
                   <FormControl>
                     <Input
                       type="text"
-                      required
                       v-bind="componentField"
                       placeholder="Descripción"
                       class="border-none shadow-none"
@@ -54,7 +53,7 @@
               </FormField>
             </td>
             <td class="p-4 align-middle">
-              <Button @click="removeAgendaItem(index)" variant="ghost">
+              <Button @click="agendaItems.remove(index)" variant="ghost">
                 <TrashIcon class="h-4 w-4" />
               </Button>
             </td>
@@ -63,12 +62,11 @@
       </table>
     </div>
   </div>
-  {{ form.values }}
 
   <div class="space-y-4">
     <h2 class="text-lg mt-8 mb-4 font-bold">Desarrollo</h2>
     <div
-      v-for="(item, developmentIndex) of agendaItems"
+      v-for="(item, developmentIndex) of agendaItems.fields.value"
       :key="developmentIndex"
     >
       <div>
@@ -89,68 +87,73 @@
         </FormField>
       </div>
       <!-- Acuerdos Table -->
-      <div class="space-y-4">
-        <div class="flex justify-between mt-8 mb-4">
-          <Label for="agreements" class="text-md font-bold">Acuerdos</Label>
-          <div class="flex justify-end">
-            <Button
-              type="button"
-              @click="addAgreement"
-              variant="outline"
-              class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
-            >
-              <PlusIcon
-                class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
-              />
-              Agregar acuerdo
-            </Button>
-          </div>
-        </div>
-
-        <div class="rounded-md border">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b bg-muted/50">
-                <th
-                  class="h-12 w-[100px] px-4 text-left align-middle font-medium"
-                >
-                  No.
-                </th>
-                <th class="h-12 px-4 text-left align-middle font-medium">
-                  Descripción
-                </th>
-                <th class="h-12 px-4 text-left align-middle font-medium">
-                  Participantes
-                </th>
-                <th class="h-12 px-4 text-left align-middle font-medium">
-                  Responsable
-                </th>
-                <th class="h-12 px-4 text-left align-middle font-medium">
-                  Fecha
-                </th>
-                <th class="h-12 w-[100px] px-4 align-middle"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <FormField
-                :name="`development.${developmentIndex}.agreements`"
-                v-slot="{ field }"
+      <FieldArray
+        :name="`development.${developmentIndex}.agreements`"
+        v-slot="agreements"
+      >
+        <div class="space-y-4">
+          <div class="flex justify-between mt-8 mb-4">
+            <Label for="agreements" class="text-md font-bold">Acuerdos</Label>
+            <div class="flex justify-end">
+              <Button
+                type="button"
+                @click="
+                  agreements.push({
+                    descripcion: '',
+                    responsable: { id: '' },
+                    enddate: '2025-01-01',
+                    participants: { id: '' },
+                    pto: '',
+                  })
+                "
+                variant="outline"
+                class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
               >
+                <PlusIcon
+                  class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+                />
+                Agregar acuerdo
+              </Button>
+            </div>
+          </div>
+
+          <div class="rounded-md border">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b bg-muted/50">
+                  <th
+                    class="h-12 w-[100px] px-4 text-left align-middle font-medium"
+                  >
+                    No.
+                  </th>
+                  <th class="h-12 px-4 text-left align-middle font-medium">
+                    Descripción
+                  </th>
+                  <th class="h-12 px-4 text-left align-middle font-medium">
+                    Participantes
+                  </th>
+                  <th class="h-12 px-4 text-left align-middle font-medium">
+                    Responsable
+                  </th>
+                  <th class="h-12 px-4 text-left align-middle font-medium">
+                    Fecha
+                  </th>
+                  <th class="h-12 w-[100px] px-4 align-middle"></th>
+                </tr>
+              </thead>
+              <tbody>
                 <tr
-                  v-for="(item, agreementIndex) of field.value?.agreements ??
-                  []"
+                  v-for="(item, agreementIndex) of agreements.fields"
                   :key="agreementIndex"
                   class="border"
                 >
-                  <td class="p-4 align-middle font-medium">
-                    {{ agreementIndex + 1 }}
-                  </td>
-                  <td class="p-4 align-middle">
+                  <td class="px-4 py-4">{{ agreementIndex + 1 }}</td>
+                  <td>
                     <FormField
                       :name="
                         'development.' +
                         developmentIndex +
-                        'agreements.' +
+                        '.agreements.' +
                         agreementIndex +
                         '.descripcion'
                       "
@@ -169,44 +172,47 @@
                       </FormItem>
                     </FormField>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="px-4 py-4">
                     <FormField
                       :name="
                         'development.' +
                         developmentIndex +
-                        'agreements.' +
+                        '.agreements.' +
                         agreementIndex +
-                        '.participant.id'
+                        '.participants.id'
                       "
                       v-slot="{ componentField }"
                     >
                       <FormItem class="w-3/4">
                         <FormControl>
                           <Select :="componentField">
-                            <SelectTrigger
-                              ><SelectValue placeholder="Participantes"
-                            /></SelectTrigger>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder="Participantes"
+                              ></SelectValue>
+                            </SelectTrigger>
                             <SelectContent>
-                              <SelectItem
-                                v-for="militante in militants"
-                                :key="militante.id"
-                                :value="militante.id"
-                                >{{ militante.firstname }}
-                                {{ militante.lastname }}</SelectItem
-                              >
+                              <SelectGroup>
+                                <SelectItem
+                                  v-for="item of militants"
+                                  :key="item.id"
+                                  :value="item.id + ''"
+                                  >{{ item.firstname }}
+                                  {{ item.lastname }}</SelectItem
+                                >
+                              </SelectGroup>
                             </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    </FormField>
+                          </Select></FormControl
+                        >
+                        <FormMessage /></FormItem
+                    ></FormField>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="px-4 py-4">
                     <FormField
                       :name="
                         'development.' +
                         developmentIndex +
-                        'agreements.' +
+                        '.agreements.' +
                         agreementIndex +
                         '.responsable.id'
                       "
@@ -215,32 +221,33 @@
                       <FormItem class="w-3/4">
                         <FormControl>
                           <Select :="componentField">
-                            <SelectTrigger
-                              ><SelectValue placeholder="Responsable"
-                            /></SelectTrigger>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder="Responsable"
+                              ></SelectValue>
+                            </SelectTrigger>
                             <SelectContent>
                               <SelectItem
-                                v-for="militante in militants"
-                                :key="militante.id"
-                                :value="militante.id"
-                                >{{ militante.firstname }}
-                                {{ militante.lastname }}</SelectItem
+                                v-for="item of militants"
+                                :key="item.id"
+                                :value="item.id + ''"
+                                >{{ item.firstname }}
+                                {{ item.lastname }}</SelectItem
                               >
                             </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    </FormField>
+                          </Select></FormControl
+                        >
+                        <FormMessage /></FormItem
+                    ></FormField>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="px-4 py-4">
                     <FormField
                       :name="
                         'development.' +
                         developmentIndex +
-                        'agreements.' +
+                        '.agreements.' +
                         agreementIndex +
-                        '.fecha'
+                        '.enddate'
                       "
                       v-slot="{ componentField }"
                     >
@@ -249,13 +256,13 @@
                           <Input
                             type="date"
                             v-bind="componentField"
-                            class="border-none shadow-none"
+                            class="border shadow-none"
                             :name="
                               'development.' +
                               developmentIndex +
                               'agreements.' +
                               agreementIndex +
-                              '.fecha'
+                              '.enddate'
                             "
                           />
                         </FormControl>
@@ -263,21 +270,21 @@
                       </FormItem>
                     </FormField>
                   </td>
-                  <td class="p-4 align-middle">
+                  <td class="px-4 py-4">
                     <Button
-                      @click="removeAgreement(developmentIndex, agreementIndex)"
-                      type="button"
                       variant="ghost"
+                      type="button"
+                      @click="agreements.remove(agreementIndex)"
                     >
-                      <TrashIcon class="h-4 w-4" />
+                      <TrashIcon class="size-4 text-destructive" />
                     </Button>
                   </td>
                 </tr>
-              </FormField>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </FieldArray>
     </div>
   </div>
 </template>
@@ -296,6 +303,7 @@ import Input from "@/components/ui/input/Input.vue";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -303,8 +311,7 @@ import {
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import type { Militant } from "@/interface/Militante";
 import { PlusIcon, TrashIcon } from "lucide-vue-next";
-import { useFormContext } from "vee-validate";
-import { computed } from "vue";
+import { FieldArray, useFieldArray, useFormContext } from "vee-validate";
 
 const { militants } = defineProps<{
   militants: Militant[];
@@ -312,35 +319,5 @@ const { militants } = defineProps<{
 
 const form = useFormContext<FormSchema>();
 
-const agendaItems = computed(() => form.values.order);
-
-const addAgendaItem = () => {
-  form.setFieldValue("order", [...form.values.order, ""]);
-};
-
-const removeAgendaItem = (index: any) => {
-  if (form.values.order.length === 1) form.setFieldValue("order", []);
-  else form.setFieldValue("order", form.values.order.toSpliced(index, 1));
-};
-
-const addAgreement = (index: number) => {
-  form.setFieldValue(`development`, [], true);
-  // form.setFieldValue(`development.${index}.agreements`, [
-  //   ...(form.values.development[index]?.agreements ?? []),
-  //   { descripcion: "", responsable: { id: 0 }, fecha: "" as any },
-  // ]);
-};
-
-const removeAgreement = (developmentIndex: number, agreementIndex: number) => {
-  if (form.values.development[developmentIndex].agreements.length === 1)
-    form.setFieldValue(`development.${developmentIndex}.agreements`, []);
-  else
-    form.setFieldValue(
-      `development.${developmentIndex}.agreements`,
-      form.values.development[developmentIndex].agreements.toSpliced(
-        agreementIndex,
-        1
-      )
-    );
-};
+const agendaItems = useFieldArray<FormSchema["order"][number]>("order");
 </script>
