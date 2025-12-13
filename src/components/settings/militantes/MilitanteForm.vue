@@ -19,7 +19,7 @@
         </DialogDescription>
       </DialogHeader>
       <form @submit="saveMember($event)" class="space-y-4">
-        {{ form.errors.value }}
+        {{ form.values }}
         <div class="space-y-2">
           <FormField v-slot="{ componentField }" name="firstname">
             <FormItem>

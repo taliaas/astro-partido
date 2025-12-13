@@ -73,22 +73,15 @@
       v-if="!transfer?.length"
       class="text-center py-8 text-gray-500 text-lg border"
     >
-      No hay traslados
+      No hay traslados para este militante
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-interface TrasladosData {
-  id: number;
-  origen: string;
-  destino: string;
-  estado: any;
-  fecha: Date;
-  details: string;
-}
+import type { Transfer } from "@/interface/Militante";
 
 const { transfer } = defineProps<{
-  transfer: TrasladosData[];
+  transfer: Transfer[];
 }>();
 </script>

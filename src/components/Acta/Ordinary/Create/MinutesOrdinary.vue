@@ -161,7 +161,7 @@ const { agreements, militantes } = defineProps<{
 const agreements_list = agreements.data;
 
 const open = ref(false);
-const currentStep = ref(1);
+const currentStep = ref(2);
 const loading = ref(false);
 
 const nextStep = () => {
@@ -193,14 +193,16 @@ const form = useForm({
     invitados: [],
     development: [
       {
+        order: "Chequeo de acuerdos",
         content: agreements_list.map(
           (item: Agreements, index: number) =>
-            `${index + 1}. ${item.descripcion} - Responsable: ${item.responsable.firstname} ${item.responsable.lastname} - Participantes: ${item.participants?.map((i) => i.firstname)} - ${item.enddate} - ${item.status}`
+            `${index + 1}. ${item.descripcion} - Responsable: ${item.responsable?.firstname} ${item.responsable?.lastname} - Participantes: ${item.participants?.map((i) => i.firstname)} - ${item.enddate} - ${item.status} `
         ),
         workplan: [],
         agreements: [],
       },
       {
+        order: "Orientaciones del Organismo Superior",
         content: "",
         workplan: [],
         agreements: [],
@@ -209,7 +211,6 @@ const form = useForm({
     fechaCP: "",
     fechaPrep: "",
     fechaProx: "",
-    order: ["Chequeo de acuerdos", "Orientaciones del Organismo Superior"],
   },
 });
 

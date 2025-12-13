@@ -3,6 +3,7 @@ import Perfil from "../components/access/Perfil.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import { getSession } from "auth-astro/server";
 import UserService from "../services/UserService";
+import MilitantService from "@/services/MilitantService";
 
 const session = await getSession(Astro.request);
 const n_user = session?.user;
@@ -15,6 +16,7 @@ async function getUser() {
     console.error(e);
   }
 }
+
 const user = await getUser();
 ---
 

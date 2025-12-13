@@ -4,7 +4,14 @@
       <h3 class="text-lg font-medium">Orden del Día</h3>
       <div>
         <Button
-          @click="agendaItems.push('')"
+          @click="
+            agendaItems.push({
+              order: '',
+              content: '',
+              agreements: [],
+              workplan: [],
+            })
+          "
           type="button"
           variant="outline"
           class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
@@ -16,7 +23,6 @@
         </Button>
       </div>
     </div>
-
     <div class="rounded border">
       <table class="w-full">
         <thead>
@@ -38,7 +44,10 @@
           >
             <td class="p-4 align-middle font-medium">{{ index + 1 }}</td>
             <td class="p-4 align-middle">
-              <FormField :name="'order.' + index" v-slot="{ componentField }">
+              <FormField
+                :name="`development.${index}.order`"
+                v-slot="{ componentField }"
+              >
                 <FormItem class="w-3/4">
                   <FormControl>
                     <Input
@@ -77,7 +86,7 @@
           <FormItem class="">
             <FormLabel class="text-md"
               >{{ developmentIndex + 1 }}.
-              {{ form.values.order[developmentIndex] }}</FormLabel
+              {{ form.values.development[developmentIndex].order }}</FormLabel
             >
             <FormControl>
               <Textarea rows="4" v-bind="componentField"></Textarea>
@@ -100,9 +109,9 @@
                 @click="
                   agreements.push({
                     descripcion: '',
-                    responsable: { id: '' },
+                    responsable: null,
                     enddate: '2025-01-01',
-                    participants: { id: '' },
+                    participants: [],
                     pto: '',
                   })
                 "
@@ -179,17 +188,29 @@
                         developmentIndex +
                         '.agreements.' +
                         agreementIndex +
-                        '.participants.id'
+                        '.participants'
                       "
-                      v-slot="{ componentField }"
+                      v-slot="{ field, setValue }"
                     >
                       <FormItem class="w-3/4">
                         <FormControl>
-                          <Select :="componentField">
+                          <Select
+                            :model-value="field.value.map(({ id }: any) => id)"
+                            @update:model-value="
+                              (val: any) => {
+                                setValue(
+                                  val.map((id: string) => ({ id })),
+                                  false
+                                );
+                              }
+                            "
+                            multiple
+                          >
                             <SelectTrigger>
                               <SelectValue
                                 placeholder="Participantes"
-                              ></SelectValue>
+                                class="text-wrap max-w-64 max-h-none"
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
@@ -202,10 +223,10 @@
                                 >
                               </SelectGroup>
                             </SelectContent>
-                          </Select></FormControl
-                        >
-                        <FormMessage /></FormItem
-                    ></FormField>
+                          </Select>
+                        </FormControl>
+                      </FormItem></FormField
+                    >
                   </td>
                   <td class="px-4 py-4">
                     <FormField
@@ -319,5 +340,6 @@ const { militants } = defineProps<{
 
 const form = useFormContext<FormSchema>();
 
-const agendaItems = useFieldArray<FormSchema["order"][number]>("order");
+const agendaItems =
+  useFieldArray<FormSchema["development"][number]>("development");
 </script>

@@ -15,18 +15,18 @@ if (!id) {
 async function getAgreements() {
   const services = new MinutesService();
   try {
-    const agreements = services.getAgreementsId(id!, session.jwt);
+    const agreements = await services.getAgreementsId(id!, session.jwt);
     console.log(agreements);
     return agreements;
   } catch (e) {
     console.error(e);
   }
 }
-const agreements = await getAgreements();
+const agreement = await getAgreements();
 ---
 
 <RootLayout>
   <ProcessLayout>
-    <ViewAgreements agreements={agreements} client:load />
+    <ViewAgreements agreement={agreement} client:load />
   </ProcessLayout>
 </RootLayout>

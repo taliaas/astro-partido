@@ -22,6 +22,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableEmpty,
   TableHead,
   TableHeader,
   TableRow,
@@ -34,6 +35,7 @@ import {
   Eye,
   MoreVerticalIcon,
   PencilIcon,
+  SearchIcon,
   Trash,
 } from "lucide-vue-next";
 import { ref } from "vue";
@@ -44,7 +46,6 @@ const { agreements } = defineProps<{
 }>();
 
 const loading = ref(false);
-const openDelete = ref(false);
 
 const handleAction = (action: string, agreement: Agreements) => {
   if (action === "view") navigate(`/process/agreements/view/${agreement.id}`);
@@ -86,7 +87,7 @@ async function deleteAgreement(id: string) {
       <div class="bg-white rounded-lg border shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <Table class="w-full">
-            <TableHeader>
+            <TableHeader class="uppercase">
               <TableRow class="font-medium text-left">
                 <TableHead class="px-2 text-center">Acta</TableHead>
                 <TableHead>Descripcion</TableHead>
@@ -193,6 +194,21 @@ async function deleteAgreement(id: string) {
               </TableRow>
             </TableBody>
           </Table>
+
+          <!-- Empty State -->
+          <div v-if="agreements.data.length === 0" class="text-center p-4">
+            <div
+              class="mx-auto text-gray-400 rounded-full flex items-center justify-center"
+            >
+              <SearchIcon class="h-6 w-6" />
+            </div>
+            <h3 class="mt-4 text-sm font-medium text-gray-900">
+              No se encontraron acuerdos
+            </h3>
+            <p class="mt-1 text-sm text-gray-500">
+              Ajuste los filtros o cree una nueva acuerdo para comenzar.
+            </p>
+          </div>
         </div>
       </div>
     </div>

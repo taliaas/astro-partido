@@ -1,4 +1,10 @@
-import type { AgreementStatus, UserStatus } from "@/enum/Status";
+import type {
+  AgreementStatus,
+  Clasificacion,
+  Raza,
+  Sexo,
+  UserStatus,
+} from "@/enum/Status";
 import type { Development } from "@/interface/MinuteOrdinary";
 
 export interface Transfer {
@@ -17,6 +23,8 @@ export interface Sancion {
   severidad: string;
   estado: string;
   details: string;
+  duracion: number;
+  militant: Militant;
 }
 export interface Agreements {
   id: string;
@@ -74,6 +82,18 @@ export interface Militant {
   phone: "";
   abscents: any;
   user: any;
+  sexo: Sexo;
+  raza: Raza;
+  religion: string;
+  nivel_escolar: string;
+  clasificacion: Clasificacion;
+  work: string;
+  cuenta_propia: boolean;
+  fundador: boolean;
+  date: boolean;
+  CIPCC: string;
+  militant_doble: boolean;
+  expediente: string;
   core: {
     id: "";
     name: "";

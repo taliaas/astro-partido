@@ -88,29 +88,16 @@
       v-if="!sanctions?.length"
       class="text-center py-8 text-gray-500 text-lg border"
     >
-      No hay sanciones
+      No hay sanciones para este militante
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { EstadoSancion, Severidad } from '@/enum/Estado';
-
-
-interface ISanciones {
-  id: number,
-  causa: string,
-  details: string,
-  fecha: Date,
-  severidad: Severidad,
-  duracion: number,
-  estado: EstadoSancion;
-  expiresAt: Date | null,
-  militante: any
-}
+import type { Sancion } from "@/interface/Militante";
 
 const { sanctions } = defineProps<{
-  sanctions: ISanciones[];
+  sanctions: Sancion[];
 }>();
 
 const getColors = (severity: string) => {

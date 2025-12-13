@@ -1,3 +1,298 @@
+<script setup lang="ts">
+import Observation from "@/components/Acta/Ordinary/Observation.vue";
+import { statusMap } from "@/components/Acta/status";
+import UploadMinute from "@/components/Acta/UploadMinute.vue";
+import Label from "@/components/ui/label/Label.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
+import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
+import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
+import { MinuteType, roleEnum } from "@/enum/roleEnum";
+import type Minute from "@/interface/Minute";
+import { exportar } from "@/lib/export_cp.ts";
+import { exportarRO } from "@/lib/export_ro.ts";
+import { useSse } from "@/utils/see";
+import { useUrlSearchParams } from "@vueuse/core";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Eye,
+  FileCheck,
+  FilePenLine,
+  FileSearch,
+  FileText,
+  Loader2,
+  MoreVerticalIcon,
+  Pencil,
+  PlusIcon,
+  SearchIcon,
+  TrashIcon,
+} from "lucide-vue-next";
+import { reactive, ref } from "vue";
+import { toast } from "vue-sonner";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "../ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { MinuteStatus } from "@/enum/Estado";
+import { usePermissions } from "@/utils/auth-client";
+
+const emit = defineEmits(["test"]);
+const {
+  actas: actasResponse,
+  type,
+  page,
+  order,
+  nucleos,
+  session,
+} = defineProps<{
+  actas: { data: Minute[]; page_total: number; total: number };
+  type: string;
+  page: number;
+  order: any;
+  nucleos: any;
+  session: any;
+}>();
+
+useSse("minute.status", ({ id, status }) => {
+  const acta = actas?.data?.find((acta: Minute) => acta.id == id);
+  if (acta) {
+    acta.status = status;
+  }
+});
+
+const currentUser = session;
+const currentPage = ref(page);
+const currentsMinute = ref<any>(null);
+const currentCore = ref<number>(1);
+const actas = reactive(actasResponse);
+const searchParams = useUrlSearchParams();
+const hasPermission = usePermissions();
+const mode = ref("model");
+const selectedCore = ref(1);
+const openModal = ref(false);
+const showUploadDialog = ref(false);
+const openModalObserv = ref(false);
+const showDelete = ref(false);
+const hasNextPage = ref(actas?.page_total);
+const update = ref(false);
+const sort = ref<"ASC" | "DESC" | null>(order);
+
+function getDefaultFilterDate() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+
+const tableHeaders = [
+  "No.",
+  "Nombre del acta",
+  "Núcleo",
+  "Fecha de Creación",
+  "Estado",
+  "",
+];
+
+function handleSort() {
+  if (sort.value === "ASC") {
+    sort.value = "DESC";
+  } else if (sort.value === "DESC") {
+    sort.value = null;
+  } else {
+    sort.value = "ASC";
+  }
+  navigate(`/minutes?page=${currentPage.value}&order=${sort.value}`);
+}
+
+const handleFilter = (filter: string, e: any) => {
+  const value = e.target.value;
+  const query = new URLSearchParams(searchParams as any);
+  if (value && value !== "all") {
+    query.set(filter, value);
+  } else {
+    query.delete(filter);
+  }
+  navigate("?" + query.toString());
+};
+
+const openCore = (acta: any) => {
+  currentsMinute.value = acta;
+  selectedCore.value = acta?.core?.id;
+  currentCore.value = acta?.core?.id;
+  update.value = true;
+};
+const handleCore = async () => {
+  if (currentsMinute.value.isLoaded) {
+    await actions.minute.updateCore({
+      minuteId: currentsMinute.value.id,
+      coreId: selectedCore.value,
+    });
+  } else if (currentsMinute.value.type === "ro") {
+    await actions.ordinary.updateCore({
+      minuteId: currentsMinute.value.id,
+      coreId: selectedCore.value,
+    });
+  } else {
+    await actions.political.updateCore({
+      minuteId: currentsMinute.value.id,
+      coreId: selectedCore.value,
+    });
+  }
+  navigate("");
+};
+
+const handleFilterByValue = (filter: string, value: any) => {
+  const query = new URLSearchParams(searchParams as any);
+  if (value && value !== "all") {
+    query.set(filter, value);
+  } else {
+    query.delete(filter);
+  }
+  navigate("?" + query.toString());
+};
+
+const typeMinutes = [
+  { value: "Ordinaria", name: "Acta Ordinaria" },
+  { value: "Circulo Politico", name: "Círculo Político" },
+  { value: "Extraordinaria", name: "Acta Extraordinaria" },
+];
+
+const statuses = [
+  MinuteStatus.CREATE,
+  MinuteStatus.ERROR,
+  MinuteStatus.PENDIENTE,
+  MinuteStatus.PROCESADA,
+  MinuteStatus.PROCESSING,
+];
+
+const getStatusClass = (status: any) => {
+  const classes = {
+    Creada: "bg-blue-100 text-blue-800 hover:bg-blue-200",
+    Pendiente: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
+    Procesada: "bg-green-100 text-green-800 hover:bg-green-200",
+    Error: "bg-red-100 text-red-800 hover:bg-red-200",
+    Validada: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
+  };
+  return (
+    classes[status as keyof typeof classes] ||
+    "bg-gray-100 text-gray-800 hover:bg-gray-200"
+  );
+};
+
+const handleAction = (action: any, acta: any) => {
+  currentsMinute.value = acta;
+  if (action === "ver") {
+    if (acta.isLoaded) {
+      navigate(`/loaded-view/${acta.id}`);
+    } else if (acta.type === "Ordinaria") {
+      navigate(`/view/${acta.id}`);
+    } else {
+      navigate(`/cp_view/${acta.id}`);
+    }
+  } else if (action === "editar") {
+    if (acta.type === "Ordinaria") {
+      navigate(`/edit_ro/${acta.id}`);
+    } else {
+      navigate(`/edit_cp/${acta.id}`);
+    }
+  } else if (action === "procesar") {
+    navigate(`/indicadores/${acta.id}`);
+  } else if (action === "retry") {
+    openModal.value = true;
+  } else if (action === "observation") {
+    openModalObserv.value = true;
+  } else if (action === "export") {
+    if (acta.type !== "Ordinaria") {
+      exportar(acta);
+    } else exportarRO(acta);
+  } else if (action === "eliminar") {
+    showDelete.value = true;
+  }
+};
+
+const handleRetry = () => {
+  actions.minute.retryModel({
+    actaID: currentsMinute.value?.id,
+    mode: mode.value as any,
+  });
+  navigate(`minutes`);
+};
+
+const handleDelete = () => {
+  showDelete.value = false;
+};
+
+async function eliminarActa() {
+  const acta: {
+    id: string;
+    type: string;
+  } | null = currentsMinute.value;
+
+  const id = acta?.id ?? "";
+
+  try {
+    console.log("Id", id);
+
+    await actions.minute.deleteMinute({ id });
+    toast.success("Se eliminó correctamente el acta");
+    navigate("/minutes");
+  } catch (e) {
+    toast.error("Error al eliminar el acta");
+    console.error(e);
+  }
+}
+
+function goToNextPage() {
+  const query = new URLSearchParams(searchParams as any);
+  if (actas.total > currentPage.value) {
+    currentPage.value++;
+    query.set("page", currentPage.value + "");
+    navigate(`?` + query.toString());
+  }
+}
+
+function goToPreviousPage() {
+  const query = new URLSearchParams(searchParams as any);
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    query.set("page", currentPage.value + "");
+    navigate(`?` + query.toString());
+  }
+}
+</script>
 <template>
   <div
     class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:bg-zinc-800"
@@ -134,7 +429,7 @@
 
                 <!-- Date -->
                 <Input
-                  type="month"
+                  type="monTableHeader"
                   :value="searchParams.fecha ?? getDefaultFilterDate()"
                   class="border rounded-md px-2 text-sm"
                   @change="handleFilter('fecha', $event)"
@@ -146,29 +441,21 @@
           <!-- Enhanced Table -->
           <div class="overflow-x-auto p-6">
             <Table class="p-2">
-              <TableHeader
-                class="px-6 py-3 text-left font-medium border text-gray-500 uppercase tracking-wider"
-              >
+              <TableHeader class="text-gray-500 uppercase">
                 <TableRow>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  <TableHead>
                     {{ tableHeaders[0] }}
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  </TableHead>
+                  <TableHead>
                     {{ tableHeaders[1] }}
-                  </th>
-                  <th
-                    class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  </TableHead>
+                  <TableHead class="text-center">
                     {{ tableHeaders[2] }}
-                  </th>
-                  <th
+                  </TableHead>
+                  <TableHead
                     :data-sort="sort"
                     @click="handleSort"
-                    class="flex justify-center gap-2 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="flex justify-center gap-2 items-center"
                   >
                     {{ tableHeaders[3] }}
                     <ArrowUp
@@ -180,17 +467,11 @@
                       v-if="sort === 'DESC'"
                       class="w-4 h-4 stroke-blue-500"
                     />
-                  </th>
-                  <th
-                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
+                  </TableHead>
+                  <TableHead class="text-center">
                     {{ tableHeaders[4] }}
-                  </th>
-                  <th
-                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Acciones
-                  </th>
+                  </TableHead>
+                  <TableHead class="text-center"> Acciones </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -491,298 +772,3 @@
     <Observation :minute-id="currentsMinute" v-model:open="openModalObserv" />
   </div>
 </template>
-
-<script setup lang="ts">
-import Observation from "@/components/Acta/Ordinary/Observation.vue";
-import { statusMap } from "@/components/Acta/status";
-import UploadMinute from "@/components/Acta/UploadMinute.vue";
-import Label from "@/components/ui/label/Label.vue";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
-import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
-import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
-import { MinuteType, roleEnum } from "@/enum/roleEnum";
-import type Minute from "@/interface/Minute";
-import { exportar } from "@/lib/export_cp.ts";
-import { exportarRO } from "@/lib/export_ro.ts";
-import { usePermissions } from "@/utils/auth-client.ts";
-import { useSse } from "@/utils/see";
-import { useUrlSearchParams } from "@vueuse/core";
-import { actions } from "astro:actions";
-import { navigate } from "astro:transitions/client";
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Eye,
-  FileCheck,
-  FilePenLine,
-  FileSearch,
-  FileText,
-  Loader2,
-  MoreVerticalIcon,
-  Pencil,
-  PlusIcon,
-  SearchIcon,
-  TrashIcon,
-} from "lucide-vue-next";
-import { reactive, ref } from "vue";
-import { toast } from "vue-sonner";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-} from "../ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Input } from "../ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
-import { MinuteStatus } from "@/enum/Estado";
-
-const emit = defineEmits(["test"]);
-const {
-  actas: actasResponse,
-  type,
-  page,
-  order,
-  nucleos,
-  session,
-} = defineProps<{
-  actas: { data: Minute[]; page_total: number; total: number };
-  type: string;
-  page: number;
-  order: any;
-  nucleos: any;
-  session: any;
-}>();
-
-useSse("minute.status", ({ id, status }) => {
-  const acta = actas?.data?.find((acta: Minute) => acta.id == id);
-  if (acta) {
-    acta.status = status;
-  }
-});
-
-const currentUser = session;
-const currentPage = ref(page);
-const currentsMinute = ref<any>(null);
-const currentCore = ref<number>(1);
-const actas = reactive(actasResponse);
-const searchParams = useUrlSearchParams();
-const hasPermission = usePermissions();
-const mode = ref("model");
-const selectedCore = ref(1);
-const openModal = ref(false);
-const showUploadDialog = ref(false);
-const openModalObserv = ref(false);
-const showDelete = ref(false);
-const hasNextPage = ref(actas?.page_total);
-const update = ref(false);
-const sort = ref<"ASC" | "DESC" | null>(order);
-
-function getDefaultFilterDate() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
-
-const tableHeaders = [
-  "No.",
-  "Nombre del acta",
-  "Núcleo",
-  "Fecha de Creación",
-  "Estado",
-  "",
-];
-
-function handleSort() {
-  if (sort.value === "ASC") {
-    sort.value = "DESC";
-  } else if (sort.value === "DESC") {
-    sort.value = null;
-  } else {
-    sort.value = "ASC";
-  }
-  navigate(`/minutes?page=${currentPage.value}&order=${sort.value}`);
-}
-
-const handleFilter = (filter: string, e: any) => {
-  const value = e.target.value;
-  const query = new URLSearchParams(searchParams as any);
-  if (value && value !== "all") {
-    query.set(filter, value);
-  } else {
-    query.delete(filter);
-  }
-  navigate("?" + query.toString());
-};
-
-const openCore = (acta: any) => {
-  currentsMinute.value = acta;
-  selectedCore.value = acta?.core?.id;
-  currentCore.value = acta?.core?.id;
-  update.value = true;
-};
-const handleCore = async () => {
-  if (currentsMinute.value.isLoaded) {
-    await actions.minute.updateCore({
-      minuteId: currentsMinute.value.id,
-      coreId: selectedCore.value,
-    });
-  } else if (currentsMinute.value.type === "ro") {
-    await actions.ordinary.updateCore({
-      minuteId: currentsMinute.value.id,
-      coreId: selectedCore.value,
-    });
-  } else {
-    await actions.political.updateCore({
-      minuteId: currentsMinute.value.id,
-      coreId: selectedCore.value,
-    });
-  }
-  navigate("");
-};
-
-const handleFilterByValue = (filter: string, value: any) => {
-  const query = new URLSearchParams(searchParams as any);
-  if (value && value !== "all") {
-    query.set(filter, value);
-  } else {
-    query.delete(filter);
-  }
-  navigate("?" + query.toString());
-};
-
-const typeMinutes = [
-  { value: "Ordinaria", name: "Acta Ordinaria" },
-  { value: "Circulo Politico", name: "Círculo Político" },
-  { value: "Extraordinaria", name: "Acta Extraordinaria" },
-];
-
-const statuses = [
-  MinuteStatus.CREATE,
-  MinuteStatus.ERROR,
-  MinuteStatus.PENDIENTE,
-  MinuteStatus.PROCESADA,
-  MinuteStatus.PROCESSING,
-];
-
-const getStatusClass = (status: any) => {
-  const classes = {
-    Creada: "bg-blue-100 text-blue-800 hover:bg-blue-200",
-    Pendiente: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
-    Procesada: "bg-green-100 text-green-800 hover:bg-green-200",
-    Error: "bg-red-100 text-red-800 hover:bg-red-200",
-    Validada: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
-  };
-  return (
-    classes[status as keyof typeof classes] ||
-    "bg-gray-100 text-gray-800 hover:bg-gray-200"
-  );
-};
-
-const handleAction = (action: any, acta: any) => {
-  currentsMinute.value = acta;
-  if (action === "ver") {
-    if (acta.isLoaded) {
-      navigate(`/loaded-view/${acta.id}`);
-    } else if (acta.type === "Ordinaria") {
-      navigate(`/view/${acta.id}`);
-    } else {
-      navigate(`/cp_view/${acta.id}`);
-    }
-  } else if (action === "editar") {
-    if (acta.type === "Ordinaria") {
-      navigate(`/edit_ro/${acta.id}`);
-    } else {
-      navigate(`/edit_cp/${acta.id}`);
-    }
-  } else if (action === "procesar") {
-    navigate(`/indicadores/${acta.id}`);
-  } else if (action === "retry") {
-    openModal.value = true;
-  } else if (action === "observation") {
-    openModalObserv.value = true;
-  } else if (action === "export") {
-    if (acta.type !== "Ordinaria") {
-      exportar(acta);
-    } else exportarRO(acta);
-  } else if (action === "eliminar") {
-    showDelete.value = true;
-  }
-};
-
-const handleRetry = () => {
-  actions.minute.retryModel({
-    actaID: currentsMinute.value?.id,
-    mode: mode.value as any,
-  });
-  navigate(`minutes`);
-};
-
-const handleDelete = () => {
-  showDelete.value = false;
-};
-
-async function eliminarActa() {
-  const acta: {
-    id: string;
-    type: string;
-  } | null = currentsMinute.value;
-
-  const id = acta?.id ?? "";
-
-  try {
-    console.log("Id", id);
-
-    await actions.minute.deleteMinute({ id });
-    toast.success("Se eliminó correctamente el acta");
-    navigate("/minutes");
-  } catch (e) {
-    toast.error("Error al eliminar el acta");
-    console.error(e);
-  }
-}
-
-function goToNextPage() {
-  const query = new URLSearchParams(searchParams as any);
-  if (actas.total > currentPage.value) {
-    currentPage.value++;
-    query.set("page", currentPage.value + "");
-    navigate(`?` + query.toString());
-  }
-}
-
-function goToPreviousPage() {
-  const query = new URLSearchParams(searchParams as any);
-  if (currentPage.value > 1) {
-    currentPage.value--;
-    query.set("page", currentPage.value + "");
-    navigate(`?` + query.toString());
-  }
-}
-</script>

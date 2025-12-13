@@ -41,17 +41,16 @@ export const form_schema = z.object({
       militanteId: z.string().optional(),
     })
     .array(),
-  order: z.string().array(),
   development: z
     .object({
+      order: z.string(),
       content: z.string({ message: "Error" }),
       workplan: z
         .object({
           id: z.string().optional(),
           descripcion: z.string(),
           responsable: z.object({ id: z.string() }),
-
-          participants: z.object({ id: z.string() }),
+          participants: z.object({ id: z.string() }).array(),
           enddate: z.string().date(), //z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),
         })
         .array()
@@ -61,7 +60,7 @@ export const form_schema = z.object({
           id: z.string().optional(),
           descripcion: z.string(),
           responsable: z.object({ id: z.string() }),
-
+          order: z.string(),
           participants: z.object({ id: z.string() }),
           enddate: z.string().date(), //z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),
         })

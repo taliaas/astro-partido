@@ -145,7 +145,6 @@ const saveMinute = async () => {};
           <PlusIcon class="size-4" />
           Desactivación
         </Button>
-        
       </div>
     </div>
 
@@ -188,32 +187,32 @@ const saveMinute = async () => {};
           <thead class="bg-gray-50 border-b">
             <tr>
               <th
-                class="px-6 py-3 text-left text-md font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Militante
               </th>
               <th
-                class="px-6 py-3 text-left text-md font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Motivo
               </th>
               <th
-                class="px-6 py-3 text-left text-md font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Fecha
               </th>
               <th
-                class="px-6 py-3 text-left text-md font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Núcleo
               </th>
               <th
-                class="px-6 py-3 text-left text-md font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Estado
               </th>
               <th
-                class="px-6 py-3 text-center text-md font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
               </th>
@@ -232,28 +231,28 @@ const saveMinute = async () => {};
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="text-md text-gray-900">{{
+                <span class="text-sm text-gray-900">{{
                   deactivation.motivo
                 }}</span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ deactivation.fecha }}
               </td>
               <td
-                class="px-6 py-4 text-left whitespace-nowrap text-md text-gray-900"
+                class="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-900"
               >
                 {{ deactivation.militante?.core.name }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
                   :class="deactivation.estado"
-                  class="py-1 text-md rounded-full"
+                  class="py-1 text-sm rounded-full"
                 >
                   {{ deactivation.estado }}
                 </span>
               </td>
               <td
-                class="px-6 py-4 text-center whitespace-nowrap text-md font-medium space-x-2"
+                class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium space-x-2"
               >
                 <!--acciones que se deben ejecutar-->
                 <DropdownMenu>
@@ -305,7 +304,7 @@ const saveMinute = async () => {};
 
         <form @submit.prevent="saveDeactivation" class="space-y-4">
           <div>
-            <label class="block text-md font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
               >Militante</label
             >
             <select
@@ -325,7 +324,7 @@ const saveMinute = async () => {};
           </div>
 
           <div>
-            <label class="block text-md font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
               >Motivo de Desactivación</label
             >
             <input
@@ -336,7 +335,7 @@ const saveMinute = async () => {};
           </div>
 
           <div>
-            <label class="block text-md font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
               >Fecha de Desactivación</label
             >
             <input
@@ -348,7 +347,7 @@ const saveMinute = async () => {};
           </div>
 
           <div>
-            <label class="block text-md font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
               >Notas Adicionales</label
             >
             <textarea
@@ -398,52 +397,52 @@ const saveMinute = async () => {};
         <div v-if="selectedDeactivation" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-md font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700"
                 >Militante</label
               >
-              <p class="text-md text-gray-900">
+              <p class="text-sm text-gray-900">
                 {{ selectedDeactivation.militante?.firstname }}
                 {{ selectedDeactivation.militante?.lastname }}
               </p>
             </div>
             <div>
-              <label class="block text-md font-medium text-gray-700">CI</label>
-              <p class="text-md text-gray-900">
+              <label class="block text-sm font-medium text-gray-700">CI</label>
+              <p class="text-sm text-gray-900">
                 {{ selectedDeactivation.militante?.ci }}
               </p>
             </div>
           </div>
 
           <div>
-            <label class="block text-md font-medium text-gray-700"
+            <label class="block text-sm font-medium text-gray-700"
               >Motivo</label
             >
-            <p class="text-md text-gray-900">
+            <p class="text-sm text-gray-900">
               {{ selectedDeactivation.motivo }}
             </p>
           </div>
           <div>
-            <label class="block text-md font-medium text-gray-700"
+            <label class="block text-sm font-medium text-gray-700"
               >Detalles</label
             >
-            <p class="text-md text-gray-900">
+            <p class="text-sm text-gray-900">
               {{ selectedDeactivation.details }}
             </p>
           </div>
           <div>
-            <label class="block text-md font-medium text-gray-700">Fecha</label>
-            <p class="text-md text-gray-900">
+            <label class="block text-sm font-medium text-gray-700">Fecha</label>
+            <p class="text-sm text-gray-900">
               {{ selectedDeactivation.fecha }}
             </p>
           </div>
 
           <div>
-            <label class="block text-md font-medium text-gray-700"
+            <label class="block text-sm font-medium text-gray-700"
               >Estado</label
             >
             <span
               :class="selectedDeactivation.estado"
-              class="y-1 text-md rounded-full"
+              class="y-1 text-sm rounded-full"
             >
               {{ selectedDeactivation.estado }}
             </span>

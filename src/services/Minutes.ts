@@ -41,8 +41,10 @@ export default class MinutesService {
   }
 
   async getAgreementsId(id: string, token: any) {
+    console.log(id, token);
+
     try {
-      const response = await fetch(`${API_URL}/agreements/${id}`, {
+      const response = await fetch(`${API_URL}/agreements/view/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

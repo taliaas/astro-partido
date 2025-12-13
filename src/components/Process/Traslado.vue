@@ -56,37 +56,37 @@
           <thead class="bg-gray-50 border-b">
             <tr>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Militante
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Origen
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Destino
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Fecha
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Núcleo
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Estado
               </th>
               <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
               </th>

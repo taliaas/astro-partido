@@ -1,3 +1,138 @@
+<script setup lang="ts">
+import { Button } from "@/components/ui/button/index.js";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu/index.js";
+import type { Core, Militant, Sancion } from "@/interface/Militante";
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+import { format } from "date-fns";
+import { Eye, MoreVerticalIcon, Pencil, PlusIcon, XIcon } from "lucide-vue-next";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
+
+const { sanciones, members, cores } = defineProps<{
+  sanciones: { data: Sancion[]};
+  members: Militant[];
+  cores: Core[];
+}>();
+
+// Estado reactivo
+const searchTerm = ref("");
+const showDetailsModal = ref(false);
+const showModal = ref(false);
+const isEditing = ref(false);
+const isLoading = ref(false);
+const selectNucleo = ref("");
+const statusFilter = ref("");
+const EstadoSancion = ["APROBADA", "DENEGADA", "CUMPLIDA"] as const;
+
+const currentSanction = ref({
+  causa: "",
+  fecha: "",
+  details: "",
+  severidad: "LEVE",
+  duracion: 0,
+  estado: EstadoSancion[0],
+  militante: { id: "" },
+});
+
+const selectSanction = ref({
+  causa: "",
+  fecha: "",
+  details: "",
+  severidad: "LEVE",
+  duracion: 0,
+  estado: EstadoSancion[0],
+  militante: { id: "", firstname: '', lastname: '', ci: '' },
+});
+
+// Computed
+const filteredSanctions = computed(() => {
+  return sanciones?.data?.filter((sanction: any) => {
+    const matchesSearch =
+      sanction?.militante.firstname
+        .toLowerCase()
+        .includes(searchTerm.value.toLowerCase()) ||
+      sanction.militante.lastname.includes(searchTerm.value);
+    const matchedCores =
+      selectNucleo.value === "" ||
+      sanction?.militante.core.id === selectNucleo.value;
+    const matchesStatus =
+      statusFilter.value === "" || sanction.estado === statusFilter.value;
+    return matchesSearch && matchesStatus && matchedCores;
+  });
+});
+
+// Métodos
+const openAddModal = () => {
+  isEditing.value = false;
+  currentSanction.value = {
+    militante: { id: "" },
+    causa: "",
+    fecha: "",
+    details: "",
+    severidad: "",
+    duracion: 0,
+    estado: EstadoSancion[0],
+  };
+  showModal.value = true;
+};
+
+const openDetails = (sancion: any) => {
+  selectSanction.value = {
+    ...sancion,
+  };
+  showDetailsModal.value = true;
+};
+
+const editSanction = (sanction: any) => {
+  isEditing.value = true;
+  currentSanction.value = { ...sanction };
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  isEditing.value = false;
+};
+
+const closeDetailsModal = () => {
+  showDetailsModal.value = false;
+  selectSanction.value = {
+    militante:  { id: "", firstname: '', lastname: '', ci: '' },
+    causa: "",
+    fecha: "",
+    details: "",
+    severidad: "",
+    duracion: 0,
+    estado: EstadoSancion[0],
+  };
+};
+
+const saveSanction = async () => {
+  isLoading.value = true;
+  try {
+    if (isEditing.value) {
+      await actions.sancion.updateSancion(currentSanction.value as any);
+      toast.success("Sanción actualizada correctamente");
+    } else {
+      await actions.sancion.createSancion(currentSanction.value as any);
+      toast.success("Sanción creada correctamente");
+    }
+    closeModal();
+    navigate("");
+  } catch (error) {
+    toast.error("Error al guardar la sanción");
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+</script>
 <template>
   <div class="p-2 space-y-6">
     <div class="flex items-center justify-between">
@@ -57,37 +192,37 @@
           <thead class="bg-gray-50 border-b">
             <tr>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Militante
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Motivo
               </th>
               <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Fecha Inicio
               </th>
               <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Duración
               </th>
               <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Núcleo
               </th>
               <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Estado
               </th>
               <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
               </th>
@@ -101,8 +236,8 @@
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
-                  {{ sanction.militante.firstname }}
-                  {{ sanction.militante.lastname }}
+                  {{ sanction.militant.firstname }}
+                  {{ sanction.militant.lastname }}
                 </div>
               </td>
               <td class="px-6 py-4">
@@ -126,10 +261,10 @@
               <td
                 class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900"
               >
-                {{ sanction.militante.core.name }}
+                {{ sanction.militant.core.name }}
               </td>
               <td class="px-6 py-4 text-center whitespace-nowrap">
-                <span class="px-2 py-1 text-xs font-medium rounded-full">
+                <span class="px-2 py-1 text-sm font-medium rounded-full">
                   {{ sanction.estado }}
                 </span>
               </td>
@@ -390,227 +525,5 @@
         </div>
       </div>
     </div>
-
-     <!-- Upload Dialog -->
-    <Dialog :open="showUploadDialog" @update:open="showUploadDialog = $event">
-      <DialogContent class="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Cargar documento</DialogTitle>
-          <DialogDescription>
-            Seleccione o arrastre los archivos que desea cargar
-          </DialogDescription>
-        </DialogHeader>
-
-        <!-- Área de arrastre de archivos -->
-        <div class="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center transition-colors duration-200"
-             :class="{ 'border-blue-500 bg-blue-50': isDragging }" @drop.prevent="handleFileDrop"
-             @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @dragenter.prevent>
-          <UploadCloudIcon class="mx-auto h-12 w-12 transition-colors duration-200"
-                           :class="isDragging ? 'text-blue-600' : 'text-gray-400'"/>
-          <p class="mt-2 text-sm text-gray-600">
-            <span class="font-medium hover:text-gray-700">
-              Arrastre archivos aquí
-            </span>
-            o
-            <button @click="$refs.fileInput.click()" class="font-medium text-blue-600 hover:text-blue-500">
-              seleccione desde su dispositivo
-            </button>
-          </p>
-          <p class="mt-1 text-xs text-gray-500">DOCX, PDF, hasta 10MB por archivo</p>
-          <input ref="fileInput" type="file" multiple accept=".pdf,.docx" class="hidden" @change="handleFileSelect"/>
-        </div>
-
-        <!-- Lista de archivos -->
-        <div v-if="uploadedFiles.length > 0" class="space-y-3 max-h-32 overflow-y-auto">
-          <div v-for="(file, index) in uploadedFiles" :key="index"
-               class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 rounded flex items-center justify-center">
-                <FileTextIcon class="size-5"/>
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900 truncate">{{ file.name }}</p>
-              <div class="flex items-center gap-2 mt-1">
-                <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</p>
-              </div>
-            </div>
-            <button @click="removeFile(file.name)" class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600">
-              <Trash2Icon class="size-4"/>
-            </button>
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button type="reset" variant="outline" @click="showUploadDialog = false">
-            Cancelar
-          </Button>
-          <Button @click="handleDrop" :disabled="!uploadedFiles.length || loading"
-                  class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" :loading>
-            Cargar archivos
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   </div>
 </template>
-
-<script setup lang="ts">
-import { computed, ref } from "vue";
-import { Eye, MoreVerticalIcon, Pencil, PlusIcon, UploadIcon, XIcon, FileTextIcon, Trash2Icon, UploadCloudIcon } from "lucide-vue-next";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu/index.js";
-import { Button } from "@/components/ui/button/index.js";
-import { toast } from "vue-sonner";
-import { actions } from "astro:actions";
-import { navigate } from "astro:transitions/client";
-import { format } from "date-fns";
-import {Dialog, DialogFooter, DialogContent, DialogHeader, DialogTitle, DialogDescription} from "@/components/ui/dialog";
-
-const { sanciones, members, cores } = defineProps<{
-  sanciones: any;
-  members: any[];
-  cores: any[];
-}>();
-
-// Estado reactivo
-const searchTerm = ref("");
-const showDetailsModal = ref(false);
-const showModal = ref(false);
-const isEditing = ref(false);
-const isLoading = ref(false);
-const selectNucleo = ref("");
-const statusFilter = ref("");
-const EstadoSancion = ["APROBADA", "DENEGADA", "CUMPLIDA"] as const;
-const showUploadDialog = ref(false);
-const uploadedFiles = ref([]);
-const isDragging = ref(false);
-const loading = ref(false)
-
-const currentSanction = ref({
-  causa: "",
-  fecha: "",
-  details: "",
-  severidad: "LEVE",
-  duracion: 0,
-  estado: EstadoSancion[0],
-  militante: { id: "" },
-});
-
-const selectSanction = ref({
-  causa: "",
-  fecha: "",
-  details: "",
-  severidad: "LEVE",
-  duracion: 0,
-  estado: EstadoSancion[0],
-  militante: { id: "", firstname: '', lastname: '', ci: '' },
-});
-
-// Computed
-const filteredSanctions = computed(() => {
-  return sanciones?.data?.filter((sanction: any) => {
-    const matchesSearch =
-      sanction?.militante.firstname
-        .toLowerCase()
-        .includes(searchTerm.value.toLowerCase()) ||
-      sanction.militante.lastname.includes(searchTerm.value);
-    const matchedCores =
-      selectNucleo.value === "" ||
-      sanction?.militante.core.id === selectNucleo.value;
-    const matchesStatus =
-      statusFilter.value === "" || sanction.estado === statusFilter.value;
-    return matchesSearch && matchesStatus && matchedCores;
-  });
-});
-
-// Métodos
-const openAddModal = () => {
-  isEditing.value = false;
-  currentSanction.value = {
-    militante: { id: "" },
-    causa: "",
-    fecha: "",
-    details: "",
-    severidad: "",
-    duracion: 0,
-    estado: EstadoSancion[0],
-  };
-  showModal.value = true;
-};
-
-const openDetails = (sancion: any) => {
-  selectSanction.value = {
-    ...sancion,
-  };
-  showDetailsModal.value = true;
-};
-
-const editSanction = (sanction: any) => {
-  isEditing.value = true;
-  currentSanction.value = { ...sanction };
-  showModal.value = true;
-};
-
-const closeModal = () => {
-  showModal.value = false;
-  isEditing.value = false;
-};
-
-const closeDetailsModal = () => {
-  showDetailsModal.value = false;
-  selectSanction.value = {
-    militante:  { id: "", firstname: '', lastname: '', ci: '' },
-    causa: "",
-    fecha: "",
-    details: "",
-    severidad: "",
-    duracion: 0,
-    estado: EstadoSancion[0],
-  };
-};
-
-const saveSanction = async () => {
-  isLoading.value = true;
-  try {
-    if (isEditing.value) {
-      await actions.sancion.updateSancion(currentSanction.value as any);
-      toast.success("Sanción actualizada correctamente");
-    } else {
-      await actions.sancion.createSancion(currentSanction.value as any);
-      toast.success("Sanción creada correctamente");
-    }
-    closeModal();
-    navigate("");
-  } catch (error) {
-    toast.error("Error al guardar la sanción");
-    console.log(error);
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const saveMinute = async () => {
-  showUploadDialog.value = true
-}
-
-const handleFileSelect = (event) => {
-  const files = Array.from(event.target.files);
-  uploadedFiles.value = [...uploadedFiles.value, ...files];
-};
-
-const handleFiles = (files) => {
-  uploadedFiles.value = [...uploadedFiles.value, ...files];
-}
-
-const handleFileDrop = (e) => {
-  isDragging.value = false
-  const files = Array.from(e.dataTransfer.files)
-  handleFiles(files)
-}
-
-</script>
