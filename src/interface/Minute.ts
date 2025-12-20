@@ -4,7 +4,7 @@ import type { Computo } from "@/interface/Indicadores";
 import type { Invitados } from "@/interface/Invitados";
 import type { Core, Militant, User } from "@/interface/Militante";
 import type { MinuteOrdinary } from "@/interface/MinuteOrdinary";
-import type MinutePolitical from "@/interface/MinutePolitical";
+import type { MinutePolitical } from "@/interface/MinutePolitical";
 
 export default interface Minute {
   id: string;
@@ -14,12 +14,9 @@ export default interface Minute {
 
   place?: string;
   type: MinuteType;
-
   status: MinuteStatus;
-
   date?: Date;
   createdAt: Date;
-
   core: Core | null;
 
   owner: User;

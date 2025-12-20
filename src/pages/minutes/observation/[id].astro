@@ -1,0 +1,29 @@
+---
+import Observation from "@/components/Acta/Ordinary/Observation.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import MinutesService from "@/services/Minutes";
+import { getSession } from "auth-astro/server";
+
+const { id } = Astro.params;
+const session = (await getSession(Astro.request)) as any;
+
+if (!id) {
+  throw new Error("No id provided");
+}
+
+async function getActa() {
+  const services = new MinutesService();
+  try {
+    const acta = services.getMinute(id!, session.jwt);
+    return acta;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const minute = await getActa();
+---
+
+<RootLayout>
+  <Observation minute={minute} client:load />
+</RootLayout>

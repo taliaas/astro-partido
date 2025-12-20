@@ -2,6 +2,16 @@
   <div class="space-y-8">
     <div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <FormField v-if="edit" name="name" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Nombre del acta</FormLabel>
+            <FormControl>
+              <!-- Nucleo -->
+              <Input type="text" id="name" v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
         <FormField v-if="edit" name="core" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Núcleo</FormLabel>

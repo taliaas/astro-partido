@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import {
   AlertDialog,
-  AlertDialogContent,
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogFooter,
   AlertDialogTrigger,
   AlertDialogCancel,
-  AlertDialogAction,
+  AlertDialogContent,
 } from "@/components/ui/alert-dialog";
+import Badge from "@/components/ui/badge/Badge.vue";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -89,7 +89,7 @@ async function deleteAgreement(id: string) {
           <Table class="w-full">
             <TableHeader class="uppercase">
               <TableRow class="font-medium text-left">
-                <TableHead class="px-2 text-center">Acta</TableHead>
+                <TableHead class="px-2 text-center">No.</TableHead>
                 <TableHead>Descripcion</TableHead>
                 <TableHead>Responsable</TableHead>
                 <TableHead class="text-center">Participantes</TableHead>
@@ -101,21 +101,27 @@ async function deleteAgreement(id: string) {
             </TableHeader>
             <TableBody>
               <TableRow
-                v-for="agreement in agreements.data"
+                v-for="(agreement, index) in agreements.data"
                 :key="agreement.id"
                 class="hover:bg-gray-50"
               >
                 <TableCell class="font-medium text-center">{{
-                  agreement.development.minute.id
+                  index + 1
                 }}</TableCell>
                 <TableCell
                   class="overflow-hidden text-ellipsis whitespace-nowrap w-[150px] max-w-[150px]"
                 >
-                  {{ agreement.descripcion }}
+                  <span v-if="agreement.descripcion">{{
+                    agreement.descripcion
+                  }}</span>
+                  <span v-else>-</span>
                 </TableCell>
-                <TableCell
-                  >{{ agreement.responsable.firstname
-                  }}{{ agreement.responsable.lastname }}</TableCell
+                <TableCell class="text-center">
+                  <span v-if="agreement.responsable"
+                    >{{ agreement.responsable?.firstname }}
+                    {{ agreement.responsable?.lastname }}</span
+                  >
+                  <span v-else>-</span></TableCell
                 >
                 <TableCell
                   class="text-center overflow-hidden text-ellipsis whitespace-nowrap w-[150px] max-w-[150px]"
@@ -129,9 +135,15 @@ async function deleteAgreement(id: string) {
                   </span>
                   <span v-else>-</span>
                 </TableCell>
-                <TableCell>{{ agreement.created }}</TableCell>
-                <TableCell>{{ agreement.enddate }}</TableCell>
-                <TableCell>{{ agreement.status }}</TableCell>
+                <TableCell class="text-center">{{
+                  agreement.created
+                }}</TableCell>
+                <TableCell class="text-center">{{
+                  agreement.enddate
+                }}</TableCell>
+                <TableCell>
+                  <Badge variant="outline">{{ agreement.status }}</Badge>
+                </TableCell>
                 <TableCell class="text-center">
                   <AlertDialog>
                     <DropdownMenu>

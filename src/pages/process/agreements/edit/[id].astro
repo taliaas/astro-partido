@@ -2,6 +2,7 @@
 import EditAgreements from "@/components/Process/agreements/EditAgreements.vue";
 import ProcessLayout from "@/layouts/ProcessLayout.astro";
 import RootLayout from "@/layouts/RootLayout.astro";
+import MilitantService from "@/services/MilitantService";
 import MinutesService from "@/services/Minutes";
 import { getSession } from "auth-astro/server.ts";
 
@@ -15,18 +16,28 @@ if (!id) {
 async function getAgreements() {
   const services = new MinutesService();
   try {
-    const agreements = services.getAgreementsId(id!, session.jwt);
-    console.log(agreements);
+    const agreements = await services.getAgreementsId(id!, session.jwt);
     return agreements;
   } catch (e) {
     console.error(e);
   }
 }
-const agreements = await getAgreements();
+
+async function getMilitants() {
+  const service = new MilitantService();
+  try {
+    return service.getAll(session);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const militants = await getMilitants();
+const agreement = await getAgreements();
 ---
 
 <RootLayout>
   <ProcessLayout>
-    <EditAgreements agreements={agreements} client:load />
+    <EditAgreements agreement={agreement} militants={militants} client:load />
   </ProcessLayout>
 </RootLayout>

@@ -1,8 +1,9 @@
-import {Cargo} from "@/enum/Cargo.ts";
-import type MinutesOrdinary from "./MinuteOrdinary.ts";
+import { Cargo } from "@/enum/Cargo.ts";
+import type Minute from "@/interface/Minute";
 
 export interface Invitados {
-    nombre: string
-    cargo: Cargo
-    minute: MinutesOrdinary;
+  id: string;
+  nombre: string;
+  cargo: Cargo;
+  minute: Minute;
 }

@@ -1,6 +1,11 @@
 <template>
   <div class="space-x-4">
-    <Button variant="outline" type="menu" @click="exportToExcel()">
+    <Button
+      variant="outline"
+      type="menu"
+      @click="exportToExcel()"
+      :disabled="loading"
+    >
       <Download />
       {{ loading ? "Exportando..." : "Exportar" }}
     </Button>
@@ -13,6 +18,7 @@ import type { Computo } from "@/interface/Indicadores";
 import { buildExcel } from "@/utils/excel";
 import { Download } from "lucide-vue-next";
 import { ref } from "vue";
+import { toast } from "vue-sonner";
 
 const { computos, month } = defineProps<{
   computos: Computo[];
@@ -22,6 +28,11 @@ const loading = ref(false);
 
 // Función básica de exportación
 const exportToExcel = async (filename: string = "Asistencia.xlsx") => {
+  console.log(!computos);
+
+  if (!computos) {
+    toast.info("No hay cómputos para este mes");
+  }
   try {
     loading.value = true;
     const workbook = buildExcel(computos, month);
@@ -30,7 +41,9 @@ const exportToExcel = async (filename: string = "Asistencia.xlsx") => {
     downloadExcel(buffer, filename);
     loading.value = false;
   } catch (error) {
+    toast.info("No hay cómputos para este mes");
     console.error("Error al exportar Excel:", error);
+    loading.value = false;
     throw error;
   }
 };

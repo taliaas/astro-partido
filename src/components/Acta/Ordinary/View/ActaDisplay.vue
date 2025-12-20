@@ -1,18 +1,87 @@
+<script setup lang="ts">
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Label from "@/components/ui/label/Label.vue";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type Minute from "@/interface/Minute";
+import { exportarRO } from "@/lib/export_ro.ts";
+import { navigate } from "astro:transitions/client";
+import { ArrowRight, DownloadIcon } from "lucide-vue-next";
+
+const { minute, existsCP, abscents } = defineProps<{
+  minute: Minute;
+  existsCP?: boolean;
+  abscents: any[];
+}>();
+
+defineEmits(["move"]);
+let porciento = 0;
+if (minute?.core?.militants?.length) {
+  porciento =
+    abscents?.length === 0
+      ? 100
+      : (abscents.length * 100) / minute.core.militants.length;
+}
+
+const exportar = () => {
+  exportarRO(minute);
+};
+
+const list = () => {
+  return minute.core?.militants?.map((militante: any) => {
+    const ausencia = minute.abscents?.find(
+      (a: any) => a.militante?.id === militante?.id
+    );
+    return {
+      ...militante,
+      reason: ausencia?.reason,
+    };
+  });
+};
+
+function openProcesar() {
+  navigate(`/indicadores/${minute.id}`);
+}
+</script>
 <template>
-  <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-gray-50">
     <div class="max-w-400 mx-auto">
       <Card class="w-full bg-background p-6 shadow-md">
-        <CardHeader>
-          <div class="flex justify-between items-center">
+        <CardHeader class="flex justify-between">
+          <div>
             <CardTitle class="text-3xl font-bold">
-              {{ minute?.name }} {{ minute?.id }}
-              <Badge variant="outline">{{ minute.status }}</Badge>
+              {{ minute?.name }} {{ minute.id }}
             </CardTitle>
-            <Button variant="outline" @click="exportar">
-              <DownloadIcon class="w-4 h-4 mr-2" />
-              Exportar PDF
-            </Button>
+            <CardDescription>
+              {{ minute.type }}
+              <Badge variant="outline">{{ minute.status }}</Badge>
+            </CardDescription>
           </div>
+          <Button variant="outline" @click="exportar">
+            <DownloadIcon class="w-4 h-4 mr-2" />
+            Exportar PDF
+          </Button>
         </CardHeader>
         <CardContent>
           <div ref="info" class="space-y-8">
@@ -62,7 +131,7 @@
                 v-if="minute?.core?.militants?.length"
                 class="text-md rounded-lg border border-gray-300"
               >
-                <TableHeader class="bg-gray-100">
+                <TableHeader class="bg-gray-100 uppercase">
                   <TableRow>
                     <TableHead>No.</TableHead>
                     <TableHead>Nombre</TableHead>
@@ -93,55 +162,98 @@
               </Table>
             </section>
 
+            <section title="Invitados">
+              <div class="">
+                <Label class="text-2xl py-2">Participantes</Label>
+                <Table class="text-md rounded-lg border border-gray-300">
+                  <TableHeader class="bg-gray-100 uppercase">
+                    <TableHead>No.</TableHead>
+                    <TableHead>Nombre Completo</TableHead>
+                    <TableHead>Cargo</TableHead>
+                  </TableHeader>
+                  <TableBody
+                    v-for="(item, index) in minute.invitados"
+                    :key="item.id"
+                  >
+                    <TableRow>
+                      <TableCell class="p-2">{{ index + 1 }}</TableCell>
+                      <TableCell class="p-2">{{
+                        item.nombre || "-"
+                      }}</TableCell>
+                      <TableCell class="p-2">{{ item.cargo }}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                <div
+                  v-if="!minute.invitados.length"
+                  class="p-6 border text-muted-foreground text-center"
+                >
+                  No hay invitados para esta acta
+                </div>
+              </div>
+            </section>
             <!-- Orden del día -->
             <section>
               <h2 class="text-2xl font-semibold text-gray-800 mb-2">
                 Orden del día
               </h2>
-              <ol class="list-decimal list-inside space-y-1 text-blue-600">
+              <p
+                class="text-muted-foreground"
+                v-if="!minute.ordinary?.development.length"
+              >
+                No hay desarrollo
+              </p>
+              <ol
+                v-else
+                class="list-decimal list-inside space-y-1 text-blue-600"
+              >
                 <li
-                  v-for="(item, index) in minute?.ordinary?.order"
+                  v-for="(item, index) in minute.ordinary?.development"
                   :key="index"
                   class="text-lg text-gray-800 pl-4"
                 >
-                  {{ item }}
+                  {{ item.order }}
                 </li>
               </ol>
             </section>
-
-            <!-- Desarrollo de la reunión -->
-            <section title="Desarrollo de la reunión">
+            <section>
               <h2 class="text-2xl font-semibold text-gray-800 mb-2">
-                Desarrollo de la reunión
+                Desarrollo
               </h2>
-              <Accordion type="single" collapsible>
+              <p
+                class="text-muted-foreground"
+                v-if="!minute.ordinary?.development.length"
+              >
+                No hay desarrollo
+              </p>
+              <Accordion
+                type="single"
+                collapsible
+                v-for="(development, index) in minute.ordinary?.development"
+              >
                 <AccordionItem
-                  v-if="minute?.ordinary?.development?.length !== 0"
-                  v-for="(item, index) in minute?.ordinary?.development"
-                  :key="item.id"
-                  :value="item.id"
+                  v-if="minute.ordinary?.development.length !== 0"
+                  :value="development.id"
                 >
                   <AccordionTrigger class="text-lg">
                     {{ index + 1 }}.
-                    {{
-                      minute?.ordinary?.order?.[index] || ""
-                    }}</AccordionTrigger
+                    {{ development.order || "-" }}</AccordionTrigger
                   >
                   <AccordionContent class="space-y-2">
                     <div>
                       <span class="text-lg font-medium">
                         <span
                           class="font-normal text-muted-foreground"
-                          v-if="!minute?.ordinary?.development[index]?.content"
+                          v-if="!development.content"
                         >
                           No hay contenido
                         </span>
-                        <span v-else class="font-normal">
-                          Debate:
-                          {{
-                            minute?.ordinary?.development[index].content
-                          }}</span
-                        >
+                        <span v-else class="font-normal flex">
+                          <p class="font-semibold">Debate:</p>
+                          <p>
+                            {{ development.content }}
+                          </p>
+                        </span>
                       </span>
                     </div>
                     <div class="space-y-2">
@@ -329,7 +441,7 @@
             </section>
           </div>
         </CardContent>
-        <CardFooter class="flex justify-end border-t p-6">
+        <CardFooter class="flex justify-end p-6">
           <div class="flex gap-5" v-if="minute?.status === 'Pendiente'">
             <Button @click="openProcesar"> Procesar </Button>
           </div>
@@ -349,71 +461,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import type Minute from "@/interface/Minute";
-import { exportarRO } from "@/lib/export_ro.ts";
-import { navigate } from "astro:transitions/client";
-import { ArrowRight, DownloadIcon } from "lucide-vue-next";
-import { ref } from "vue";
-
-const { minute, existsCP, abscents } = defineProps<{
-  minute: Minute;
-  existsCP?: boolean;
-  abscents: any[];
-}>();
-
-defineEmits(["move"]);
-
-const info = ref<HTMLElement | null>(null);
-let porciento = 0;
-if (minute?.core?.militants?.length) {
-  porciento =
-    abscents?.length === 0
-      ? 100
-      : (abscents.length * 100) / minute.core.militants.length;
-}
-
-const exportar = () => {
-  exportarRO(minute);
-};
-
-const list = () => {
-  return minute.core?.militants?.map((militante: any) => {
-    const ausencia = minute.abscents?.find(
-      (a: any) => a.militante?.id === militante?.id
-    );
-    return {
-      ...militante,
-      reason: ausencia?.reason,
-    };
-  });
-};
-
-function openProcesar() {
-  navigate(`/indicadores/${minute.id}`);
-}
-</script>

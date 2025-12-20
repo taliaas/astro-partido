@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Observation from "@/components/Acta/Ordinary/Observation.vue";
 import { statusMap } from "@/components/Acta/status";
 import UploadMinute from "@/components/Acta/UploadMinute.vue";
 import Label from "@/components/ui/label/Label.vue";
@@ -15,10 +14,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Tooltip from "@/components/ui/tooltip/Tooltip.vue";
 import TooltipContent from "@/components/ui/tooltip/TooltipContent.vue";
 import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
+import { MinuteStatus } from "@/enum/Estado";
 import { MinuteType, roleEnum } from "@/enum/roleEnum";
 import type Minute from "@/interface/Minute";
 import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
+import { usePermissions } from "@/utils/auth-client";
 import { useSse } from "@/utils/see";
 import { useUrlSearchParams } from "@vueuse/core";
 import { actions } from "astro:actions";
@@ -68,8 +69,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { MinuteStatus } from "@/enum/Estado";
-import { usePermissions } from "@/utils/auth-client";
 
 const emit = defineEmits(["test"]);
 const {
@@ -122,6 +121,7 @@ const tableHeaders = [
   "Nombre del acta",
   "Núcleo",
   "Fecha de Creación",
+  "Tipo",
   "Estado",
   "",
 ];
@@ -233,7 +233,7 @@ const handleAction = (action: any, acta: any) => {
   } else if (action === "retry") {
     openModal.value = true;
   } else if (action === "observation") {
-    openModalObserv.value = true;
+    navigate(`minutes/observation/${acta.id}`);
   } else if (action === "export") {
     if (acta.type !== "Ordinaria") {
       exportar(acta);
@@ -429,9 +429,8 @@ function goToPreviousPage() {
 
                 <!-- Date -->
                 <Input
-                  type="monTableHeader"
+                  type="month"
                   :value="searchParams.fecha ?? getDefaultFilterDate()"
-                  class="border rounded-md px-2 text-sm"
                   @change="handleFilter('fecha', $event)"
                 ></Input>
               </div>
@@ -471,6 +470,9 @@ function goToPreviousPage() {
                   <TableHead class="text-center">
                     {{ tableHeaders[4] }}
                   </TableHead>
+                  <TableHead class="text-center">
+                    {{ tableHeaders[5] }}
+                  </TableHead>
                   <TableHead class="text-center"> Acciones </TableHead>
                 </TableRow>
               </TableHeader>
@@ -495,6 +497,9 @@ function goToPreviousPage() {
                   </TableCell>
                   <TableCell class="text-center">{{
                     acta.createdAt
+                  }}</TableCell>
+                  <TableCell class="pl-6 text-center">{{
+                    acta.type
                   }}</TableCell>
                   <TableCell class="text-center">
                     <TooltipProvider>
@@ -566,7 +571,10 @@ function goToPreviousPage() {
                         <DropdownMenuItem
                           v-if="
                             currentUser.role.name === roleEnum.Cmte &&
-                            acta.status !== MinuteStatus.ERASER
+                            acta.type === MinuteType[0] &&
+                            (acta.status === MinuteStatus.CREATE ||
+                              acta.status === MinuteStatus.PENDIENTE ||
+                              acta.status === MinuteStatus.PROCESADA)
                           "
                           @click="handleAction('observation', acta)"
                         >
@@ -585,7 +593,10 @@ function goToPreviousPage() {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           @click="handleAction('export', acta)"
-                          v-if="hasPermission('Documentos', 'export')"
+                          v-if="
+                            hasPermission('Documentos', 'export') &&
+                            acta.status !== MinuteStatus.ERASER
+                          "
                         >
                           <Download class="h-4 w-4" />
                           Exportar
@@ -768,7 +779,5 @@ function goToPreviousPage() {
         </DialogDescription>
       </DialogContent>
     </Dialog>
-
-    <Observation :minute-id="currentsMinute" v-model:open="openModalObserv" />
   </div>
 </template>

@@ -76,6 +76,7 @@ export const form_schema = z.object({
 });
 
 export const editFormSchema = z.object({
+  name: z.string(),
   core: z.any(),
   date: z.string().date("La fecha no es válida"), //.refine((value)=> new Date(value)).max(today, { message: "La fecha no puede ser mayor a la actual" }),
   hour: z.string().time("Hora invalida").min(1, { message: "Hora invalida" }),

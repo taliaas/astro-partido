@@ -10,7 +10,7 @@
         </div>
 
         <div
-          v-if="event.data.length === 0"
+          v-if="event.data?.length === 0"
           class="p-28 flex flex-col items-center gap-2 border rounded-md bg-white"
         >
           <CalendarIcon class="size-10 text-muted-foreground" />
@@ -29,7 +29,10 @@
           </div>
         </div>
         <!-- Pagination -->
-        <div v-if="event.data.length === 0" class="flex items-center justify-between py-4">
+        <div
+          v-if="event.data.length === 0"
+          class="flex items-center justify-between py-4"
+        >
           <Button
             variant="outline"
             @click="previousPage"

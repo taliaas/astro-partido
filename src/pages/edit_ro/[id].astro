@@ -1,10 +1,10 @@
 ---
-import CoreService from "../../services/CoreService";
-import OrdinaryService from "../../services/OrdinaryService";
-import RootLayout from "../../layouts/RootLayout.astro";
-import { getSession } from "auth-astro/server";
-import MilitantService from "@/services/MilitantService";
 import Edit from "@/components/Acta/Ordinary/Edit/Edit.vue";
+import MilitantService from "@/services/MilitantService";
+import MinutesService from "@/services/Minutes";
+import { getSession } from "auth-astro/server";
+import RootLayout from "../../layouts/RootLayout.astro";
+import CoreService from "../../services/CoreService";
 
 const { id } = Astro.params;
 const session = (await getSession(Astro.request)) as any;
@@ -14,7 +14,7 @@ if (!id) {
 }
 
 async function getActa() {
-  const services = new OrdinaryService();
+  const services = new MinutesService();
   try {
     const acta = services.getMinute(id!, session.jwt);
     return acta;

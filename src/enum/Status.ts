@@ -5,10 +5,10 @@ export enum UserStatus {
 }
 
 export enum AgreementStatus {
-  CANCELADA = "Cancelada",
   PENDIENTE = "Pendiente",
   COMPLETADA = "Completada",
   PARCIALMENTE_COMPLETADA = "Parcialmente Completada",
+  CANCELADA = "Cancelada",
 }
 
 export enum Sexo {

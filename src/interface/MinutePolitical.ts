@@ -1,24 +1,11 @@
-import type {Status} from "@/enum/Status.ts";
+import type { Militant } from "@/interface/Militante";
 
-export default interface MinutePolitical {
-    id: number;
-    name: string;
-    status: Status
-    core: any
-    fecha: Date;
-    hora: any;
-    lugar: string;
-    createdAt: Date;
-    total: number;
-    ausentes: number;
-    porciento: number;
-    total_trabajador: number;
-    total_organismo: number;
-    causa: string[];
-    tema: string;
-    planteamientos: string[];
-    acuerdos: string;
-    valoracion: string;
-    name_orientador: string;
-    name_secretario: string;
+export interface CPDevelopment {
+  name: Militant;
+  argument: string;
+}
+export interface MinutePolitical {
+  id: string;
+  topic: string;
+  developments: CPDevelopment[];
 }

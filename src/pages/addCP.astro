@@ -3,6 +3,7 @@ import CoreService from "../services/CoreService";
 import MinutesPolit from "@/components/Acta/Political/MinutesPolit.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import { getSession } from "auth-astro/server";
+import MilitantService from "@/services/MilitantService";
 
 const session = (await getSession(Astro.request)) as any;
 
@@ -14,9 +15,20 @@ async function getCore() {
     console.error(e);
   }
 }
+
+async function getMilitants() {
+  const service = new MilitantService();
+  try {
+    return service.getAll(session);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const militants = await getMilitants();
 const cores = await getCore();
 ---
 
 <RootLayout>
-  <MinutesPolit cores={cores} client:load />
+  <MinutesPolit cores={cores} militants={militants} client:load />
 </RootLayout>

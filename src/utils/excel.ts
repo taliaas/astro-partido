@@ -1,5 +1,6 @@
 import type { Computo } from "@/interface/Indicadores";
 import ExcelJS, { type Workbook } from "exceljs";
+import { toast } from "vue-sonner";
 
 export interface DataComputo {
   core: string;
@@ -26,6 +27,9 @@ const meses = [
 ];
 
 export function buildExcel(computos: Computo[], month: string) {
+  if (!computos) {
+    toast.info("No hay cómputos para este mes");
+  }
   const workbook = new ExcelJS.Workbook();
   workbook.calcProperties.fullCalcOnLoad = true;
   const asistenciaWorkSheet = buildAsistenciaSheet(workbook, month);
@@ -116,14 +120,39 @@ function buildComputoSheet(workbook: Workbook, month: string) {
   const worksheet = workbook.addWorksheet(`Computo`);
   const $ = (key: string) => worksheet.getCell(key);
 
-  worksheet.mergeCells("B21:Z1");
+  worksheet.mergeCells("B1:Z1");
   $("B1").value =
     'UNIVERSIDAD TECNOLÓGICA DE LA HABANA  "JOSÉ ANTONIO ECHEVERRÍA". CUJAE';
   $("B1").font = {
     color: { argb: "FF0000" },
     bold: true,
-    size: 10,
+    size: 14,
     name: "Arial",
+    outline: true,
+  };
+
+  worksheet.columns = [
+    { key: "no", width: 5 },
+    { key: "cores", width: 10 },
+    { key: "date", width: 25 },
+    { key: "createdAt", width: 30 },
+    { key: "edad", width: 10 },
+    { key: "fechaRegistro", width: 15 },
+  ];
+
+  // worksheet.mergeCells("B3:C3");
+  $("C3").value = `Mes: ${meses[Number(month) - 1]}`;
+
+  // worksheet.mergeCells("D3:BI3");
+  $("D3").value =
+    "De los temas debatidos en la Reunión Ordinaria  clasifíquelos en :";
+
+  // worksheet.mergeCells("B4:C6");
+  $("C4").value = "Núcleos";
+  $("C4").font = {
+    bold: true,
+    name: "Arial",
+    size: 12,
   };
 
   return worksheet;

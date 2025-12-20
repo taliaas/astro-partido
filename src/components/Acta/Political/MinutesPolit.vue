@@ -1,281 +1,263 @@
 <template>
-  <div class="min-h-screen p-6">
+  <form
+    @submit.prevent="submitForm"
+    class="min-h-screen bg-gray-50 p-6"
+    id="minuteForm"
+  >
     <div
-      class="mx-auto max-w-7xl bg-white p-6 border border-gray-300 rounded-lg"
+      class="mb-8 text-center transform transition-all duration-500 hover:scale-102"
     >
-      <div
-        class="mb-8 text-center transform transition-all duration-500 hover:scale-102"
-      >
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">
-          Acta de Círculo Político
-        </h1>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        Acta de Círculo Político
+      </h1>
+    </div>
+    <div class="max-w-7xl mx-auto rounded overflow-hidden p-2">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 space-y-4">
+        <!-- Núcleo -->
+        <FormField v-if="edit" name="core" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Núcleo</FormLabel>
+            <FormControl>
+              <!-- Nucleo -->
+              <Select v-bind="componentField">
+                <SelectTrigger class="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      v-for="nucleo in cores"
+                      :key="nucleo.id"
+                      :value="nucleo.id"
+                      >{{ nucleo.name }}</SelectItem
+                    >
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+        <!-- fecha -->
+        <FormField name="date" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Fecha de la reunión</FormLabel>
+            <FormControl>
+              <Input
+                type="date"
+                id="fecha"
+                v-bind="componentField"
+                class="w-42"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+        <!-- Hora -->
+        <FormField name="hour" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Hora</FormLabel>
+            <FormControl>
+              <Input
+                type="time"
+                id="hour"
+                v-bind="componentField"
+                class="w-36"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+        <!-- Lugar -->
+        <FormField name="place" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Lugar</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                v-bind="componentField"
+                class="max-w-2/3"
+                placeholder="Ej: Aula 303"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+      <!-- Causas de Ausencias -->
+
+      <!-- Datos del Tema Evaluado -->
+      <div class="space-y-2">
+        <div>
+          <Label for="temaTratado" class="block text-lg font-medium"
+            >Tema evaluado en la reunión</Label
+          >
+          <div class="mt-1 relative rounded shadow-sm">
+            <Textarea
+              id="temaTratado"
+              v-model="formData.tema"
+              rows="3"
+              required
+              class="block w-full text-lg p-2 text-gray-500 border border-gray-300 bg-transparent focus:outline-none rounded transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+              placeholder="Título del tema"
+            />
+          </div>
+        </div>
       </div>
 
-      <div class="max-w-7xl mx-auto overflow-hidden">
-        <form @submit.prevent="submitForm" class="p-8 space-y-3">
-          <!-- Núcleo -->
-          <div class="space-y-2 w-1/4">
-            <label for="nucleo" class="block text-sm font-medium text-gray-700"
-              >Núcleo</label
-            >
-            <select
-              name="nucleo"
-              v-model="selectedNucleo"
-              class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-gray-300"
-            >
-              <option v-for="nucleo in cores" :key="nucleo" :value="nucleo">
-                {{ nucleo?.name }}
-              </option>
-            </select>
-          </div>
-
-          <div class="space-y-2">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="w-3/4">
-                <label
-                  for="fecha"
-                  class="block text-md font-medium text-gray-700"
-                  >Fecha de la reunión</label
+      <!-- Principales Planteamientos -->
+      <div class="space-y-1 flex justify-between">
+        <h3 class="text-lg font-medium flex items-center">Desarrollo</h3>
+      </div>
+      <div class="p-2">
+        <div class="flex justify-end">
+          <Button
+            type="button"
+            variant="secondary"
+            @click="
+              developments.push({
+                name: '',
+                argument: '',
+              })
+            "
+          >
+            <PlusIcon class="size-4" />
+            Añadir
+          </Button>
+        </div>
+        <Table class="">
+          <TableHeader class="uppercase">
+            <TableRow>
+              <TableHead>No.</TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Planteamiento</TableHead>
+              <TableHead class="text-center">Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="(development, developmentIndex) in developments">
+              <TableCell>{{ developmentIndex + 1 }}.</TableCell>
+              <TableCell>
+                <FormField
+                  :name="'development.' + developmentIndex + '.name'"
+                  v-slot="{ componentField }"
                 >
-                <Input
-                  type="date"
-                  id="fecha"
-                  name="fecha"
-                  v-model="formData.fecha"
-                  required
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                />
-              </div>
-              <div class="w-3/4">
-                <label
-                  for="hora"
-                  class="block text-md font-medium text-gray-700"
-                  >Hora</label
+                  <FormItem class="w-3/4">
+                    <FormControl>
+                      <Select :="componentField">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Responsable"></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem
+                            v-for="item of militants"
+                            :key="item.id"
+                            :value="item.id + ''"
+                            >{{ item.firstname }}
+                            {{ item.lastname }}</SelectItem
+                          >
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </TableCell>
+              <TableCell
+                ><FormField
+                  :name="'development.' + developmentIndex + '.argument'"
+                  v-slot="{ componentField }"
                 >
-                <Input
-                  type="time"
-                  id="hora"
-                  name="hora"
-                  v-model="formData.hora"
-                  required
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                />
-              </div>
-              <div class="w-3/4">
-                <label
-                  for="lugar"
-                  class="block text-md font-medium text-gray-700"
-                  >Lugar</label
-                >
-                <Input
-                  type="text"
-                  id="lugar"
-                  name="lugar"
-                  v-model="formData.lugar"
-                  required
-                  class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="flex *:flex-1 gap-4">
-            <div class="">
-              <label
-                for="total_trabajador"
-                class="block text-md font-medium text-gray-700"
-                >Cantidad de trabajadores</label
-              >
-              <Input
-                type="number"
-                id="trabajador"
-                name="trabajador"
-                v-model="formData.total_trabajador"
-                required
-                min="0"
-                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
-            <div class="">
-              <label
-                for="total_organismo"
-                class="block text-md font-medium text-gray-700"
-                >Participantes del Org. Sup.</label
-              >
-              <Input
-                type="number"
-                id="organismo"
-                name="organismo"
-                v-model="formData.total_organismo"
-                required
-                min="0"
-                class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
-          </div>
-          <!-- Causas de Ausencias -->
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <h3 class="text-lg font-medium text-gray-800 flex items-center">
-                Causas de Ausencias
-              </h3>
-              <button
-                @click="addAusencia"
-                type="button"
-                class="group inline-flex items-center bg-white m-3 justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
-              >
-                <PlusIcon
-                  class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
-                />
-                Agregar Ausencia
-              </button>
-            </div>
-            <TransitionGroup name="list" tag="div" class="space-y-2">
-              <div
-                v-for="(ausencia, index) in formData.causa"
-                :key="index"
-                class="flex space-x-2"
-              >
-                <Input
-                  v-model="ausencia.nombre"
-                  type="text"
-                  class="flex-1 px-3 py-2 focus:outline-none border text-gray-500 border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  placeholder="Nombre"
-                />
-                <Input
-                  v-model="ausencia.motivo"
-                  type="text"
-                  class="flex-1 px-3 py-2 border focus:outline-none text-gray-500 border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  placeholder="Motivo"
-                />
-                <button
-                  @click="removeAusencia(index)"
-                  type="button"
-                  class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded text-red-600 bg-gray-50 hover:bg-gray-200 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
-                >
-                  <TrashIcon class="h-5 w-5" />
-                </button>
-              </div>
-            </TransitionGroup>
-          </div>
+                  <FormItem class="w-3/4">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        v-bind="componentField"
+                        placeholder="Descripción"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </TableCell>
+              <TableCell class="text-center">
+                <Button type="button" variant="outline">
+                  <Trash class="size-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+      <div
+        class="flex p-4 border rounded text-muted-foreground shadow-sm justify-center"
+      >
+        No hay planeamientos
+      </div>
 
-          <!-- Datos del Tema Evaluado -->
-          <div class="space-y-2">
-            <div>
-              <label for="temaTratado" class="block text-lg font-medium"
-                >Tema evaluado en la reunión</label
-              >
-              <div class="mt-1 relative rounded shadow-sm">
-                <Textarea
-                  id="temaTratado"
-                  v-model="formData.tema"
-                  rows="3"
-                  required
-                  class="block w-full text-lg p-2 text-gray-500 border border-gray-300 bg-transparent focus:outline-none rounded transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  placeholder="Título del tema"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Principales Planteamientos -->
-          <div class="space-y-1 flex justify-between">
-            <h3 class="text-lg font-medium flex items-center">
-              Principales Planteamientos
-            </h3>
-          </div>
-          <div class="rounded border">
-            <Textarea
-              id="planteamientos"
-              name="planteamientos"
-              v-model="formData.planteamientos"
-              rows="4"
-              required
-              class="text-gray-600 focus:outline-none ring-transparent block w-full md:text-md border-gray-300 rounded transition duration-150 ease-in-out"
-            ></Textarea>
-          </div>
-
-          <!-- Valoración de la Reunión -->
-          <div class="space-y-2">
-            <div>
-              <label for="resumenEvento" class="block text-xl font-medium mb-4"
-                >Valoración de la Reunión</label
-              >
-              <div class="mt-1">
-                <Textarea
-                  id="valo"
-                  name="valoracion"
-                  v-model="formData.valoracion"
-                  rows="4"
-                  required
-                  class="text-gray-600 focus:outline-none ring-transparent block w-full md:text-md border-gray-300 rounded transition duration-150 ease-in-out"
-                  placeholder="Valoración de la calidad de la reunión"
-                ></Textarea>
-              </div>
-            </div>
-          </div>
-          <div class="flex *:flex-1 gap-4">
-            <div class="my-6">
-              <label
-                for="orientador"
-                class="block text-md font-medium w-3/4 my-2 text-gray-700"
-                >Nombre del orientador</label
-              >
-              <input
-                type="text"
-                name="name_orientador"
-                v-model="formData.name_orientador"
-                class="border text-gray-500 border-gray-300 p-2 rounded focus:outline-none w-full"
-                placeholder="Nombre del orientador"
-              />
-            </div>
-            <div class="my-6">
-              <label
-                for="secretario"
-                class="block text-md font-medium my-2 text-gray-700"
-                >Nombre del Secretario</label
-              >
-              <input
-                type="text"
-                name="name_secretario"
-                v-model="formData.name_secretario"
-                class="border text-gray-500 border-gray-300 p-2 rounded focus:outline-none w-full"
-                placeholder="Nombre del Secretario"
-              />
-            </div>
-          </div>
-          <div class="flex justify-between mt-4 py-4">
-            <Button
-              variant="outline"
-              @click="cerrar"
-              type="reset"
-              class="w-1/3 px-4 py-2 rounded bg-gray-100 border border-gray-300 hover:bg-gray-200 shadow-md"
-              >Cancelar
-            </Button>
-            <button
-              type="submit"
-              class="w-1/3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Enviar
-            </button>
-          </div>
-        </form>
+      <div class="flex justify-between mt-4 py-4">
+        <Button
+          variant="outline"
+          @click="cerrar"
+          type="reset"
+          class="w-1/3 px-4 py-2 rounded bg-gray-100 border border-gray-300 hover:bg-gray-200 shadow-md"
+          >Cancelar
+        </Button>
+        <Button type="button" @click="">
+          Enviar
+          <SendHorizonal class="size-4" />
+        </Button>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import type ButtonVue from "@/components/ui/button/Button.vue";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import type InputVue from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import type { Core, Militant } from "@/interface/Militante";
+import type { CPDevelopment } from "@/interface/MinutePolitical";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { PlusIcon, TrashIcon } from "lucide-vue-next";
+import { PlusIcon, SendHorizonal, Trash } from "lucide-vue-next";
 import { ref } from "vue";
-import Input from "../ui/input/Input.vue";
-import Textarea from "../ui/textarea/Textarea.vue";
 import { toast } from "vue-sonner";
 
+const { cores, militants } = defineProps<{
+  cores: Core[];
+  militants: Militant[];
+}>();
+
 const selectedNucleo = ref(null);
-const { cores } = defineProps<{ cores: any[] }>();
+const edit = ref(false);
+const developments: CPDevelopment = [];
 
 const formData = ref({
   lugar: "",
@@ -294,14 +276,6 @@ const formData = ref({
 
 const cerrar = async () => {
   await navigate("/minutes/");
-};
-
-const addAusencia = () => {
-  formData.value.causa.push({ name: "", motivo: "" });
-};
-
-const removeAusencia = (index: number) => {
-  formData.value.causa.splice(index, 1);
 };
 
 const submitForm = async () => {
