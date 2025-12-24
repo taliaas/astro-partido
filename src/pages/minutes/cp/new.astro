@@ -1,9 +1,9 @@
 ---
-import CoreService from "../services/CoreService";
-import MinutesPolit from "@/components/Acta/Political/MinutesPolit.vue";
-import RootLayout from "../layouts/RootLayout.astro";
 import { getSession } from "auth-astro/server";
 import MilitantService from "@/services/MilitantService";
+import CoreService from "@/services/CoreService";
+import RootLayout from "@/layouts/RootLayout.astro";
+import MinutesPolit from "@/components/Acta/Political/MinutesPolit.vue";
 
 const session = (await getSession(Astro.request)) as any;
 

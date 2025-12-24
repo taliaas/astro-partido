@@ -1,8 +1,8 @@
 ---
 import ActaDisplay from "@/components/Acta/Ordinary/View/ActaDisplay.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
 import MinutesService from "@/services/Minutes";
 import { getSession } from "auth-astro/server";
-import RootLayout from "../../layouts/RootLayout.astro";
 
 const session: any = await getSession(Astro.request);
 const { id } = Astro.params;

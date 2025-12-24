@@ -208,13 +208,14 @@
               </FormField>
             </td>
             <td class="p-4 text-center align-middle">
-              <button
+              <Button
+                variant="ghost"
                 @click="invitados.remove(index)"
                 type="button"
                 class="text-destructive hover:text-destructive/90"
               >
                 <TrashIcon class="h-4 w-4" />
-              </button>
+              </Button>
             </td>
           </tr>
         </tbody>
@@ -352,28 +353,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
+import type { FormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
 import { Button } from "@/components/ui/button";
-import { absenceReasons, cargos } from "@/enum/absenceReasons.ts";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import Input from "@/components/ui/input/Input.vue";
+import { Label } from "@/components/ui/label";
 import Select from "@/components/ui/select/Select.vue";
-import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
-import SelectValue from "@/components/ui/select/SelectValue.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectGroup from "@/components/ui/select/SelectGroup.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
-import { useFormContext, useFieldArray } from "vee-validate";
-import type { FormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
+import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
+import SelectValue from "@/components/ui/select/SelectValue.vue";
+import { absenceReasons, cargos } from "@/enum/absenceReasons.ts";
 import type { Militant } from "@/interface/Militante";
-import { Label } from "@/components/ui/label";
+import { PlusIcon, SearchIcon, TrashIcon } from "lucide-vue-next";
+import { useFieldArray } from "vee-validate";
 
 const {
   cores,

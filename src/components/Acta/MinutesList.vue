@@ -216,26 +216,27 @@ const handleAction = (action: any, acta: any) => {
   currentsMinute.value = acta;
   if (action === "ver") {
     if (acta.isLoaded) {
-      navigate(`/loaded-view/${acta.id}`);
+      navigate(`minutes/loaded-view/${acta.id}`);
     } else if (acta.type === "Ordinaria") {
-      navigate(`/view/${acta.id}`);
+      navigate(`minutes/ro/${acta.id}`);
     } else {
-      navigate(`/cp_view/${acta.id}`);
+      navigate(`minutes/cp/${acta.id}`);
     }
   } else if (action === "editar") {
     if (acta.type === "Ordinaria") {
-      navigate(`/edit_ro/${acta.id}`);
+      navigate(`minutes/ro/${acta.id}/edit`);
     } else {
-      navigate(`/edit_cp/${acta.id}`);
+      navigate(`minutes/cp/${acta.id}/edit`);
     }
   } else if (action === "procesar") {
-    navigate(`/indicadores/${acta.id}`);
+    navigate(`/indicators/${acta.id}`); //revisar ruta
   } else if (action === "retry") {
     openModal.value = true;
   } else if (action === "observation") {
     navigate(`minutes/observation/${acta.id}`);
   } else if (action === "export") {
     if (acta.type !== "Ordinaria") {
+      //revisar
       exportar(acta);
     } else exportarRO(acta);
   } else if (action === "eliminar") {
@@ -264,8 +265,6 @@ async function eliminarActa() {
   const id = acta?.id ?? "";
 
   try {
-    console.log("Id", id);
-
     await actions.minute.deleteMinute({ id });
     toast.success("Se eliminó correctamente el acta");
     navigate("/minutes");
@@ -324,14 +323,14 @@ function goToPreviousPage() {
               </div>
               <div class="flex gap-3">
                 <a
-                  href="/addRO"
+                  href="/minutes/ro/new"
                   class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />
                   Ordinaria
                 </a>
                 <a
-                  href="/addCP"
+                  href="/minutes/cp/new"
                   class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />

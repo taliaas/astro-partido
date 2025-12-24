@@ -33,8 +33,6 @@ import {
   ArrowUpIcon,
   ChevronDownIcon,
   EyeIcon,
-  SeparatorHorizontal,
-  SeparatorHorizontalIcon,
   XIcon,
 } from "lucide-vue-next";
 
@@ -93,9 +91,7 @@ const indicador = (coreId: string) => {
         <div class="w-full">
           <Select
             :default-value="indicator"
-            @update:model-value="
-              navigate(`/analisis_indicador/comite/${$event}`)
-            "
+            @update:model-value="navigate(`/indicators/comite/${$event}`)"
           >
             <SelectTrigger>
               <SelectValue />

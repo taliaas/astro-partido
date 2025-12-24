@@ -1,15 +1,10 @@
 ---
-import CoreService from "../services/CoreService";
-import "../globals.css";
 import Header from "@/components/layout/Header.vue";
-import { ClientRouter } from "astro:transitions";
 import Navigation from "@/components/layout/Navigation.astro";
-import LoadingIndicator from "astro-loading-indicator/component";
 import { Toaster } from "@/components/ui/sonner";
-import { getSession } from "auth-astro/server";
-
-const pathName = Astro.originPathname;
-const session = (await getSession(Astro.request)) as any;
+import LoadingIndicator from "astro-loading-indicator/component";
+import { ClientRouter } from "astro:transitions";
+import "../globals.css";
 ---
 
 <!doctype html>

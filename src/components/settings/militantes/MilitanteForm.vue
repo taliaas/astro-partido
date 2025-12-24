@@ -18,8 +18,11 @@
           </p>
         </DialogDescription>
       </DialogHeader>
-      <form @submit="saveMember($event)" class="space-y-4">
-        {{ form.values }}
+      {{ form.values }}
+      <form
+        @submit="saveMember($event)"
+        class="grid grid-cols-2 space-y-4 gap-2"
+      >
         <div class="space-y-2">
           <FormField v-slot="{ componentField }" name="firstname">
             <FormItem>
@@ -119,7 +122,7 @@
           </FormField>
         </div>
 
-        <div class="flex justify-baseline gap-4">
+        <div class="space-y-2">
           <FormField v-slot="{ componentField }" name="core">
             <FormItem>
               <FormLabel class=""> Núcleo </FormLabel>
@@ -142,6 +145,8 @@
               <FormMessage />
             </FormItem>
           </FormField>
+        </div>
+        <div class="space-y-2">
           <FormField v-slot="{ componentField }" name="organization">
             <FormItem>
               <FormLabel class=""> Organización </FormLabel>
@@ -160,6 +165,26 @@
             </FormItem>
           </FormField>
         </div>
+        <div class="space-y-2">
+          <FormField v-slot="{ componentField }" name="sexo">
+            <FormItem>
+              <FormLabel class=""> Sexo </FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="Seleccione el sexo"
+                  required
+                  :="componentField"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+        <div class="space-y-2"></div>
+        <div class="space-y-2"></div>
+        <div class="space-y-2"></div>
+        <div class="space-y-2"></div>
 
         <div class="flex justify-end gap-2"></div>
       </form>
@@ -232,6 +257,20 @@ const form = useForm<MilitanteSchema>({
     phone: currentMember?.phone || "",
     core: currentMember?.core.id || "",
     email: currentMember?.email || "",
+    abscents: currentMember?.abscents,
+    clasificacion: currentMember?.clasificacion,
+    cuenta_propia: currentMember?.cuenta_propia,
+    CIPCC: currentMember?.CIPCC || "",
+    date: currentMember?.date,
+    expediente: currentMember?.expediente,
+    fundador: currentMember?.fundador,
+    militant_doble: currentMember?.militant_doble,
+    nivel_escolar: currentMember?.nivel_escolar || "",
+    raza: currentMember?.raza,
+    religion: currentMember?.religion || "",
+    sexo: currentMember?.sexo,
+    user: currentMember?.user,
+    work: currentMember?.work || "",
   },
 });
 

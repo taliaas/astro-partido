@@ -97,7 +97,7 @@ export const editFormSchema = z.object({
     .array(),
   invitados: z
     .object({
-      id: z.coerce.number().optional(),
+      id: z.coerce.string().optional(),
       nombre: z.string(),
       cargo: z.enum(cargos, { message: "Cargo incorrecto" }),
     })

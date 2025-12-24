@@ -63,7 +63,7 @@
             </td>
             <td class="p-4 align-middle">
               <Button @click="agendaItems.remove(index)" variant="ghost">
-                <TrashIcon class="h-4 w-4" />
+                <TrashIcon class="h-4 w-4 text-destructive-foreground" />
               </Button>
             </td>
           </tr>
@@ -125,7 +125,6 @@
               </Button>
             </div>
           </div>
-
           <div class="rounded-md border">
             <table class="w-full">
               <thead>
@@ -303,6 +302,12 @@
                 </tr>
               </tbody>
             </table>
+            <div
+              v-if="agreements.fields"
+              class="text-muted-foreground text-center p-6"
+            >
+              No hay acuerdos
+            </div>
           </div>
         </div>
       </FieldArray>

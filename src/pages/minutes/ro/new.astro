@@ -1,9 +1,9 @@
 ---
 import MinutesOrdinary from "@/components/Acta/Ordinary/Create/MinutesOrdinary.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
 import MilitantService from "@/services/MilitantService";
 import MinutesService from "@/services/Minutes";
 import { getSession } from "auth-astro/server";
-import RootLayout from "../layouts/RootLayout.astro";
 
 const session = await getSession(Astro.request);
 const n_user = session?.user;

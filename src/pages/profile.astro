@@ -1,9 +1,8 @@
 ---
-import Perfil from "../components/access/Perfil.vue";
 import RootLayout from "../layouts/RootLayout.astro";
 import { getSession } from "auth-astro/server";
 import UserService from "../services/UserService";
-import MilitantService from "@/services/MilitantService";
+import Perfil from "@/components/Profile/Perfil.vue";
 
 const session = await getSession(Astro.request);
 const n_user = session?.user;

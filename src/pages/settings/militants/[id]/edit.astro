@@ -1,0 +1,28 @@
+---
+import EditUser from "@/components/Profile/EditUser.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import UserService from "@/services/UserService";
+import { getSession } from "auth-astro/server";
+
+const { id } = Astro.params;
+const session = (await getSession(Astro.request)) as any;
+
+if (!id) {
+  throw new Error("No id provided");
+}
+
+async function getUser() {
+  const services = new UserService();
+  try {
+    return await services.getUserByEmail((session as any).jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const user = await getUser();
+---
+
+<RootLayout>
+  <EditUser user={user} client:load />
+</RootLayout>

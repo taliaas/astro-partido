@@ -68,15 +68,16 @@
           :disabled="exporting"
         >
           <FileDown class="size-4" />
-          <span v-if="exporting">Exportando ...</span
-          ><span v-else>Exportar todo</span></Button
-        ><Button @click="open = true" class="cursor-pointer" variant="default">
+          <span v-if="exporting">Exportando ...</span>
+          <span v-else>Exportar todo</span>
+        </Button>
+        <Button @click="handleAdd" class="cursor-pointer" variant="default">
           <UserPlus class="size-4" />
           Añadir
         </Button>
       </div>
     </div>
-
+    {{ militants.data[0] }}
     <!-- Members Table -->
     <div class="rounded-md border">
       <table class="w-full caption-bottom text-md">
@@ -216,9 +217,6 @@
       </div>
     </div>
 
-    <div v-if="open">
-      <MilitanteForm :cores :close :current-member="currentMember" />
-    </div>
     <div v-if="openView">
       {{ openView }}
       <MilitantView :militants="currentMember" :closeModal />
@@ -227,7 +225,6 @@
 </template>
 
 <script setup lang="ts">
-import MilitanteForm from "@/components/settings/militantes/MilitanteForm.vue";
 import MilitantView from "@/components/settings/militantes/MilitantView.vue";
 import Button from "@/components/ui/button/Button.vue";
 import {
@@ -271,7 +268,6 @@ const { militants, cores } = defineProps<{
 const searchParams = useUrlSearchParams("history", { removeFalsyValues: true });
 const selectCore = ref("");
 const exporting = ref(false);
-const open = ref(false);
 const openView = ref(false);
 const currentMember = ref<Militant | null>(null);
 const totalPages = ref(militants.total);
@@ -291,11 +287,6 @@ const search = useDebounceFn(async () => {
 
 const getInitials = (member: any) => {
   return `${member.firstname.charAt(0)}${member.lastname.charAt(0)}`;
-};
-
-const close = () => {
-  open.value = false;
-  currentMember.value = null;
 };
 
 const closeModal = () => {
@@ -324,10 +315,16 @@ const exportAll = () => {
   }, 5000);
 };
 
+const handleAdd = () => {
+  navigate(`/edit_militant/${currentMember.value?.id}`);
+};
+
 const handleEdit = (member: Militant) => {
   currentMember.value = member;
-  open.value = true;
+  console.log(currentMember.value);
+  navigate(`/edit_militant/${currentMember.value?.id}`);
 };
+
 const handleView = (member: Militant) => {
   currentMember.value = member;
   openView.value = true;

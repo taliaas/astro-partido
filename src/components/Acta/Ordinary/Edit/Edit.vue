@@ -1,49 +1,3 @@
-<template>
-  <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
-    {{ acta }}
-    <form @submit="onSubmit" class="max-w-7xl mx-auto">
-      <div class="p-4 flex justify-center">
-        <h2 class="font-bold text-2xl">{{ acta.name }} {{ acta.id }}</h2>
-      </div>
-      <div class="space-y-6 min-h-[70vh]">
-        <!--  Información 1 -->
-        <section v-show="currentStep === 1" class="space-y-4">
-          <FirstStep :cores edit :militantes="mili" />
-        </section>
-
-        <!--  Información 2 -->
-        <section v-show="currentStep === 2" class="space-y-4">
-          <SecondStep :militants="militantes" :acta />
-        </section>
-      </div>
-      <div class="w-full flex justify-between pt-4">
-        <div class="space-x-2">
-          <Button
-            variant="outline"
-            @click="prevStep"
-            type="button"
-            :disabled="currentStep === 1"
-          >
-            <ArrowLeft class="w-4 h-4" />
-          </Button>
-          <Button
-            :disabled="currentStep === 2"
-            type="button"
-            variant="outline"
-            @click="nextStep"
-          >
-            <ArrowRight class="w-4 h-4" />
-          </Button>
-        </div>
-        <Button type="button" @click="open = true">
-          Enviar
-          <SendHorizonal class="size-4" />
-        </Button>
-      </div>
-    </form>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { editFormSchema } from "@/components/Acta/Ordinary/Create/form_schema";
 import FirstStep from "@/components/Acta/Ordinary/Edit/FirstStep.vue";
@@ -104,8 +58,49 @@ const onSubmit = form.handleSubmit(async (values: any) => {
     toast.error("Ocurrió un error al actualizar el acta. Inténtalo de nuevo");
   }
 });
-
-async function resetData() {
-  navigate("/");
-}
 </script>
+<template>
+  <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
+    {{ acta }}
+    <form @submit="onSubmit" class="max-w-7xl mx-auto">
+      <div class="p-4 flex justify-center">
+        <h2 class="font-bold text-2xl">{{ acta.name }} {{ acta.id }}</h2>
+      </div>
+      <div class="space-y-6 min-h-[70vh]">
+        <!--  Información 1 -->
+        <section v-show="currentStep === 1" class="space-y-4">
+          <FirstStep :cores edit :militantes="mili" />
+        </section>
+
+        <!--  Información 2 -->
+        <section v-show="currentStep === 2" class="space-y-4">
+          <SecondStep :militants="militantes" :acta />
+        </section>
+      </div>
+      <div class="w-full flex justify-between pt-4">
+        <div class="space-x-2">
+          <Button
+            variant="outline"
+            @click="prevStep"
+            type="button"
+            :disabled="currentStep === 1"
+          >
+            <ArrowLeft class="w-4 h-4" />
+          </Button>
+          <Button
+            :disabled="currentStep === 2"
+            type="button"
+            variant="outline"
+            @click="nextStep"
+          >
+            <ArrowRight class="w-4 h-4" />
+          </Button>
+        </div>
+        <Button type="button" @click="open = true">
+          Enviar
+          <SendHorizonal class="size-4" />
+        </Button>
+      </div>
+    </form>
+  </div>
+</template>

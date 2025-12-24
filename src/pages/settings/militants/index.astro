@@ -1,10 +1,10 @@
 ---
-import SettingsLayout from "../../layouts/SettingsLayout.astro";
-import RootLayout from "../../layouts/RootLayout.astro";
-import MilitantService from "../../services/MilitantService";
 import CoreService from "@/services/CoreService";
 import { getSession } from "auth-astro/server";
 import Militantes from "@/components/settings/militantes/Militantes.vue";
+import MilitantService from "@/services/MilitantService";
+import RootLayout from "@/layouts/RootLayout.astro";
+import SettingsLayout from "@/layouts/SettingsLayout.astro";
 
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
