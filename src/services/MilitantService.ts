@@ -114,7 +114,7 @@ export default class MilitantService {
     if (org) searchParam.set("org", org);
     if (email) searchParam.set("fecha", email);
 
-    const url = `${API_URL}/militant/core/?` + searchParam.toString();
+    const url = `${API_URL}/militant/?` + searchParam.toString();
 
     try {
       const response = await fetch(url, {
@@ -147,6 +147,25 @@ export default class MilitantService {
           },
         }
       );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error;
+    }
+  }
+
+  async findMilitant(id: string, session: any) {
+    try {
+      const response = await fetch(`${API_URL}/militant/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

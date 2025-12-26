@@ -1,7 +1,6 @@
 ---
-import MilitanteForm from "@/components/settings/militantes/MilitanteForm.vue";
+import MilitantView from "@/components/settings/militantes/MilitantView.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
-import CoreService from "@/services/CoreService";
 import MilitantService from "@/services/MilitantService";
 import { getSession } from "auth-astro/server";
 
@@ -20,18 +19,10 @@ async function getMilitants() {
     console.error(e);
   }
 }
-async function getCore() {
-  const service = new CoreService();
-  try {
-    return await service.getAllCore(session.jwt);
-  } catch (e) {
-    console.error(e);
-  }
-}
-const cores = await getCore();
+
 const militant = await getMilitants();
 ---
 
 <RootLayout>
-  <MilitanteForm militant={militant} cores={cores} client:load />
+  <MilitantView militant={militant} client:load />
 </RootLayout>

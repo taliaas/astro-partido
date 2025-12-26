@@ -392,7 +392,7 @@ const passwordForm = reactive({
 });
 
 const open = async () => {
-  navigate(`/edit_militant/${user.id}`);
+  navigate(`/settings/militants/${user.id}/edit`);
 };
 
 const handlePasswordChange = async () => {

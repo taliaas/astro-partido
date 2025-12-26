@@ -1,6 +1,7 @@
 import type {
   AgreementStatus,
   Clasificacion,
+  Nivel,
   Raza,
   Sexo,
   UserStatus,
@@ -85,7 +86,7 @@ export interface Militant {
   sexo: Sexo;
   raza: Raza;
   religion: string;
-  nivel_escolar: string;
+  nivel_escolar: Nivel;
   clasificacion: Clasificacion;
   work: string;
   cuenta_propia: boolean;

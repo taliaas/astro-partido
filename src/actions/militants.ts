@@ -2,6 +2,7 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "zod";
 import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
+import { Clasificacion, Nivel, Raza, Sexo } from "@/enum/Status";
 
 const EstadoDesactivacion = ["APROBADA", "RECHAZADA"] as const;
 const ORGANIZACION = ["PCC", "UJC"] as const;
@@ -87,9 +88,40 @@ export const createMember = defineAction({
     core: z.object({
       id: z.string(),
     }),
+    sexo: z.nativeEnum(Sexo).optional(),
+    raza: z.nativeEnum(Raza).optional(),
+    religion: z.string(),
+    nivel_escolar: z.nativeEnum(Nivel).optional(),
+    clasificacion: z.nativeEnum(Clasificacion).optional(),
+    work: z.string(),
+    cuenta_propia: z.boolean(),
+    fundador: z.boolean(),
+    CIPCC: z.string(),
+    militant_doble: z.boolean(),
+    expediente: z.string(),
   }),
   async handler(
-    { firstname, lastname, email, address, ci, core, organization, phone },
+    {
+      firstname,
+      lastname,
+      email,
+      address,
+      ci,
+      core,
+      organization,
+      phone,
+      CIPCC,
+      cuenta_propia,
+      expediente,
+      fundador,
+      militant_doble,
+      religion,
+      work,
+      clasificacion,
+      nivel_escolar,
+      raza,
+      sexo,
+    },
     context
   ) {
     const session: any = await getSession(context.request);
@@ -104,9 +136,20 @@ export const createMember = defineAction({
       core,
       organization,
       phone,
+      CIPCC,
+      cuenta_propia,
+      expediente,
+      fundador,
+      militant_doble,
+      religion,
+      work,
+      clasificacion,
+      nivel_escolar,
+      raza,
+      sexo,
     });
 
-    const res = await fetch(`${API_URL}/militantes/`, {
+    const res = await fetch(`${API_URL}/militant`, {
       method: "POST",
       body,
       headers: {
@@ -135,9 +178,41 @@ export const updateMember = defineAction({
     core: z.object({
       id: z.string(),
     }),
+    sexo: z.nativeEnum(Sexo).optional(),
+    raza: z.nativeEnum(Raza).optional(),
+    religion: z.string(),
+    nivel_escolar: z.nativeEnum(Nivel).optional(),
+    clasificacion: z.nativeEnum(Clasificacion).optional(),
+    work: z.string(),
+    cuenta_propia: z.boolean(),
+    fundador: z.boolean(),
+    CIPCC: z.string(),
+    militant_doble: z.boolean(),
+    expediente: z.string(),
   }),
   async handler(
-    { id, firstname, lastname, email, address, core, organization, phone, ci },
+    {
+      id,
+      firstname,
+      lastname,
+      email,
+      address,
+      ci,
+      core,
+      organization,
+      phone,
+      CIPCC,
+      cuenta_propia,
+      expediente,
+      fundador,
+      militant_doble,
+      religion,
+      work,
+      clasificacion,
+      nivel_escolar,
+      raza,
+      sexo,
+    },
     context
   ) {
     const session: any = await getSession(context.request);
@@ -151,7 +226,18 @@ export const updateMember = defineAction({
     if (core !== undefined) updateData.core = core;
     if (organization !== undefined) updateData.organization = organization;
     if (phone !== undefined) updateData.phone = phone;
-    if (ci !== undefined) updateData.ci = ci;
+    if (CIPCC !== undefined) updateData.CIPCC = CIPCC;
+    if (cuenta_propia !== undefined) updateData.cuenta_propia = cuenta_propia;
+    if (expediente !== undefined) updateData.expediente = expediente;
+    if (fundador !== undefined) updateData.fundador = fundador;
+    if (militant_doble !== undefined)
+      updateData.militant_doble = militant_doble;
+    if (religion !== undefined) updateData.religion = religion;
+    if (work !== undefined) updateData.work = work;
+    if (clasificacion !== undefined) updateData.clasificacion = clasificacion;
+    if (nivel_escolar !== undefined) updateData.nivel_escolar = nivel_escolar;
+    if (raza !== undefined) updateData.raza = raza;
+    if (sexo !== undefined) updateData.sexo = sexo;
 
     const body = JSON.stringify(updateData);
 

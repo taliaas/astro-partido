@@ -1,8 +1,22 @@
 ---
-import EditUser from "@/components/Profile/EditUser.vue";
+import MilitanteForm from "@/components/settings/militantes/MilitanteForm.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
+import CoreService from "@/services/CoreService";
+import { getSession } from "auth-astro/server";
+
+const session = (await getSession(Astro.request)) as any;
+
+async function getCore() {
+  const service = new CoreService();
+  try {
+    return await service.getAllCore(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+const cores = await getCore();
 ---
 
 <RootLayout>
-  <EditUser client:load />
+  <MilitanteForm cores={cores} client:load />
 </RootLayout>

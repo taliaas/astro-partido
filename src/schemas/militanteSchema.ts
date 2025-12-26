@@ -1,26 +1,23 @@
-import { Clasificacion, Raza, Sexo } from "@/enum/Status";
+import { Clasificacion, Nivel, Raza, Sexo } from "@/enum/Status";
 import { ciSchema } from "@/schemas/ci";
 import { z } from "zod";
 
 export const militanteSchema = z.object({
   id: z.string(),
-  firstname: z.string(),
-  lastname: z.string(),
-  core: z.coerce.string(),
+  firstname: z.string().min(1, { message: "Campo obligatorio" }),
+  lastname: z.string().min(1, { message: "Campo obligatorio" }),
+  core: z.coerce.string().min(1, { message: "Campo obligatorio" }),
   ci: ciSchema,
-  email: z.string(),
+  email: z.string().min(1, { message: "Campo obligatorio" }),
   organization: z.enum(["PCC", "UJC"]),
-  abscents: z.object({}),
-  user: z.object({}),
-  sexo: z.nativeEnum(Sexo),
-  raza: z.nativeEnum(Raza),
+  sexo: z.nativeEnum(Sexo).optional(),
+  raza: z.nativeEnum(Raza).optional(),
   religion: z.string(),
-  nivel_escolar: z.string(),
-  clasificacion: z.nativeEnum(Clasificacion),
+  nivel_escolar: z.nativeEnum(Nivel).optional(),
+  clasificacion: z.nativeEnum(Clasificacion).optional(),
   work: z.string(),
   cuenta_propia: z.boolean(),
   fundador: z.boolean(),
-  date: z.boolean(),
   CIPCC: z.string(),
   militant_doble: z.boolean(),
   expediente: z.string(),

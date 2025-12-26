@@ -77,7 +77,6 @@
         </Button>
       </div>
     </div>
-    {{ militants.data[0] }}
     <!-- Members Table -->
     <div class="rounded-md border">
       <table class="w-full caption-bottom text-md">
@@ -216,11 +215,6 @@
         </Button>
       </div>
     </div>
-
-    <div v-if="openView">
-      {{ openView }}
-      <MilitantView :militants="currentMember" :closeModal />
-    </div>
   </div>
 </template>
 
@@ -316,18 +310,17 @@ const exportAll = () => {
 };
 
 const handleAdd = () => {
-  navigate(`/edit_militant/${currentMember.value?.id}`);
+  navigate(`/settings/militants/new`);
 };
 
 const handleEdit = (member: Militant) => {
   currentMember.value = member;
-  console.log(currentMember.value);
-  navigate(`/edit_militant/${currentMember.value?.id}`);
+  navigate(`/settings/militants/${currentMember.value?.id}/edit`);
 };
 
 const handleView = (member: Militant) => {
   currentMember.value = member;
-  openView.value = true;
+  navigate(`/settings/militants/${currentMember.value?.id}`);
 };
 
 function nextPage() {

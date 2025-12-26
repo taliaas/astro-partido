@@ -23,6 +23,15 @@ export enum Raza {
   M = "Meztizo",
 }
 
+export enum Nivel {
+  Primaria = "Primaria",
+  Secundaria = "Secundaria",
+  Preuniversitario = "Preuniversitario",
+  Técnico_Medio = "Técnico Medio",
+  Universitario = "Universitario",
+  Postgraduado = "Postgraduado",
+}
+
 export enum Clasificacion {
   TM = "TÉCNICOS MEDIOS",
   PM = "PROFESORES Y MAESTROS",
