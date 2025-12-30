@@ -21,11 +21,12 @@ import { navigate } from "astro:transitions/client";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
 import { roleEnum } from "@/enum/roleEnum";
-import type { User } from "@/interface/Militante";
+import type { Militant, User } from "@/interface/Militante";
 
 const { onLoadingChange, user } = defineProps<{
   onLoadingChange: (value: boolean) => void;
   user: User | null;
+  militants: Militant[];
 }>();
 
 type UserData = z.infer<typeof userSchema>;
@@ -37,7 +38,8 @@ const userSchema = z.object({
   email: z.string().email({ message: "Ingresa un correo electrónico válido." }),
   password: z
     .string()
-    .max(8, { message: "La contraseña debe tener al menos 8 carácteres" }),
+    .min(8, { message: "La contraseña debe tener al menos 8 carácteres" })
+    .max(16, { message: "La contraseña debe tener menos de 16 carácteres" }),
   role: z.string({ message: "El Rol es requerido" }),
 });
 
@@ -95,12 +97,16 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
       <FormItem class="grid-cols-3">
         <FormLabel class="col-span-1"> Correo:</FormLabel>
         <FormControl>
-          <Input
-            type="email"
-            class="col-span-2"
-            placeholder="correo@ejemplo.com"
-            :="componentField"
-          />
+          <Select :="componentField">
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccione el correo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="item of militants" :value="item.email">{{
+                item.email
+              }}</SelectItem>
+            </SelectContent>
+          </Select>
         </FormControl>
         <FormMessage class="col-start-2 col-span-2" />
       </FormItem>
@@ -114,6 +120,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
             class="col-span-2"
             :="componentField"
             placeholder="********"
+            maxlength="16"
           />
         </FormControl>
         <FormMessage class="col-start-2 col-span-2" />

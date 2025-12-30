@@ -5,6 +5,7 @@ import CoreService from "@/services/CoreService";
 import { getSession } from "auth-astro/server";
 
 const session = (await getSession(Astro.request)) as any;
+const core = Astro.url.searchParams.get("core");
 
 async function getCore() {
   const service = new CoreService();
@@ -18,5 +19,5 @@ const cores = await getCore();
 ---
 
 <RootLayout>
-  <MilitanteForm cores={cores} client:load />
+  <MilitanteForm cores={cores} core={core} client:load />
 </RootLayout>

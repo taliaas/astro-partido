@@ -6,16 +6,21 @@ export const militanteSchema = z.object({
   id: z.string(),
   firstname: z.string().min(1, { message: "Campo obligatorio" }),
   lastname: z.string().min(1, { message: "Campo obligatorio" }),
-  core: z.coerce.string().min(1, { message: "Campo obligatorio" }),
+  core: z.coerce.number().min(1, { message: "Campo obligatorio" }),
   ci: ciSchema,
+  date: z.coerce.date({ message: "Error" }),
   email: z.string().min(1, { message: "Campo obligatorio" }),
   organization: z.enum(["PCC", "UJC"]),
-  sexo: z.nativeEnum(Sexo).optional(),
-  raza: z.nativeEnum(Raza).optional(),
+  sexo: z.nativeEnum(Sexo, { message: "El sexo es requerido" }).optional(),
+  raza: z.nativeEnum(Raza, { message: "La raza es requerida" }).optional(),
   religion: z.string(),
-  nivel_escolar: z.nativeEnum(Nivel).optional(),
-  clasificacion: z.nativeEnum(Clasificacion).optional(),
-  work: z.string(),
+  nivel_escolar: z
+    .nativeEnum(Nivel, { message: "El nivel escolar es requerido" })
+    .optional(),
+  clasificacion: z
+    .nativeEnum(Clasificacion, { message: "La clasificación es requerida" })
+    .optional(),
+  work: z.string({ message: "El puesto de trabajo es requerido" }),
   cuenta_propia: z.boolean(),
   fundador: z.boolean(),
   CIPCC: z.string(),

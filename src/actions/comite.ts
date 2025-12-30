@@ -49,7 +49,7 @@ export const getTotalMiliFromComite = defineAction({
 
 export const updateComite = defineAction({
   input: z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     name: z.string(),
   }),
   async handler({ id, ...input }, context) {
@@ -72,11 +72,11 @@ export const updateComite = defineAction({
 });
 
 export const deleteComite = defineAction({
-  input: z.string(),
+  input: z.coerce.string(),
   async handler(id, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    const res = await fetch(`${API_URL}/comite/status/${id}`, {
+    const res = await fetch(`${API_URL}/comite/delete/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

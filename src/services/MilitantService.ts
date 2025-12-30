@@ -4,9 +4,8 @@ import { API_URL } from "astro:env/client";
 export default class MilitantService {
   async getAll(session: any) {
     const core = session.user?.militant?.core?.id;
-
     try {
-      const response = await fetch(`${API_URL}/militant/all/${core}`, {
+      const response = await fetch(`${API_URL}/militant/by/${core}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -22,6 +21,26 @@ export default class MilitantService {
       throw error;
     }
   }
+
+  async getAllByMilitants(session: any) {
+    try {
+      const response = await fetch(`${API_URL}/militant/all/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.jwt}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error;
+    }
+  }
+
   async getMilitantesByMinute(coreId: any, session: any) {
     try {
       const response = await fetch(`${API_URL}/militant/byCore/${coreId}`, {

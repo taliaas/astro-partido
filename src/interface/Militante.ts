@@ -73,7 +73,7 @@ export interface User {
   status: UserStatus;
 }
 export interface Militant {
-  id: string;
+  id: number;
   firstname: "";
   lastname: "";
   ci: "";
@@ -91,13 +91,13 @@ export interface Militant {
   work: string;
   cuenta_propia: boolean;
   fundador: boolean;
-  date: boolean;
+  date: Date;
   CIPCC: string;
   militant_doble: boolean;
   expediente: string;
   core: {
-    id: "";
-    name: "";
+    id: number;
+    name: string;
   };
   transfer: Transfer[];
   sancions: Sancion[];

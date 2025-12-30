@@ -237,6 +237,7 @@
           </DialogDescription>
         </DialogHeader>
         <CreateUserForm
+          :militants
           :user="isEdit ? selectedUser : null"
           :onLoadingChange="(value) => (loading = value)"
         />
@@ -322,7 +323,7 @@ import {
 import SelectGroup from "@/components/ui/select/SelectGroup.vue";
 import { roleEnum } from "@/enum/roleEnum";
 import { UserStatus } from "@/enum/Status";
-import type { User } from "@/interface/Militante";
+import type { Core, Militant, User } from "@/interface/Militante";
 import { useDebounceFn, useUrlSearchParams } from "@vueuse/core";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -338,9 +339,10 @@ import {
 } from "lucide-vue-next";
 import { ref } from "vue";
 
-const { users, cores } = defineProps<{
+const { users, cores, militants } = defineProps<{
   users: { data: User[]; total: number; page: number };
-  cores: any;
+  cores: Core[];
+  militants: Militant[];
 }>();
 
 const statuses = [

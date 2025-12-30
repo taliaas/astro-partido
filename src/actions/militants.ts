@@ -82,21 +82,22 @@ export const createMember = defineAction({
     lastname: z.string().min(3),
     email: z.string().min(10),
     ci: z.string(),
-    organization: z.enum(ORGANIZACION),
-    address: z.string(),
-    phone: z.string(),
+    organization: z.enum(ORGANIZACION).optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    date: z.coerce.date().optional(),
     core: z.object({
-      id: z.string(),
+      id: z.coerce.number(),
     }),
     sexo: z.nativeEnum(Sexo).optional(),
     raza: z.nativeEnum(Raza).optional(),
-    religion: z.string(),
+    religion: z.string().optional(),
     nivel_escolar: z.nativeEnum(Nivel).optional(),
     clasificacion: z.nativeEnum(Clasificacion).optional(),
-    work: z.string(),
+    work: z.string().optional(),
     cuenta_propia: z.boolean(),
     fundador: z.boolean(),
-    CIPCC: z.string(),
+    CIPCC: z.string().optional(),
     militant_doble: z.boolean(),
     expediente: z.string(),
   }),
@@ -108,6 +109,7 @@ export const createMember = defineAction({
       address,
       ci,
       core,
+      date,
       organization,
       phone,
       CIPCC,
@@ -134,6 +136,7 @@ export const createMember = defineAction({
       address,
       ci,
       core,
+      date,
       organization,
       phone,
       CIPCC,
@@ -170,13 +173,14 @@ export const updateMember = defineAction({
     id: z.string(),
     firstname: z.string(),
     lastname: z.string(),
+    date: z.coerce.date(),
     email: z.string(),
     ci: z.string(),
     organization: z.enum(ORGANIZACION),
     address: z.string(),
     phone: z.string(),
     core: z.object({
-      id: z.string(),
+      id: z.coerce.number(),
     }),
     sexo: z.nativeEnum(Sexo).optional(),
     raza: z.nativeEnum(Raza).optional(),
@@ -197,6 +201,7 @@ export const updateMember = defineAction({
       lastname,
       email,
       address,
+      date,
       ci,
       core,
       organization,
@@ -224,6 +229,7 @@ export const updateMember = defineAction({
     if (email !== undefined) updateData.email = email;
     if (address !== undefined) updateData.address = address;
     if (core !== undefined) updateData.core = core;
+    if (date !== undefined) updateData.date = date;
     if (organization !== undefined) updateData.organization = organization;
     if (phone !== undefined) updateData.phone = phone;
     if (CIPCC !== undefined) updateData.CIPCC = CIPCC;

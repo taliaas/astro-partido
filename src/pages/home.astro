@@ -23,14 +23,6 @@ async function typeDocuments() {
     console.error(e);
   }
 }
-async function getMilitante() {
-  const service = new MilitantService();
-  try {
-    return await service.getMilitante(session.jwt);
-  } catch (e) {
-    console.error(e);
-  }
-}
 
 const [documents, list] = await Promise.all([
   getLatestMinute(),
@@ -54,7 +46,6 @@ const cards = [
     icon: "Files",
   },
 ];
-const militante = await getMilitante();
 ---
 
 <RootLayout>

@@ -26,13 +26,15 @@ import {
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
+import { format } from "date-fns";
 import { ArrowLeft, Loader2, Save } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
 
-const { militant, cores } = defineProps<{
-  militant: Militant;
+const { militant, cores, core } = defineProps<{
+  militant?: Militant;
   cores: Core[];
+  core: string | null;
 }>();
 
 const form = useForm<MilitanteSchema>({
@@ -42,10 +44,11 @@ const form = useForm<MilitanteSchema>({
     lastname: militant?.lastname || "",
     address: militant?.address || "",
     ci: militant?.ci || "",
+    date: (militant?.date || format(new Date(), "yyyy-MM-dd")) as Date,
     firstname: militant?.firstname || "",
     organization: militant?.organization || "PCC",
     phone: militant?.phone || "",
-    core: militant?.core.id || "",
+    core: militant?.core.id || Number(core) || 0,
     email: militant?.email || "",
     clasificacion: militant?.clasificacion,
     cuenta_propia: !!militant?.cuenta_propia,
@@ -303,6 +306,7 @@ const saveMember = form.handleSubmit(async (data: MilitanteSchema) => {
               <FormMessage />
             </FormItem>
           </FormField>
+
           <div class="grid grid-cols-2 gap-2">
             <FormField v-slot="{ componentField }" name="organization">
               <FormItem>
@@ -313,6 +317,37 @@ const saveMember = form.handleSubmit(async (data: MilitanteSchema) => {
                     placeholder="Organización"
                     :="componentField"
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="clasificacion">
+              <FormItem>
+                <FormLabel class=""> Clasificación </FormLabel>
+                <FormControl>
+                  <Select :="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione la clasificación" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="item in Clasificacion"
+                        :key="item"
+                        :value="item"
+                      >
+                        {{ item }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="date">
+              <FormItem>
+                <FormLabel class=""> Fecha de incorporación </FormLabel>
+                <FormControl>
+                  <Input type="date" :="componentField" required />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -349,28 +384,6 @@ const saveMember = form.handleSubmit(async (data: MilitanteSchema) => {
                 <FormLabel class=""> CI PCC </FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="CI PCC" :="componentField" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-            <FormField v-slot="{ componentField }" name="clasificacion">
-              <FormItem>
-                <FormLabel class=""> Clasificación </FormLabel>
-                <FormControl>
-                  <Select :="componentField">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione la clasificación" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem
-                        v-for="item in Clasificacion"
-                        :key="item"
-                        :value="item"
-                      >
-                        {{ item }}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

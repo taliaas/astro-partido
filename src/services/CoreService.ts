@@ -1,12 +1,13 @@
 import { API_URL } from "astro:env/client";
 
 export default class CoreService {
-  async createCore(coreData: { name: string }, areaData: any[]) {
+  async createCore(coreData: { name: string }, areaData: any[], token: any) {
     try {
       const response = await fetch(`${API_URL}/core`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ coreData, areaData: [areaData] }),
       });
@@ -55,12 +56,13 @@ export default class CoreService {
     }
   }
 
-  async getCore(id: string) {
+  async getCore(id: string, token: any) {
     try {
       const response = await fetch(`${API_URL}/core/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -72,12 +74,13 @@ export default class CoreService {
     }
   }
 
-  async updateCore(id: string) {
+  async updateCore(id: string, token: any) {
     try {
       const response = await fetch(`${API_URL}/core/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -89,12 +92,13 @@ export default class CoreService {
     }
   }
 
-  async deleteCore(id: string) {
+  async deleteCore(id: string, token: any) {
     try {
       const response = await fetch(`${API_URL}/core/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {

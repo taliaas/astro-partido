@@ -66,6 +66,7 @@
             <FormControl>
               <Input
                 type="password"
+                maxlength="16"
                 required
                 placeholder="Escriba su contraseña..."
                 :="componentField"
@@ -215,7 +216,7 @@ const handleSubmit = form.handleSubmit(async (data: RegisterData) => {
   isLoading.value = true;
   try {
     await actions.auth.register.orThrow(data);
-    toast.success("Usuario registrado con éxito")
+    toast.success("Usuario registrado con éxito");
     await signIn("credentials", data as any);
     await navigate("/home");
     localStorage.removeItem("register-form");

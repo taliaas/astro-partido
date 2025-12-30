@@ -1,0 +1,27 @@
+---
+import CoreView from "@/components/settings/comites/Core/CoreView.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import SettingsLayout from "@/layouts/SettingsLayout.astro";
+import CoreService from "@/services/CoreService";
+import { getSession } from "auth-astro/server";
+
+const session: any = await getSession(Astro.request);
+const { id } = Astro.params;
+
+async function getCore() {
+  const service = new CoreService();
+  try {
+    return await service.getCore(id!, session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const core = await getCore();
+---
+
+<RootLayout>
+  <SettingsLayout>
+    <CoreView currentCore={core} client:load />
+  </SettingsLayout>
+</RootLayout>

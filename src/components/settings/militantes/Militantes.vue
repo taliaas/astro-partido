@@ -1,3 +1,106 @@
+<script setup lang="ts">
+import ExportMilitants from "@/components/settings/militantes/Export/exportMilitants.vue";
+import Button from "@/components/ui/button/Button.vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Input from "@/components/ui/input/Input.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Militant } from "@/interface/Militante";
+import { useDebounceFn, useUrlSearchParams } from "@vueuse/core";
+import { navigate } from "astro:transitions/client";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Eye,
+  MoreVerticalIcon,
+  Search,
+  UserPen,
+  UserPlus,
+} from "lucide-vue-next";
+import { ref } from "vue";
+
+const { militants, cores } = defineProps<{
+  militants: { data: Militant[]; total: number; page: number };
+  cores: any;
+}>();
+
+// UI state
+const searchParams = useUrlSearchParams("history", { removeFalsyValues: true });
+const selectCore = ref("");
+const currentMember = ref<Militant | null>(null);
+const totalPages = ref(militants.total);
+const currentPage = ref(militants.page);
+const statuses = ["Activo", "Inactivo"];
+
+// Methods
+const search = useDebounceFn(async () => {
+  await navigate("");
+  setTimeout(() => {
+    const e = document.querySelector<HTMLInputElement>("#search");
+    if (e) {
+      e.focus();
+    }
+  }, 500);
+}, 1000);
+
+const getInitials = (member: any) => {
+  return `${member.firstname.charAt(0)}${member.lastname.charAt(0)}`;
+};
+
+const handleFilterByValue = (filter: string, value: any) => {
+  const query = new URLSearchParams(searchParams as any);
+  if (value && value !== "all") {
+    query.set(filter, value);
+  } else {
+    query.delete(filter);
+  }
+  navigate("?" + query.toString());
+};
+
+const handleAdd = () => {
+  navigate(`/settings/militants/new`);
+};
+
+const handleEdit = (member: Militant) => {
+  currentMember.value = member;
+  navigate(`/settings/militants/${currentMember.value?.id}/edit`);
+};
+
+const handleView = (member: Militant) => {
+  currentMember.value = member;
+  navigate(`/settings/militants/${currentMember.value?.id}`);
+};
+
+function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+    navigate(
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+    );
+  }
+}
+
+function previousPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    navigate(
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+    );
+  }
+}
+</script>
 <template>
   <div class="pb-4">
     <h2 class="text-2xl font-bold text-gray-900">Militantes</h2>
@@ -60,17 +163,9 @@
             </SelectGroup>
           </SelectContent>
         </Select>
+        <!-- Export Button -->
+        <ExportMilitants :militants="militants.data" />
 
-        <Button
-          class="cursor-pointer"
-          variant="outline"
-          @click="exportAll"
-          :disabled="exporting"
-        >
-          <FileDown class="size-4" />
-          <span v-if="exporting">Exportando ...</span>
-          <span v-else>Exportar todo</span>
-        </Button>
         <Button @click="handleAdd" class="cursor-pointer" variant="default">
           <UserPlus class="size-4" />
           Añadir
@@ -217,127 +312,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import MilitantView from "@/components/settings/militantes/MilitantView.vue";
-import Button from "@/components/ui/button/Button.vue";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import Input from "@/components/ui/input/Input.vue";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import type { Militant } from "@/interface/Militante";
-import { useDebounceFn, useUrlSearchParams } from "@vueuse/core";
-import { navigate } from "astro:transitions/client";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Eye,
-  FileDown,
-  MoreVerticalIcon,
-  Search,
-  UserPen,
-  UserPlus,
-} from "lucide-vue-next";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-
-const { militants, cores } = defineProps<{
-  militants: { data: Militant[]; total: number; page: number };
-  cores: any;
-}>();
-
-// UI state
-const searchParams = useUrlSearchParams("history", { removeFalsyValues: true });
-const selectCore = ref("");
-const exporting = ref(false);
-const openView = ref(false);
-const currentMember = ref<Militant | null>(null);
-const totalPages = ref(militants.total);
-const currentPage = ref(militants.page);
-const statuses = ["Activo", "Inactivo"];
-
-// Methods
-const search = useDebounceFn(async () => {
-  await navigate("");
-  setTimeout(() => {
-    const e = document.querySelector<HTMLInputElement>("#search");
-    if (e) {
-      e.focus();
-    }
-  }, 500);
-}, 1000);
-
-const getInitials = (member: any) => {
-  return `${member.firstname.charAt(0)}${member.lastname.charAt(0)}`;
-};
-
-const closeModal = () => {
-  openView.value = false;
-  currentMember.value = null;
-};
-
-const handleFilterByValue = (filter: string, value: any) => {
-  const query = new URLSearchParams(searchParams as any);
-  if (value && value !== "all") {
-    query.set(filter, value);
-  } else {
-    query.delete(filter);
-  }
-  navigate("?" + query.toString());
-};
-
-const exportAll = () => {
-  exporting.value = true;
-  setTimeout(() => {
-    toast.success("Todos los militantes fueron exportados correctamente", {
-      duration: 5000,
-    });
-    toast.error("Error al exportar todos los militantes", { duration: 2000 });
-    exporting.value = false;
-  }, 5000);
-};
-
-const handleAdd = () => {
-  navigate(`/settings/militants/new`);
-};
-
-const handleEdit = (member: Militant) => {
-  currentMember.value = member;
-  navigate(`/settings/militants/${currentMember.value?.id}/edit`);
-};
-
-const handleView = (member: Militant) => {
-  currentMember.value = member;
-  navigate(`/settings/militants/${currentMember.value?.id}`);
-};
-
-function nextPage() {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-    navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
-    );
-  }
-}
-
-function previousPage() {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-    navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
-    );
-  }
-}
-</script>

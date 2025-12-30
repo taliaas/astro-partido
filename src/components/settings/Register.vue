@@ -9,9 +9,9 @@
     </div>
     <!-- Tarjeta principal -->
     <div class="bg-white rounded-lg border shadow-md p-4">
-      <div class="p-6">
+      <div class="p-6 space-y-3">
         <!-- Tabla de trazas -->
-        <div class="flex py-3 gap-2">
+        <div class="flex gap-2">
           <Input type="search" placeholder="Buscar ..."></Input>
           <Select>
             <SelectTrigger>
@@ -31,7 +31,7 @@
             <SelectContent>
               <SelectItem v-for="(item, index) in modules" :value="index">
                 <span v-if="item === null"> - </span>
-                {{ item?.name }}</SelectItem
+                {{ item }}</SelectItem
               >
             </SelectContent>
           </Select>
@@ -42,7 +42,7 @@
             <SelectContent>
               <SelectItem v-for="(item, index) in actions" :value="index">
                 <span v-if="item === null"> - </span>
-                {{ item?.name }}</SelectItem
+                {{ item }}</SelectItem
               >
             </SelectContent>
           </Select>
@@ -65,7 +65,7 @@
                 Acción
               </th>
               <th
-                class="text-left align-middle font-medium text-muted-foreground"
+                class="text-center align-middle font-medium text-muted-foreground"
               >
                 Usuario
               </th>
@@ -97,9 +97,11 @@
               :key="traza.id"
               class="border rounded"
             >
-              <td>{{ traza.user?.name }}</td>
-              <td>{{ traza.user?.email }}</td>
-              <td></td>
+              <td class="px-4">{{ traza.module }}</td>
+              <td>{{ traza.action }}</td>
+              <td class="text-center">
+                {{ traza.user?.name || "No especificado" }}
+              </td>
               <td class="text-center">
                 {{ format(traza.createdAt, "yyyy-MM-dd") }}
               </td>
@@ -120,28 +122,29 @@
           </tbody>
         </table>
 
-        {{ trazas }}
-        Mostrando: {{ trazas.page }} de {{ trazas.total }} página(s)
+        <div class="flex justify-between">
+          <p>Mostrando: {{ trazas.page }} de {{ trazas.total }} página(s)</p>
 
-        <div class="space-x-2">
-          <Button
-            variant="outline"
-            class="p-2 border rounded-md"
-            @click="previusPage"
-            :disabled="currentPage <= 1"
-            :class="{ 'bg-muted': currentPage === 1 }"
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            class="p-2 border rounded-md"
-            @click="nextPage"
-            :disabled="currentPage >= trazas.lastPage"
-            :class="{ 'bg-muted': currentPage >= trazas.lastPage }"
-          >
-            <ChevronRight />
-          </Button>
+          <div class="space-x-2">
+            <Button
+              variant="outline"
+              class="p-2 border rounded-md"
+              @click="previusPage"
+              :disabled="currentPage <= 1"
+              :class="{ 'bg-muted': currentPage === 1 }"
+            >
+              <ChevronLeft />
+            </Button>
+            <Button
+              variant="outline"
+              class="p-2 border rounded-md"
+              @click="nextPage"
+              :disabled="currentPage >= trazas.total"
+              :class="{ 'bg-muted': currentPage >= trazas.total }"
+            >
+              <ChevronRight />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -190,6 +193,15 @@
                 {{ trazaSeleccionada.module }}
               </div>
             </div>
+            <!-- ID de Entidad (si existe) -->
+            <div v-if="trazaSeleccionada.entityId" class="space-y-1 text-right">
+              <div class="text-md font-medium text-gray-500">
+                ID de {{ trazaSeleccionada.module }}
+              </div>
+              <div class="font-medium text-gray-900 text-left">
+                {{ trazaSeleccionada.entityId }}
+              </div>
+            </div>
           </div>
 
           <!-- Información del Usuario -->
@@ -233,21 +245,6 @@
             <div class="bg-gray-50 rounded-lg p-4">
               <div class="font-mono text-md text-gray-900">
                 {{ format(trazaSeleccionada.createdAt, "yyyy-MM-dd HH:mm:ss") }}
-              </div>
-            </div>
-          </div>
-
-          <!-- ID de Entidad (si existe) -->
-          <div v-if="trazaSeleccionada.entityId" class="space-y-3">
-            <div
-              class="text-md font-medium text-gray-500 flex items-center gap-2"
-            >
-              <HashIcon class="h-4 w-4" />
-              ID de Entidad
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4">
-              <div class="font-mono text-md text-gray-900">
-                {{ trazaSeleccionada.entityId }}
               </div>
             </div>
           </div>
@@ -317,12 +314,12 @@ import { computed, ref, watch } from "vue";
 
 const Action = ["CREATE", "UPDATE", "DELETE", "LOGIN"] as const;
 
-const { trazas, users } = defineProps<{
+const { trazas } = defineProps<{
   trazas: { data: any[]; page: number; total: number; limit: number };
 }>();
 
-const modules = []
-const actions = any[]
+const modules = ["Documentos"];
+const actions = ["Crear"];
 const trazaSeleccionada = ref({
   id: 0,
   action: Action[0],
@@ -341,7 +338,6 @@ const currentPage = ref(trazas?.page);
 const users = computed(() => {
   return trazas.data.map((item) => item.user);
 });
-
 
 // Mantener currentPage sincronizado con trazas.page
 watch(

@@ -3,6 +3,7 @@ import UserManage from "@/components/settings/user/UserManage.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
 import SettingsLayout from "@/layouts/SettingsLayout.astro";
 import CoreService from "@/services/CoreService";
+import MilitantService from "@/services/MilitantService";
 import UserService from "@/services/UserService";
 import { undefined } from "astro:schema";
 import { getSession } from "auth-astro/server";
@@ -44,12 +45,22 @@ async function getCore() {
   }
 }
 
+async function getMilitants() {
+  const service = new MilitantService();
+  try {
+    return await service.getAllByMilitants(session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 const users = await getAllUsers();
 const cores = await getCore();
+const militants = await getMilitants();
 ---
 
 <RootLayout>
   <SettingsLayout>
-    <UserManage users={users} cores={cores} client:load />
+    <UserManage militants={militants} users={users} cores={cores} client:load />
   </SettingsLayout>
 </RootLayout>

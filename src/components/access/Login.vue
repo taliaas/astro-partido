@@ -39,6 +39,7 @@
                   required
                   placeholder="Contraseña"
                   :="componentField"
+                  maxlength="16"
                 />
               </FormControl>
               <FormMessage />

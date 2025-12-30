@@ -29,7 +29,7 @@
             <UserIcon class="h-12 w-12 text-white" />
           </div>
           <div>
-            <h1 class="text-3xl font-bold">{{ user.name }}</h1>
+            <h1 class="text-3xl font-bold">{{ user?.name }}</h1>
             <div class="flex items-center gap-2 mt-2 text-gray-300">
               <ShieldCheckIcon class="h-4 w-4" />
               <span class="text-lg text-foreground">{{
@@ -302,6 +302,7 @@
             <Input
               v-model="passwordForm.current"
               type="password"
+              maxlength="16"
               class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
@@ -312,6 +313,7 @@
             <Input
               v-model="passwordForm.new"
               type="password"
+              maxlength="16"
               class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
@@ -322,6 +324,7 @@
             <Input
               v-model="passwordForm.confirm"
               type="password"
+              maxlength="16"
               class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
