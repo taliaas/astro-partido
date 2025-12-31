@@ -79,6 +79,9 @@
               </SelectGroup>
             </SelectContent>
           </Select>
+          <!-- Export Button -->
+          <ExportsUsers :users="users.data" />
+          <!-- Add User Button -->
           <Button @click="openCreate">
             <UserPlus class="size-4" /> Añadir</Button
           >
@@ -285,6 +288,7 @@
 
 <script setup lang="ts">
 import CreateUserForm from "@/components/settings/user/CreateUserForm.vue";
+import ExportsUsers from "@/components/settings/user/ExportsUsers.vue";
 import {
   AlertDialog,
   AlertDialogAction,

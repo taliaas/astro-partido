@@ -212,10 +212,12 @@ const getStatusClass = (status: any) => {
   );
 };
 
-const handleAction = (action: any, acta: any) => {
+const handleAction = (action: any, acta: Minute) => {
   currentsMinute.value = acta;
   if (action === "ver") {
-    if (acta.isLoaded) {
+    console.log(acta);
+
+    if (acta.file) {
       navigate(`minutes/loaded-view/${acta.id}`);
     } else if (acta.type === "Ordinaria") {
       navigate(`minutes/ro/${acta.id}`);

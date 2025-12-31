@@ -75,7 +75,9 @@
                     <Label class="text-muted-foreground"
                       >Correo Electrónico</Label
                     >
-                    <p class="font-semibold">{{ user.email }}</p>
+                    <p class="font-semibold">
+                      {{ user.email || "No especificado" }}
+                    </p>
                   </div>
                 </div>
                 <div class="flex gap-4">
@@ -84,7 +86,9 @@
                   </div>
                   <div>
                     <Label class="text-muted-foreground">Teléfono</Label>
-                    <p class="font-semibold">{{ user.militant.phone }}</p>
+                    <p class="font-semibold">
+                      {{ user.militant.phone || "No especificado" }}
+                    </p>
                   </div>
                 </div>
 
@@ -95,7 +99,7 @@
                   <div>
                     <Label class="text-muted-foreground">Organización</Label>
                     <p class="font-semibold">
-                      {{ user.militant.organization }}
+                      {{ user.militant.organization || "No especificado" }}
                     </p>
                   </div>
                 </div>
@@ -105,7 +109,9 @@
                   </div>
                   <div>
                     <Label class="text-muted-foreground">Núcleo</Label>
-                    <p class="font-semibold">{{ user.militant.core.name }}</p>
+                    <p class="font-semibold">
+                      {{ user.militant.core.name || "No especificado" }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -302,8 +308,8 @@
             <Input
               v-model="passwordForm.current"
               type="password"
+              placeholder="Contraseña actual"
               maxlength="16"
-              class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -314,7 +320,7 @@
               v-model="passwordForm.new"
               type="password"
               maxlength="16"
-              class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Nueva contraseña"
             />
           </div>
           <div>
@@ -323,9 +329,9 @@
             >
             <Input
               v-model="passwordForm.confirm"
+              placeholder="Repite la nueva contraseña"
               type="password"
               maxlength="16"
-              class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div class="flex justify-end space-x-3">
@@ -374,6 +380,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { navigate } from "astro:transitions/client";
+import { toast } from "vue-sonner";
 
 const { user: data } = defineProps<{
   user: User;
@@ -412,8 +419,10 @@ const handlePasswordChange = async () => {
     passwordForm.current = "";
     passwordForm.new = "";
     passwordForm.confirm = "";
+    toast.success("Contraseña actualizada con éxito");
   } catch (error) {
     console.log("Error", error);
+    toast.error("Error al actualizar la contraseña");
     throw error;
   }
 };
