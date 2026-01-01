@@ -7,7 +7,7 @@ export const register = defineAction({
   input: z.object({
     email: z.string().email(),
     name: z.string(),
-    password: z.string(),
+    password: z.string().optional(),
     role: z.string().optional(),
   }),
   async handler({ email, name, password, role }, context) {

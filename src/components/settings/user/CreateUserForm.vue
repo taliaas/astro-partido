@@ -39,7 +39,8 @@ const userSchema = z.object({
   password: z
     .string()
     .min(8, { message: "La contraseña debe tener al menos 8 carácteres" })
-    .max(16, { message: "La contraseña debe tener menos de 16 carácteres" }),
+    .max(16, { message: "La contraseña debe tener menos de 16 carácteres" })
+    .nullable(),
   role: z.string({ message: "El Rol es requerido" }),
 });
 
@@ -47,7 +48,7 @@ const form = useForm<UserData>({
   initialValues: {
     name: user?.name ?? "",
     email: user?.email ?? "",
-    password: "",
+    password: null,
     role: user?.role?.name ?? "",
   },
   validationSchema: toTypedSchema(userSchema),
@@ -64,7 +65,10 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
       setTimeout(() => toast.success("Usuario actualizado exitosamente"), 1000);
     }
   } else {
-    const { error } = await actions.auth.register(data);
+    const { error } = await actions.auth.register({
+      ...data,
+      password: data.password ?? undefined,
+    });
     if (error instanceof ActionError) {
       toast.error("Hubo un error al intentar crear el usuario");
     } else {
@@ -78,6 +82,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
 </script>
 
 <template>
+  {{ form.errors }}
   <form
     @submit="handleSubmit"
     class="space-y-4"

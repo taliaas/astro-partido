@@ -1,7 +1,7 @@
 ---
-import RootLayout from "../layouts/RootLayout.astro";
+import RootLayout from "@/layouts/RootLayout.astro";
 import { getSession } from "auth-astro/server";
-import UserService from "../services/UserService";
+import UserService from "@/services/UserService";
 import Perfil from "@/components/Profile/Perfil.vue";
 
 const session = await getSession(Astro.request);

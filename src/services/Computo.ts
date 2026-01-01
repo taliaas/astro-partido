@@ -172,4 +172,21 @@ export default class ComputoService {
       throw error;
     }
   }
+  async getYear(year: number, token: string) {
+    try {
+      const response = await fetch(`${API_URL}/computo/reports/${year}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

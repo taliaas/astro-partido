@@ -1,9 +1,8 @@
 ---
 import { getSession } from "auth-astro/server";
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
-import RootLayout from "../layouts/RootLayout.astro";
-import MinutesService from "../services/Minutes";
-import MilitantService from "@/services/MilitantService";
+import RootLayout from "@/layouts/RootLayout.astro";
+import MinutesService from "@/services/Minutes";
 const session = (await getSession(Astro.request)) as any;
 
 async function getLatestMinute() {

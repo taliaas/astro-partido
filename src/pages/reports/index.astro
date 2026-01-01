@@ -1,0 +1,25 @@
+---
+import Grafico from "@/components/reportes/Grafico.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import { getSession } from "auth-astro/server";
+import ComputoService from "@/services/Computo";
+
+const year =
+  Astro.url.searchParams.get("year") || new Date().getFullYear().toString();
+const session = (await getSession(Astro.request)) as any;
+
+async function getData() {
+  const reports = new ComputoService();
+  try {
+    return await reports.getYear(Number(year), session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const data = await getData();
+---
+
+<RootLayout>
+  <Grafico data={data} year={Number(year)} session={session} client:load />
+</RootLayout>

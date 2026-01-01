@@ -23,13 +23,13 @@ const navigationItems = [
   {
     name: "Cómputo",
     href: (await hasServerRoles([roleEnum.Gnral], Astro.request))
-      ? "/analisis_indicador"
-      : "/analisis_indicador/comite",
+      ? "/indicators"
+      : "/indicators/comite",
     enabled: await hasServerPermissions("Análisis", "read", Astro.request),
   },
   {
     name: "Reportes",
-    href: "/estadofunc",
+    href: "/reports",
     enabled: await hasServerPermissions("Reportes", "read", Astro.request),
   },
 ];

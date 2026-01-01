@@ -8,7 +8,11 @@
             Estado del Funcionamiento PCC CUJAE
           </h2>
           <p class="text-gray-600 text-lg dark:text-gray-300 font-semibold">
-            Comité UJC CUJAE
+            {{
+              session.user.role.name !== roleEnum.Cmte
+                ? `${session.user.militant.core.name} CUJAE`
+                : "Comité UJC CUJAE"
+            }}
           </p>
         </div>
 
@@ -16,10 +20,10 @@
           class="mb-8 rounded-lg border bg-white dark:bg-zinc-800 dark:border-gray-400 p-6 shadow-sm"
         >
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Filtros</h3>
-            <button
+            <h3 class="text-xl font-semibold">Filtros</h3>
+            <Button
               @click="isFilterVisible = !isFilterVisible"
-              class="flex items-center space-x-2 rounded px-4 py-2 text-sm font-medium hover:bg-gray-100"
+              variant="outline"
             >
               <span>{{
                 isFilterVisible ? "Ocultar filtros" : "Mostrar filtros"
@@ -28,54 +32,50 @@
                 :class="{ 'rotate-180 transform': isFilterVisible }"
                 class="h-5 w-5 transition-transform duration-200"
               />
-            </button>
+            </Button>
           </div>
 
           <div class="grid gap-6 md:grid-cols-3" v-show="isFilterVisible">
             <div class="space-y-2">
-              <label
-                class="text-md font-medium text-gray-700 dark:text-gray-300"
-                >Indicadores</label
-              >
-              <select
-                v-model="selectedIndicator"
-                class="w-full rounded-md border border-gray-300 p-2 text-sm"
-              >
-                <option
-                  v-for="(value, key) in indicators"
-                  :key="key"
-                  :value="key"
-                >
-                  {{ value.name }}
-                </option>
-              </select>
+              <Label>Indicadores</Label>
+              <Select v-model="selectedIndicator">
+                <SelectTrigger class="w-full">
+                  <SelectValue placeholder="Seleccione un indicador" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="(item, key) in indicators"
+                    :key="key"
+                    :value="key"
+                  >
+                    {{ item.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div class="space-y-2">
-              <label
-                class="text-md font-medium dark:text-gray-300 text-gray-700"
-                >Periodo</label
-              >
-              <select
-                v-model="selectedPeriod"
-                class="w-full rounded-md border border-gray-300 p-2 text-sm"
-              >
-                <option value="1">Semestre 1</option>
-                <option value="2">Semestre 2</option>
-                <option value="3">Anual</option>
-              </select>
+              <Label>Periodo</Label>
+              <Select v-model="selectedPeriod">
+                <SelectTrigger class="w-full">
+                  <SelectValue placeholder="Seleccione un periodo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Semestre 1</SelectItem>
+                  <SelectItem value="2">Semestre 2</SelectItem>
+                  <SelectItem value="3">Anual</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div class="space-y-2">
-              <label
-                class="text-md font-medium dark:text-gray-300 text-gray-700"
-                >Año</label
-              >
-              <input
+              <Label>Año</Label>
+              <Input
+                id="year"
                 type="number"
                 v-model="selectedYear"
                 :max="current_year"
-                class="w-full rounded-md border border-gray-300 p-2 text-sm"
+                @click="$event.target.select()"
               />
             </div>
           </div>
@@ -84,20 +84,15 @@
         <div class="rounded-lg border bg-white dark:bg-zinc-800 p-6 shadow-sm">
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-lg font-semibold">Comportamiento de Indicadores</h3>
-            <button
-              @click="exportToPDF"
-              class="inline-flex items-center rounded-md bg-button px-4 py-2 text-sm font-medium text-white"
-            >
-              Exportar
-            </button>
+            <Button @click="exportToPDF"> Exportar </Button>
           </div>
           <div v-if="barIndicators.includes(selectedIndicator)">
-            <BarChart :data="chartData" :options="stackedChartOptions" />
+            <BarChart :data="barData" :options="stackedChartOptions" />
           </div>
           <div v-else ref="chartContainer" class="h-[400px] w-full">
             <LineChart
               class="dark:text-white"
-              :data="chartData"
+              :data="lineData"
               :options="lineChartOptions"
             />
           </div>
@@ -126,9 +121,20 @@ import {
 } from "chart.js";
 import { Line as LineChart, Bar as BarChart } from "vue-chartjs";
 import { ChevronDownIcon } from "lucide-vue-next";
-import StatusService from "@/services/StatusService.ts";
 import { indicators } from "@/utils/indicators";
 import { toast } from "vue-sonner";
+import Button from "@/components/ui/button/Button.vue";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { navigate } from "astro:transitions/client";
+import { roleEnum } from "@/enum/roleEnum";
 
 ChartJS.register(
   CategoryScale,
@@ -142,10 +148,20 @@ ChartJS.register(
   Filler
 );
 
+const {
+  data: indData,
+  year,
+  session,
+} = defineProps<{
+  data: Record<string, number[]>;
+  year: number;
+  session: any;
+}>();
+
 const isFilterVisible = ref(true);
 const selectedIndicator = ref("ptos");
 const current_year = new Date().getFullYear();
-const selectedYear = ref(2025);
+const selectedYear = ref(year);
 const selectedPeriod = ref("1");
 const chartContainer = ref(null);
 const barIndicators = [
@@ -157,9 +173,8 @@ const barIndicators = [
   "rendicionOrganizacionesYOtros",
 ];
 
-const chartData = ref<ChartData<"line">>({ labels: [], datasets: [] });
-
-watch(chartData, () => console.log(chartData.value));
+const barData = ref<ChartData<"bar">>({ labels: [], datasets: [] });
+const lineData = ref<ChartData<"line">>({ labels: [], datasets: [] });
 
 const selectedIndicatorText = computed(() => {
   const entry = Object.entries(indicators).find(
@@ -176,6 +191,8 @@ const colors = [
 
 //limpiar el grafico si da error y notificar
 const fetchData = async () => {
+  console.log("error", selectedYear.value);
+
   const months =
     selectedPeriod.value === "1"
       ? ["Ene", "Feb", "Mar", "Abr", "May", "Jun"]
@@ -195,9 +212,8 @@ const fetchData = async () => {
             "Nov",
             "Dic",
           ];
-  const service = new StatusService();
+
   try {
-    const { data: indData } = await service.getYear(selectedYear.value);
     const yearData = indData[selectedIndicator.value];
 
     const semesterData =
@@ -207,7 +223,68 @@ const fetchData = async () => {
           ? yearData.slice(6, 12)
           : yearData;
 
-    chartData.value = {
+    barData.value = {
+      labels: months,
+      datasets: [
+        "atencionFEU",
+        "atencionUJC",
+        "funcionamientoSindicato",
+      ].includes(selectedIndicator.value)
+        ? [
+            {
+              label: "Atención FEU",
+              data: indData["atencionFEU"],
+              borderColor: colors[0].border,
+              backgroundColor: colors[0].bg,
+            },
+            {
+              label: "Atención UJC",
+              data: indData["atencionUJC"],
+              borderColor: colors[1].border,
+              backgroundColor: colors[1].bg,
+            },
+            {
+              label: "Funcionamiento del Sindicato",
+              data: indData["funcionamientoSindicato"],
+              borderColor: colors[2].border,
+              backgroundColor: colors[2].bg,
+            },
+          ]
+        : [
+              "rendicionMilitante",
+              "rendicionDirigente",
+              "rendicionOrganizacionesYOtros",
+            ].includes(selectedIndicator.value)
+          ? [
+              {
+                label: "Rendición de militantes",
+                data: indData["rendicionMilitante"],
+                borderColor: colors[0].border,
+                backgroundColor: colors[0].bg,
+              },
+              {
+                label: "Rendición de dirigentes",
+                data: indData["rendicionDirigente"],
+                borderColor: colors[1].border,
+                backgroundColor: colors[1].bg,
+              },
+              {
+                label: "Rendición de organizaciones y otros",
+                data: indData["rendicionOrganizacionesYOtros"],
+                borderColor: colors[2].border,
+                backgroundColor: colors[2].bg,
+              },
+            ]
+          : [
+              {
+                label: selectedIndicatorText.value,
+                data: semesterData,
+                borderColor: colors[0].border,
+                backgroundColor: colors[0].bg,
+              },
+            ],
+    };
+    lineData.value = {
       labels: months,
       datasets: [
         "atencionFEU",
@@ -284,7 +361,18 @@ const fetchData = async () => {
     };
   } catch (error) {
     console.log(error);
-    chartData.value = {
+    barData.value = {
+      labels: months,
+      datasets: [
+        {
+          label: selectedIndicatorText.value,
+          data: [],
+          borderColor: "#3b82f6",
+          backgroundColor: "rgba(59, 130, 246, 0.1)",
+        },
+      ],
+    };
+    lineData.value = {
       labels: months,
       datasets: [
         {
@@ -297,7 +385,7 @@ const fetchData = async () => {
         },
       ],
     };
-    toast.error("Error al cargar el indicador");
+    toast.error("Error al cargar el indicador", { duration: 5000 });
   }
 };
 
@@ -324,7 +412,7 @@ const lineChartOptions = {
   },
   plugins: {
     legend: {
-      position: "top",
+      position: "top" as const,
       labels: {
         usePointStyle: true,
         padding: 20,
@@ -353,7 +441,7 @@ const stackedChartOptions = {
   },
   plugins: {
     legend: {
-      position: "top",
+      position: "top" as const,
       labels: {
         usePointStyle: true,
         padding: 20,
@@ -364,7 +452,11 @@ const stackedChartOptions = {
 
 const exportToPDF = async () => {
   try {
-    const canvas = await html2canvas(chartContainer.value);
+    if (!chartContainer.value) {
+      toast.error("No se pudo encontrar el gráfico para exportar.");
+      return;
+    }
+    const canvas = await html2canvas(chartContainer.value as HTMLElement);
     const imgData = canvas.toDataURL("image/png");
 
     const pdf = new jsPDF("l", "mm", "a4");
@@ -387,10 +479,19 @@ const exportToPDF = async () => {
     console.error("Error exporting PDF:", error);
   }
 };
+
 // Watch for changes in filters
 watch([selectedYear, selectedIndicator, selectedPeriod], () => {
   fetchData();
 });
+
+// Watch for changes in selectedYear to update the URL query param
+watch(selectedYear, (newYear) => {
+  navigate(`/reports?year=${newYear}`);
+});
+
+watch(barData, () => console.log(barData.value));
+watch(lineData, () => console.log(lineData.value));
 
 // Initial data fetch
 onMounted(() => {
