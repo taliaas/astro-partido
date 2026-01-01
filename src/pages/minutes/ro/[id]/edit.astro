@@ -1,4 +1,5 @@
 ---
+import EditOrdinary from "@/components/Acta/Ordinary/Edit/Edit.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
 import CoreService from "@/services/CoreService";
 import MilitantService from "@/services/MilitantService";
@@ -44,5 +45,5 @@ console.log("Acta", acta);
 ---
 
 <RootLayout>
-  <Edit acta={acta} cores={cores} militantes={militantes} client:load />
+  <EditOrdinary acta={acta} cores={cores} militantes={militantes} client:load />
 </RootLayout>

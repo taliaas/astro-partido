@@ -17,7 +17,7 @@ export const form_schema = z.object({
   type: z.string().default("Ordinaria"),
   militants: z
     .object({
-      id: z.coerce.string(),
+      id: z.coerce.number(),
       firstname: z.string(),
       lastname: z.string(),
       ci: z.string(),
@@ -38,7 +38,7 @@ export const form_schema = z.object({
     .object({
       estado: z.enum(["Presente", "Virtual", "Ausente"]),
       reason: z.enum(absenceReasons).nullable(),
-      militanteId: z.string().optional(),
+      militanteId: z.coerce.number().optional(),
     })
     .array(),
   development: z
@@ -85,7 +85,7 @@ export const editFormSchema = z.object({
   type: z.nativeEnum(MinuteType),
   militants: z
     .object({
-      id: z.coerce.string(),
+      id: z.coerce.number(),
       firstname: z.string(),
       lastname: z.string(),
       ci: z.string(),
@@ -117,8 +117,8 @@ export const editFormSchema = z.object({
         .object({
           id: z.string().optional(),
           descripcion: z.string(),
-          responsable: z.object({ id: z.string() }),
-          participants: z.object({ id: z.string() }).array(),
+          responsable: z.object({ id: z.coerce.number() }),
+          participants: z.object({ id: z.coerce.number() }).array(),
           enddate: z.coerce.date(), //z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),
         })
         .array()
@@ -127,8 +127,8 @@ export const editFormSchema = z.object({
         .object({
           id: z.string().optional(),
           descripcion: z.string(),
-          responsable: z.object({ id: z.string() }),
-          participants: z.object({ id: z.string() }).array(),
+          responsable: z.object({ id: z.coerce.number() }),
+          participants: z.object({ id: z.coerce.number() }).array(),
           enddate: z.coerce.date(), //z.coerce.date().max(today, { message: "La fecha no puede ser mayor a la actual" }),
         })
         .array()

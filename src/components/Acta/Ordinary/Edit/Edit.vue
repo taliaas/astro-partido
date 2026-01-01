@@ -61,7 +61,6 @@ const onSubmit = form.handleSubmit(async (values: any) => {
 </script>
 <template>
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
-    {{ acta }}
     <form @submit="onSubmit" class="max-w-7xl mx-auto">
       <div class="p-4 flex justify-center">
         <h2 class="font-bold text-2xl">{{ acta.name }} {{ acta.id }}</h2>

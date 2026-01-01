@@ -17,7 +17,10 @@ if (Astro.request.method === "POST") {
 async function getMilitantes() {
   const service = new MilitantService();
   try {
-    return await service.getMilitantes((session as any).jwt);
+    const ro = await service.getMilitantes((session as any).jwt);
+    console.log(ro);
+
+    return ro;
   } catch (e) {
     console.error(e);
   }

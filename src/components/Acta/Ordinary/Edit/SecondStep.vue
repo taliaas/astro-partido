@@ -116,7 +116,6 @@
                   })
                 "
                 variant="outline"
-                class="group inline-flex items-center justify-center rounded border border-b-gray-300 transition-all duration-300 text-sm font-medium h-10 px-4"
               >
                 <PlusIcon
                   class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
@@ -303,7 +302,7 @@
               </tbody>
             </table>
             <div
-              v-if="agreements.fields"
+              v-if="!agreements.fields.length"
               class="text-muted-foreground text-center p-6"
             >
               No hay acuerdos

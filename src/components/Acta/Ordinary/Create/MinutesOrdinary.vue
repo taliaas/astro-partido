@@ -161,7 +161,7 @@ const { agreements, militantes } = defineProps<{
 const agreements_list = agreements.data;
 
 const open = ref(false);
-const currentStep = ref(2);
+const currentStep = ref(1);
 const loading = ref(false);
 
 const nextStep = () => {
@@ -183,7 +183,7 @@ const form = useForm({
     core: 1,
     hour: "",
     place: "",
-    abscents: militantes.map((i) => ({
+    abscents: militantes?.map((i) => ({
       estado: "Presente" as const,
       reason: null,
       militanteId: i.id,
