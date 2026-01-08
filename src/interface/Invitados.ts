@@ -3,7 +3,7 @@ import type Minute from "@/interface/Minute";
 
 export interface Invitados {
   id: string;
-  nombre: string;
+  nombre_apellidos: string;
   cargo: Cargo;
   minute: Minute;
 }

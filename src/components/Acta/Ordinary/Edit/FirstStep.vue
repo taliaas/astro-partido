@@ -263,8 +263,6 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               {{ abs?.firstname }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
               {{ abs?.lastname }}
             </td>
             <td class="py-4 whitespace-nowrap">
@@ -386,7 +384,7 @@ const {
 }>();
 
 defineEmits(["update"]);
-const headers = ["No.", "Nombre", "Apellidos", "Estado", "Causa"];
+const headers = ["No.", "Nombre y Apellidos", "Estado", "Causa"];
 
 const invitados = useFieldArray<FormSchema["invitados"][number]>("invitados");
 </script>

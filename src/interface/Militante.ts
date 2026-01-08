@@ -28,7 +28,7 @@ export interface Sancion {
   militant: Militant;
 }
 export interface Agreements {
-  id: string;
+  id: number;
   descripcion: string;
   responsable: Militant;
   participants: Militant[];

@@ -24,9 +24,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { StatusAtte } from "@/enum/Estado";
+import { Reason } from "@/interface/Absent";
 import type Minute from "@/interface/Minute";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { navigate } from "astro:transitions/client";
+import { format, parseISO } from "date-fns";
 import { ArrowRight, DownloadIcon } from "lucide-vue-next";
 
 const { minute, existsCP, abscents } = defineProps<{
@@ -38,10 +41,9 @@ const { minute, existsCP, abscents } = defineProps<{
 defineEmits(["move"]);
 let porciento = 0;
 if (minute?.core?.militants?.length) {
+  const parte = minute.core.militants.length - abscents.length;
   porciento =
-    abscents?.length === 0
-      ? 100
-      : (abscents.length * 100) / minute.core.militants.length;
+    abscents?.length === 0 ? 100 : (parte * 100) / minute.core.militants.length;
 }
 
 const exportar = () => {
@@ -99,7 +101,7 @@ function openProcesar() {
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Fecha:</span>
-                  {{ minute?.date }}
+                  {{ format(String(minute?.date), "dd/MM/yyyy") }}
                   <span v-if="!minute.date">-</span>
                 </div>
                 <div class="card">
@@ -134,28 +136,32 @@ function openProcesar() {
                 <TableHeader class="bg-gray-100 uppercase">
                   <TableRow>
                     <TableHead>No.</TableHead>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Apellidos</TableHead>
-                    <TableHead class="text-center">Presente</TableHead>
+                    <TableHead>Nombre y Apellidos</TableHead>
+                    <TableHead>Presente</TableHead>
                     <TableHead class="text-center">Causa</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow v-for="miembro in list()" :key="miembro.nro">
-                    <TableCell>{{ miembro.id }}</TableCell>
-                    <TableCell>{{ miembro.firstname }}</TableCell>
-                    <TableCell>{{ miembro.lastname }}</TableCell>
-                    <TableCell class="text-center">
-                      <Badge v-if="miembro.ausente === 'ausente'"
+                  <TableRow
+                    v-for="(item, index) in minute.abscents"
+                    :key="item.id"
+                  >
+                    <TableCell>{{ index + 1 }}</TableCell>
+                    <TableCell
+                      >{{ item.militant.firstname }}
+                      {{ item.militant.lastname }}</TableCell
+                    >
+                    <TableCell>
+                      <Badge v-if="item.estado === StatusAtte.A"
                         >Ausente
                       </Badge>
-                      <Badge v-else-if="miembro.presente === 'Virtual'"
+                      <Badge v-else-if="item.estado === StatusAtte.V"
                         >Virtual
                       </Badge>
-                      <span v-else>Presente</span>
+                      <Badge v-else variant="outline">Presente</Badge>
                     </TableCell>
                     <TableCell class="text-center">
-                      {{ miembro.reason || "-" }}
+                      {{ item.estado !== StatusAtte.A ? "-" : item.reason }}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -178,7 +184,7 @@ function openProcesar() {
                     <TableRow>
                       <TableCell class="p-2">{{ index + 1 }}</TableCell>
                       <TableCell class="p-2">{{
-                        item.nombre || "-"
+                        item.nombre_apellidos || "-"
                       }}</TableCell>
                       <TableCell class="p-2">{{ item.cargo }}</TableCell>
                     </TableRow>

@@ -19,7 +19,6 @@ const { cores, acta, militantes } = defineProps<{
   militantes: Militant[];
 }>();
 
-const open = ref(false);
 const currentStep = ref(1);
 
 const nextStep = () => {
@@ -37,6 +36,7 @@ const form = useForm({
     date: acta.date?.toString() ?? "",
     core: acta.core?.id,
     hour: acta.hour,
+    type: acta.type,
     place: acta.place,
     abscents: acta.abscents ?? [],
     invitados: acta.invitados ?? [],
@@ -48,9 +48,9 @@ const form = useForm({
 });
 const mili = acta.abscents.map((item) => item.militant);
 
-const onSubmit = form.handleSubmit(async (values: any) => {
+const onSubmit = form.handleSubmit(async (data: any) => {
   try {
-    await actions.ordinary.updateMinute({ id: +acta.id, data: values });
+    await actions.minute.updateMinute.orThrow({ id: +acta.id, data });
     toast.success("Se actualizó el acta correctamente");
     navigate("/minutes");
   } catch (e) {
@@ -60,6 +60,7 @@ const onSubmit = form.handleSubmit(async (values: any) => {
 });
 </script>
 <template>
+  {{ form.errors }}
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
     <form @submit="onSubmit" class="max-w-7xl mx-auto">
       <div class="p-4 flex justify-center">
@@ -95,7 +96,7 @@ const onSubmit = form.handleSubmit(async (values: any) => {
             <ArrowRight class="w-4 h-4" />
           </Button>
         </div>
-        <Button type="button" @click="open = true">
+        <Button>
           Enviar
           <SendHorizonal class="size-4" />
         </Button>

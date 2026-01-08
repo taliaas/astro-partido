@@ -3,7 +3,7 @@ import type { Agreements, Militant } from "@/interface/Militante";
 import type Minute from "@/interface/Minute";
 
 export interface MinuteOrdinary {
-  id: string;
+  id: number;
   fechaProx: Date | null;
   fechaPrep: Date | null;
   fechaCP: Date | null;
@@ -11,7 +11,7 @@ export interface MinuteOrdinary {
   minute: Minute;
 }
 export interface WorkPlan {
-  id: string;
+  id: number;
   descripcion: string;
   created: Date;
   enddate: Date;
@@ -21,7 +21,7 @@ export interface WorkPlan {
   pto: string;
 }
 export interface Development {
-  id: string;
+  id: number;
   order: string | null;
   agreements: Agreements[];
   workplan: WorkPlan[];

@@ -9,31 +9,21 @@ import type { MinutePolitical } from "@/interface/MinutePolitical";
 export default interface Minute {
   id: string;
   name: string;
-
   hour?: string;
-
   place?: string;
   type: MinuteType;
   status: MinuteStatus;
   date?: Date;
   createdAt: Date;
   core: Core | null;
-
   owner: User;
-
   abscents: Attendance[];
-
   invitados: Invitados[];
-
   alerts?: any[];
-
   computo?: Computo;
-
   ordinary?: MinuteOrdinary;
   political?: MinutePolitical;
-
   file?: any;
-
   observaciones?: string;
 }
 

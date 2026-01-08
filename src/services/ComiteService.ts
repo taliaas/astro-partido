@@ -36,4 +36,22 @@ export default class ComiteService {
       console.error("Error al cargar el area", error);
     }
   }
+
+  async getComite(token: any) {
+    try {
+      const response = await fetch(`${API_URL}/comite/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al cargar el area", error);
+    }
+  }
 }

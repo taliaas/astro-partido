@@ -8,6 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import type Minute from "@/interface/Minute";
@@ -28,25 +35,25 @@ const open = defineModel<boolean>("open");
 const form = useForm<MinuteObserv>({
   validationSchema: toTypedSchema(minuteSchema),
   initialValues: {
-    id: minute.id || "",
-    observations: "",
+    id: Number(minute.id) || 0,
+    observaciones: minute.observaciones || "",
   },
 });
+
 const saveObservation = form.handleSubmit(async (data: MinuteObserv) => {
   console.log(data);
+
   try {
-    //llamar al actions de minute update
-    actions.minute.addObversation({
-      minuteId: data.id,
-      observations: data.observations,
+    // llamar al actions de minute update y esperar resultado
+    await actions.minute.addObservation.orThrow({
+      id: Number(data.id),
+      observaciones: data.observaciones,
     });
     toast.success("Se ha creado la observación correctamente");
     open.value = false;
   } catch (error) {
-    toast.error(
-      "Ha ocurrido un error al intentar crear la observación del acta"
-    );
-    throw new Error("Error al guardar al usuario");
+    toast.error("Error al guardar la observación");
+    throw new Error("Error al guardar la observación");
   }
 });
 </script>
@@ -103,13 +110,18 @@ const saveObservation = form.handleSubmit(async (data: MinuteObserv) => {
             >
           </CardHeader>
           <CardContent class="flex-1">
-            <form @submit="saveObservation($event)" class="space-y-4 h-10/12">
-              <Textarea
-                class="w-full h-full"
-                placeholder="Escriba sus observaciones aquí..."
-                v-bind:default-value="minute.observaciones"
-                rows="6"
-              />
+            <form @submit.prevent="saveObservation" class="space-y-4 h-10/12">
+              <FormField name="observaciones" v-slot="{ componentField }">
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Escriba sus observaciones aquí..."
+                      :="componentField"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
               <Button type="submit" class="w-full">
                 <Save class="size-4" />
                 Guardar

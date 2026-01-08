@@ -33,6 +33,37 @@ export default class ComputoService {
     }
   }
 
+  async getAllComputo(
+    month?: string,
+    year?: string,
+    indicator?: string,
+    token?: string
+  ) {
+    const searchParam = new URLSearchParams();
+    if (month) searchParam.set("month", month);
+    if (year) searchParam.set("year", year);
+    if (indicator) searchParam.set("indicator", indicator);
+    const url = `${API_URL}/computo/indicator/?` + searchParam.toString();
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const res = await response.json();
+      console.log("res", res);
+      return res;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error;
+    }
+  }
+
   async getCompareYears(token: string, key: keyof Indicators) {
     try {
       const response = await fetch(
@@ -172,15 +203,18 @@ export default class ComputoService {
       throw error;
     }
   }
-  async getYear(year: number, token: string) {
+  async getYear(year: number, core: string | null, token: string) {
     try {
-      const response = await fetch(`${API_URL}/computo/reports/${year}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/computo/reports?year=${year}&core=${core}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

@@ -144,6 +144,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { MinuteStatus } from "@/enum/Estado";
+import { Reason } from "@/interface/Absent";
 import type { Agreements, Militant } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
@@ -185,7 +186,7 @@ const form = useForm({
     place: "",
     abscents: militantes?.map((i) => ({
       estado: "Presente" as const,
-      reason: null,
+      reason: Reason.ENF,
       militanteId: i.id,
     })),
     status: MinuteStatus.ERASER,
@@ -224,10 +225,10 @@ const submitForm = async () => {
   data.core = { id: data.core };
 
   const validate = await form.validate();
+
   data.status = validate.valid ? MinuteStatus.CREATE : MinuteStatus.ERASER;
-  console.log("Acta", data);
   try {
-    await actions.ordinary.createMinute.orThrow({
+    await actions.minute.createMinute.orThrow({
       data,
       mode: "Model", //cambiar y pedir al usuario que lo cree
       type: "Ordinaria",
