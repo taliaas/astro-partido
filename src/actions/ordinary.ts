@@ -4,40 +4,6 @@ import { z } from "zod";
 import { getSession } from "auth-astro/server";
 import { MinuteMode, MinuteType } from "@/enum/roleEnum";
 
-export const createMinute = defineAction({
-  input: z.object({
-    data: z.any(),
-    type: z.enum(MinuteType),
-    mode: z.enum(MinuteMode),
-  }),
-  async handler({ data, type, mode, ...rest }, context) {
-    const session: any = await getSession(context.request);
-    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
-    const res = await fetch(
-      `${API_URL}/minute/create?type=${type}&mode=${mode}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.jwt}`,
-        },
-        body: JSON.stringify({ ...data, ...rest }),
-      }
-    );
-    const result = await res.json();
-
-    if (!res.ok) {
-      throw new ActionError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: result.message,
-      });
-    }
-
-    return result;
-  },
-});
-
 export const updateCore = defineAction({
   input: z.object({
     coreId: z.number(),
@@ -60,50 +26,6 @@ export const updateCore = defineAction({
       throw new ActionError({ code: "UNAUTHORIZED", message: data.message });
     }
     return data;
-  },
-});
-
-export const updateMinute = defineAction({
-  input: z.object({
-    id: z.number(),
-    data: z.any(),
-  }),
-  async handler({ id, data }, context) {
-    const session: any = await getSession(context.request);
-    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
-    const res = await fetch(`${API_URL}/minutes-ordinary/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.jwt}`,
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
-  },
-});
-
-export const deleteMinute = defineAction({
-  input: z.string(),
-  async handler(id, context) {
-    const session: any = await getSession(context.request);
-    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-
-    const res = await fetch(`${API_URL}/minutes-ordinary/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.jwt}`,
-      },
-    });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
   },
 });
 

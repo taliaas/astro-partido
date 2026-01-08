@@ -2,35 +2,30 @@ import { ActionError, defineAction } from "astro:actions";
 import { API_URL } from "astro:env/client";
 import { z } from "zod";
 import { getSession } from "auth-astro/server";
+import { MinuteMode, MinuteType } from "@/enum/roleEnum";
 
 export const createMinute = defineAction({
   input: z.object({
-    lugar: z.string(),
-    hora: z.string().time(),
-    fecha: z.string().date(),
-    total_organismo: z.number().int(),
-    total_trabajador: z.number().int(),
-    ausentes: z.number().int(),
-    causa: z.object({ nombre: z.string(), motivo: z.string() }).array(),
-    tema: z.string(),
-    planteamientos: z.string(),
-    valoracion: z.string(),
-    name_orientador: z.string(),
-    name_secretario: z.string(),
-    core: z.any(),
+    data: z.any(),
+    type: z.enum(MinuteType),
+    mode: z.enum(MinuteMode),
   }),
-  async handler(input, context) {
+  async handler({ data, type, mode, ...rest }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    console.log(data);
 
-    const res = await fetch(`${API_URL}/minutes-political`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.jwt}`,
-      },
-      body: JSON.stringify(input),
-    });
+    const res = await fetch(
+      `${API_URL}/minute/create?type=${type}&mode=${mode}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.jwt}`,
+        },
+        body: JSON.stringify({ ...data, ...rest }),
+      }
+    );
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

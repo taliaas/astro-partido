@@ -339,7 +339,7 @@ function goToPreviousPage() {
                   C. Político
                 </a>
                 <a
-                  href="/addCP"
+                  href="/minutes/extra/new"
                   class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
 import MinutesService from "@/services/Minutes.ts";
+import { MinuteMode, MinuteType } from "@/enum/roleEnum";
 
 const enumStatus = [
   "Creada",
@@ -27,6 +28,7 @@ export const retryModel = defineAction({
       {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${session.jwt}`,
         },
       }
@@ -71,24 +73,28 @@ export const getMinutes = defineAction({
   },
 });
 
-export const addObversation = defineAction({
+export const addObservation = defineAction({
   input: z.object({
-    minuteId: z.string(),
-    observations: z.string(),
+    id: z.coerce.number(),
+    observaciones: z.string(),
   }),
-  async handler({ observations, minuteId }, context) {
+  async handler({ observaciones, id }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
-    const res = await fetch(`${API_URL}/minute/${minuteId}/add-observations`, {
+    const res = await fetch(`${API_URL}/minute/${id}/add-observations`, {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${session.jwt}`,
       },
-      body: observations,
+      body: JSON.stringify({ observaciones }),
     });
     const data = await res.json();
     if (!res.ok) {
+      if (data.statusCode === 400) throw new Error(data.message);
+      if (data.statusCode === 401) throw new Error(data.message);
+      if (data.statusCode === 500) throw new Error(data.message);
       throw new ActionError({ code: "UNAUTHORIZED", message: data.message });
     }
     return data;
@@ -176,5 +182,62 @@ export const deleteMinute = defineAction({
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
+  },
+});
+
+export const createMinute = defineAction({
+  input: z.object({
+    data: z.any(),
+    type: z.enum(MinuteType),
+    mode: z.enum(MinuteMode),
+  }),
+  async handler({ data, type, mode, ...rest }, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+
+    const res = await fetch(
+      `${API_URL}/minute/create?type=${type}&mode=${mode}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.jwt}`,
+        },
+        body: JSON.stringify({ ...data, ...rest }),
+      }
+    );
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: result.message,
+      });
+    }
+
+    return result;
+  },
+});
+
+export const updateMinute = defineAction({
+  input: z.object({
+    id: z.coerce.number(),
+    data: z.any(),
+  }),
+  async handler({ id, data }, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    const res = await fetch(`${API_URL}/minute/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.jwt}`,
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
   },
 });
