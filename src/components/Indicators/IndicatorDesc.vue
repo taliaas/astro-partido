@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import Asistencia from "@/components/Indicators/Asistencia.vue";
-import ReasonAttendance from "@/components/Indicators/ReasonAttendance.vue";
+import Asistencia from "@/components/Indicators/AttendanceComponents/Asistencia.vue";
+import IndicatorLater from "@/components/Indicators/AttendanceComponents/IndicatorLater.vue";
+import ReasonAttendance from "@/components/Indicators/AttendanceComponents/ReasonAttendance.vue";
 import Button from "@/components/ui/button/Button.vue";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import Input from "@/components/ui/input/Input.vue";
 import {
   Select,
@@ -16,30 +12,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Separator from "@/components/ui/separator/Separator.vue";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+
+import type { Comite } from "@/interface/Militante";
 import { indicators } from "@/utils/indicators";
 import { useUrlSearchParams } from "@vueuse/core";
 import { navigate } from "astro:transitions/client";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  ChevronDownIcon,
-  EyeIcon,
-  XIcon,
-} from "lucide-vue-next";
+import { XIcon } from "lucide-vue-next";
+import type { AcceptableValue } from "reka-ui";
 
 const { indicator, comite, computos } = defineProps<{
   indicator: string;
   computos: any[];
-  comite: any;
+  comite: Comite[];
 }>();
 
 const searchParams = useUrlSearchParams("history", {
@@ -66,11 +50,10 @@ const handleModelFilter = (filter: string, value: string) => {
   navigate("?" + query.toString());
 };
 
-const indicador = (coreId: string) => {
-  const computo = computos.find(
-    (computo) => computo?.minute?.core?.id === coreId
+const handleNavigate = (ind: AcceptableValue) => {
+  navigate(
+    `/indicators/comite/${ind}?${new URLSearchParams(searchParams as any).toString()}`
   );
-  return computo?.indicators?.find((ind) => ind?.key === indicator).value;
 };
 </script>
 
@@ -91,7 +74,7 @@ const indicador = (coreId: string) => {
         <div class="w-full">
           <Select
             :default-value="indicator"
-            @update:model-value="navigate(`/indicators/comite/${$event}`)"
+            @update:model-value="handleNavigate"
           >
             <SelectTrigger>
               <SelectValue />
@@ -115,114 +98,16 @@ const indicador = (coreId: string) => {
           @update:model-value="handleModelFilter('date', $event as string)"
         />
       </div>
+
       <div v-if="indicator === 'asistencia'">
         <Asistencia :comite :computos />
       </div>
+
       <div v-else-if="indicator === 'reason'">
-        <ReasonAttendance />
+        <ReasonAttendance :comite :computos />
       </div>
       <div v-else class="space-y-3">
-        <div
-          v-for="com in comite"
-          class="overflow-hidden space-y-2 divide-y"
-          :key="com"
-        >
-          <Collapsible default-open>
-            <CollapsibleTrigger
-              class="flex justify-between rounded p-2 border w-full font-medium"
-            >
-              {{ com.name }}
-              <ChevronDownIcon
-                class="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform"
-              />
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div
-                v-if="com?.cores?.length === 0"
-                class="flex justify-between px-4 text-muted-foreground italic"
-              >
-                <p class="py-2">No hay núcleos en este cómite</p>
-              </div>
-              <div
-                v-else
-                v-for="core in com?.cores"
-                :key="core.name"
-                class="flex justify-between border rounded hover:bg-gray-50 p-2"
-              >
-                <div class="flex gap-2">
-                  <div class="rounded-full mt-2 w-2 h-2 bg-primary"></div>
-                  <p class="text-foreground">{{ core.name }}</p>
-                </div>
-                <div class="flex space-x-2">
-                  <p class="text-gray-600">
-                    {{ indicador(core?.id) }}
-                  </p>
-                  <div
-                    class="bg-green-100 rounded-full p-1"
-                    v-if="indicador(core.id) > 2"
-                  >
-                    <ArrowUpIcon class="h-4 w-4 text-green-600" />
-                  </div>
-                  <div
-                    v-else-if="indicador(core?.id) < 3"
-                    class="bg-red-100 rounded-full p-1"
-                  >
-                    <ArrowDownIcon class="h-4 w-4 text-red-600" />
-                  </div>
-                  <div
-                    v-else
-                    class="rounded-full p-1 bg-gray-100 px-2 font-bold text-gray-500"
-                  >
-                    -
-                  </div>
-                  <Sheet>
-                    <SheetTrigger>
-                      <EyeIcon class="h-4 w-4 text-gray-500" />
-                    </SheetTrigger>
-                    <SheetContent class="space-y-4">
-                      <SheetHeader class="space-y-2">
-                        <SheetTitle class="text-2xl">Detalles</SheetTitle>
-                        <div class="py-2">
-                          <h2 class="font-medium text-lg">
-                            {{ core?.name }}
-                          </h2>
-                          <div class="flex">
-                            <p class="font-medium text-xl mr-2"></p>
-                            <div
-                              class="flex items-center justify-center space-x-1"
-                            >
-                              <ArrowUpIcon class="h-4 w-4 text-green-600" />
-                              <p class="text-green-600">Incremento</p>
-                            </div>
-                            <div>
-                              <Separator class="h-0.5 w-3 bg-gray-400" />
-                              <p class="text-gray-600">Sin cambios</p>
-                            </div>
-                            <div
-                              class="flex items-center justify-center space-x-1"
-                            >
-                              <ArrowDownIcon class="h-4 w-4 text-red-600" />
-                              <p class="text-red-600">Disminución</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <SheetDescription
-                          class="bg-gray-100 rounded-md p-2 text-md"
-                        >
-                          <h2 class="font-medium text-lg text-foreground">
-                            Descripción
-                          </h2>
-                          <p class="text-gray-600"></p>
-                        </SheetDescription>
-                      </SheetHeader>
-                    </SheetContent>
-                  </Sheet>
-                </div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
+        <IndicatorLater :comite :computos />
       </div>
     </div>
   </div>

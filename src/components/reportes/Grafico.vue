@@ -86,6 +86,7 @@
             <h3 class="text-lg font-semibold">Comportamiento de Indicadores</h3>
             <Button @click="exportToPDF"> Exportar </Button>
           </div>
+          {{ indData }}
           <div v-if="barIndicators.includes(selectedIndicator)">
             <BarChart :data="barData" :options="stackedChartOptions" />
           </div>
@@ -191,8 +192,6 @@ const colors = [
 
 //limpiar el grafico si da error y notificar
 const fetchData = async () => {
-  console.log("error", selectedYear.value);
-
   const months =
     selectedPeriod.value === "1"
       ? ["Ene", "Feb", "Mar", "Abr", "May", "Jun"]
@@ -214,8 +213,9 @@ const fetchData = async () => {
           ];
 
   try {
-    const yearData = indData[selectedIndicator.value];
+    console.log(selectedIndicator.value);
 
+    const yearData = indData[selectedIndicator.value];
     const semesterData =
       selectedPeriod.value === "1"
         ? yearData.slice(0, 6)

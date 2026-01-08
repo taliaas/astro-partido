@@ -6,7 +6,6 @@
         <div class="flex justify-between p-2">
           <h1 class="text-2xl font-bold mb-6">Análisis por Indicador</h1>
         </div>
-        {{ computos }}
         <div class="flex gap-4">
           <div class="relative flex-1">
             <Search
@@ -124,6 +123,6 @@ const getIndicatorsByCategory = (category: string) => {
 
 const handleCategory = (category: string) => {
   const query = new URLSearchParams(searchParams as any);
-  navigate(`/analisis_indicador/comite/${category}?${query.toString()}`);
+  navigate(`/indicators/comite/${category}?${query.toString()}`);
 };
 </script>
