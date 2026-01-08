@@ -5,6 +5,8 @@ import ComputoCore from "../../components/Indicators/ComputoCore.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
 
 const session: any = await getSession(Astro.request);
+const { id } = Astro.params;
+
 const searchParams = Astro.url.searchParams;
 const fecha = searchParams.get("fecha") || "";
 
