@@ -39,7 +39,7 @@
                   <div
                     v-for="core in com.cores"
                     :key="core.id"
-                    class="flex shadow-sm p-2 border rounded-md justify-between"
+                    class="flex shadow-sm p-2 border rounded-md justify-between hover:bg-muted"
                     @click="open(getComputo(core))"
                   >
                     <span> {{ core.name }}</span>
@@ -56,13 +56,19 @@
         <Card class="p-2">
           <CardTitle class="pt-2">TOTAL GENERAL</CardTitle>
           <CardContent>
-            <div class="flex justify-between gap-2" v-for="item in Reason">
+            <div
+              class="flex justify-between p-2 rounded-lg hover:bg-muted hover:font-medium"
+              v-for="item in Reason"
+            >
               <div class="flex items-center gap-2">
                 <div class="rounded-full mt-2 w-2 h-2 bg-primary"></div>
-
                 <p>{{ item }}</p>
               </div>
               <p>{{ getTotalByIndicator(item) || "-" }}</p>
+            </div>
+            <div class="flex justify-between p-2">
+              <Label class="text-lg">Total de ausencias: </Label>
+              <p class="font-bold">{{ getTotal() }}</p>
             </div>
           </CardContent>
         </Card>
@@ -83,14 +89,22 @@
           <div class="py-4">
             <div>
               <Label class="text-lg">Causas de ausencia</Label>
-              <div v-for="item in Reason" class="flex justify-between">
-                <p>{{ item }}</p>
-                <p>{{ findIndicator(item) || "-" }}</p>
+              <div v-for="item in Reason" class="p-1 rounded-md hover:bg-muted">
+                <div class="flex justify-between">
+                  <Label>{{ item }}</Label>
+                  <p>
+                    {{ findIndicator(item)?.value || "-" }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-muted-foreground">
+                    {{ findIndicator(item)?.text }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </SheetHeader>
-        <div></div>
       </SheetContent>
     </Sheet>
   </div>
@@ -107,6 +121,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import Label from "@/components/ui/label/Label.vue";
+import Separator from "@/components/ui/separator/Separator.vue";
 import {
   Sheet,
   SheetContent,
@@ -117,6 +132,7 @@ import {
 import { Reason } from "@/interface/Absent";
 import type { Computo } from "@/interface/Indicadores";
 import type { Comite, Core } from "@/interface/Militante";
+import { item } from "@unovis/ts/components/bullet-legend/style";
 import { ChevronDownIcon } from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -127,6 +143,7 @@ const { comite, computos } = defineProps<{
 }>();
 
 const currentComputo = ref<Computo>();
+const select = ref(true);
 
 function getComputo(core: Core) {
   return computos.find((comp) => comp.minute.core?.id === core.id);
@@ -145,8 +162,8 @@ function handleClose(open: boolean) {
 
 function findIndicator(reason: Reason) {
   return currentComputo.value?.indicators.find(
-    (ind) => ind.sub.reason === reason
-  )?.value;
+    (item) => JSON.parse(item.sub).reason === reason
+  );
 }
 
 function addIndicator(id: string) {
@@ -157,8 +174,20 @@ function addIndicator(id: string) {
 
 function getTotalByIndicator(reason: Reason) {
   return computos?.reduce((acc, computo) => {
-    const ind = computo.indicators.find((i) => i.sub.reason === reason);
+    const ind = computo.indicators.find(
+      (i) => JSON.parse(i.sub)?.reason === reason
+    );
     return acc + (ind?.value ?? 0);
   }, 0);
+}
+
+function getTotal() {
+  let total = 0;
+  for (const computo of computos) {
+    if (computo?.indicators[0]?.value !== null) {
+      computo?.indicators?.forEach((item) => (total += item?.value || 0));
+    }
+  }
+  return total;
 }
 </script>

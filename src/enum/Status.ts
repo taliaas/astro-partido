@@ -33,6 +33,7 @@ export enum Nivel {
 }
 
 export enum Clasificacion {
+  J = "JURISTAS",
   TM = "TÉCNICOS MEDIOS",
   PM = "PROFESORES Y MAESTROS",
   DA = "DIRIGENTES ADMINISTRATIVOS",

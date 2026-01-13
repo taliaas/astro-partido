@@ -1,5 +1,4 @@
 <template>
-  {{ indicatorName(1) }}
   <div class="min-h-screen bg-gray-50 p-6">
     <div class="w-11/12 mx-auto bg-gray-50 rounded-xl shadow-lg">
       <!-- Header -->
@@ -113,16 +112,15 @@ import ComputoService from "@/services/Computo.ts";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "astro:schema";
 import { navigate } from "astro:transitions/client";
-import { useForm, useFieldArray } from "vee-validate";
+import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
-import Attendance from "@/components/Indicators/Attendance.vue";
-import type { Militantes } from "@/interface/Militante";
+import type { Militant } from "@/interface/Militante";
 
 const { ind, acta, militantes } = defineProps<{
   ind: any[];
   acta: any;
-  militantes: Militantes[];
+  militantes: Militant[];
 }>();
 
 type Data = z.infer<typeof schema>;
@@ -176,6 +174,4 @@ const getName = (key: string) => {
   return Object.entries(indicators).find(([keyInd]) => keyInd === key)?.[1]
     .name;
 };
-
-const indicatorName = (item: number) => {};
 </script>

@@ -86,7 +86,6 @@
             <h3 class="text-lg font-semibold">Comportamiento de Indicadores</h3>
             <Button @click="exportToPDF"> Exportar </Button>
           </div>
-          {{ indData }}
           <div v-if="barIndicators.includes(selectedIndicator)">
             <BarChart :data="barData" :options="stackedChartOptions" />
           </div>
@@ -213,8 +212,6 @@ const fetchData = async () => {
           ];
 
   try {
-    console.log(selectedIndicator.value);
-
     const yearData = indData[selectedIndicator.value];
     const semesterData =
       selectedPeriod.value === "1"

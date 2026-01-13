@@ -22,5 +22,5 @@ const data = await getData();
 ---
 
 <RootLayout>
-  <Grafico data={data} year={Number(year)} session={session} client:load />
+  <Grafico data={data.data} year={Number(year)} session={session} client:load />
 </RootLayout>

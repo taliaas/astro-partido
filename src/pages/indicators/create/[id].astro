@@ -1,0 +1,64 @@
+---
+import RootLayout from "@/layouts/RootLayout.astro";
+import Editar from "@/components/Indicators/Procesar/Editar.vue";
+import { getSession } from "auth-astro/server";
+import ComputoService from "@/services/Computo";
+import MilitantService from "@/services/MilitantService";
+import Minutes from "@/services/Minutes";
+import { indicators } from "@/utils/indicators";
+
+const { id } = Astro.params;
+const session = (await getSession(Astro.request)) as any;
+
+if (!id) {
+  throw new Error("No id provided");
+}
+
+async function getActa() {
+  const services = new Minutes();
+  try {
+    return services.getMinute(id!, session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const acta = await getActa();
+
+async function obtenerComputo() {
+  const service = new ComputoService();
+  try {
+    return service.getComputo(id!, session);
+  } catch (error) {
+    console.log("error");
+  }
+}
+
+async function getMilitanteByMinute() {
+  const service = new MilitantService();
+  try {
+    return service.getMilitantesByMinute(acta?.core?.id, session.jwt);
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
+const computo = await obtenerComputo();
+const ind = computo.indicators;
+const militantes = await getMilitanteByMinute();
+
+const indList = [];
+for (const key in indicators) {
+  const indicator = ind?.find((i: any) => i.key === key);
+  indList.push({
+    id: indicator?.id,
+    key,
+    value: indicator?.value ?? null,
+    text: indicator?.text ?? "",
+  });
+}
+---
+
+<RootLayout>
+  <Editar ind={indList} acta={acta} militantes={militantes} client:load />
+</RootLayout>

@@ -70,7 +70,7 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
       password: data.password ?? undefined,
     });
     if (error instanceof ActionError) {
-      toast.error("Hubo un error al intentar crear el usuario");
+      toast.error(error.message);
     } else {
       await navigate("");
       setTimeout(() => toast.success("Usuario creado exitosamente"), 1000);
@@ -82,7 +82,6 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
 </script>
 
 <template>
-  {{ form.errors }}
   <form
     @submit="handleSubmit"
     class="space-y-4"

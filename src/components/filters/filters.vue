@@ -1,137 +1,185 @@
 <script setup lang="ts">
-import { Status } from "@/enum/Status.ts";
-import { reactive } from "vue";
+import Button from "@/components/ui/button/Button.vue";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  SelectContent,
+  SelectGroup,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Select from "@/components/ui/select/Select.vue";
+import SelectItem from "@/components/ui/select/SelectItem.vue";
+import { MinuteStatus } from "@/enum/Estado";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { z } from "zod";
 
 const { cores } = defineProps<{
-  cores: any[],
+  cores: any[];
 }>();
 
-const filters = reactive({
-  doc_type: '',
-  name: '',
-  status: '',
-  core: '',
-  dateFrom: '',
-  dateTo: '',
-  keywords: ''
-})
+type SearchData = z.infer<typeof searchSchema>;
+const searchSchema = z.object({
+  name: z.string(),
+  doc_type: z.string(),
+  core: z.coerce.string(),
+  status: z.nativeEnum(MinuteStatus).nullable(),
+  keywords: z.string(),
+});
 
-const statusList = [
-  Status.A,
-  Status.R,
-  Status.I,
-  Status.O,
-  Status.P
-] 
+const form = useForm<SearchData>({
+  validationSchema: toTypedSchema(searchSchema),
+  initialValues: {
+    name: "",
+    core: "",
+    doc_type: "",
+    keywords: "",
+    status: null,
+  },
+});
 
+const statuses = [
+  MinuteStatus.CREATE,
+  MinuteStatus.ERROR,
+  MinuteStatus.PENDIENTE,
+  MinuteStatus.PROCESADA,
+  MinuteStatus.PROCESSING,
+];
+
+const typeMinutes = [
+  { value: "Ordinaria", name: "Acta Ordinaria" },
+  { value: "Circulo Politico", name: "Círculo Político" },
+  { value: "Extraordinaria", name: "Acta Extraordinaria" },
+];
 </script>
 
 <template>
   <div class="h-full flex flex-col bg-white border-r shadow-sm pt-12">
     <!-- Form Content -->
-    <form action="/busqueda" method="post" class="px-6 py-2 space-y-6 flex flex-col flex-1">
+    <form
+      name="busqueda"
+      action="/busqueda"
+      method="post"
+      class="px-6 py-2 space-y-6 flex flex-col flex-1"
+    >
       <!--Nombre -->
       <div class="space-y-4">
-        <label class="text-sm font-medium text-gray-700">Nombre</label>
-        <input name="name" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Nombre" v-model="filters.name"/>
+        <FormField v-slot="{ componentField }" name="name">
+          <FormItem>
+            <FormLabel> Nombre </FormLabel>
+            <FormControl>
+              <Input type="text" placeholder="Nombre" :="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
 
       <!-- Tipo de documento -->
       <div class="space-y-4">
-        <label class="text-sm font-medium text-gray-700"
-          >Tipo de documento</label
-        >
-        <select
-          name="doc_type"
-          v-model="filters.doc_type"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-        >
-          <option value="">Todos las actas</option>
-          <option value="ro">Ordinaria</option>
-          <option value="cp">Círculo Político</option>
-        </select>
+        <FormField v-slot="{ componentField }" name="doc_type">
+          <FormItem>
+            <FormLabel> Tipo de documento </FormLabel>
+            <FormControl>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccione un tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="type in typeMinutes"
+                    :key="type.value"
+                    :value="type.value"
+                    >{{ type.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
-
       <!-- Nucleo -->
       <div class="space-y-4">
-        <label class="text-sm font-medium text-gray-700">Núcleo</label>
-        <select name="core" v-model="filters.core" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white">
-          <option value="" >Todos los núcleos</option>
-          <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.name">{{nucleo.name}}</option>
-        </select>
+        <FormField v-slot="{ componentField }" name="core">
+          <FormItem>
+            <FormLabel> Núcleo </FormLabel>
+            <FormControl>
+              <Select v-bind="componentField">
+                <SelectTrigger class="w-full">
+                  <SelectValue placeholder="Seleccione un núcleo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="nucleo in cores"
+                    :key="nucleo.id"
+                    :value="nucleo.id"
+                  >
+                    {{ nucleo.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
 
       <!-- Estado -->
       <div class="space-y-4">
-        <label class="text-sm font-medium text-gray-700">Estado</label>
-        <select
-          name="status"
-          v-model="filters.status"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white">
-          <option value="">Todos los estados</option>
-          <option v-for="stats in statusList" :value="stats">
-            {{stats}}
-          </option>
-        </select>
+        <FormField v-slot="{ componentField }" name="status">
+          <FormItem>
+            <FormLabel> Estado </FormLabel>
+            <FormControl>
+              <Select v-bind="componentField">
+                <SelectTrigger class="w-full">
+                  <SelectValue placeholder="Seleccione un núcleo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="(stats, index) in statuses"
+                    :key="index"
+                    :value="stats"
+                  >
+                    {{ stats }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
-
-      <!-- Período
-      <div class="space-y-4">
-        <label class="text-sm font-medium text-gray-700">Período</label>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label class="text-xs text-gray-600">Desde</label>
-            <div class="relative">
-              <input
-                name="dateFrom"
-                v-model="filters.dateFrom"
-                type="date"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-          <div class="space-y-1">
-            <label class="text-xs text-gray-600">Hasta</label>
-            <div class="relative">
-              <input
-                name="dateTo"
-                v-model="filters.dateTo"
-                type="date"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-        </div>
-      </div> -->
 
       <!-- Palabras clave -->
       <div class="space-y-4">
-        <label class="text-sm font-medium text-gray-700">Palabras clave</label>
-        <input
-          name="keywords"
-          v-model="filters.keywords"
-          type="text"
-          placeholder="Ej: guardia, crecimiento, sanción"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md"
-        />
+        <FormField v-slot="{ componentField }" name="keywords">
+          <FormItem>
+            <FormLabel> Palabras claves </FormLabel>
+            <FormControl>
+              <Input
+                :="componentField"
+                type="text"
+                placeholder="Ej: guardia, crecimiento, sanción"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
 
       <!-- Footer Buttons -->
-      <div class="flex justify-between p-2 pt-4 border-t border-gray-300 mt-auto">
-        <button
-          type="reset"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-        >
-          Limpiar
-        </button>
-        <button
-          type="submit"
-          class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md"
-        >
-          Aplicar filtros
-        </button>
+      <div class="flex justify-between gap-2">
+        <Button type="reset" variant="outline"> Limpiar </Button>
+        <Button type="submit"> Aplicar filtros </Button>
       </div>
     </form>
   </div>
 </template>
-

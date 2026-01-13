@@ -9,15 +9,21 @@ const { id } = Astro.params;
 
 const searchParams = Astro.url.searchParams;
 const fecha = searchParams.get("fecha") || "";
+const [year, month] = fecha.split("-");
 
 async function getComputo() {
   const service = new ComputoService();
   try {
-    return await service.getAllByCore(session?.jwt, fecha);
+    return await service.getAllByCore(
+      Number(year),
+      Number(month),
+      session?.jwt
+    );
   } catch (e) {
     console.log(e);
   }
 }
+
 const computo = await getComputo();
 ---
 

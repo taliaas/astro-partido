@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import type { Computo } from "@/interface/Indicadores";
 import type { Comite } from "@/interface/Militante";
+import { indicators } from "@/utils/indicators";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -31,6 +32,20 @@ function getIndicator(id: string) {
   return (
     computos.find((ind) => ind.minute.core?.id === id)?.indicators[0].value || 0
   );
+}
+
+function getFullIndicator(id: string) {
+  return computos.find((ind) => ind.minute.core?.id === id)?.indicators[0];
+}
+
+function getIndicatorText(id: string) {
+  return (
+    computos.find((ind) => ind.minute.core?.id === id)?.indicators[0].text || 0
+  );
+}
+
+function getKey(key: keyof typeof indicators) {
+  return indicators[key].name;
 }
 </script>
 
@@ -107,21 +122,24 @@ function getIndicator(id: string) {
                         v-if="getIndicator(core.id) > 2"
                         class="flex items-center justify-center space-x-1"
                       >
+                        <p class="text-green-600">
+                          {{ getIndicator(core.id) }}
+                          {{ getKey(getFullIndicator(core.id)!.key) }}
+                        </p>
                         <ArrowUpIcon class="h-4 w-4 text-green-600" />
-                        <p class="text-green-600">Incremento</p>
                       </div>
                       <div
-                        v-if="
+                        v-else-if="
                           getIndicator(core.id) < 3 && getIndicator(core.id) > 0
                         "
                         class="flex items-center justify-center space-x-1"
                       >
+                        <p class="text-red-600">{{ getIndicator(core.id) }}</p>
                         <ArrowDownIcon class="h-4 w-4 text-red-600" />
-                        <p class="text-red-600">Disminución</p>
                       </div>
-                      <div v-else>
-                        <Separator class="h-0.5 w-3 bg-gray-400" />
+                      <div v-else-if="getIndicator(core.id) === 0">
                         <p class="text-gray-600">Sin cambios</p>
+                        <Separator class="h-0.5 w-3 bg-gray-400" />
                       </div>
                     </div>
                   </div>
@@ -130,10 +148,13 @@ function getIndicator(id: string) {
                     <h2 class="font-medium text-lg text-foreground">
                       Descripción
                     </h2>
-                    <p v-if="getIndicator(core.id) === 0" class="text-gray-600">
+                    <p
+                      v-if="getIndicatorText(core.id) === 0"
+                      class="text-gray-600"
+                    >
                       No hay valores para este indicador
                     </p>
-                    <p v-else>{{ getIndicator(core.id) }}</p>
+                    <p v-else>{{ getIndicatorText(core.id) }}</p>
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>

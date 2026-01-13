@@ -43,13 +43,15 @@ export default class MilitantService {
 
   async getMilitantesByMinute(coreId: any, session: any) {
     try {
-      const response = await fetch(`${API_URL}/militant/byCore/${coreId}`, {
+      const response = await fetch(`${API_URL}/militant/by/${coreId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session}`,
         },
       });
+      console.log("coreId", coreId);
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

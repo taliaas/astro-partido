@@ -105,7 +105,6 @@ const mode = ref("model");
 const selectedCore = ref(1);
 const openModal = ref(false);
 const showUploadDialog = ref(false);
-const openModalObserv = ref(false);
 const showDelete = ref(false);
 const hasNextPage = ref(actas?.page_total);
 const update = ref(false);
@@ -231,7 +230,7 @@ const handleAction = (action: any, acta: Minute) => {
       navigate(`minutes/cp/${acta.id}/edit`);
     }
   } else if (action === "procesar") {
-    navigate(`/indicators/${acta.id}`); //revisar ruta
+    navigate(`/indicators/create/${acta.id}`); //revisar ruta
   } else if (action === "retry") {
     openModal.value = true;
   } else if (action === "observation") {

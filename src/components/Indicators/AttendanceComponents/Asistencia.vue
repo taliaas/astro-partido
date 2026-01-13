@@ -271,9 +271,11 @@ function handleClose(open: boolean) {
 
 function porciento(computo: Computo | undefined) {
   if (!computo) return 0;
+
   const total = computo.minute.core?.militants.length || 0;
   const cant = computo.indicators[0].value || 0;
-  const porciento = (cant * 100) / total;
+  if (total < cant) return "-";
+  const porciento = ((total - cant) * 100) / total;
   return total === 0 ? "-" : porciento.toFixed(2);
 }
 

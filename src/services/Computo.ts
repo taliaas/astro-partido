@@ -87,12 +87,10 @@ export default class ComputoService {
     }
   }
 
-  async getAllByCore(token?: string, fecha?: string) {
-    const searchParams = new URLSearchParams();
-    if (fecha) searchParams.set("fecha", fecha);
+  async getAllByCore(year?: number, month?: number, token?: string) {
     try {
       const response = await fetch(
-        `${API_URL}/computo/all?${searchParams.toString()}`,
+        `${API_URL}/computo/all?year=${year}&month=${month}`,
         {
           method: "GET",
           headers: {
@@ -111,9 +109,9 @@ export default class ComputoService {
     }
   }
 
-  async getCalcularComputo(id: string, session: any) {
+  async getComputo(id: string, session: any) {
     try {
-      const response = await fetch(`${API_URL}/computo/${id}`, {
+      const response = await fetch(`${API_URL}/computo/minute/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
