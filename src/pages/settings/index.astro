@@ -10,6 +10,7 @@ import { getSession } from "auth-astro/server";
 
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
+const limit = Number(searchParams.get("limit") ?? 10);
 const page = Number(searchParams.get("page") ?? 1);
 const order = searchParams.get("order") as any;
 const name = searchParams.get("name") as any;
@@ -29,6 +30,7 @@ async function getAllUsers() {
       core,
       order,
       status,
+      limit,
       role
     );
   } catch (e) {

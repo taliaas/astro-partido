@@ -27,9 +27,9 @@ const meses = [
 ];
 
 export function buildExcel(computos: Computo[], month: string) {
-  // if (!computos) {
-  //   toast.info("No hay cómputos para este mes");
-  // }
+  if (!computos) {
+    toast.info("No hay cómputos para este mes");
+  }
   const workbook = new ExcelJS.Workbook();
   workbook.calcProperties.fullCalcOnLoad = true;
   const asistenciaWorkSheet = buildAsistenciaSheet(workbook, month);

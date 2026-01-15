@@ -85,162 +85,185 @@
         </FormField>
       </div>
 
-      <!-- Asistencia -->
-      <div class="py-4">
-        <!-- 3. Invitados -->
-        <div class="rounded">
-          <div class="flex justify-between">
-            <Label class="block my-2 text-md font-medium text-gray-700"
-              >Invitados y Participantes</Label
-            >
-            <Button
-              @click="
-                invitados.push({ nombre_apellidos: '', cargo: '' as any })
-              "
-              type="button"
-              variant="outline"
-            >
-              <Plus
-                class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
-              />
-              Agregar
-            </Button>
-          </div>
-          <table class="min-w-full divide-y rounded-md divide-gray-200 border">
-            <thead class="bg-gray-100 rounded">
-              <tr>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  No.
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Nombre y Apellidos
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Cargo
-                </th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) of invitados.fields.value"
-                :key="index"
-                class="border-b"
-              >
-                <td class="p-4 align-middle">{{ index + 1 }}</td>
-                <td class="p-4 align-middle">
-                  <FormField
-                    :name="'invitados.' + index + '.nombre_apellidos'"
-                    v-slot="{ componentField }"
-                  >
-                    <FormItem class="w-3/4">
-                      <FormControl>
-                        <Input
-                          type="text"
-                          v-bind="componentField"
-                          class="w-full px-2 shadow-none border-none"
-                          placeholder="Nombre"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  </FormField>
-                </td>
-                <td class="p-4 align-middle">
-                  <FormField
-                    :name="'invitados.' + index + '.cargo'"
-                    v-slot="{ componentField, field }"
-                  >
-                    <FormItem class="w-3/4">
-                      <FormControl>
-                        <Select
-                          type="text"
-                          v-bind="componentField"
-                          class="p-2 border rounded"
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Seleccione un cargo" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              v-for="cargo of cargos"
-                              :key="cargo"
-                              :value="cargo"
-                              >{{ cargo }}</SelectItem
-                            >
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </FormField>
-                </td>
-                <td class="p-4 text-center align-middle">
-                  <Button
-                    variant="ghost"
-                    @click="invitados.remove(index)"
-                    type="button"
-                    class="text-destructive hover:text-destructive/90"
-                  >
-                    <TrashIcon class="h-4 w-4" />
-                  </Button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Empty State -->
-          <div
-            v-if="invitados.fields.value.length === 0"
-            class="text-center border rounded p-4 text-muted-foreground"
+      <!-- 3. Invitados -->
+      <div class="rounded">
+        <div class="flex justify-between">
+          <Label class="block my-2 text-md font-medium text-gray-700"
+            >Invitados y Participantes</Label
           >
-            <h3 class="font-medium">No hay invitados ni participantes</h3>
-          </div>
+          <Button
+            @click="invitados.push({ nombre_apellidos: '', cargo: '' as any })"
+            type="button"
+            variant="outline"
+          >
+            <Plus
+              class="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+            />
+            Agregar
+          </Button>
         </div>
-
-        <!-- 4. Relación de Asistencia -->
-        <div class="overflow-x-auto mt-4 space-y-4">
-          <label class="block mb-3 text-md font-medium text-gray-700"
-            >Relación de Militantes del Núcleo</label
-          >
-          <table class="min-w-full divide-y rounded divide-gray-200 border">
-            <thead class="bg-gray-100">
-              <tr>
-                <th
-                  v-for="header in headers"
-                  :key="header"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        <table class="min-w-full divide-y rounded-md divide-gray-200 border">
+          <thead class="bg-gray-100 rounded">
+            <tr>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                No.
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Nombre y Apellidos
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Cargo
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(item, index) of invitados.fields.value"
+              :key="index"
+              class="border-b"
+            >
+              <td class="p-4 align-middle">{{ index + 1 }}</td>
+              <td class="p-4 align-middle">
+                <FormField
+                  :name="'invitados.' + index + '.nombre_apellidos'"
+                  v-slot="{ componentField }"
                 >
-                  {{ header }}
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="(abs, index) of militants" :key="index">
-                <td class="p-6 text-left whitespace-nowrap">
+                  <FormItem class="w-3/4">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        v-bind="componentField"
+                        class="w-full px-2 shadow-none border-none"
+                        placeholder="Nombre"
+                      />
+                    </FormControl>
+                  </FormItem>
+                </FormField>
+              </td>
+              <td class="p-4 align-middle">
+                <FormField
+                  :name="'invitados.' + index + '.cargo'"
+                  v-slot="{ componentField, field }"
+                >
+                  <FormItem class="w-3/4">
+                    <FormControl>
+                      <Select
+                        type="text"
+                        v-bind="componentField"
+                        class="p-2 border rounded"
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccione un cargo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem
+                            v-for="cargo of cargos"
+                            :key="cargo"
+                            :value="cargo"
+                            >{{ cargo }}</SelectItem
+                          >
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </td>
+              <td class="p-4 text-center align-middle">
+                <Button
+                  variant="ghost"
+                  @click="invitados.remove(index)"
+                  type="button"
+                  class="text-destructive hover:text-destructive/90"
+                >
+                  <TrashIcon class="h-4 w-4" />
+                </Button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Empty State -->
+        <div
+          v-if="invitados.fields.value.length === 0"
+          class="text-center border rounded p-4 text-muted-foreground"
+        >
+          <h3 class="font-medium">No hay invitados ni participantes</h3>
+        </div>
+      </div>
+
+      <!-- 4. Relación de Asistencia -->
+      <div class="overflow-x-auto mt-4 space-y-4">
+        <Label class="block mb-3 text-md font-medium text-gray-700"
+          >Relación de Militantes del Núcleo</Label
+        >
+        <Table class="min-w-full divide-y rounded divide-gray-200 border">
+          <TableHeader class="bg-gray-100">
+            <TableRow>
+              <TableHead v-for="header in headers" :key="header">
+                {{ header }}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="bg-white divide-y divide-gray-200">
+            <TableRow v-for="(abs, index) of militants" :key="index">
+              <TableCell class="p-6 text-left whitespace-nowrap">
+                <FormField
+                  :name="'militant.' + index + '.id'"
+                  v-slot="{ componentField }"
+                >
+                  <FormItem class="w-3/4">
+                    <FormControl>
+                      <Input class="hidden" v-bind="componentField" />
+                    </FormControl>
+                  </FormItem>
+                </FormField>
+                {{ index + 1 }}
+              </TableCell>
+              <TableCell class="px-6 py-4 whitespace-nowrap">
+                {{ abs?.firstname }}
+                {{ abs?.lastname }}
+              </TableCell>
+              <TableCell class="py-4 whitespace-nowrap">
+                <FormField
+                  :name="'abscents.' + index + '.estado'"
+                  v-slot="{ componentField }"
+                >
+                  <FormItem class="w-3/4">
+                    <FormControl>
+                      <Select
+                        v-bind="componentField"
+                        class="px-2 py-2 rounded bg-white"
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Presente">Presente</SelectItem>
+                          <SelectItem value="Virtual">Virtual</SelectItem>
+                          <SelectItem value="Ausente">Ausente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </FormItem>
+                </FormField>
+              </TableCell>
+              <FormField
+                :name="'abscents.' + index + '.estado'"
+                v-slot="{ field: estado }"
+              >
+                <td
+                  class="w-1/5 px-6 py-4 whitespace-nowrap"
+                  v-if="estado.value === 'Ausente'"
+                >
                   <FormField
-                    :name="'militant.' + index + '.id'"
-                    v-slot="{ componentField }"
-                  >
-                    <FormItem class="w-3/4">
-                      <FormControl>
-                        <Input class="hidden" v-bind="componentField" />
-                      </FormControl>
-                    </FormItem>
-                  </FormField>
-                  {{ index + 1 }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {{ abs?.firstname }}
-                  {{ abs?.lastname }}
-                </td>
-                <td class="py-4 whitespace-nowrap">
-                  <FormField
-                    :name="'abscents.' + index + '.estado'"
+                    :name="'abscents.' + index + '.reason'"
                     v-slot="{ componentField }"
                   >
                     <FormItem class="w-3/4">
@@ -250,75 +273,55 @@
                           class="px-2 py-2 rounded bg-white"
                         >
                           <SelectTrigger>
-                            <SelectValue />
+                            <SelectValue placeholder="Seleccione una causa" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Presente">Presente</SelectItem>
-                            <SelectItem value="Virtual">Virtual</SelectItem>
-                            <SelectItem value="Ausente">Ausente</SelectItem>
+                            <SelectItem
+                              v-for="causa in absenceReasons"
+                              :key="causa"
+                              :value="causa"
+                              class="rounded"
+                              >{{ causa }}</SelectItem
+                            >
                           </SelectContent>
                         </Select>
                       </FormControl>
                     </FormItem>
                   </FormField>
                 </td>
-                <FormField
-                  :name="'abscents.' + index + '.estado'"
-                  v-slot="{ field: estado }"
-                >
-                  <td
-                    class="w-1/5 px-6 py-4 whitespace-nowrap"
-                    v-if="estado.value === 'Ausente'"
-                  >
-                    <FormField
-                      :name="'abscents.' + index + '.reason'"
-                      v-slot="{ componentField }"
-                    >
-                      <FormItem class="w-3/4">
-                        <FormControl>
-                          <Select
-                            v-bind="componentField"
-                            class="px-2 py-2 rounded bg-white"
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Seleccione una causa" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem
-                                v-for="causa in absenceReasons"
-                                :key="causa"
-                                :value="causa"
-                                class="rounded"
-                                >{{ causa }}</SelectItem
-                              >
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                      </FormItem>
-                    </FormField>
-                  </td>
-                  <td class="w-1/5 px-6 py-4 whitespace-nowrap" v-else>
-                    <!-- Celda vacía para mantener la estructura cuando no es ausente -->
-                  </td>
-                </FormField>
-              </tr>
-            </tbody>
-          </table>
+                <td class="w-1/5 px-6 py-4 whitespace-nowrap" v-else>
+                  <!-- Celda vacía para mantener la estructura cuando no es ausente -->
+                </td>
+              </FormField>
+            </TableRow>
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colspan="4">
+                <div class="flex justify-end gap-2">
+                  <Button size="icon" variant="outline">
+                    <ArrowLeft />
+                  </Button>
+                  <Button size="icon" variant="outline"> <ArrowRight /></Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
 
-          <!-- Empty State -->
+        <!-- Empty State -->
+        <div
+          v-if="militants?.length === 0"
+          class="text-center py-16 border border-gray-300 rounded"
+        >
           <div
-            v-if="militants?.length === 0"
-            class="text-center py-16 border border-gray-300 rounded"
+            class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
           >
-            <div
-              class="mx-auto h-12 w-12 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
-            >
-              <SearchIcon class="h-6 w-6" />
-            </div>
-            <h3 class="mt-4 text-sm font-medium text-gray-500">
-              No se encontraron militantes en este núcleo
-            </h3>
+            <SearchIcon class="h-6 w-6" />
           </div>
+          <h3 class="mt-4 text-sm font-medium text-gray-500">
+            No se encontraron militantes en este núcleo
+          </h3>
         </div>
       </div>
 
@@ -452,6 +455,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableFooter,
+} from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { absenceReasons, cargos } from "@/enum/absenceReasons";
 import { MinuteStatus, MinuteType } from "@/enum/Estado";
@@ -460,7 +472,14 @@ import type { Core, Militant } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { Plus, SendHorizonal, Trash, TrashIcon } from "lucide-vue-next";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Plus,
+  SendHorizonal,
+  Trash,
+  TrashIcon,
+} from "lucide-vue-next";
 import { useFieldArray, useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -474,6 +493,8 @@ const headers = ["No.", "Nombre y Apellidos", "Estado", "Causa"];
 
 const loading = ref(false);
 const edit = ref(false);
+const currentPage = ref(0);
+const hasNextPage = ref(0);
 
 const form = useForm({
   validationSchema: toTypedSchema(cpForm),

@@ -2,14 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { navigate } from "astro:transitions/client";
 import {
-  BellIcon,
-  InfoIcon,
-  AlertTriangleIcon,
   AlertCircleIcon,
+  AlertTriangleIcon,
+  ArrowLeft,
+  ArrowRight,
+  BellIcon,
   CheckCircleIcon,
   ClockIcon,
-  ChevronRight,
-  ChevronLeft,
+  InfoIcon,
 } from "lucide-vue-next";
 
 const { notifications } = defineProps<{
@@ -186,13 +186,13 @@ function previous() {
                 variant="secondary"
                 @click="previous"
               >
-                <ChevronLeft />
+                <ArrowLeft />
               </Button>
               <Button
                 :disabled="currentPage >= notifications.total"
                 @click="next"
               >
-                <ChevronRight />
+                <ArrowRight />
               </Button>
             </div>
           </div>

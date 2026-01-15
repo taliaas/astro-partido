@@ -20,8 +20,8 @@ import type { Militant } from "@/interface/Militante";
 import { useDebounceFn, useUrlSearchParams } from "@vueuse/core";
 import { navigate } from "astro:transitions/client";
 import {
-  ChevronLeft,
-  ChevronRight,
+  ArrowLeft,
+  ArrowRight,
   Download,
   Eye,
   MoreVerticalIcon,
@@ -289,25 +289,45 @@ function previousPage() {
         Mostrando <span class="font-medium">{{ currentPage }}</span> de
         <span class="font-medium">{{ totalPages }}</span> página(s)
       </div>
-      <div class="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          :disabled="currentPage <= 1"
-          :class="{ 'opacity-50 cursor-not-allowed': currentPage <= 1 }"
-          @click="previousPage"
-        >
-          <ChevronLeft />
-        </Button>
-        <Button
-          variant="outline"
-          @click="nextPage"
-          :disabled="currentPage >= totalPages"
-          :class="{
-            'opacity-50 cursor-not-allowed': currentPage >= totalPages,
-          }"
-        >
-          <ChevronRight />
-        </Button>
+      <div class="flex gap-2">
+        <div class="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            :disabled="currentPage <= 1"
+            :class="{ 'opacity-50 cursor-not-allowed': currentPage <= 1 }"
+            @click="previousPage"
+          >
+            <ArrowLeft />
+          </Button>
+          <Button
+            variant="outline"
+            @click="nextPage"
+            :disabled="currentPage >= totalPages"
+            :class="{
+              'opacity-50 cursor-not-allowed': currentPage >= totalPages,
+            }"
+          >
+            <ArrowRight />
+          </Button>
+        </div>
+        <div>
+          <Select
+            :default-value="searchParams.limit ?? '10'"
+            @update:model-value="handleFilterByValue('limit', $event)"
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent class="font-normal">
+              <SelectGroup>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="25">25</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   </div>

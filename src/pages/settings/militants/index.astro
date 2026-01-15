@@ -10,6 +10,7 @@ const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
 const core = searchParams.get("core") as any;
 const page = Number(searchParams.get("page") ?? 1);
+const limit = Number(searchParams.get("limit") ?? 10);
 const name = searchParams.get("name") as any;
 const org = searchParams.get("org") as any;
 const email = searchParams.get("email") as any;
@@ -18,7 +19,15 @@ const status = searchParams.get("status") as any;
 async function getMilitantes() {
   const service = new MilitantService();
   try {
-    return service.getMilitantesByCore(name, org, email, status, core, page);
+    return service.getMilitantesByCore(
+      name,
+      org,
+      email,
+      status,
+      core,
+      page,
+      limit
+    );
   } catch (e) {
     console.error(e);
   }

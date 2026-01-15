@@ -28,12 +28,9 @@ const loading = ref(false);
 
 // Función básica de exportación
 const exportToExcel = async (filename: string = "Asistencia.xlsx") => {
-  console.log(!computos);
-  console.log(month);
-
-  // if (!computos) {
-  //   toast.info("No hay cómputos para este mes");
-  // }
+  if (!computos) {
+    toast.info("No hay cómputos para este mes");
+  }
   try {
     loading.value = true;
     const workbook = buildExcel(computos, month);
@@ -42,7 +39,7 @@ const exportToExcel = async (filename: string = "Asistencia.xlsx") => {
     downloadExcel(buffer, filename);
     loading.value = false;
   } catch (error) {
-    // toast.info("No hay cómputos para este mes");
+    toast.info("No hay cómputos para este mes");
     console.error("Error al exportar Excel:", error);
     loading.value = false;
     throw error;

@@ -39,7 +39,7 @@
             :disabled="currentPage === 1"
             class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
           >
-            <ChevronLeft />
+            <ArrowLeft />
           </Button>
           <span class="text-md text-gray-500">
             Página <span class="font-bold">{{ currentPage }}</span> de
@@ -51,7 +51,7 @@
             :disabled="currentPage <= event.totalPages"
             class="px-4 py-2 rounded border bg-white text-gray-700 disabled:opacity-50"
           >
-            <ChevronRight />
+            <ArrowRight />
           </Button>
         </div>
       </div>
@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
 import { navigate } from "astro:transitions/client";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ArrowLeft, ArrowRight, CalendarIcon } from "lucide-vue-next";
 import { ref } from "vue";
 
 interface EventItem {

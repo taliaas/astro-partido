@@ -9,9 +9,11 @@ export default class UserService {
     core: string,
     order: string,
     status: string,
+    limit: number,
     role: string
   ) {
     const searchParam = new URLSearchParams();
+    if (limit) searchParam.set("limit", limit + "");
     if (page) searchParam.set("page", page + "");
     if (order) searchParam.set("order", order);
     if (name) searchParam.set("name", name);

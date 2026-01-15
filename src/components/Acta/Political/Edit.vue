@@ -15,68 +15,66 @@
             <AccordionContent>
               <div class="space-x-2">
                 <div class="w-1/3 p-2">
-                  <label
+                  <Label
                     for="nucleo"
                     class="block text-md font-medium text-gray-700"
-                    >Núcleo</label
+                    >Núcleo</Label
                   >
-                  <select
-                    name="nucleo"
-                    v-model="acta.core.name"
-                    class="w-full px-1 py-2 border border-gray-300 rounded shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  >
-                    <option
-                      v-for="nucleo in cores"
-                      :key="nucleo"
-                      :value="nucleo"
-                    >
-                      {{ nucleo?.name }}
-                    </option>
-                  </select>
+                  <Select name="nucleo" v-model="acta.core.name">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="nucleo in cores"
+                        :key="nucleo"
+                        :value="nucleo"
+                      >
+                        {{ nucleo?.name }}</SelectItem
+                      >
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div class="mt-4">
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="w-3/4">
-                      <label
+                      <Label
                         for="fecha"
                         class="block text-md font-medium text-gray-700"
-                        >Fecha de la reunión</label
+                        >Fecha de la reunión</Label
                       >
                       <Input
                         type="date"
                         id="fecha"
                         name="fecha"
                         v-model="acta.fecha"
-                        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                       />
                     </div>
                     <div class="w-3/4">
-                      <label
+                      <Label
                         for="hora"
                         class="block text-md font-medium text-gray-700"
-                        >Hora</label
+                        >Hora</Label
                       >
                       <Input
                         type="time"
                         id="hora"
                         name="hora"
                         v-model="acta.hora"
-                        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                       />
                     </div>
                     <div class="w-3/4">
-                      <label
+                      <Label
                         for="lugar"
                         class="block text-md font-medium text-gray-700"
-                        >Lugar</label
+                        >Lugar</Label
                       >
                       <Input
                         type="text"
                         id="lugar"
                         name="lugar"
                         v-model="acta.lugar"
-                        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                       />
                     </div>
                   </div>
@@ -89,10 +87,10 @@
             <AccordionContent>
               <div class="flex gap-4">
                 <div class="">
-                  <label
+                  <Label
                     for="total_trabajador"
                     class="block text-lg font-medium text-gray-700"
-                    >Cantidad de trabajadores</label
+                    >Cantidad de trabajadores</Label
                   >
                   <Input
                     type="number"
@@ -101,14 +99,13 @@
                     v-model="acta.total_trabajador"
                     required
                     min="0"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                   />
                 </div>
                 <div class="">
-                  <label
+                  <Label
                     for="total_organismo"
                     class="block text-lg font-medium text-gray-700"
-                    >Participantes del Org. Sup.</label
+                    >Participantes del Org. Sup.</Label
                   >
                   <Input
                     type="number"
@@ -117,7 +114,6 @@
                     v-model="acta.total_organismo"
                     required
                     min="0"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                   />
                 </div>
               </div>
@@ -132,7 +128,6 @@
                   name="tema"
                   v-model="acta.tema"
                   rows="2"
-                  class="text-gray-800 text-lg focus:outline-none ring-transparent block w-full md:text-md border-gray-300 rounded transition duration-150 ease-in-out"
                 ></Textarea>
               </div>
             </AccordionContent>
@@ -169,25 +164,25 @@
             <AccordionTrigger>5. Firmas </AccordionTrigger>
             <AccordionContent>
               <div class="p-2">
-                <label
+                <Label
                   for="orientador"
                   class="block text-md font-medium w-3/4 my-2 text-gray-700"
-                  >Nombre del orientador</label
+                  >Nombre del orientador</Label
                 >
-                <input
+                <Input
                   type="text"
                   v-model="acta.name_orientador"
-                  class="w-2/5 border text-gray-500 border-gray-300 p-2 rounded focus:outline-none"
+                  class="w-2/5 border text-gray-500"
                 />
-                <label
+                <Label
                   for="secretario"
                   class="block text-md font-medium my-2 text-gray-700"
-                  >Nombre del Secretario</label
+                  >Nombre del Secretario</Label
                 >
-                <input
+                <Input
                   type="text"
                   v-model="acta.name_secretario"
-                  class="border text-gray-500 border-gray-300 w-2/5 p-2 rounded focus:outline-none"
+                  class="border text-gray-500 w-2/5"
                 />
               </div>
             </AccordionContent>
@@ -195,19 +190,10 @@
         </Accordion>
 
         <div class="grid grid-cols-5 gap-4 m-4">
-          <button
-            class="p-2 rounded border border-gray-300 col-start-4 bg-gray-100 hover:bg-gray-200 transition-all"
-            @click="salir"
-          >
-            Cancelar
-          </button>
-          <button
-            @click="update"
-            class="p-2 rounded border col-start-5 bg-blue-600 hover:bg-blue-700 text-white"
-            :disabled="isSubmitting"
-          >
+          <Button @click="salir"> Cancelar </Button>
+          <Button @click="update" :disabled="isSubmitting">
             {{ isSubmitting ? "Guardando..." : "Guardar cambios" }}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -221,11 +207,20 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Button from "@/components/ui/button/Button.vue";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import {
+  Select,
+  SelectItem,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { ref } from "vue";
-import Input from "../ui/input/Input.vue";
-import Textarea from "../ui/textarea/Textarea.vue";
 
 const { cores, acta } = defineProps<{ cores: any[]; acta: any }>();
 
@@ -234,8 +229,8 @@ async function update() {
   try {
     return await actions.political.updateMinute({
       id: acta.id,
-      data: acta
-    })
+      data: acta,
+    });
   } catch (e) {
     console.error(e);
   }

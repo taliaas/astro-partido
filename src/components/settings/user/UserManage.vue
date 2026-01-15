@@ -204,25 +204,45 @@
         <div class="text-md text-muted-foreground">
           Mostrando {{ users.page }} de {{ users.total }} página(s)
         </div>
-        <div class="flex items-center gap-2">
-          <Button
-            variant="outline"
-            :disabled="currentPage <= 1"
-            :class="{ 'opacity-50 cursor-not-allowed': currentPage <= 1 }"
-            @click="goToPreviousPage"
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            :disabled="currentPage >= totalPages"
-            :class="{
-              'opacity-50 cursor-not-allowed': currentPage >= totalPages,
-            }"
-            @click="goToNextPage"
-          >
-            <ChevronRight />
-          </Button>
+        <div class="flex gap-2">
+          <div class="flex items-center gap-2">
+            <Button
+              variant="outline"
+              :disabled="currentPage <= 1"
+              :class="{ 'opacity-50 cursor-not-allowed': currentPage <= 1 }"
+              @click="goToPreviousPage"
+            >
+              <ArrowLeft />
+            </Button>
+            <Button
+              variant="outline"
+              :disabled="currentPage >= totalPages"
+              :class="{
+                'opacity-50 cursor-not-allowed': currentPage >= totalPages,
+              }"
+              @click="goToNextPage"
+            >
+              <ArrowRight />
+            </Button>
+          </div>
+          <div>
+            <Select
+              :default-value="searchParams.limit ?? '10'"
+              @update:model-value="handleFilterByValue('limit', $event)"
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent class="font-normal">
+                <SelectGroup>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
     </div>
@@ -332,8 +352,8 @@ import { useDebounceFn, useUrlSearchParams } from "@vueuse/core";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import {
-  ChevronLeft,
-  ChevronRight,
+  ArrowLeft,
+  ArrowRight,
   MoreVerticalIcon,
   SearchIcon,
   UserCheck,

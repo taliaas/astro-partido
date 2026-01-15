@@ -125,10 +125,12 @@ export default class MilitantService {
     email: string,
     status: string,
     core: string,
-    page: number
+    page: number,
+    limit: number
   ) {
     const searchParam = new URLSearchParams();
     if (page) searchParam.set("page", page + "");
+    if (limit) searchParam.set("limit", limit + "");
     if (name) searchParam.set("name", name);
     if (core) searchParam.set("core", core);
     if (status) searchParam.set("status", status);

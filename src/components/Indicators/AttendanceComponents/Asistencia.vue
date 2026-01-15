@@ -37,12 +37,6 @@
                         <TableHead class="text-center" :colSpan="3">
                           Total militantes
                         </TableHead>
-                        <!-- <TableHead class="text-center"
-                          >Posibles a asistir</TableHead
-                        >
-                        <TableHead class="text-center" :colSpan="3">
-                          Asisten
-                        </TableHead> -->
                         <TableHead class="text-center">%</TableHead>
                       </TableRow>
                       <TableRow
@@ -70,10 +64,11 @@
                           getComputo(core?.id)?.minute.createdAt || "-"
                         }}</TableCell>
                         <TableCell>{{
-                          getComputo(core?.id)?.minute.core?.militants.length
+                          getComputo(core?.id)?.minute.core?.militants.length ||
+                          "-"
                         }}</TableCell>
                         <TableCell>{{
-                          getComputo(core?.id)?.indicators[0].value
+                          getComputo(core?.id)?.indicators[0].value || "-"
                         }}</TableCell>
                         <TooltipProvider>
                           <Tooltip
@@ -229,7 +224,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
-
 import Label from "@/components/ui/label/Label.vue";
 import {
   Sheet,

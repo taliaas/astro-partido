@@ -97,7 +97,7 @@
               :key="traza.id"
               class="border rounded"
             >
-              <td class="px-4">{{ traza.module }}</td>
+              <td class="px-4 font-medium">{{ traza.module }}</td>
               <td>{{ traza.action }}</td>
               <td class="text-center">
                 {{ traza.user?.name || "No especificado" }}
@@ -133,7 +133,7 @@
               :disabled="currentPage <= 1"
               :class="{ 'bg-muted': currentPage === 1 }"
             >
-              <ChevronLeft />
+              <ArrowLeft />
             </Button>
             <Button
               variant="outline"
@@ -142,7 +142,7 @@
               :disabled="currentPage >= trazas.total"
               :class="{ 'bg-muted': currentPage >= trazas.total }"
             >
-              <ChevronRight />
+              <ArrowRight />
             </Button>
           </div>
         </div>
@@ -301,12 +301,11 @@ import {
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
+  ArrowLeft,
+  ArrowRight,
   CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
   DatabaseIcon,
   Eye,
-  HashIcon,
   UserIcon,
   XIcon,
 } from "lucide-vue-next";

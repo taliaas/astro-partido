@@ -26,9 +26,9 @@ import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import {
   ArrowDown,
+  ArrowLeft,
+  ArrowRight,
   ArrowUp,
-  ChevronLeft,
-  ChevronRight,
   Download,
   Eye,
   FileCheck,
@@ -65,6 +65,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -95,7 +96,6 @@ useSse("minute.status", ({ id, status }) => {
 });
 
 const currentUser = session;
-const currentPage = ref(page);
 const currentsMinute = ref<any>(null);
 const currentCore = ref<number>(1);
 const actas = reactive(actasResponse);
@@ -106,6 +106,8 @@ const selectedCore = ref(1);
 const openModal = ref(false);
 const showUploadDialog = ref(false);
 const showDelete = ref(false);
+
+const currentPage = ref(page);
 const hasNextPage = ref(actas?.page_total);
 const update = ref(false);
 const sort = ref<"ASC" | "DESC" | null>(order);
@@ -615,6 +617,62 @@ function goToPreviousPage() {
                   </TableCell>
                 </TableRow>
               </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colspan="7">
+                    <div v-if="actas?.total !== 0" class="flex justify-between">
+                      <div
+                        class="text-md text-muted-foreground flex items-center gap-1"
+                      >
+                        Mostrando
+                        <span class="font-medium">{{ page || 1 }}</span> de
+                        <span class="font-medium">{{
+                          actas?.page_total || 1
+                        }}</span>
+                        páginas
+                      </div>
+
+                      <div class="flex gap-2">
+                        <Button
+                          size="icon"
+                          :disabled="currentPage === 1"
+                          variant="outline"
+                          @click="goToPreviousPage"
+                        >
+                          <ArrowLeft />
+                        </Button>
+                        <Button
+                          size="icon"
+                          :disabled="currentPage >= hasNextPage"
+                          variant="outline"
+                          @click="goToNextPage"
+                        >
+                          <ArrowRight
+                        /></Button>
+
+                        <Select
+                          :default-value="searchParams.limit ?? '10'"
+                          @update:model-value="
+                            handleFilterByValue('limit', $event)
+                          "
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent class="font-normal">
+                            <SelectGroup>
+                              <SelectItem value="10">10</SelectItem>
+                              <SelectItem value="15">15</SelectItem>
+                              <SelectItem value="20">20</SelectItem>
+                              <SelectItem value="25">25</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
 
             <!-- Empty State -->
@@ -633,58 +691,6 @@ function goToPreviousPage() {
               <p class="mt-1 text-sm text-gray-500">
                 Ajuste los filtros o cree una nueva acta para comenzar.
               </p>
-            </div>
-
-            <div class="flex justify-between">
-              <div v-if="actas?.total === 0"></div>
-              <div
-                v-else
-                class="flex text-md text-muted-foreground p-4 justify-between items-center gap-2"
-              >
-                <div>
-                  Mostrando <span class="font-medium">{{ page || 1 }}</span> de
-                  <span class="font-medium">{{ actas?.page_total || 1 }}</span>
-                  páginas
-                </div>
-              </div>
-
-              <div class="flex justify-end gap-4 p-4">
-                <Button
-                  size="icon"
-                  :disabled="currentPage === 1"
-                  variant="outline"
-                  @click="goToPreviousPage"
-                >
-                  <ChevronLeft />
-                </Button>
-                <Button
-                  size="icon"
-                  :disabled="currentPage >= hasNextPage"
-                  variant="outline"
-                  @click="goToNextPage"
-                >
-                  <ChevronRight />
-                </Button>
-
-                <div>
-                  <Select
-                    :default-value="searchParams.limit ?? '10'"
-                    @update:model-value="handleFilterByValue('limit', $event)"
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="10">10</SelectItem>
-                        <SelectItem value="15">15</SelectItem>
-                        <SelectItem value="20">20</SelectItem>
-                        <SelectItem value="25">25</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
             </div>
           </div>
         </div>
