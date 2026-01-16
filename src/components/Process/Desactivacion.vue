@@ -4,6 +4,17 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import {
@@ -183,75 +194,67 @@ const saveMinute = async () => {};
     <!-- Lista de Desactivaciones -->
     <div class="bg-white rounded-lg border shadow-md overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50 border-b">
-            <tr>
-              <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-              >
+        <Table class="w-full">
+          <TableHeader class="bg-gray-50 border-b">
+            <TableRow>
+              <TableHead class="text-gray-500 uppercase tracking-wider">
                 Militante
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-              >
+              </TableHead>
+              <TableHead class="text-gray-500 uppercase tracking-wider">
                 Motivo
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-              >
+              </TableHead>
+              <TableHead class="text-gray-500 uppercase tracking-wider">
                 Fecha
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-              >
+              </TableHead>
+              <TableHead class="text-gray-500 uppercase tracking-wider">
                 Núcleo
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-              >
+              </TableHead>
+              <TableHead class="text-gray-500 uppercase tracking-wider">
                 Estado
-              </th>
-              <th
+              </TableHead>
+              <TableHead
                 class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="bg-white divide-y divide-gray-200">
+            <TableRow
               v-for="deactivation in filteredDeactivations"
               :key="deactivation.id"
               class="hover:bg-gray-50"
             >
-              <td class="px-6 py-4 whitespace-nowrap">
+              <TableCell class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
                   {{ deactivation.militante?.firstname }}
                   {{ deactivation.militante?.lastname }}
                 </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              </TableCell>
+              <TableCell class="px-6 py-4 whitespace-nowrap">
                 <span class="text-sm text-gray-900">{{
                   deactivation.motivo
                 }}</span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              </TableCell>
+              <TableCell
+                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+              >
                 {{ deactivation.fecha }}
-              </td>
-              <td
+              </TableCell>
+              <TableCell
                 class="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-900"
               >
                 {{ deactivation.militante?.core.name }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              </TableCell>
+              <TableCell class="px-6 py-4 whitespace-nowrap">
                 <span
                   :class="deactivation.estado"
                   class="py-1 text-sm rounded-full"
                 >
                   {{ deactivation.estado }}
                 </span>
-              </td>
-              <td
+              </TableCell>
+              <TableCell
                 class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium space-x-2"
               >
                 <!--acciones que se deben ejecutar-->
@@ -274,15 +277,15 @@ const saveMinute = async () => {};
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </td>
-            </tr>
-            <tr v-if="filteredDeactivations?.length === 0">
-              <td colspan="6" class="text-center py-8 text-gray-500">
+              </TableCell>
+            </TableRow>
+            <TableRow v-if="filteredDeactivations?.length === 0">
+              <TableCell colspan="6" class="text-center py-8 text-gray-500">
                 No hay desactivaciones registradas.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
 
@@ -294,18 +297,18 @@ const saveMinute = async () => {};
       <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold">Nueva Desactivación</h3>
-          <button
+          <Button
             @click="showModal = false"
             class="text-gray-400 hover:text-gray-600"
           >
             <XIcon class="h-4 w-4" />
-          </button>
+          </Button>
         </div>
 
         <form @submit.prevent="saveDeactivation" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Militante</label
+            <Label class="block text-sm font-medium text-gray-700 mb-1"
+              >Militante</Label
             >
             <select
               v-model="currentDeactivation.militante.id"
@@ -324,10 +327,10 @@ const saveMinute = async () => {};
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Motivo de Desactivación</label
+            <Label class="block text-sm font-medium text-gray-700 mb-1"
+              >Motivo de Desactivación</Label
             >
-            <input
+            <Input
               v-model="currentDeactivation.motivo"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -335,10 +338,10 @@ const saveMinute = async () => {};
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Fecha de Desactivación</label
+            <Label class="block text-sm font-medium text-gray-700 mb-1"
+              >Fecha de Desactivación</Label
             >
-            <input
+            <Input
               v-model="currentDeactivation.fecha"
               type="date"
               required
@@ -347,32 +350,28 @@ const saveMinute = async () => {};
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Notas Adicionales</label
+            <Label class="block text-sm font-medium text-gray-700 mb-1"
+              >Notas Adicionales</Label
             >
-            <textarea
+            <Textarea
               v-model="currentDeactivation.details"
               rows="3"
               placeholder="Información adicional sobre la desactivación..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-            ></textarea>
+            ></Textarea>
           </div>
 
           <div class="flex gap-3 pt-4">
-            <button
+            <Button
               type="button"
               @click="showModal = false"
-              class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md transition-colors"
+              variant="outline"
+              class="flex-1 bg-gray-300"
             >
               Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="isLoading"
-              class="flex-1 bg-primary hover:bg-gray-700 disabled:bg-gray-400 text-white py-2 px-4 rounded-md transition-colors"
-            >
+            </Button>
+            <Button type="submit" :disabled="isLoading" class="flex-1">
               {{ isLoading ? "Procesando..." : "Crear Desactivación" }}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -386,19 +385,16 @@ const saveMinute = async () => {};
       <div class="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold">Detalles de la Desactivación</h3>
-          <button
-            @click="closeDetailmdodal"
-            class="text-gray-400 hover:text-gray-600"
-          >
+          <Button variant="ghost" @click="closeDetailmdodal">
             <XIcon class="h-4 w-4" />
-          </button>
+          </Button>
         </div>
 
         <div v-if="selectedDeactivation" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Militante</label
+              <Label class="block text-sm font-medium text-gray-700"
+                >Militante</Label
               >
               <p class="text-sm text-gray-900">
                 {{ selectedDeactivation.militante?.firstname }}
@@ -406,7 +402,7 @@ const saveMinute = async () => {};
               </p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">CI</label>
+              <Label class="block text-sm font-medium text-gray-700">CI</Label>
               <p class="text-sm text-gray-900">
                 {{ selectedDeactivation.militante?.ci }}
               </p>
@@ -414,31 +410,31 @@ const saveMinute = async () => {};
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Motivo</label
+            <Label class="block text-sm font-medium text-gray-700"
+              >Motivo</Label
             >
             <p class="text-sm text-gray-900">
               {{ selectedDeactivation.motivo }}
             </p>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Detalles</label
+            <Label class="block text-sm font-medium text-gray-700"
+              >Detalles</Label
             >
             <p class="text-sm text-gray-900">
               {{ selectedDeactivation.details }}
             </p>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Fecha</label>
+            <Label class="block text-sm font-medium text-gray-700">Fecha</Label>
             <p class="text-sm text-gray-900">
               {{ selectedDeactivation.fecha }}
             </p>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Estado</label
+            <Label class="block text-sm font-medium text-gray-700"
+              >Estado</Label
             >
             <span
               :class="selectedDeactivation.estado"
@@ -450,12 +446,7 @@ const saveMinute = async () => {};
         </div>
 
         <div class="flex justify-end pt-4">
-          <button
-            @click="closeDetailmdodal"
-            class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md transition-colors"
-          >
-            Cerrar
-          </button>
+          <Button @click="closeDetailmdodal" variant="outline"> Cerrar </Button>
         </div>
       </div>
     </div>
