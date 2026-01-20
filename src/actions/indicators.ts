@@ -1,3 +1,5 @@
+import { StatusAtte } from "@/enum/Estado";
+import { Reason } from "@/interface/Absent";
 import { ActionError, defineAction } from "astro:actions";
 import { API_URL } from "astro:env/client";
 import { getSession } from "auth-astro/server";
@@ -23,6 +25,40 @@ export const getIndicatorById = defineAction({
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.jwt}`,
         },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+});
+
+export const updateAttendance = defineAction({
+  input: z.object({
+    reason_abscents: z
+      .object({
+        minuteId: z.coerce.string(),
+        militantId: z.coerce.string(),
+        status: z.nativeEnum(StatusAtte),
+        reason: z.nativeEnum(Reason).nullable(),
+      })
+      .array(),
+  }),
+  async handler({ reason_abscents }, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    try {
+      const response = await fetch(`${API_URL}/minute/attendance/create`, {
+        //terminar
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.jwt}`,
+        },
+        body: JSON.stringify(reason_abscents),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

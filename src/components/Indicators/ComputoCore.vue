@@ -1,26 +1,37 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { indicators, categories } from "@/utils/indicators";
-import { BarChart3, EyeIcon, Search } from "lucide-vue-next";
-import Input from "@/components/ui/input/Input.vue";
-import Table from "@/components/ui/table/Table.vue";
-import TableHeader from "@/components/ui/table/TableHeader.vue";
-import TableRow from "@/components/ui/table/TableRow.vue";
-import TableHead from "@/components/ui/table/TableHead.vue";
-import TableBody from "@/components/ui/table/TableBody.vue";
-import TableCell from "@/components/ui/table/TableCell.vue";
-import { computed } from "vue";
-import { debouncedRef, useUrlSearchParams } from "@vueuse/core";
-import { navigate } from "astro:transitions/client";
-import Sheet from "@/components/ui/sheet/Sheet.vue";
-import SheetTrigger from "@/components/ui/sheet/SheetTrigger.vue";
-import SheetContent from "@/components/ui/sheet/SheetContent.vue";
-import SheetHeader from "@/components/ui/sheet/SheetHeader.vue";
-import SheetTitle from "@/components/ui/sheet/SheetTitle.vue";
-import SheetDescription from "@/components/ui/sheet/SheetDescription.vue";
-import SheetOverlay from "@/components/ui/sheet/SheetOverlay.vue";
-import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
 import Button from "@/components/ui/button/Button.vue";
+import Input from "@/components/ui/input/Input.vue";
+import Label from "@/components/ui/label/Label.vue";
+import ScrollArea from "@/components/ui/scroll-area/ScrollArea.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import SheetOverlay from "@/components/ui/sheet/SheetOverlay.vue";
+import {
+  Table,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableBody,
+} from "@/components/ui/table";
+import { categories, indicators } from "@/utils/indicators";
+import { useUrlSearchParams } from "@vueuse/core";
+import { navigate } from "astro:transitions/client";
+import { BarChart3, EyeIcon, Search } from "lucide-vue-next";
+import { computed, ref } from "vue";
 
 const searchTerm = ref("");
 const selectedCategory = ref("");
@@ -89,19 +100,24 @@ const filteredIndicators = computed(() => {
             />
           </div>
           <div>
-            <select
+            <Select
               v-model="selectedCategory"
               class="w-full rounded-md border border-gray-300 p-2 text-sm"
             >
-              <option value="">Todas las categorías</option>
-              <option
-                v-for="category of categories"
-                :key="category"
-                :value="category"
-              >
-                {{ category }}
-              </option>
-            </select>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Todas las categorías</SelectItem>
+                <SelectItem
+                  v-for="category of categories"
+                  :key="category"
+                  :value="category"
+                >
+                  {{ category }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div class="flex gap-2">
@@ -161,13 +177,15 @@ const filteredIndicators = computed(() => {
                     <SheetTrigger><EyeIcon class="size-4" /></SheetTrigger>
                     <SheetContent class="space-y-4">
                       <SheetHeader class="space-y-2">
-                        <SheetTitle class="text-2xl">Detalles</SheetTitle>
+                        <SheetTitle class="text-2xl">
+                          {{ indicator.name }}</SheetTitle
+                        >
                         <SheetDescription class="@container">
-                          <h2 class="text-xl font-medium">
-                            Resumen extraído del acta
-                          </h2>
-                          <ScrollArea class="h-[90cqh] p-4 @h-3 w-full"
-                            ><p class="text-lg text-justify">
+                          <Label class="text-lg text-muted-foreground px-4">
+                            Detalles
+                          </Label>
+                          <ScrollArea class="h-[90cqh] @h-3 w-full">
+                            <p class="text-lg text-justify">
                               {{
                                 getTextIndicators(key as any) ?? "No encontrado"
                               }}

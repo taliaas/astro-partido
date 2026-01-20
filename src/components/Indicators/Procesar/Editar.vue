@@ -15,10 +15,10 @@
           <h2 class="font-medium text-2xl">Indicadores</h2>
           <!-- Form -->
           <form @submit="onSubmit" class="pb-12 relative">
-            <div v-if="currentIndicator === 1">
-              <Attendance :militantes />
+            <div v-if="openReason">
+              <Reasons :militants :minute v-model:open="openReason" />
             </div>
-            <template v-else-if="currentIndicator !== 1">
+            <div v-show="!openReason">
               <div class="grid grid-cols-2 gap-4">
                 <FormField
                   v-for="({ key }, index) of ind"
@@ -29,17 +29,28 @@
                   <FormItem>
                     <FormLabel>{{ getName(key) }}</FormLabel>
                     <FormControl>
-                      <Input
-                        :="componentField"
-                        type="number"
-                        min="0"
-                        step="1"
-                        @focus="
-                          currentName = getName(key);
-                          currentIndicator = index;
-                        "
-                      />
+                      <div class="flex gap-2">
+                        <Input
+                          :="componentField"
+                          type="number"
+                          min="0"
+                          step="1"
+                          @focus="
+                            currentName = getName(key);
+                            currentIndicator = index;
+                          "
+                        />
+                        <Button
+                          v-if="key === 'reason'"
+                          variant="outline"
+                          type="button"
+                          @click="openReason = true"
+                        >
+                          <Pencil />
+                        </Button>
+                      </div>
                     </FormControl>
+
                     <div class="flex">
                       <FormMessage />
                       <span class="text-sm invisible">.</span>
@@ -59,7 +70,7 @@
                   {{ loading ? "Guardando..." : "Guardar Cambios" }}
                 </Button>
               </div>
-            </template>
+            </div>
           </form>
         </aside>
         <main class="flex-1 py-4">
@@ -77,11 +88,12 @@
                     placeholder="Escriba el texto relacionado al indicador..."
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             </FormField>
             <div>
               <embed
-                :src="getFile(acta.id)"
+                :src="getFile(minute.id)"
                 type="application/pdf"
                 width="100%"
                 height="700"
@@ -96,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { getFile } from "@/utils/files.ts";
+import Reasons from "@/components/Indicators/Procesar/Reasons.vue";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
@@ -107,20 +119,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { indicators } from "@/utils/indicators";
+import type { Militant } from "@/interface/Militante";
+import type Minute from "@/interface/Minute";
 import ComputoService from "@/services/Computo.ts";
+import { getFile } from "@/utils/files.ts";
+import { indicators } from "@/utils/indicators";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "astro:schema";
 import { navigate } from "astro:transitions/client";
+import { Pencil } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
-import type { Militant } from "@/interface/Militante";
 
-const { ind, acta, militantes } = defineProps<{
+const { ind, minute, militants } = defineProps<{
   ind: any[];
-  acta: any;
-  militantes: Militant[];
+  minute: Minute;
+  militants: Militant[];
 }>();
 
 type Data = z.infer<typeof schema>;
@@ -151,6 +166,7 @@ const form = useForm<Data>({
 const loading = form.isSubmitting;
 const currentIndicator = ref();
 const currentName = ref();
+const openReason = ref(false);
 
 // Reset form to initial values
 const resetForm = () => {
@@ -162,7 +178,7 @@ const onSubmit = form.handleSubmit(async (data: Data) => {
   const service = new ComputoService();
 
   try {
-    await service.updateComputo(acta.id, data);
+    await service.updateComputo(minute.id, data);
     toast.success("Indicadores guardados exitosamente");
     await navigate("/minutes");
   } catch (error) {

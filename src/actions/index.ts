@@ -10,6 +10,7 @@ import * as sancion from "./sancion.ts";
 import * as transfer from "./transfer.ts";
 import * as comite from "./comite.ts";
 import * as core from "./core.ts";
+import * as indicators from "./indicators.ts";
 import * as agreements from "./agreements.ts";
 
 export const server = {
@@ -25,5 +26,6 @@ export const server = {
   transfer,
   comite,
   core,
+  indicators,
   agreements,
 };
