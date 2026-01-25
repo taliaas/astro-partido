@@ -23,7 +23,11 @@ export const createMinute = defineAction({
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.jwt}`,
         },
-        body: JSON.stringify({ ...data, ...rest }),
+        body: JSON.stringify({
+          ...data,
+          political_development: data.development,
+          ...rest,
+        }),
       }
     );
     if (!res.ok) {

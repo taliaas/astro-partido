@@ -30,19 +30,40 @@ const [documents, list] = await Promise.all([
 
 const cards = [
   {
-    title: "Documentos Pendientes",
+    title: "Total Documentos Pendientes",
     value: list?.pending ?? 0,
-    icon: "FileClock",
+    icon: "FolderClock",
+    description: "Acumulado total",
   },
   {
-    title: "Documentos Procesados",
+    title: "Total Documentos Procesados",
     value: list?.proccesing ?? 0,
-    icon: "FileCheck2",
+    icon: "FolderCheck",
+    description: "Acumulado total",
   },
   {
     title: "Total de Documentos",
     value: list?.documents ?? 0,
+    icon: "Folders",
+    description: "Acumulado total",
+  },
+  {
+    title: "Pendientes Este Mes",
+    value: list?.monthlyPending ?? 0,
+    icon: "FileClock",
+    description: "Mes actual",
+  },
+  {
+    title: "Procesados Este Mes",
+    value: list?.monthlyProcessing ?? 0,
+    icon: "FileCheck2",
+    description: "Mes actual",
+  },
+  {
+    title: "Documentos Este Mes",
+    value: list?.monthlyDocuments ?? 0,
     icon: "Files",
+    description: "Mes actual",
   },
 ];
 ---

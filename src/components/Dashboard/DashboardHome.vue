@@ -46,17 +46,33 @@
 import { watch, ref } from "vue";
 import {
   Activity,
+  Calendar,
+  CalendarCheck,
+  CalendarDays,
   FileCheck2,
   FileClock,
   Files,
   FileText,
+  Folder,
+  FolderCheck,
+  FolderClock,
+  Folders,
 } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Documents from "../Home/Documents.vue";
 import RightSidebar from "./RightSidebar.vue";
 import { useSearchStore } from "@/utils/store.ts";
 
-const icons = { Activity, FileCheck2, Files, FileText, FileClock };
+const icons = {
+  Activity,
+  FileCheck2,
+  Files,
+  FileText,
+  FileClock,
+  FolderCheck,
+  FolderClock,
+  Folders,
+};
 
 const { documents, cards } = defineProps<{
   documents: any[];

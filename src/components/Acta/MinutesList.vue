@@ -122,6 +122,7 @@ const tableHeaders = [
   "Nombre del acta",
   "Núcleo",
   "Fecha de Creación",
+  "Fecha de Reunión",
   "Tipo",
   "Estado",
   "",
@@ -428,12 +429,13 @@ function goToPreviousPage() {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-
                 <!-- Date -->
                 <Input
                   type="month"
-                  :value="searchParams.fecha ?? getDefaultFilterDate()"
-                  @change="handleFilter('fecha', $event)"
+                  :default-value="
+                    (searchParams.fecha as string) ?? getDefaultFilterDate()
+                  "
+                  @update:model-value="handleFilterByValue('fecha', $event)"
                 ></Input>
               </div>
             </div>
@@ -453,6 +455,7 @@ function goToPreviousPage() {
                   <TableHead class="text-center">
                     {{ tableHeaders[2] }}
                   </TableHead>
+
                   <TableHead
                     :data-sort="sort"
                     @click="handleSort"
@@ -474,6 +477,9 @@ function goToPreviousPage() {
                   </TableHead>
                   <TableHead class="text-center">
                     {{ tableHeaders[5] }}
+                  </TableHead>
+                  <TableHead class="text-center">
+                    {{ tableHeaders[6] }}
                   </TableHead>
                   <TableHead class="text-center"> Acciones </TableHead>
                 </TableRow>
@@ -499,6 +505,9 @@ function goToPreviousPage() {
                   </TableCell>
                   <TableCell class="text-center">{{
                     acta.createdAt
+                  }}</TableCell>
+                  <TableCell class="text-center">{{
+                    acta.date || "-"
                   }}</TableCell>
                   <TableCell class="pl-6 text-center">{{
                     acta.type
@@ -619,7 +628,7 @@ function goToPreviousPage() {
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell colspan="7">
+                  <TableCell colspan="8">
                     <div v-if="actas?.total !== 0" class="flex justify-between">
                       <div
                         class="text-md text-muted-foreground flex items-center gap-1"

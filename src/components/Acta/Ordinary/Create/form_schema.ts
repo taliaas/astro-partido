@@ -157,7 +157,7 @@ export const cpForm = z.object({
   development: z
     .object({
       id: z.coerce.number(),
-      name: z.coerce.string(),
+      militant: z.coerce.string(),
       argument: z.string(),
     })
     .array(),

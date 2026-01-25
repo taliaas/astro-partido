@@ -35,6 +35,7 @@ export enum MinuteStatus {
   CREATE = "Creada", // Esperando procesamiento
   ERASER = "Borrador",
   PROCESSING = "Procesando",
+  APROBADA = "Aprobada",
   PENDIENTE = "Pendiente",
   PROCESADA = "Procesada",
   ERROR = "Error",

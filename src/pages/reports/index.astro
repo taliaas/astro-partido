@@ -6,13 +6,12 @@ import ComputoService from "@/services/Computo";
 
 const year =
   Astro.url.searchParams.get("year") || new Date().getFullYear().toString();
-const core = Astro.url.searchParams.get("core") || null;
 const session = (await getSession(Astro.request)) as any;
 
 async function getData() {
   const reports = new ComputoService();
   try {
-    return await reports.getYear(Number(year), core, session.jwt);
+    return await reports.getYear(Number(year), session.jwt);
   } catch (e) {
     console.error(e);
   }

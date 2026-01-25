@@ -1,8 +1,10 @@
 ---
 import Display from "@/components/Acta/Political/Display.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
-import PoliticalService from "@/services/PoliticalService";
+import MinutesService from "@/services/Minutes";
+import { getSession } from "auth-astro/server";
 
+const session: any = await getSession(Astro.request);
 const { id } = Astro.params;
 
 if (!id) {
@@ -10,10 +12,9 @@ if (!id) {
 }
 
 async function getActa() {
-  const services = new PoliticalService();
+  const services = new MinutesService();
   try {
-    const acta = services.getMinute(id!);
-    return acta;
+    return services.getMinute(id!, session.jwt);
   } catch (e) {
     console.error(e);
   }

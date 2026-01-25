@@ -22,6 +22,8 @@ export default class MinutesService {
     if (type) searchParam.set("type", type);
     if (fecha) searchParam.set("fecha", fecha);
 
+    console.log(order);
+
     const url = `${API_URL}/minute/?` + searchParam.toString();
     try {
       const response = await fetch(url, {

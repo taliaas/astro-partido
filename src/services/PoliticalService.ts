@@ -3,7 +3,7 @@ import { API_URL } from "astro:env/client";
 export default class PoliticalService {
   async getMinute(id: string) {
     try {
-      const response = await fetch(`${API_URL}/minutes-political/${id}`, {
+      const response = await fetch(`${API_URL}/minute/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

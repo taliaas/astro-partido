@@ -349,7 +349,7 @@
           <h3 class="text-md font-medium">Desarrollo</h3>
           <Button
             type="button"
-            @click="developments.push({ argument: '', name: '', id: 0 })"
+            @click="developments.push({ argument: '', militant: '', id: 0 })"
             variant="outline"
           >
             <Plus class="size-4" /> Agregar Intervención</Button
@@ -373,7 +373,7 @@
             </div>
             <div class="space-y-2 py-2">
               <FormField
-                :name="`development.${developmentIndex}.name`"
+                :name="`development.${developmentIndex}.militant`"
                 v-slot="{ componentField }"
               >
                 <FormItem>
@@ -516,7 +516,7 @@ const form = useForm({
     development: [
       {
         id: 0,
-        name: "",
+        militant: "",
         argument: "",
       },
     ],
