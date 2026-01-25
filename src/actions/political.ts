@@ -28,7 +28,7 @@ export const createMinute = defineAction({
           political_development: data.development,
           ...rest,
         }),
-      }
+      },
     );
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -52,7 +52,7 @@ export const updateCore = defineAction({
         headers: {
           Authorization: `Bearer ${session.jwt}`,
         },
-      }
+      },
     );
     const data = await res.json();
     if (!res.ok) {
@@ -64,7 +64,7 @@ export const updateCore = defineAction({
 
 export const updateMinute = defineAction({
   input: z.object({
-    id: z.number(),
+    id: z.coerce.string(),
     data: z.any(),
   }),
   async handler({ id, data }, context) {
@@ -103,7 +103,7 @@ export const updateStatusMinutes = defineAction({
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.jwt}`,
         },
-      }
+      },
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

@@ -60,7 +60,6 @@ const onSubmit = form.handleSubmit(async (data: any) => {
 });
 </script>
 <template>
-  {{ form.errors }}
   <div class="min-h-screen p-6 bg-linear-to-b from-gray-50 to-white">
     <form @submit="onSubmit" class="max-w-7xl mx-auto">
       <div class="p-4 flex justify-center">

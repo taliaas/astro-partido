@@ -7,8 +7,11 @@
     <div
       class="mb-8 text-center transform transition-all duration-500 hover:scale-102"
     >
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+      <h1 v-if="!edit" class="text-3xl font-bold text-gray-800 mb-2">
         Acta de {{ cp ? "Círculo Político" : "Extraordinaria" }}
+      </h1>
+      <h1 v-else>
+        Editar acta de {{ cp ? "Círculo Político" : "Extraordinaria" }}
       </h1>
     </div>
     <div class="max-w-7xl mx-auto rounded overflow-hidden p-2">
@@ -349,7 +352,9 @@
           <h3 class="text-md font-medium">Desarrollo</h3>
           <Button
             type="button"
-            @click="developments.push({ argument: '', militant: '', id: 0 })"
+            @click="
+              developments.push({ argument: '', militant: { id: null }, id: 0 })
+            "
             variant="outline"
           >
             <Plus class="size-4" /> Agregar Intervención</Button
@@ -372,6 +377,7 @@
               </Button>
             </div>
             <div class="space-y-2 py-2">
+              <!-- Tomar bien al militante -->
               <FormField
                 :name="`development.${developmentIndex}.militant`"
                 v-slot="{ componentField }"
@@ -469,6 +475,7 @@ import { absenceReasons, cargos } from "@/enum/absenceReasons";
 import { MinuteStatus, MinuteType } from "@/enum/Estado";
 import { Reason } from "@/interface/Absent";
 import type { Core, Militant } from "@/interface/Militante";
+import type Minute from "@/interface/Minute";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -484,39 +491,38 @@ import { useFieldArray, useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
-const { cores, cp, militants } = defineProps<{
+const { cores, cp, militants, minute } = defineProps<{
   cores: Core[];
   militants: Militant[];
   cp: boolean;
+  minute: Minute | null;
 }>();
 const headers = ["No.", "Nombre y Apellidos", "Estado", "Causa"];
 
 const loading = ref(false);
 const edit = ref(false);
-const currentPage = ref(0);
-const hasNextPage = ref(0);
 
 const form = useForm({
   validationSchema: toTypedSchema(cpForm),
   initialValues: {
-    core: "",
+    core: minute?.core?.id ?? "",
     abscents: militants?.map((i) => ({
       estado: "Presente" as const,
       reason: Reason.ENF,
       militanteId: i.id,
     })),
     date: "",
-    hour: "",
-    invitados: [],
-    observaciones: "",
-    place: "",
-    status: MinuteStatus.CREATE,
-    type: "",
-    topic: "",
-    development: [
+    hour: minute?.hour ?? "",
+    invitados: minute?.invitados ?? [],
+    observaciones: minute?.observaciones ?? "",
+    place: minute?.place ?? "",
+    status: minute?.status ?? MinuteStatus.CREATE,
+    type: minute?.type ?? "",
+    topic: minute?.political?.topic ?? "",
+    development: minute?.political?.development ?? [
       {
         id: 0,
-        militant: "",
+        militant: { id: null },
         argument: "",
       },
     ],

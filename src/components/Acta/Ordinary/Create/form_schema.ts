@@ -84,7 +84,7 @@ export const editFormSchema = z.object({
   type: z.nativeEnum(MinuteType),
   invitados: z
     .object({
-      id: z.coerce.string().optional(),
+      id: z.coerce.number().optional(),
       nombre_apellidos: z.string(),
       cargo: z.enum(cargos, { message: "Cargo incorrecto" }),
     })
@@ -134,7 +134,8 @@ export type FormCP = z.infer<typeof cpForm>;
 
 export const cpForm = z.object({
   core: z.any(),
-  date: z.string().date("La fecha no es válida"), //.refine((value)=> new Date(value)).max(today, { message: "La fecha no puede ser mayor a la actual" }),
+  name: z.string().optional(),
+  date: z.coerce.string().date("La fecha no es válida"), //.refine((value)=> new Date(value)).max(today, { message: "La fecha no puede ser mayor a la actual" }),
   hour: z.string().time("Hora invalida").min(1, { message: "Hora invalida" }),
   place: z.string().min(3, "El lugar debe contener al menos 3 caracteres"),
   status: z.string().optional(),
@@ -149,7 +150,7 @@ export const cpForm = z.object({
   invitados: z
     .object({
       id: z.coerce.number().optional(),
-      nombre_apellidos: z.string(),
+      nombre_apellidos: z.string({ message: "Nombre incorrecto" }),
       cargo: z.enum(cargos, { message: "Cargo incorrecto" }),
     })
     .array(),
@@ -157,7 +158,7 @@ export const cpForm = z.object({
   development: z
     .object({
       id: z.coerce.number(),
-      militant: z.coerce.string(),
+      militant: z.object({ id: z.coerce.number().nullable() }),
       argument: z.string(),
     })
     .array(),

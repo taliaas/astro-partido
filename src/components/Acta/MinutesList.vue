@@ -17,7 +17,6 @@ import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
 import { MinuteStatus } from "@/enum/Estado";
 import { MinuteType, roleEnum } from "@/enum/roleEnum";
 import type Minute from "@/interface/Minute";
-import { exportar } from "@/lib/export_cp.ts";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { usePermissions } from "@/utils/auth-client";
 import { useSse } from "@/utils/see";
@@ -70,6 +69,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { exportarCP } from "@/lib/export_cp";
 
 const emit = defineEmits(["test"]);
 const {
@@ -232,7 +232,7 @@ const handleAction = (action: any, acta: Minute) => {
     } else {
       navigate(`minutes/cp/${acta.id}/edit`);
     }
-  } else if (action === "procesar") {
+  } else if (action === "procesar" && acta.type === MinuteType[0]) {
     navigate(`/indicators/create/${acta.id}`); //revisar ruta
   } else if (action === "retry") {
     openModal.value = true;
@@ -240,8 +240,7 @@ const handleAction = (action: any, acta: Minute) => {
     navigate(`minutes/observation/${acta.id}`);
   } else if (action === "export") {
     if (acta.type !== "Ordinaria") {
-      //revisar
-      exportar(acta);
+      exportarCP(acta);
     } else exportarRO(acta);
   } else if (action === "eliminar") {
     showDelete.value = true;
@@ -561,8 +560,9 @@ function goToPreviousPage() {
                         <DropdownMenuItem
                           @click="handleAction('retry', acta)"
                           v-if="
-                            acta.status === MinuteStatus.ERROR ||
-                            acta.status === MinuteStatus.CREATE
+                            acta.type === MinuteType[0] &&
+                            (acta.status === MinuteStatus.ERROR ||
+                              acta.status === MinuteStatus.CREATE)
                           "
                         >
                           <FileCheck class="size-4" />

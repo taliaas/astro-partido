@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const political_schema = z.object({
   core: z.any(),
+  name: z.string().optional(),
   date: z.string().date("La fecha no es válida"), //.refine((value)=> new Date(value)).max(today, { message: "La fecha no puede ser mayor a la actual" }),
   hour: z.string().time("Hora invalida").min(1, { message: "Hora invalida" }),
   place: z.string().min(3, "El lugar debe contener al menos 3 caracteres"),
@@ -12,7 +13,7 @@ export const political_schema = z.object({
   invitados: z.object({}),
   development: z
     .object({
-      name: z.object({
+      militant: z.object({
         id: z.string(),
       }),
       argument: z.string({ message: "Error" }),
@@ -20,3 +21,5 @@ export const political_schema = z.object({
     .array()
     .default([]),
 });
+
+export const editCPFormSchema = z.object({});
