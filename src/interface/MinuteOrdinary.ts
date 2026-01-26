@@ -21,7 +21,7 @@ export interface WorkPlan {
   pto: string;
 }
 export interface Development {
-  id: number;
+  id: string;
   order: string | null;
   agreements: Agreements[];
   workplan: WorkPlan[];

@@ -130,7 +130,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { exportar } from "@/lib/export_cp.ts";
+import { exportarCP } from "@/lib/export_cp";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { ChevronRight, Download } from "lucide-vue-next";
 import { ref } from "vue";
@@ -158,7 +158,7 @@ async function exportarActa(doc: any) {
   if (doc?.type === "ro") {
     exportarRO(doc);
   } else {
-    exportar(doc);
+    exportarCP(doc);
   }
 }
 </script>

@@ -35,7 +35,7 @@
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.2",
     "jspdf": "^2.5.2",
-    "jspdf-autotable": "^5.0.2",
+    "jspdf-autotable": "^5.0.7",
     "lucide-vue-next": "^0.462.0",
     "mock-aws-s3": "^4.0.2",
     "nock": "^14.0.0",

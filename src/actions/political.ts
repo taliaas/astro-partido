@@ -71,13 +71,16 @@ export const updateMinute = defineAction({
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
 
-    const res = await fetch(`${API_URL}/minutes-political/${id}`, {
+    const res = await fetch(`${API_URL}/minute/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.jwt}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        political_development: data.development,
+      }),
     });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);

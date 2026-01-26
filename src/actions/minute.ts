@@ -31,7 +31,7 @@ export const retryModel = defineAction({
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.jwt}`,
         },
-      }
+      },
     );
     const data = await res.json();
 
@@ -55,7 +55,7 @@ export const getMinutes = defineAction({
   }),
   async handler(
     { page, type, order, nombre, core, status, fecha, limit },
-    ctx
+    ctx,
   ) {
     const session = await getSession(ctx.request);
     const service = new MinutesService();
@@ -68,7 +68,7 @@ export const getMinutes = defineAction({
       nombre,
       core,
       status,
-      fecha
+      fecha,
     );
   },
 });
@@ -117,7 +117,7 @@ export const updateCore = defineAction({
         headers: {
           Authorization: `Bearer ${session.jwt}`,
         },
-      }
+      },
     );
     const data = await res.json();
     if (!res.ok) {
@@ -134,7 +134,7 @@ export const uploadMinutes = defineAction({
     type: z
       .string()
       .refine((val) =>
-        ["Ordinaria", "Circulo Politico", "Extraordinaria"].includes(val)
+        ["Ordinaria", "Circulo Politico", "Extraordinaria"].includes(val),
       ),
     mode: z.enum(["Spacy", "Model"]),
   }),
@@ -155,7 +155,7 @@ export const uploadMinutes = defineAction({
         headers: {
           Authorization: `Bearer ${session.jwt}`,
         },
-      }
+      },
     );
     const data = await res.json();
 
@@ -204,7 +204,7 @@ export const createMinute = defineAction({
           Authorization: `Bearer ${session.jwt}`,
         },
         body: JSON.stringify({ ...data, ...rest }),
-      }
+      },
     );
     const result = await res.json();
 
@@ -225,6 +225,8 @@ export const updateMinute = defineAction({
     data: z.any(),
   }),
   async handler({ id, data }, context) {
+    console.log(id);
+
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
     const res = await fetch(`${API_URL}/minute/${id}`, {

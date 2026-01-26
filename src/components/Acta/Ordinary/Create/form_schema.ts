@@ -133,6 +133,7 @@ export const editFormSchema = z.object({
 export type FormCP = z.infer<typeof cpForm>;
 
 export const cpForm = z.object({
+  id: z.coerce.string(),
   core: z.any(),
   name: z.string().optional(),
   date: z.coerce.string().date("La fecha no es válida"), //.refine((value)=> new Date(value)).max(today, { message: "La fecha no puede ser mayor a la actual" }),
@@ -157,7 +158,7 @@ export const cpForm = z.object({
   topic: z.string(),
   development: z
     .object({
-      id: z.coerce.number(),
+      id: z.coerce.number().nullable().optional(),
       militant: z.object({ id: z.coerce.number().nullable() }),
       argument: z.string(),
     })

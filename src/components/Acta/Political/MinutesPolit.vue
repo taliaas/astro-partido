@@ -10,12 +10,12 @@
       <h1 v-if="!edit" class="text-3xl font-bold text-gray-800 mb-2">
         Acta de {{ cp ? "Círculo Político" : "Extraordinaria" }}
       </h1>
-      <h1 v-else>
+      <h1 v-else class="text-3xl font-bold text-gray-800">
         Editar acta de {{ cp ? "Círculo Político" : "Extraordinaria" }}
       </h1>
     </div>
-    <div class="max-w-7xl mx-auto rounded overflow-hidden p-2">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 space-y-4">
+    <div class="max-w-7xl mx-auto rounded overflow-hidden p-2 space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 space-y-4">
         <!-- Núcleo -->
         <FormField v-if="edit" name="core" v-slot="{ componentField }">
           <FormItem>
@@ -353,7 +353,11 @@
           <Button
             type="button"
             @click="
-              developments.push({ argument: '', militant: { id: null }, id: 0 })
+              developments.push({
+                argument: '',
+                militant: { id: null },
+                id: null,
+              })
             "
             variant="outline"
           >
@@ -379,7 +383,7 @@
             <div class="space-y-2 py-2">
               <!-- Tomar bien al militante -->
               <FormField
-                :name="`development.${developmentIndex}.militant`"
+                :name="`development.${developmentIndex}.militant.id`"
                 v-slot="{ componentField }"
               >
                 <FormItem>
@@ -491,27 +495,30 @@ import { useFieldArray, useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
-const { cores, cp, militants, minute } = defineProps<{
+const { cores, cp, edit, militants, minute } = defineProps<{
   cores: Core[];
   militants: Militant[];
   cp: boolean;
+  edit: boolean;
   minute: Minute | null;
 }>();
 const headers = ["No.", "Nombre y Apellidos", "Estado", "Causa"];
 
 const loading = ref(false);
-const edit = ref(false);
 
 const form = useForm({
   validationSchema: toTypedSchema(cpForm),
   initialValues: {
+    id: minute?.id ?? "",
     core: minute?.core?.id ?? "",
-    abscents: militants?.map((i) => ({
-      estado: "Presente" as const,
-      reason: Reason.ENF,
-      militanteId: i.id,
-    })),
-    date: "",
+    abscents:
+      (minute?.abscents as any) ??
+      militants?.map((i) => ({
+        estado: "Presente" as const,
+        reason: Reason.ENF,
+        militanteId: i.id,
+      })),
+    date: (minute?.date as any) ?? "",
     hour: minute?.hour ?? "",
     invitados: minute?.invitados ?? [],
     observaciones: minute?.observaciones ?? "",
@@ -521,7 +528,7 @@ const form = useForm({
     topic: minute?.political?.topic ?? "",
     development: minute?.political?.development ?? [
       {
-        id: 0,
+        id: null,
         militant: { id: null },
         argument: "",
       },
@@ -546,12 +553,21 @@ const submitForm = async () => {
     if (!cp) {
       data.type = MinuteType.ex;
     }
-    await actions.political.createMinute.orThrow({
-      data,
-      mode: "Model", //cambiar y pedir al usuario que lo cree
-      type: "Circulo Politico",
-    });
-    toast.success("Se creó el acta correctamente");
+    if (edit) {
+      await actions.political.updateMinute.orThrow({
+        id: data.id ?? "",
+        data: data,
+      });
+      toast.success("Se actualizó el acta correctamente");
+    } else {
+      await actions.political.createMinute.orThrow({
+        data,
+        mode: "Model", //cambiar y pedir al usuario que lo cree
+        type: "Circulo Politico",
+      });
+      toast.success("Se creó el acta correctamente");
+    }
+
     await navigate("/minutes");
   } catch (e) {
     loading.value = false;

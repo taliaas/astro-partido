@@ -25,11 +25,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StatusAtte } from "@/enum/Estado";
-import { Reason } from "@/interface/Absent";
 import type Minute from "@/interface/Minute";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { navigate } from "astro:transitions/client";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { ArrowRight, DownloadIcon } from "lucide-vue-next";
 
 const { minute, existsCP, abscents } = defineProps<{
@@ -53,7 +52,7 @@ const exportar = () => {
 const list = () => {
   return minute.core?.militants?.map((militante: any) => {
     const ausencia = minute.abscents?.find(
-      (a: any) => a.militante?.id === militante?.id
+      (a: any) => a.militante?.id === militante?.id,
     );
     return {
       ...militante,
@@ -68,7 +67,7 @@ function openProcesar() {
 </script>
 <template>
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-400 mx-auto">
+    <div class="max-w-400 mx-auto p-2">
       <Card class="w-full bg-background p-6 shadow-md">
         <CardHeader class="flex justify-between">
           <div>
@@ -101,8 +100,12 @@ function openProcesar() {
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Fecha:</span>
-                  {{ format(String(minute?.date), "dd/MM/yyyy") }}
-                  <span v-if="!minute.date">-</span>
+
+                  {{
+                    minute.date
+                      ? format(new Date(minute.date), "dd/MM/yyyy")
+                      : "-"
+                  }}
                 </div>
                 <div class="card">
                   <span class="font-medium text-gray-700">Hora:</span>

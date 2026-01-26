@@ -79,7 +79,7 @@
               <div v-if="minute?.abscents.length !== 0" class="space-y-2">
                 <p
                   v-if="
-                    minute?.abscents.filter((i) => i.estado === StatusAtte.A)
+                    !minute?.abscents.filter((i) => i.estado === StatusAtte.A)
                   "
                   class="text-muted-foreground"
                 >
@@ -93,8 +93,12 @@
                   :key="index"
                   class="grid grid-cols-2"
                 >
-                  <Label class="text-xl">Ausente</Label>
-                  <Label class="text-xl">Motivo</Label>
+                  <Label class="text-md font-medium text-gray-700"
+                    >Ausente</Label
+                  >
+                  <Label class="text-md font-medium text-gray-700"
+                    >Motivo</Label
+                  >
 
                   <div class="flex gap-2">
                     {{ causa.militant.firstname }}
@@ -154,10 +158,10 @@
               <MessageSquare />
               <Label class="text-xl font-semibold">Tema</Label>
             </div>
-            <div class="p-2 bg-gray-100 rounded-md">
-              <p class="text-md p-2">{{ minute?.political?.topic }}</p>
+            <div class="p-2 bg-gray-100 rounded-md space-y-2">
+              <p class="text-lg p-2">{{ minute?.political?.topic }}</p>
               <Label class="text-lg font-semibold">Desarrollo</Label>
-              <div class="mb-4 text-md pr-6 pl-2">
+              <div class="text-md pr-6 pl-2">
                 <p
                   class="text-muted-foreground"
                   v-if="!minute?.political?.development"
@@ -178,8 +182,8 @@
                   </li>
                 </ol>
               </div>
-              <div class="flex gap-2">
-                <Label class="text-md font-medium">Opinaron:</Label>
+              <div class="flex gap-2 text-lg">
+                <Label class="font-medium text-lg">Opinaron:</Label>
                 <p
                   class="text-muted-foreground"
                   v-if="!minute?.political?.development"
@@ -205,7 +209,7 @@
             <p v-else class="text-muted-foreground">No hay observaciones</p>
           </section>
           <!-- Próximas fechas -->
-          <section class="firmas">
+          <section class="firmas text-lg">
             <Label class="text-xl font-semibold text-gray-800">Firmas</Label>
 
             <div class="flex gap-4">
