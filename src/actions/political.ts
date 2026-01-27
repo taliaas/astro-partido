@@ -120,3 +120,23 @@ export const processMinute = defineAction({
   input: z.object({ file: z.instanceof(File) }),
   handler({ file }, context) {},
 });
+
+export const generateResumen = defineAction({
+  input: z.object({
+    id: z.coerce.string(),
+  }),
+  async handler({ id }, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    const res = await fetch(`${API_URL}/minute/resumen/${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.jwt}`,
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.text();
+  },
+});

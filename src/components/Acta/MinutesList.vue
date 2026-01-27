@@ -39,6 +39,8 @@ import {
   Pencil,
   PlusIcon,
   SearchIcon,
+  Sparkle,
+  Sparkles,
   TrashIcon,
 } from "lucide-vue-next";
 import { reactive, ref } from "vue";
@@ -232,7 +234,7 @@ const handleAction = (action: any, acta: Minute) => {
     } else {
       navigate(`minutes/cp/${acta.id}/edit`);
     }
-  } else if (action === "procesar" && acta.type === MinuteType[0]) {
+  } else if (action === "revisar" && acta.type === MinuteType[0]) {
     navigate(`/indicators/create/${acta.id}`); //revisar ruta
   } else if (action === "retry") {
     openModal.value = true;
@@ -565,7 +567,7 @@ function goToPreviousPage() {
                               acta.status === MinuteStatus.CREATE)
                           "
                         >
-                          <FileCheck class="size-4" />
+                          <Sparkles class="size-4" />
                           Procesar
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -574,7 +576,7 @@ function goToPreviousPage() {
                             (acta.status === MinuteStatus.PENDIENTE ||
                               acta.status === MinuteStatus.PROCESADA)
                           "
-                          @click="handleAction('procesar', acta)"
+                          @click="handleAction('revisar', acta)"
                         >
                           <FileSearch class="h-4 w-4" />
                           Revisar

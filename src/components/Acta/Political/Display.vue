@@ -153,14 +153,40 @@
           </section>
 
           <!-- Orden del día -->
-          <section title="topic" class="space-y-2">
+          <section title="Tema" class="space-y-2">
             <div class="flex items-center gap-2">
               <MessageSquare />
               <Label class="text-xl font-semibold">Tema</Label>
             </div>
+            <p class="text-lg p-2">{{ minute?.political?.topic }}</p>
+          </section>
+
+          <section title="Desarrollo" class="space-y-2">
             <div class="p-2 bg-gray-100 rounded-md space-y-2">
-              <p class="text-lg p-2">{{ minute?.political?.topic }}</p>
-              <Label class="text-lg font-semibold">Desarrollo</Label>
+              <div class="flex justify-between">
+                <Label class="text-lg font-semibold">Desarrollo</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger as-child>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        :disabled="isSubmitting"
+                        @click="generateResumen"
+                      >
+                        <Loader2
+                          v-if="isSubmitting"
+                          class="w-4 h-4 animate-spin"
+                        />
+                        <WandSparkles v-else class="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent class="max-w-64">
+                      <p>{{ isSubmitting ? "Resumiendo" : "Resumir" }}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <div class="text-md pr-6 pl-2">
                 <p
                   class="text-muted-foreground"
@@ -200,7 +226,16 @@
               </div>
             </div>
           </section>
+          <section title="Resumen" v-if="resumen || isSubmitting">
+            <Label class="text-lg font-semibold">Resumen</Label>
 
+            <p
+              :data-submitting="isSubmitting"
+              class="text-md p-2 data-[submitting]:text-muted-foreground text-justify"
+            >
+              {{ resumen.data || "Generando..." }}
+            </p>
+          </section>
           <section title="Valoracion">
             <h2 class="text-xl font-semibold">Observaciones</h2>
             <p v-if="minute?.observaciones" class="text-md p-2">
@@ -272,6 +307,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Label from "@/components/ui/label/Label.vue";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Cargo } from "@/enum/Cargo.ts";
 import { MinuteStatus, StatusAtte } from "@/enum/Estado";
 import type Minute from "@/interface/Minute";
@@ -288,12 +329,16 @@ import {
   MapPin,
   MessageSquare,
   Users,
+  WandSparkles,
+  Loader2,
 } from "lucide-vue-next";
 import { ref } from "vue";
 
 const { acta: minute } = defineProps<{
   acta: Minute;
 }>();
+
+const resumen = ref();
 
 defineEmits(["move"]);
 
@@ -311,6 +356,23 @@ const updateStatus = async (status: string) => {
     isSubmitting.value = false;
   }
 };
+
+const generateResumen = async () => {
+  if (!minute) return;
+  isSubmitting.value = true;
+  resumen.value = "";
+  try {
+    const response = await actions.political.generateResumen({
+      id: minute.id,
+    });
+    resumen.value = response;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
 const exportarActa = () => {
   exportarCP(minute);
 };

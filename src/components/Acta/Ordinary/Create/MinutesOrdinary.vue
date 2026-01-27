@@ -101,7 +101,7 @@
     </div>
   </form>
 
-  <Dialog :open @update:open="open = $event">
+  <Dialog v-if="!isValid" v-model:open="open">
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{{
@@ -127,6 +127,91 @@
       </DialogFooter>
     </DialogContent>
   </Dialog>
+  <Dialog v-else v-model:open="open">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle class="text-center text-xl"> Procesar Acta </DialogTitle>
+        <DialogDescription class="text-center">
+          Seleccione las opciones de procesamiento para el documento
+        </DialogDescription>
+      </DialogHeader>
+      <form>
+        <div className="mt-6 grid grid-cols-2 gap-4">
+          <button
+            v-for="option of options"
+            :key="option.value"
+            type="button"
+            @click="mode = option.value"
+            :class="[
+              'relative flex flex-col items-center rounded-lg border-2 p-4 text-center transition-all',
+              'hover:border-primary/50 hover:bg-muted/50',
+              'focus:outline-none',
+              mode === option.value
+                ? 'border-primary bg-primary/5'
+                : 'border-muted-foreground/20 bg-background',
+            ]"
+          >
+            <div
+              v-if="selected === option.value"
+              class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary"
+            >
+              <svg
+                class="h-3 w-3 text-primary-foreground"
+                fill="none"
+                view-box="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="{3}"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+
+            <div
+              :class="[
+                'mb-3 flex h-12 w-12 items-center justify-center rounded-full',
+                selected === option.value ? 'bg-primary/10' : 'bg-muted',
+              ]"
+            >
+              <component
+                :is="option.icon"
+                :class="[
+                  'h-6 w-6',
+                  selected === option.value
+                    ? 'text-primary'
+                    : 'text-muted-foreground',
+                ]"
+              />
+            </div>
+
+            <span
+              :class="[
+                'text-sm font-medium',
+                selected === option.value ? 'text-primary' : 'text-foreground',
+              ]"
+            >
+              {{ option.label }}
+            </span>
+            <span class="text-xs text-muted-foreground">
+              {{ option.subtitle }}
+            </span>
+          </button>
+        </div>
+        <DialogFooter class="pt-2">
+          <DialogClose>
+            <Button type="button" variant="outline">Cancelar</Button>
+          </DialogClose>
+
+          <Button variant="default" type="submit" form="minuteForm"
+            ><Loader2 v-if="loading" class="animate-spin" /> Guardar</Button
+          >
+        </DialogFooter>
+      </form>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -149,7 +234,14 @@ import type { Agreements, Militant } from "@/interface/Militante";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ActionError, actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { ArrowLeft, ArrowRight, Loader2, SendHorizonal } from "lucide-vue-next";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Brain,
+  Loader2,
+  SendHorizonal,
+  Sparkles,
+} from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
@@ -162,8 +254,28 @@ const { agreements, militantes } = defineProps<{
 const agreements_list = agreements.data;
 
 const open = ref(false);
+const mode = ref<"Model" | "Spacy">("Model");
 const currentStep = ref(1);
 const loading = ref(false);
+const selected = ref();
+
+const options = [
+  {
+    value: "Spacy",
+    label: "Procesador NLP",
+    subtitle: "SpaCy",
+    description:
+      "Procesamiento de lenguaje natural con análisis lingüístico avanzado",
+    icon: Brain,
+  },
+  {
+    value: "Model",
+    label: "Modelo",
+    subtitle: "IA Generativa",
+    description: "Modelo de inteligencia artificial para análisis contextual",
+    icon: Sparkles,
+  },
+] as const;
 
 const nextStep = () => {
   if (currentStep.value < 2) currentStep.value++;
@@ -197,7 +309,7 @@ const form = useForm({
         order: "Chequeo de acuerdos",
         content: agreements_list.map(
           (item: Agreements, index: number) =>
-            `${index + 1}. ${item.descripcion} - Responsable: ${item.responsable?.firstname} ${item.responsable?.lastname} - Participantes: ${item.participants?.map((i) => i.firstname)} - ${item.enddate} - ${item.status} `
+            `${index + 1}. ${item.descripcion} - Responsable: ${item.responsable?.firstname} ${item.responsable?.lastname} - Participantes: ${item.participants?.map((i) => i.firstname)} - ${item.enddate} - ${item.status} `,
         ),
         workplan: [],
         agreements: [],
@@ -230,7 +342,7 @@ const submitForm = async () => {
   try {
     await actions.minute.createMinute.orThrow({
       data,
-      mode: "Model", //cambiar y pedir al usuario que lo cree
+      mode: mode.value,
       type: "Ordinaria",
     });
     toast.success("Se creó el acta correctamente");
