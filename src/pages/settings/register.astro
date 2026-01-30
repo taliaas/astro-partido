@@ -1,29 +1,67 @@
 ---
 import TrazasService from "@/services/TrazasService";
-import RegisterComponent from "../../components/settings/Register.vue"
+import RegisterComponent from "../../components/settings/Register.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
-import SettingsLayout from "../../layouts/SettingsLayout.astro"
+import SettingsLayout from "../../layouts/SettingsLayout.astro";
 import { getSession } from "auth-astro/server";
 
+const searchParams = Astro.url.searchParams;
 const page = parseInt(Astro.url.searchParams.get("page") || "1");
 const limit = parseInt(Astro.url.searchParams.get("limit") || "10");
-const session = (await getSession(Astro.request)) as any || "";
+const session = ((await getSession(Astro.request)) as any) || "";
+const user = searchParams.get("user") as any;
+const date = searchParams.get("date") as any;
+const action = searchParams.get("action") as any;
+const order = searchParams.get("order") as any;
+const module = searchParams.get("module") as any;
 
 const getAll = async () => {
-    const service = new TrazasService()
-    try {
-        return await service.getAllLogs(page, limit, session.jwt);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        
-    }
+  const service = new TrazasService();
+  try {
+    return await service.getAllLogs(
+      page,
+      limit,
+      user,
+      action,
+      module,
+      date,
+      order,
+      session.jwt,
+    );
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+const getAllModules = async () => {
+  const service = new TrazasService();
+  try {
+    return await service.getAllModules(session.jwt);
+  } catch (error) {
+    console.error("Error fetching modules:", error);
+  }
 };
 
+const getAllUsers = async () => {
+  const service = new TrazasService();
+  try {
+    return await service.getAllUsers(session.jwt);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+
+const modules = await getAllModules();
+const users = await getAllUsers();
 const trazas = await getAll();
 ---
 
 <RootLayout>
-    <SettingsLayout>
-        <RegisterComponent trazas={trazas} client:load/>
-    </SettingsLayout>
+  <SettingsLayout>
+    <RegisterComponent
+      trazas={trazas}
+      modules={modules}
+      users={users}
+      client:load
+    />
+  </SettingsLayout>
 </RootLayout>

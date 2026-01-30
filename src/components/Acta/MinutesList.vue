@@ -28,6 +28,8 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
+  Building,
+  Check,
   Download,
   Eye,
   FileCheck,
@@ -52,6 +54,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
 import {
@@ -72,6 +75,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { exportarCP } from "@/lib/export_cp";
+import DialogClose from "@/components/ui/dialog/DialogClose.vue";
 
 const emit = defineEmits(["test"]);
 const {
@@ -140,17 +144,6 @@ function handleSort() {
   }
   navigate(`/minutes?page=${currentPage.value}&order=${sort.value}`);
 }
-
-const handleFilter = (filter: string, e: any) => {
-  const value = e.target.value;
-  const query = new URLSearchParams(searchParams as any);
-  if (value && value !== "all") {
-    query.set(filter, value);
-  } else {
-    query.delete(filter);
-  }
-  navigate("?" + query.toString());
-};
 
 const openCore = (acta: any) => {
   currentsMinute.value = acta;
@@ -494,7 +487,9 @@ function goToPreviousPage() {
                   <TableCell class="font-medium pl-8">{{
                     index + 1
                   }}</TableCell>
-                  <TableCell class="pl-6">{{ acta.name }}</TableCell>
+                  <TableCell class="pl-6 font-semibold">{{
+                    acta.name
+                  }}</TableCell>
                   <TableCell class="pl-6 text-center">
                     <Button
                       type="button"
@@ -747,7 +742,12 @@ function goToPreviousPage() {
 
     <Dialog :open="update" @update:open="update = $event">
       <DialogContent>
-        <DialogTitle>Seleccione el núcleo</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>Seleccione el núcleo</DialogTitle>
+          <DialogDescription>
+            Seleccione el núcleo al que pertenece esta acta
+          </DialogDescription>
+        </DialogHeader>
         <div class="flex justify-center p-2">
           <Select v-model:model-value="selectedCore">
             <SelectTrigger class="w-full">
@@ -765,11 +765,14 @@ function goToPreviousPage() {
             </SelectContent>
           </Select>
         </div>
-        <div class="flex justify-end">
-          <Button type="submit" variant="default" @click="handleCore"
-            >Guardar</Button
+        <DialogFooter>
+          <DialogClose>
+            <Button type="button" variant="outline">Cancelar</Button>
+          </DialogClose>
+          <Button type="submit" variant="default" @click="handleCore">
+            Guardar</Button
           >
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
 

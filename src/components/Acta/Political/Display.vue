@@ -226,15 +226,14 @@
               </div>
             </div>
           </section>
-          <section title="Resumen" v-if="resumen || isSubmitting">
+          <section title="Resumen" v-if="summary || isSubmitting">
             <Label class="text-lg font-semibold">Resumen</Label>
-
-            <p
-              :data-submitting="isSubmitting"
-              class="text-md p-2 data-[submitting]:text-muted-foreground text-justify"
-            >
-              {{ resumen.data || "Generando..." }}
-            </p>
+            <div
+              v-if="summary"
+              class="text-lg p-2 text-justify bg-gray-100 rounded-md"
+              v-html="render"
+            />
+            <p v-else class="text-md p-2 text-muted-foreground">Generando...</p>
           </section>
           <section title="Valoracion">
             <h2 class="text-xl font-semibold">Observaciones</h2>
@@ -243,9 +242,9 @@
             </p>
             <p v-else class="text-muted-foreground">No hay observaciones</p>
           </section>
-          <!-- Próximas fechas -->
+
           <section class="firmas text-lg">
-            <Label class="text-xl font-semibold text-gray-800">Firmas</Label>
+            <Label class="text-xl font-semibold text-gray-800">Firma</Label>
 
             <div class="flex gap-4">
               <Label class="text-md">Secretario del Núcleo:</Label>
@@ -332,13 +331,17 @@ import {
   WandSparkles,
   Loader2,
 } from "lucide-vue-next";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { marked } from "marked";
 
 const { acta: minute } = defineProps<{
   acta: Minute;
 }>();
 
-const resumen = ref();
+const summary = ref(minute?.resumen || "");
+const render = computed(() => {
+  return marked(summary.value);
+});
 
 defineEmits(["move"]);
 
@@ -360,12 +363,11 @@ const updateStatus = async (status: string) => {
 const generateResumen = async () => {
   if (!minute) return;
   isSubmitting.value = true;
-  resumen.value = "";
   try {
-    const response = await actions.political.generateResumen({
+    const response = await actions.political.generateResumen.orThrow({
       id: minute.id,
     });
-    resumen.value = response;
+    summary.value = response;
   } catch (e) {
     console.error(e);
   } finally {

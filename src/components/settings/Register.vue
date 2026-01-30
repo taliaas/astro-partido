@@ -12,41 +12,61 @@
       <div class="p-6 space-y-3">
         <!-- Tabla de trazas -->
         <div class="flex gap-2">
-          <Input type="search" placeholder="Buscar ..."></Input>
-          <Select>
+          <Label class="p-2 bg-gray-100 rounded-md text-muted-foreground">
+            <Filter class="size-4" />Filtros</Label
+          >
+          <!-- <Input type="search" placeholder="Buscar ..."></Input> -->
+
+          <!-- Modules -->
+          <Select
+            :default-value="searchParams.module ?? 'all'"
+            @update:model-value="handleFilterByValue('module', $event)"
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Todos los módulos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los módulos</SelectItem>
+              <SelectItem v-for="(item, index) in modules" :value="item.name">
+                <span v-if="item === null"> - </span>
+                {{ item.name }}</SelectItem
+              >
+            </SelectContent>
+          </Select>
+
+          <!-- Actions -->
+          <Select
+            :default-value="searchParams.action ?? 'all'"
+            @update:model-value="handleFilterByValue('action', $event)"
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Todos las acciones" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las acciones</SelectItem>
+              <SelectItem v-for="(item, index) in Action" :value="item">
+                <span v-if="item === null"> - </span>
+                {{ item }}</SelectItem
+              >
+            </SelectContent>
+          </Select>
+          <!-- Users -->
+          <Select
+            :default-value="searchParams.user ?? 'all'"
+            @update:model-value="handleFilterByValue('user', $event)"
+          >
             <SelectTrigger>
               <SelectValue placeholder="Todos los usuarios" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="(user, index) in users" :value="index">
+              <SelectItem value="all">Todos los usuarios</SelectItem>
+              <SelectItem v-for="(user, index) in users" :value="user.id + ''">
                 <span v-if="user === null"> - </span>
-                {{ user?.name }}</SelectItem
-              >
+                {{ user?.name }}
+              </SelectItem>
             </SelectContent>
           </Select>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Todos los usuarios" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem v-for="(item, index) in modules" :value="index">
-                <span v-if="item === null"> - </span>
-                {{ item }}</SelectItem
-              >
-            </SelectContent>
-          </Select>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Todos los usuarios" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem v-for="(item, index) in actions" :value="index">
-                <span v-if="item === null"> - </span>
-                {{ item }}</SelectItem
-              >
-            </SelectContent>
-          </Select>
-          <Input type="date"></Input>
+          <!-- <Input type="date" class="max-w-36"></Input> -->
         </div>
 
         <table class="w-full caption-bottom text-md border rounded">
@@ -123,7 +143,10 @@
         </table>
 
         <div class="flex justify-between">
-          <p>Mostrando: {{ trazas.page }} de {{ trazas.total }} página(s)</p>
+          <p class="text-muted-foreground">
+            Mostrando: {{ trazas.data.length === 0 ? 0 : trazas.page }} de
+            {{ trazas.total }} página(s)
+          </p>
 
           <div class="space-x-2">
             <Button
@@ -291,6 +314,7 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
 import { Input } from "@/components/ui/input";
+import Label from "@/components/ui/label/Label.vue";
 import {
   Select,
   SelectContent,
@@ -298,6 +322,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { User } from "@/interface/Militante";
+import { useUrlSearchParams } from "@vueuse/core";
 import { navigate } from "astro:transitions/client";
 import { format } from "date-fns";
 import {
@@ -306,19 +332,29 @@ import {
   CalendarIcon,
   DatabaseIcon,
   Eye,
+  Filter,
   UserIcon,
   XIcon,
 } from "lucide-vue-next";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 const Action = ["CREATE", "UPDATE", "DELETE", "LOGIN"] as const;
+export interface Logs {
+  id: number;
+  action: any;
+  module: string;
+  createdAt: Date;
+  entityId?: string;
+  user: User;
+  expiresAt: Date | null;
+}
 
-const { trazas } = defineProps<{
-  trazas: { data: any[]; page: number; total: number; limit: number };
+const { trazas, modules, users } = defineProps<{
+  trazas: { data: Logs[]; page: number; total: number; limit: number };
+  modules: { id: string; name: string }[];
+  users: User[];
 }>();
 
-const modules = ["Documentos"];
-const actions = ["Crear"];
 const trazaSeleccionada = ref({
   id: 0,
   action: Action[0],
@@ -332,18 +368,27 @@ const trazaSeleccionada = ref({
   entityId: "",
   expiresAt: "",
 });
+
 const modalAbierto = ref(false);
+const searchParams = useUrlSearchParams();
 const currentPage = ref(trazas?.page);
-const users = computed(() => {
-  return trazas.data.map((item) => item.user);
-});
+
+const handleFilterByValue = (filter: string, value: any) => {
+  const query = new URLSearchParams(searchParams as any);
+  if (value && value !== "all") {
+    query.set(filter, value);
+  } else {
+    query.delete(filter);
+  }
+  navigate("?" + query.toString());
+};
 
 // Mantener currentPage sincronizado con trazas.page
 watch(
   () => trazas.page,
   (newPage) => {
     currentPage.value = newPage;
-  }
+  },
 );
 
 // Función para abrir el modal de detalles

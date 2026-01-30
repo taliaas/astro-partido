@@ -145,12 +145,12 @@ export const cpForm = z.object({
     .object({
       estado: z.enum(["Presente", "Virtual", "Ausente"]),
       reason: z.enum(absenceReasons).nullable(),
-      militanteId: z.coerce.number().optional(),
+      militanteId: z.coerce.string().optional(),
     })
     .array(),
   invitados: z
     .object({
-      id: z.coerce.number().optional(),
+      id: z.coerce.string().optional(),
       nombre_apellidos: z.string({ message: "Nombre incorrecto" }),
       cargo: z.enum(cargos, { message: "Cargo incorrecto" }),
     })

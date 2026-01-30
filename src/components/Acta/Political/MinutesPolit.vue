@@ -204,8 +204,8 @@
       <!-- 4. Relación de Asistencia -->
       <div class="overflow-x-auto mt-4 space-y-4">
         <Label class="block mb-3 text-md font-medium text-gray-700"
-          >Relación de Militantes del Núcleo</Label
-        >
+          >Relación de Militantes del Núcleo
+        </Label>
         <Table class="min-w-full divide-y rounded divide-gray-200 border">
           <TableHeader class="bg-gray-100">
             <TableRow>
@@ -311,7 +311,6 @@
             </TableRow>
           </TableFooter>
         </Table>
-
         <!-- Empty State -->
         <div
           v-if="militants?.length === 0"
@@ -337,7 +336,6 @@
               <Textarea
                 v-bind="componentField"
                 rows="3"
-                required
                 placeholder="Tema evaluado en la reunión ..."
               />
             </FormControl>
@@ -413,7 +411,6 @@
                     <Textarea
                       v-bind="componentField"
                       rows="3"
-                      required
                       placeholder="Escribir el planteamiento del militante..."
                     />
                   </FormControl>
@@ -430,13 +427,40 @@
         <Button variant="outline" @click="cerrar" type="reset"
           >Cancelar
         </Button>
-        <Button type="submit" form="minute-cp">
+        <Button :disabled="loading" type="button" @click="openDialog">
           Enviar
+          <Loader2 v-if="loading" class="animate-spin" />
           <SendHorizonal class="size-4" />
         </Button>
       </div>
     </div>
   </form>
+  <Dialog v-if="!isValid" v-model:open="open">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{{
+          isValid ? "true" : "Esta acta será guardada como borrador"
+        }}</DialogTitle>
+        <DialogDescription>{{
+          isValid ? "true" : "Hay campos que deben ser llenados"
+        }}</DialogDescription>
+      </DialogHeader>
+      <DialogFooter>
+        <DialogClose>
+          <Button type="button" variant="outline">Cancelar</Button>
+        </DialogClose>
+        <Button
+          :disabled="loading"
+          type="submit"
+          form="minute-cp"
+          variant="default"
+        >
+          <Loader2 v-if="loading" class="animate-spin" />
+          Guardar</Button
+        >
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -466,6 +490,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -486,13 +519,14 @@ import { navigate } from "astro:transitions/client";
 import {
   ArrowLeft,
   ArrowRight,
+  Loader2,
   Plus,
   SendHorizonal,
   Trash,
   TrashIcon,
 } from "lucide-vue-next";
 import { useFieldArray, useForm } from "vee-validate";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
 const { cores, cp, edit, militants, minute } = defineProps<{
@@ -504,6 +538,7 @@ const { cores, cp, edit, militants, minute } = defineProps<{
 }>();
 const headers = ["No.", "Nombre y Apellidos", "Estado", "Causa"];
 
+const open = ref(false);
 const loading = ref(false);
 
 const form = useForm({
@@ -519,11 +554,11 @@ const form = useForm({
         militanteId: i.id,
       })),
     date: (minute?.date as any) ?? "",
-    hour: minute?.hour ?? "",
+    hour: minute?.hour ?? undefined,
     invitados: minute?.invitados ?? [],
     observaciones: minute?.observaciones ?? "",
     place: minute?.place ?? "",
-    status: minute?.status ?? MinuteStatus.CREATE,
+    status: minute?.status ?? MinuteStatus.ERASER,
     type: minute?.type ?? "",
     topic: minute?.political?.topic ?? "",
     development: minute?.political?.development ?? [
@@ -536,6 +571,12 @@ const form = useForm({
   },
 });
 
+const data = form.values;
+
+const openDialog = () => {
+  if (!edit) open.value = true;
+  else submitForm(); //revisar si funciona
+};
 const developments =
   useFieldArray<FormCP["development"][number]>("development");
 const invitados = useFieldArray<FormCP["invitados"][number]>("invitados");
@@ -544,11 +585,18 @@ const cerrar = async () => {
   await navigate("/minutes/");
 };
 
+const isValid = computed(() => {
+  data.status = MinuteStatus.ERASER;
+  return form.meta.value.valid;
+});
+
 const submitForm = async () => {
   loading.value = true;
-  const data = form.values;
   data.core = { id: data.core };
-  data.status = MinuteStatus.CREATE;
+  // const validate = await form.validate();
+
+  // data.status = validate.valid ? MinuteStatus.CREATE : MinuteStatus.ERASER;
+
   try {
     if (!cp) {
       data.type = MinuteType.ex;
@@ -572,6 +620,8 @@ const submitForm = async () => {
   } catch (e) {
     loading.value = false;
     if (e instanceof ActionError) {
+      console.log(e);
+
       toast.error(e.message);
     }
   }

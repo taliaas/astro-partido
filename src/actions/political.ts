@@ -11,6 +11,8 @@ export const createMinute = defineAction({
     mode: z.enum(MinuteMode),
   }),
   async handler({ data, type, mode, ...rest }, context) {
+    console.log(data);
+
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
     console.log(data);
