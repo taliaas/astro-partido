@@ -86,6 +86,9 @@ import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { z } from "zod";
+import { useUrlSearchParams } from "@vueuse/core";
+
+const searchParams = useUrlSearchParams();
 
 type UserData = z.infer<typeof userSchema>;
 const userSchema = z.object({
@@ -116,7 +119,8 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
       rememberMe: data.rememberMe,
     });
     toast.success("Sesión iniciado con éxito");
-    navigate("/home");
+    const redirect = searchParams.redirect
+    navigate(redirect || "/home");
   } catch (error) {
     console.error("Error", error);
     toast.error("Ha ocurrido un error al iniciar sesión");
