@@ -591,11 +591,12 @@ const isValid = computed(() => {
 });
 
 const submitForm = async () => {
+  console.log("jiji");
+
   loading.value = true;
   data.core = { id: data.core };
-  // const validate = await form.validate();
-
-  // data.status = validate.valid ? MinuteStatus.CREATE : MinuteStatus.ERASER;
+  const validate = await form.validate();
+  data.status = validate.valid ? MinuteStatus.CREATE : MinuteStatus.ERASER;
 
   try {
     if (!cp) {

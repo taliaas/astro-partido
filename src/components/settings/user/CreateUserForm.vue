@@ -43,7 +43,6 @@ const userSchema = z.object({
     .nullable(),
   role: z.string({ message: "El Rol es requerido" }),
 });
-
 const form = useForm<UserData>({
   initialValues: {
     name: user?.name ?? "",
@@ -76,7 +75,6 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
       setTimeout(() => toast.success("Usuario creado exitosamente"), 1000);
     }
   }
-
   onLoadingChange(false);
 });
 </script>
@@ -86,8 +84,10 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
     @submit="handleSubmit"
     class="space-y-4"
     id="create-user"
+    aria-autocomplete="none"
     autocomplete="off"
   >
+    {{ form.values }}
     <FormField name="name" v-slot="{ componentField }">
       <FormItem class="grid-cols-3">
         <FormLabel class="col-span-1"> Nombre:</FormLabel>

@@ -121,7 +121,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import Label from "@/components/ui/label/Label.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
 import {
   Sheet,
   SheetContent,
@@ -132,7 +131,6 @@ import {
 import { Reason } from "@/interface/Absent";
 import type { Computo } from "@/interface/Indicadores";
 import type { Comite, Core } from "@/interface/Militante";
-import { item } from "@unovis/ts/components/bullet-legend/style";
 import { ChevronDownIcon } from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -162,7 +160,7 @@ function handleClose(open: boolean) {
 
 function findIndicator(reason: Reason) {
   return currentComputo.value?.indicators.find(
-    (item) => JSON.parse(item.sub).reason === reason
+    (item) => JSON.parse(item.sub).reason === reason,
   );
 }
 
@@ -175,7 +173,7 @@ function addIndicator(id: string) {
 function getTotalByIndicator(reason: Reason) {
   return computos?.reduce((acc, computo) => {
     const ind = computo.indicators.find(
-      (i) => JSON.parse(i.sub)?.reason === reason
+      (i) => JSON.parse(i.sub)?.reason === reason,
     );
     return acc + (ind?.value ?? 0);
   }, 0);

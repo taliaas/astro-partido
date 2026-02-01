@@ -85,37 +85,35 @@
                 >
                   No hay militantes ausentes
                 </p>
+                <div v-else class="grid grid-cols-2">
+                  <Label class="text-lg font-medium text-gray-700"
+                    >Ausente</Label
+                  >
+                  <Label class="text-lg font-medium text-gray-700"
+                    >Motivo</Label
+                  >
+                </div>
                 <div
-                  v-else
                   v-for="(causa, index) of minute?.abscents.filter(
                     (i) => i.estado === StatusAtte.A,
                   )"
                   :key="index"
                   class="grid grid-cols-2"
                 >
-                  <Label class="text-md font-medium text-gray-700"
-                    >Ausente</Label
-                  >
-                  <Label class="text-md font-medium text-gray-700"
-                    >Motivo</Label
-                  >
-
-                  <div class="flex gap-2">
+                  <span>
                     {{ causa.militant.firstname }}
                     {{ causa.militant.lastname }}
-                  </div>
-                  <div class="flex gap-2">
-                    {{ causa.reason }}
-                  </div>
+                  </span>
+                  <span> {{ causa.reason }} </span>
                 </div>
               </div>
 
               <div>
                 <div class="grid grid-cols-2">
-                  <Label class="text-md font-medium text-gray-700">
+                  <Label class="text-lg font-medium text-gray-700">
                     Invitados
                   </Label>
-                  <Label class="text-md font-medium text-gray-700">
+                  <Label class="text-lg font-medium text-gray-700">
                     Responsabilidad
                   </Label>
                 </div>
@@ -132,10 +130,10 @@
 
               <div>
                 <div class="grid grid-cols-2">
-                  <Label class="text-md font-medium text-gray-700">
+                  <Label class="text-lg font-medium text-gray-700">
                     Del organismo superior:
                   </Label>
-                  <Label class="text-md font-medium text-gray-700">
+                  <Label class="text-lg font-medium text-gray-700">
                     Responsabilidad
                   </Label>
                 </div>
@@ -171,7 +169,9 @@
                       <Button
                         size="icon"
                         variant="outline"
-                        :disabled="isSubmitting"
+                        :disabled="
+                          isSubmitting || !minute.political?.development.length
+                        "
                         @click="generateResumen"
                       >
                         <Loader2
@@ -189,50 +189,54 @@
               </div>
               <div class="text-md pr-6 pl-2">
                 <p
+                  v-if="!minute.political?.development.length"
                   class="text-muted-foreground"
-                  v-if="!minute?.political?.development"
                 >
                   No hay desarrollo
                 </p>
-                <ol class="list-disc list-inside space-y-1 text-blue-600">
-                  <li
-                    v-for="(item, index) in minute?.political?.development"
-                    :key="index"
-                    class="text-lg text-gray-800 text-justify"
-                  >
-                    <span class="font-medium">
-                      {{ item.militant.firstname }}
-                      {{ item.militant.lastname }}:
-                    </span>
-                    <span>{{ item.argument }}</span>
-                  </li>
-                </ol>
-              </div>
-              <div class="flex gap-2 text-lg">
-                <Label class="font-medium text-lg">Opinaron:</Label>
-                <p
-                  class="text-muted-foreground"
-                  v-if="!minute?.political?.development"
-                >
-                  No hay opiniones
-                </p>
-                <p v-else>
-                  {{
-                    minute.political?.development
-                      .map((i) => i.militant.firstname)
-                      .join(", ")
-                  }}
-                </p>
+                <div v-else>
+                  <ol class="list-disc list-inside space-y-1 text-blue-600">
+                    <li
+                      v-for="(item, index) in minute?.political?.development"
+                      :key="index"
+                      class="text-lg text-gray-800 text-justify"
+                    >
+                      <span class="font-medium">
+                        {{ item.militant.firstname }}
+                        {{ item.militant.lastname }}:
+                      </span>
+                      <span>{{ item.argument }}</span>
+                    </li>
+                  </ol>
+
+                  <div class="flex gap-2 text-lg">
+                    <Label class="font-medium text-lg">Opinaron:</Label>
+                    <p
+                      class="text-muted-foreground"
+                      v-if="!minute?.political?.development"
+                    >
+                      No hay opiniones
+                    </p>
+                    <p v-else>
+                      {{
+                        minute.political?.development
+                          .map((i) => i.militant.firstname)
+                          .join(", ")
+                      }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
           <section title="Resumen" v-if="summary || isSubmitting">
-            <Label class="text-lg font-semibold">Resumen</Label>
+            <Label class="text-lg font-semibold">Resumen </Label>
             <div
               v-if="summary"
               class="text-lg p-2 text-justify bg-gray-100 rounded-md"
               v-html="render"
             />
+
             <p v-else class="text-md p-2 text-muted-foreground">Generando...</p>
           </section>
           <section title="Valoracion">
@@ -334,8 +338,8 @@ import {
 import { computed, ref } from "vue";
 import { marked } from "marked";
 
-const { acta: minute } = defineProps<{
-  acta: Minute;
+const { minute } = defineProps<{
+  minute: Minute;
 }>();
 
 const summary = ref(minute?.resumen || "");

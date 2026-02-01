@@ -20,7 +20,7 @@
           v-else
           class="flex pt-4 bg-white border p-12 rounded gap-2 grid-cols-1"
         >
-          <div v-for="ev in event.data" :key="ev.id" class="border-b">
+          <div v-for="ev in event?.data" :key="ev.id" class="border-b">
             <p class="text-button px-4 font-medium">{{ ev.type }}</p>
             <div class="flex justify-between">
               <h3 class="py-2">Detalles: {{ ev.title }}</h3>

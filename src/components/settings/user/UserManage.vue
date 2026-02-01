@@ -83,8 +83,8 @@
           <ExportsUsers :users="users.data" />
           <!-- Add User Button -->
           <Button @click="openCreate">
-            <UserPlus class="size-4" /> Añadir</Button
-          >
+            <UserPlus class="size-4" /> Añadir
+          </Button>
         </div>
       </div>
       <!--Tabla -->
@@ -421,6 +421,7 @@ const openModal = (user: any) => {
 const openCreate = () => {
   createUser.value = true;
   isEdit.value = false;
+  selectedUser.value = null;
 };
 
 function goToNextPage() {

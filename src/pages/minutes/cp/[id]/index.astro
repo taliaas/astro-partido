@@ -20,9 +20,9 @@ async function getActa() {
   }
 }
 
-const acta = await getActa();
+const minute = await getActa();
 ---
 
 <RootLayout>
-  <Display acta={acta} client:load />
+  <Display minute={minute} client:load />
 </RootLayout>

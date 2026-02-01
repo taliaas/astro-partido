@@ -69,11 +69,16 @@
           <!-- <Input type="date" class="max-w-36"></Input> -->
         </div>
 
-        <table class="w-full caption-bottom text-md border rounded">
+        <table class="w-full caption-bottom text-md border rounded-md">
           <thead class="">
             <tr
-              class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+              class="border-b rounded-md transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
             >
+              <th
+                class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
+              >
+                No.
+              </th>
               <th
                 class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
               >
@@ -113,10 +118,14 @@
               </td>
             </tr>
             <tr
-              v-for="traza in trazas.data"
+              v-for="(traza, index) of trazas.data"
               :key="traza.id"
               class="border rounded"
             >
+              <td class="px-4 font-medium">
+                {{ indexPage(index) }}
+              </td>
+
               <td class="px-4 font-medium">{{ traza.module }}</td>
               <td>{{ traza.action }}</td>
               <td class="text-center">
@@ -313,7 +322,6 @@
 
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
-import { Input } from "@/components/ui/input";
 import Label from "@/components/ui/label/Label.vue";
 import {
   Select,
@@ -372,6 +380,12 @@ const trazaSeleccionada = ref({
 const modalAbierto = ref(false);
 const searchParams = useUrlSearchParams();
 const currentPage = ref(trazas?.page);
+
+const indexPage = (index: number) => {
+  const limit: number = trazas.limit;
+  const page: number = trazas.page;
+  return Number(page - 1) * Number(limit) + (index + 1);
+};
 
 const handleFilterByValue = (filter: string, value: any) => {
   const query = new URLSearchParams(searchParams as any);

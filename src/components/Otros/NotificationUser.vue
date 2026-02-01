@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { Severity } from "@/enum/Estado";
+import type { User } from "@/interface/Militante";
 import { navigate } from "astro:transitions/client";
 import {
   AlertCircleIcon,
@@ -12,9 +14,23 @@ import {
   InfoIcon,
 } from "lucide-vue-next";
 
+interface NotificationData {
+  id: string;
+  title: string;
+  message: string;
+  read: boolean;
+  subject: string;
+  kpiId: string;
+  channel: "email" | "app";
+  severity: Severity;
+  user: User;
+  createdAt: Date;
+  expiresAt: Date | null;
+}
+
 const { notifications } = defineProps<{
   notifications: {
-    data: any[];
+    data: NotificationData[];
     page: number;
     limit: number;
     total: number;
@@ -81,30 +97,38 @@ function previous() {
                 <div
                   :class="{
                     'bg-blue-100 text-blue-600':
-                      notification.type === 2 || !notification.type,
+                      notification.severity === Severity.LOW ||
+                      !notification.severity,
                     'bg-yellow-100 text-yellow-600':
-                      notification.type === 1 || notification.type === 3,
-                    'bg-red-100 text-red-600': notification.type === 0,
-                    'bg-green-100 text-green-600': notification.type === 4,
+                      notification.severity === Severity.WARNING ||
+                      notification.severity === Severity.MEDIUM,
+                    'bg-red-100 text-red-600':
+                      notification.severity === Severity.CRITICAL,
+                    'bg-green-100 text-green-600':
+                      notification.severity === Severity.SUCCESS,
                   }"
                   class="p-2 rounded-full"
                 >
                   <InfoIcon
-                    v-if="notification.type === 2 || !notification.type"
+                    v-if="
+                      notification.severity === Severity.INFO ||
+                      !notification.severity
+                    "
                     class="h-4 w-4"
                   />
                   <AlertTriangleIcon
                     v-else-if="
-                      notification.type === 1 || notification.type === 3
+                      notification.severity === Severity.WARNING ||
+                      notification.severity === Severity.MEDIUM
                     "
                     class="h-4 w-4"
                   />
                   <AlertCircleIcon
-                    v-else-if="notification.type === 0"
+                    v-else-if="notification.severity === Severity.LOW"
                     class="h-4 w-4"
                   />
                   <CheckCircleIcon
-                    v-else-if="notification.type === 4"
+                    v-else-if="notification.severity === Severity.SUCCESS"
                     class="h-4 w-4"
                   />
                 </div>
@@ -133,20 +157,11 @@ function previous() {
                         <ClockIcon class="h-3 w-3 mr-1" />
                         {{
                           notification.createdAt
-                            ? notification.createdAt.slice(0, 10)
+                            ? new Date(
+                                notification.createdAt,
+                              ).toLocaleDateString("es", { dateStyle: "long" })
                             : "Hace unos momentos"
                         }}
-                      </div>
-
-                      <div
-                        v-if="notification.tipo_alerta"
-                        class="flex items-center"
-                      >
-                        <span
-                          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
-                        >
-                          {{ notification.tipo_alerta }}
-                        </span>
                       </div>
                     </div>
                   </div>

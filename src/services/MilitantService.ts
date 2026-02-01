@@ -126,7 +126,8 @@ export default class MilitantService {
     status: string,
     core: string,
     page: number,
-    limit: number
+    limit: number,
+    token: any,
   ) {
     const searchParam = new URLSearchParams();
     if (page) searchParam.set("page", page + "");
@@ -144,6 +145,7 @@ export default class MilitantService {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -158,7 +160,7 @@ export default class MilitantService {
 
   async getAbsentCausesWithMilitante(
     month: number,
-    year: number
+    year: number,
   ): Promise<AbsentCausesWithMilitante> {
     try {
       const response = await fetch(
@@ -168,7 +170,7 @@ export default class MilitantService {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

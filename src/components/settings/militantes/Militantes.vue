@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import type { Militant } from "@/interface/Militante";
 import { useDebounceFn, useUrlSearchParams } from "@vueuse/core";
+import { format } from "date-fns";
 import { navigate } from "astro:transitions/client";
 import {
   ArrowLeft,
@@ -87,7 +88,7 @@ function nextPage() {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
     );
   }
 }
@@ -96,7 +97,7 @@ function previousPage() {
   if (currentPage.value > 1) {
     currentPage.value--;
     navigate(
-      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`
+      `/settings/militants?core=${selectCore.value}&page=${currentPage.value}`,
     );
   }
 }
@@ -202,6 +203,11 @@ function previousPage() {
             <th
               class="h-12 px-4 text-center align-middle font-medium text-muted-foreground"
             >
+              Fecha de creación
+            </th>
+            <th
+              class="h-12 px-4 text-center align-middle font-medium text-muted-foreground"
+            >
               Estado
             </th>
             <th
@@ -237,6 +243,9 @@ function previousPage() {
             <td class="p-4 align-middle">{{ member.core?.name }}</td>
             <td class="p-4 align-middle text-center">
               {{ member.organization }}
+            </td>
+            <td class="p-4 align-middle text-center">
+              {{ format(member.createdAt, "yyyy-MM-dd") }}
             </td>
             <td class="p-4 align-middle text-center capitalize">
               <span

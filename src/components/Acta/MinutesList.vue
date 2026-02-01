@@ -86,7 +86,13 @@ const {
   nucleos,
   session,
 } = defineProps<{
-  actas: { data: Minute[]; page_total: number; total: number };
+  actas: {
+    data: Minute[];
+    page_total: number;
+    total: number;
+    page: number;
+    limit: number;
+  };
   type: string;
   page: number;
   order: any;
@@ -144,6 +150,12 @@ function handleSort() {
   }
   navigate(`/minutes?page=${currentPage.value}&order=${sort.value}`);
 }
+
+const indexPage = (index: number) => {
+  const limit: number = actas.limit;
+  const page: number = actas.page_total;
+  return Number(page - 1) * Number(limit) + (index + 1);
+};
 
 const openCore = (acta: any) => {
   currentsMinute.value = acta;
@@ -485,7 +497,7 @@ function goToPreviousPage() {
                   class="hover:bg-gray-50/50 transition-colors duration-200"
                 >
                   <TableCell class="font-medium pl-8">{{
-                    index + 1
+                    indexPage(index)
                   }}</TableCell>
                   <TableCell class="pl-6 font-semibold">{{
                     acta.name

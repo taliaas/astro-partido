@@ -76,6 +76,7 @@ export interface Militant {
   id: number;
   firstname: "";
   lastname: "";
+  createdAt: Date;
   ci: "";
   email: "";
   organization: "";

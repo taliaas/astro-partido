@@ -26,7 +26,8 @@ async function getMilitantes() {
       status,
       core,
       page,
-      limit
+      limit,
+      session.jwt,
     );
   } catch (e) {
     console.error(e);
