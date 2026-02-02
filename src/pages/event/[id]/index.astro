@@ -1,0 +1,27 @@
+---
+import EventView from "@/components/Event/EventView.vue";
+import RootLayout from "@/layouts/RootLayout.astro";
+import EventService from "@/services/EventService";
+import { getSession } from "auth-astro/server";
+
+const session = (await getSession(Astro.request)) as any;
+const { id } = Astro.params;
+
+if (!id) {
+  throw new Error("No id provided");
+}
+async function getEvent() {
+  const service = new EventService();
+  try {
+    return await service.getFindEvent(Number(id), session.jwt);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+const event = await getEvent();
+---
+
+<RootLayout>
+  <EventView event={event} client:load />
+</RootLayout>

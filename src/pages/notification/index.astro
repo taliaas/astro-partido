@@ -22,5 +22,10 @@ const notifications = await getNotification();
 ---
 
 <RootLayout>
-  <NotificationContainer notifications={notifications} client:load />
+  <NotificationContainer
+    notifications={notifications}
+    limit={Number(limit)}
+    page={Number(page)}
+    client:load
+  />
 </RootLayout>

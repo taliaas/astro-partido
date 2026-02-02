@@ -80,13 +80,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { toTypedSchema } from "@vee-validate/zod";
 import { navigate } from "astro:transitions/client";
-import { signIn } from "auth-astro/client";
 import { UserIcon } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { z } from "zod";
 import { useUrlSearchParams } from "@vueuse/core";
+import { signIn } from "@/lib/sign-in";
 
 const searchParams = useUrlSearchParams();
 
@@ -119,8 +119,8 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
       rememberMe: data.rememberMe,
     });
     toast.success("Sesión iniciado con éxito");
-    const redirect = searchParams.redirect
-    navigate(redirect || "/home");
+    const redirect = searchParams.redirect;
+    navigate((redirect as string) || "/home");
   } catch (error) {
     console.error("Error", error);
     toast.error("Ha ocurrido un error al iniciar sesión");

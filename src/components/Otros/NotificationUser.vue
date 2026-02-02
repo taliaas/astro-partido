@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Severity } from "@/enum/Estado";
 import type { User } from "@/interface/Militante";
+import { useUrlSearchParams } from "@vueuse/core";
 import { navigate } from "astro:transitions/client";
 import {
   AlertCircleIcon,
@@ -13,6 +22,7 @@ import {
   ClockIcon,
   InfoIcon,
 } from "lucide-vue-next";
+import { ref } from "vue";
 
 interface NotificationData {
   id: string;
@@ -28,7 +38,7 @@ interface NotificationData {
   expiresAt: Date | null;
 }
 
-const { notifications } = defineProps<{
+const { notifications, page, limit } = defineProps<{
   notifications: {
     data: NotificationData[];
     page: number;
@@ -36,20 +46,41 @@ const { notifications } = defineProps<{
     total: number;
     all: number;
   };
+  page: number;
+  limit: number;
 }>();
 
-const currentPage = Number(notifications.page);
+const currentPage = ref(page);
+const hasNextPage = ref(notifications?.total);
+const searchParams = useUrlSearchParams();
 
-function next() {
-  if (notifications.total > currentPage)
-    navigate(`/notification?page=${currentPage + 1}`);
-}
-
-function previous() {
-  if (currentPage > 1) {
-    navigate(`/notification?page=${currentPage - 1}`);
+function goToNextPage() {
+  const query = new URLSearchParams(searchParams as any);
+  if (notifications.total > currentPage.value) {
+    currentPage.value++;
+    query.set("page", currentPage.value + "");
+    navigate(`?` + query.toString());
   }
 }
+
+function goToPreviousPage() {
+  const query = new URLSearchParams(searchParams as any);
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    query.set("page", currentPage.value + "");
+    navigate(`?` + query.toString());
+  }
+}
+
+const handleFilterByValue = (filter: string, value: any) => {
+  const query = new URLSearchParams(searchParams as any);
+  if (value && value !== "all") {
+    query.set(filter, value);
+  } else {
+    query.delete(filter);
+  }
+  navigate("?" + query.toString());
+};
 </script>
 
 <template>
@@ -63,7 +94,7 @@ function previous() {
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
               <div class="p-2 rounded-lg">
-                <BellIcon class="h-6 w-6" />
+                <BellIcon class="h-6 w-6 text-blue-600" />
               </div>
               <div>
                 <h1 class="text-2xl font-bold text-gray-900">
@@ -188,7 +219,58 @@ function previous() {
         </div>
 
         <!-- Footer -->
+
         <div
+          v-if="notifications?.total !== 0"
+          class="flex justify-between border-t"
+        >
+          <div
+            class="text-md text-muted-foreground flex items-center gap-1 p-4"
+          >
+            Mostrando
+            <span class="font-medium">{{ notifications.page || 0 }}</span> de
+            <span class="font-medium">{{ notifications?.total || 1 }}</span>
+            páginas
+          </div>
+
+          <div class="flex gap-2 p-4">
+            <Button
+              size="icon"
+              :disabled="currentPage === 1"
+              variant="outline"
+              @click="goToPreviousPage"
+            >
+              <ArrowLeft />
+            </Button>
+            <Button
+              size="icon"
+              :disabled="currentPage >= hasNextPage"
+              variant="outline"
+              @click="goToNextPage"
+            >
+              <ArrowRight
+            /></Button>
+
+            <Select
+              :default-value="searchParams.limit ?? '10'"
+              @update:model-value="handleFilterByValue('limit', $event)"
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent class="font-normal">
+                <SelectGroup>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="15">15</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <!-- <div
           v-if="notifications && notifications.data.length > 0"
           class="p-4 bg-gray-50 border-t border-gray-200"
         >
@@ -211,7 +293,7 @@ function previous() {
               </Button>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
