@@ -75,7 +75,7 @@ const formatFileSize = (bytes: any) => {
 
 const removeFile = (fileName: any) => {
   uploadedFiles.value = uploadedFiles.value.filter(
-    (file) => file.name !== fileName
+    (file) => file.name !== fileName,
   );
 };
 
@@ -123,13 +123,20 @@ const close = () => {};
         <Label class="block text-sm font-medium text-gray-700 mb-2 mt-2">
           Seleccione el procesamiento:
         </Label>
-        <div class="space-x-2">
-          <Button @click="mode = 'Spacy'" :disabled="mode !== 'Spacy'"
-            >Spacy</Button
+        <div class="flex gap-2">
+          <Button
+            @click="mode = 'Spacy'"
+            :variant="mode === 'Spacy' ? 'default' : 'outline'"
           >
-          <Button @click="mode = 'Model'" :disabled="mode !== 'Model'"
-            >Model</Button
+            Spacy
+          </Button>
+
+          <Button
+            @click="mode = 'Model'"
+            :variant="mode === 'Model' ? 'default' : 'outline'"
           >
+            Model
+          </Button>
         </div>
       </div>
 

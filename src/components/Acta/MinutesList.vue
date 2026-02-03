@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { statusMap } from "@/components/Acta/status";
 import UploadMinute from "@/components/Acta/UploadMinute.vue";
+import DialogClose from "@/components/ui/dialog/DialogClose.vue";
 import Label from "@/components/ui/label/Label.vue";
 import {
   Select,
@@ -17,6 +18,7 @@ import TooltipTrigger from "@/components/ui/tooltip/TooltipTrigger.vue";
 import { MinuteStatus } from "@/enum/Estado";
 import { MinuteType, roleEnum } from "@/enum/roleEnum";
 import type Minute from "@/interface/Minute";
+import { exportarCP } from "@/lib/export_cp";
 import { exportarRO } from "@/lib/export_ro.ts";
 import { usePermissions } from "@/utils/auth-client";
 import { useSse } from "@/utils/see";
@@ -28,11 +30,8 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
-  Building,
-  Check,
   Download,
   Eye,
-  FileCheck,
   FilePenLine,
   FileSearch,
   FileText,
@@ -41,7 +40,6 @@ import {
   Pencil,
   PlusIcon,
   SearchIcon,
-  Sparkle,
   Sparkles,
   TrashIcon,
 } from "lucide-vue-next";
@@ -74,8 +72,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { exportarCP } from "@/lib/export_cp";
-import DialogClose from "@/components/ui/dialog/DialogClose.vue";
 
 const emit = defineEmits(["test"]);
 const {
@@ -641,7 +637,7 @@ function goToPreviousPage() {
                   v-if="actas?.data?.length === 0"
                   class="text-center border p-4"
                 >
-                  <TableCell>
+                  <TableCell colspan="8">
                     <div>
                       <div
                         class="mx-auto h-10 w-10 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
@@ -657,10 +653,11 @@ function goToPreviousPage() {
                     </div>
                   </TableCell>
                 </TableRow>
-                <TableRow v-else>
+                <TableRow>
                   <TableCell colspan="8">
-                    <div v-if="actas?.total !== 0" class="flex justify-between">
+                    <div class="flex justify-between">
                       <div
+                        v-if="actas?.total !== 0"
                         class="text-md text-muted-foreground flex items-center gap-1"
                       >
                         Mostrando
@@ -671,7 +668,7 @@ function goToPreviousPage() {
                         páginas
                       </div>
 
-                      <div class="flex gap-2">
+                      <div class="flex gap-2 justify-end">
                         <Button
                           size="icon"
                           :disabled="currentPage === 1"
