@@ -31,11 +31,10 @@
     <div class="bg-white p-4 rounded-lg border shadow-sm">
       <div class="flex gap-4 items-center flex-wrap">
         <div class="flex-1 min-w-[250px]">
-          <input
+          <Input
             v-model="searchTerm"
             type="text"
             placeholder="Buscar por nombre del miembro..."
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         <select
@@ -65,6 +64,11 @@
         <table class="w-full">
           <thead class="bg-gray-50 border-b">
             <tr>
+              <th
+                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
+              >
+                No.
+              </th>
               <th
                 class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
               >
@@ -99,10 +103,13 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr
-              v-for="transfer in filteredTransfers"
+              v-for="(transfer, index) in filteredTransfers"
               :key="transfer.id"
               class="hover:bg-gray-50 transition-colors"
             >
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ indexPage(Number(index)) }}
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
                   <template v-if="transfer.militante">
@@ -263,9 +270,9 @@
         <form @submit.prevent="saveTransfer()" class="space-y-4">
           <!-- Tipo de Militante (solo en crear) -->
           <div v-if="!isEdit">
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <Label class="block text-sm font-medium text-gray-700 mb-1">
               Tipo de Militante <span class="text-red-500">*</span>
-            </label>
+            </Label>
             <select
               v-model="tipoMilitante"
               required
@@ -688,6 +695,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Label from "@/components/ui/label/Label.vue";
 
 const {
   traslados,
@@ -722,6 +730,12 @@ const Estado = ["Pendiente", "Completado"] as const;
 //Estados de paginación
 const currentPage = ref(initialPage || 1);
 const hasNextPage = ref(traslados?.total || 1);
+
+const indexPage = (index: number) => {
+  const limit: number = traslados.limit;
+  const page: number = traslados.total;
+  return Number(page - 1) * Number(limit) + (index + 1);
+};
 
 // Función para obtener clases CSS según el estado
 const getEstadoBadgeClass = (estado: string) => {
@@ -798,7 +812,7 @@ const currentTransfer = ref<{
 
 // Computed properties
 const filteredTransfers = computed(() => {
-  return traslados.data.filter((transfer: any) => {
+  return traslados?.data.filter((transfer: any) => {
     const nombreCompleto = transfer.militante
       ? `${transfer.militante.firstname} ${transfer.militante.lastname}`.toLowerCase()
       : (transfer.nombreMilitanteExterno || "").toLowerCase();
