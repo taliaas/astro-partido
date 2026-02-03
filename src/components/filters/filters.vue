@@ -1,25 +1,8 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  SelectContent,
-  SelectGroup,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Select from "@/components/ui/select/Select.vue";
-import SelectItem from "@/components/ui/select/SelectItem.vue";
-import { MinuteStatus } from "@/enum/Estado";
-import { toTypedSchema } from "@vee-validate/zod";
-import { useForm } from "vee-validate";
-import { z } from "zod";
+import { indicators } from "@/enum/indicators";
+import type { Core } from "@/interface/Militante";
+import { reactive } from "vue";
 
 interface CurrentUser {
   roleId: number;
@@ -27,9 +10,10 @@ interface CurrentUser {
   name: string;
 }
 
-const { showCoreFilter, currentUser } = defineProps<{
+const { showCoreFilter, currentUser, cores } = defineProps<{
   showCoreFilter: boolean;
   currentUser: CurrentUser | null;
+  cores: Core[];
 }>();
 
 const filters = reactive({
@@ -41,42 +25,12 @@ const filters = reactive({
   text: "",
 });
 
-const form = useForm<SearchData>({
-  validationSchema: toTypedSchema(searchSchema),
-  initialValues: {
-    name: "",
-    core: "",
-    doc_type: "",
-    keywords: "",
-    status: null,
-  },
-});
-
-// Lista predefinida de núcleos
-const coresList = [
-  "Ing. Industrial",
-  "Arquitectura",
-  "Automática",
-  "CIPEL",
-  "CEIS",
-  "Telecomunicaciones",
-  "CIME",
-  "Rectorado",
-  "VRD",
-  "VREAS",
-  "VREU",
-  "VRIPG",
-  "VRP",
-  "CEIM-CETER",
-  "TCM",
-  "CEMAT",
-  "CIFQ",
-  "DPPD",
-  "MARXISMO",
-  "CECAT",
-  "CIH",
-  "Geociencias",
-  "Química",
+const indicatorsList = [
+  indicators.SANCION,
+  indicators.TRASLADO,
+  indicators.DESACTIVACION,
+  indicators.RENDICION_DE_CUENTAS,
+  indicators.INVITADOS,
 ];
 
 const clearFilters = () => {
@@ -106,8 +60,8 @@ const clearFilters = () => {
           class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
         >
           <option value="">Todos los núcleos</option>
-          <option v-for="nucleo in coresList" :key="nucleo" :value="nucleo">
-            {{ nucleo }}
+          <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo">
+            {{ nucleo.name }}
           </option>
         </select>
       </div>
@@ -128,66 +82,58 @@ const clearFilters = () => {
         </select>
       </div>
 
-      <!-- Estado -->
+      <!-- Indicador-->
       <div class="space-y-4">
-        <FormField v-slot="{ componentField }" name="status">
-          <FormItem>
-            <FormLabel> Estado </FormLabel>
-            <FormControl>
-              <Select v-bind="componentField">
-                <SelectTrigger class="w-full">
-                  <SelectValue placeholder="Seleccione un núcleo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="(stats, index) in statuses"
-                    :key="index"
-                    :value="stats"
-                  >
-                    {{ stats }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+        <label class="text-sm font-medium text-gray-700">Indicador</label>
+        <select
+          name="text"
+          v-model="filters.text"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
+        >
+          <option value="">Todos los indicadores</option>
+          <option v-for="stats in indicatorsList" :value="stats">
+            {{ stats }}
+          </option>
+        </select>
       </div>
 
-      <!-- Palabras clave -->
+      <!-- Periodo-->
       <div class="space-y-4">
-        <FormField v-slot="{ componentField }" name="keywords">
-          <FormItem>
-            <FormLabel> Palabras claves </FormLabel>
-            <FormControl>
-              <Input
-                :="componentField"
-                type="text"
-                placeholder="Ej: guardia, crecimiento, sanción"
+        <label class="text-sm font-medium text-gray-700">Período</label>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-xs text-gray-600">Desde</label>
+            <div class="relative">
+              <input
+                name="dateFrom"
+                v-model="filters.dateFrom"
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs text-gray-600">Hasta</label>
+            <div class="relative">
+              <input
+                name="dateTo"
+                v-model="filters.dateTo"
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Footer Buttons -->
       <div
         class="flex justify-between p-2 pt-4 border-t border-gray-300 mt-auto"
       >
-        <button
-          type="button"
-          @click.prevent="clearFilters"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-        >
+        <Button type="button" @click.prevent="clearFilters" variant="outline">
           Limpiar
-        </button>
-        <button
-          type="submit"
-          class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md"
-        >
-          Aplicar filtros
-        </button>
+        </Button>
+        <Button type="submit"> Aplicar filtros </Button>
       </div>
     </form>
   </div>
