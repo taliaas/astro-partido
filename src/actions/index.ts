@@ -12,6 +12,7 @@ import * as comite from "./comite.ts";
 import * as core from "./core.ts";
 import * as indicators from "./indicators.ts";
 import * as agreements from "./agreements.ts";
+import * as deactivations from "./deactivation.ts";
 
 export const server = {
   events,
@@ -28,4 +29,5 @@ export const server = {
   core,
   indicators,
   agreements,
+  deactivations,
 };
