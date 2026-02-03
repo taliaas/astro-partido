@@ -3,6 +3,7 @@ import { getSession } from "auth-astro/server";
 import DashboardHome from "@/components/Dashboard/DashboardHome.vue";
 import RootLayout from "@/layouts/RootLayout.astro";
 import MinutesService from "@/services/Minutes";
+import UserService from "@/services/UserService";
 const session = (await getSession(Astro.request)) as any;
 
 async function getLatestMinute() {
@@ -22,6 +23,16 @@ async function typeDocuments() {
     console.error(e);
   }
 }
+
+const getAllUsers = async () => {
+  const service = new UserService();
+  try {
+    return await service.getUserList(session.jwt);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+const users = await getAllUsers();
 
 const [documents, list] = await Promise.all([
   getLatestMinute(),
@@ -69,5 +80,10 @@ const cards = [
 ---
 
 <RootLayout>
-  <DashboardHome documents={documents!} cards={cards} client:load />
+  <DashboardHome
+    documents={documents!}
+    cards={cards}
+    users={users}
+    client:load
+  />
 </RootLayout>

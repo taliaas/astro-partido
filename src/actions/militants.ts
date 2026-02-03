@@ -85,7 +85,7 @@ export const createMember = defineAction({
     organization: z.enum(ORGANIZACION).optional(),
     address: z.string().optional(),
     phone: z.string().optional(),
-    date: z.coerce.date().optional(),
+    date: z.string().date().optional(),
     core: z.object({
       id: z.coerce.number(),
     }),
@@ -124,7 +124,7 @@ export const createMember = defineAction({
       raza,
       sexo,
     },
-    context
+    context,
   ) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
@@ -173,7 +173,7 @@ export const updateMember = defineAction({
     id: z.string(),
     firstname: z.string(),
     lastname: z.string(),
-    date: z.coerce.date(),
+    date: z.string().date(),
     email: z.string(),
     ci: z.string(),
     organization: z.enum(ORGANIZACION),
@@ -218,7 +218,7 @@ export const updateMember = defineAction({
       raza,
       sexo,
     },
-    context
+    context,
   ) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });

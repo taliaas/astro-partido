@@ -8,7 +8,7 @@ export const militanteSchema = z.object({
   lastname: z.string().min(1, { message: "Campo obligatorio" }),
   core: z.coerce.number().min(1, { message: "Campo obligatorio" }),
   ci: ciSchema,
-  date: z.coerce.date({ message: "Error" }),
+  date: z.string().date("Error"),
   email: z.string().min(1, { message: "Campo obligatorio" }),
   organization: z.enum(["PCC", "UJC"]),
   sexo: z.nativeEnum(Sexo, { message: "El sexo es requerido" }).optional(),

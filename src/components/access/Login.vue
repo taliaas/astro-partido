@@ -118,13 +118,14 @@ const handleSubmit = form.handleSubmit(async (data: UserData) => {
       password: data.password,
       rememberMe: data.rememberMe,
     });
+
     toast.success("Sesión iniciado con éxito");
     const redirect = searchParams.redirect;
-    navigate((redirect as string) || "/home");
+    await navigate((redirect as string) || "/home");
   } catch (error) {
     console.error("Error", error);
     toast.error("Ha ocurrido un error al iniciar sesión");
-    loading.value = false;
   }
+  loading.value = false;
 });
 </script>

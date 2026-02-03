@@ -19,47 +19,7 @@
         </CollapsibleContent>
       </Collapsible>
 
-      <!-- Add Event Form -->
-      <Collapsible default-open v-if="hasPermission('Eventos', 'create')">
-        <CollapsibleTrigger
-          class="flex items-center w-full justify-between text-lg font-medium"
-        >
-          Añadir Evento
-          <ChevronDownIcon class="h-4 w-4" />
-        </CollapsibleTrigger>
-        <CollapsibleContent class="space-y-3 p-3">
-          <Input
-            v-model="newEvent.title"
-            class="rounded hover:outline-none border-gray-300 text-gray-700"
-            placeholder="Añadir tarea o evento"
-          />
-          <Select v-model="newEvent.type">
-            <SelectTrigger class="border-gray-300 rounded w-full">
-              <SelectValue placeholder="Tipo" class="text-gray-700" />
-            </SelectTrigger>
-            <SelectContent class="bg-white">
-              <SelectItem class="hover:bg-gray-100" value="Tarea"
-                >Tarea
-              </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="Evento"
-                >Evento
-              </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="Reunion"
-                >Reunión
-              </SelectItem>
-              <SelectItem class="hover:bg-gray-100" value="Otro"
-                >Otro
-              </SelectItem>
-            </SelectContent>
-          </Select>
-          <Button
-            @click="addEvent"
-            :disabled="!currentDate || !newEvent.title || !newEvent.type"
-            class="w-full bg-blue-600 text-white rounded"
-            >Añadir
-          </Button>
-        </CollapsibleContent>
-      </Collapsible>
+      <Button @click="eventOpen = true" class="w-full">Añadir evento</Button>
 
       <!-- No Events Message -->
       <div v-if="pendingTasks.length === 0">
@@ -77,33 +37,28 @@
       </div>
     </div>
   </div>
+  <EventDialog :users v-model:open="eventOpen" />
 </template>
 
 <script setup lang="ts">
+import EventDialog from "@/components/Event/EventDialog.vue";
+import { Button } from "@/components/ui/button";
+import type { User } from "@/interface/Militante";
 import { usePermissions } from "@/utils/auth-client";
 import {
   type DateValue,
   getLocalTimeZone,
   today,
 } from "@internationalized/date";
-import { ActionError, actions } from "astro:actions";
-import { navigate } from "astro:transitions/client";
+import { actions } from "astro:actions";
 import { ChevronDownIcon } from "lucide-vue-next";
-import { onMounted, reactive, ref, type Ref, watch } from "vue";
-import { toast } from "vue-sonner";
-import Button from "../ui/button/Button.vue";
+import { onMounted, ref, type Ref, watch } from "vue";
 import Calendar from "../ui/calendar/Calendar.vue";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
-import Input from "../ui/input/Input.vue";
-import Select from "../ui/select/Select.vue";
-import SelectContent from "../ui/select/SelectContent.vue";
-import SelectItem from "../ui/select/SelectItem.vue";
-import SelectTrigger from "../ui/select/SelectTrigger.vue";
-import SelectValue from "../ui/select/SelectValue.vue";
 
 interface EventData {
   id: number;
@@ -111,31 +66,16 @@ interface EventData {
   title: string;
 }
 
-const hasPermission = usePermissions();
+const { users } = defineProps<{
+  users: User[];
+}>();
 
-const newEvent = reactive({
-  title: "",
-  type: "",
-});
+const eventOpen = ref(false);
+
+const hasPermission = usePermissions();
 
 const currentDate = ref(today(getLocalTimeZone())) as Ref<DateValue>;
 const pendingTasks = ref<EventData[]>([]);
-
-async function addEvent() {
-  const fecha = currentDate.value.toString();
-  const { error } = await actions.events.createEvent({
-    ...newEvent,
-    date: fecha,
-  });
-  if (error instanceof ActionError) {
-    toast.error("Hubo un error al crear el evento");
-  } else {
-    toast.success("Se creó un evento");
-    newEvent.title = "";
-    newEvent.type = "";
-    navigate("/home");
-  }
-}
 
 async function getAllEvent(date: any) {
   try {

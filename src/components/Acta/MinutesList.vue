@@ -636,7 +636,28 @@ function goToPreviousPage() {
                 </TableRow>
               </TableBody>
               <TableFooter>
-                <TableRow>
+                <!-- Empty State -->
+                <TableRow
+                  v-if="actas?.data?.length === 0"
+                  class="text-center border p-4"
+                >
+                  <TableCell>
+                    <div>
+                      <div
+                        class="mx-auto h-10 w-10 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
+                      >
+                        <SearchIcon class="h-6 w-6" />
+                      </div>
+                      <h3 class="mt-4 text-sm font-medium text-gray-900">
+                        No se encontraron actas
+                      </h3>
+                      <p class="mt-1 text-sm text-gray-500">
+                        Ajuste los filtros o cree una nueva acta para comenzar.
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+                <TableRow v-else>
                   <TableCell colspan="8">
                     <div v-if="actas?.total !== 0" class="flex justify-between">
                       <div
@@ -692,24 +713,6 @@ function goToPreviousPage() {
                 </TableRow>
               </TableFooter>
             </Table>
-
-            <!-- Empty State -->
-            <div
-              v-if="actas?.data?.length === 0"
-              class="text-center border p-4"
-            >
-              <div
-                class="mx-auto h-10 w-10 text-gray-400 rounded-full bg-gray-50 flex items-center justify-center"
-              >
-                <SearchIcon class="h-6 w-6" />
-              </div>
-              <h3 class="mt-4 text-sm font-medium text-gray-900">
-                No se encontraron actas
-              </h3>
-              <p class="mt-1 text-sm text-gray-500">
-                Ajuste los filtros o cree una nueva acta para comenzar.
-              </p>
-            </div>
           </div>
         </div>
       </div>

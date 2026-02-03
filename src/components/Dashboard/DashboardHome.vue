@@ -35,7 +35,7 @@
           <Documents :documents />
         </div>
         <div class="w-fit pt-12">
-          <RightSidebar />
+          <RightSidebar :users />
         </div>
       </div>
     </div>
@@ -43,25 +43,22 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from "vue";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSearchStore } from "@/utils/store.ts";
 import {
   Activity,
-  Calendar,
-  CalendarCheck,
-  CalendarDays,
   FileCheck2,
   FileClock,
   Files,
   FileText,
-  Folder,
   FolderCheck,
   FolderClock,
   Folders,
 } from "lucide-vue-next";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ref, watch } from "vue";
 import Documents from "../Home/Documents.vue";
 import RightSidebar from "./RightSidebar.vue";
-import { useSearchStore } from "@/utils/store.ts";
+import type { User } from "@/interface/Militante";
 
 const icons = {
   Activity,
@@ -74,9 +71,10 @@ const icons = {
   Folders,
 };
 
-const { documents, cards } = defineProps<{
+const { documents, cards, users } = defineProps<{
   documents: any[];
   cards: any;
+  users: User[];
 }>();
 
 const searchStore = useSearchStore();
@@ -87,6 +85,6 @@ watch(
   (newVal) => {
     isVisible.value = newVal;
   },
-  { immediate: true } // Para obtener el valor inicial
+  { immediate: true }, // Para obtener el valor inicial
 );
 </script>

@@ -1,24 +1,19 @@
 import type {
-  LiteralUnion,
-  SignInOptions,
-  SignInAuthorizationParams,
-  SignOutParams,
-} from "next-auth/react";
-import type {
   BuiltInProviderType,
   RedirectableProviderType,
 } from "@auth/core/providers";
+import type {
+  LiteralUnion,
+  SignInAuthorizationParams,
+  SignInOptions,
+} from "next-auth/react";
 
 interface AstroSignInOptions extends SignInOptions {
   /** The base path for authentication (default: /api/auth) */
   prefix?: string;
+  callbackUrl?: string;
+  redirect?: boolean;
 }
-
-interface AstroSignOutParams extends SignOutParams {
-  /** The base path for authentication (default: /api/auth) */
-  prefix?: string;
-}
-
 /**
  * Client-side method to initiate a signin flow
  * or send the user to the signin page listing all possible providers.
@@ -60,13 +55,19 @@ export async function signIn<
       "Content-Type": "application/x-www-form-urlencoded",
       "X-Auth-Return-Redirect": "1",
     },
-    // @ts-expect-error -- ignore
     body: new URLSearchParams({
       ...opts,
       csrfToken,
       callbackUrl,
     }),
   });
+  const data = await res.clone().json();
+  const error = new URL(data.url).searchParams.get("error");
 
-  return res;
+  if (redirect || !isSupportingReturn || !error) {
+    // TODO: Do not redirect for Credentials and Email providers by default in next major
+    window.history.replaceState(null, "", data.url ?? callbackUrl);
+  }
+
+  return { error };
 }

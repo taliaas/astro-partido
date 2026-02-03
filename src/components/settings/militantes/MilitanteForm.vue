@@ -44,7 +44,10 @@ const form = useForm<MilitanteSchema>({
     lastname: militant?.lastname || "",
     address: militant?.address || "",
     ci: militant?.ci || "",
-    date: (militant?.date || format(new Date(), "yyyy-MM-dd")) as Date,
+    date: format(
+      militant?.date ? new Date(militant.date) : new Date(),
+      "yyyy-MM-dd",
+    ),
     firstname: militant?.firstname || "",
     organization: militant?.organization || "PCC",
     phone: militant?.phone || "",
@@ -343,7 +346,7 @@ const saveMember = form.handleSubmit(async (data: MilitanteSchema) => {
                 <FormMessage />
               </FormItem>
             </FormField>
-            <FormField v-slot="{ componentField }" name="date">
+            <FormField v-slot="{ componentField, field }" name="date">
               <FormItem>
                 <FormLabel class=""> Fecha de incorporación </FormLabel>
                 <FormControl>

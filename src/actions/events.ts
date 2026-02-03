@@ -2,20 +2,15 @@ import { ActionError, defineAction } from "astro:actions";
 import { API_URL } from "astro:env/client";
 import { z } from "zod";
 import { getSession } from "auth-astro/server";
+import { EventStatus, EventType } from "@/enum/Event";
+import { eventsSchema } from "@/components/Event/events-schema";
 
 export const createEvent = defineAction({
-  input: z.object({
-    title: z.string(),
-    type: z
-      .string()
-      .refine((val) => ["Evento", "Tarea", "Reunion", "Otro"].includes(val))
-      .transform((val) => val.toString()),
-    date: z.string().date(),
-  }),
+  input: eventsSchema,
   async handler(input, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    const res = await fetch(`${API_URL}/event`, {
+    const res = await fetch(`${API_URL}/events`, {
       method: "POST",
       body: JSON.stringify(input),
       headers: {
@@ -23,7 +18,7 @@ export const createEvent = defineAction({
         "Content-Type": "application/json",
       },
     });
-    const data = await res.json()
+    const data = await res.json();
     if (res.status === 401) {
       throw new ActionError({ code: "UNAUTHORIZED" });
     }
@@ -47,20 +42,39 @@ export const getEvents = defineAction({
 
 export const getAllEvents = defineAction({
   input: z.object({
-    page: z.number()
+    page: z.number(),
   }),
   async handler({ page }, context) {
     const session: any = await getSession(context.request);
     if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
-    const response = await fetch(`${API_URL}/event?page=${page}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.jwt}`,
-        }
-      }
-    );
+    const response = await fetch(`${API_URL}/events?page=${page}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.jwt}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  },
+});
+
+export const deleteEvents = defineAction({
+  input: z.object({
+    id: z.number(),
+  }),
+  async handler({ id }, context) {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    const response = await fetch(`${API_URL}/events/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.jwt}`,
+      },
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

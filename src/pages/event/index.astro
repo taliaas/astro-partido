@@ -1,13 +1,14 @@
 ---
+import EventsManage from "@/components/Event/EventsManage.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
-import EventComponent from "@/components/Event/EventComponent.vue";
 import EventService from "../../services/EventService";
 import { getSession } from "auth-astro/server";
+import UserService from "@/services/UserService";
 
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
 const page = Number(searchParams.get("page")) || 1;
-const limit = Number(searchParams.get("limit")) || 1;
+const limit = Number(searchParams.get("limit")) || 10;
 
 async function getAllEvent(page: any) {
   const service = new EventService();
@@ -17,9 +18,25 @@ async function getAllEvent(page: any) {
     console.error(e);
   }
 }
+const getAllUsers = async () => {
+  const service = new UserService();
+  try {
+    return await service.getUserList(session.jwt);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+
+const users = await getAllUsers();
 const events = await getAllEvent(page);
 ---
 
 <RootLayout>
-  <EventComponent events={events} page={page} limit={limit} client:load />
+  <EventsManage
+    events={events}
+    page={page}
+    limit={limit}
+    users={users}
+    client:load
+  />
 </RootLayout>
