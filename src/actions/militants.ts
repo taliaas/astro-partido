@@ -4,7 +4,7 @@ import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
 import { Clasificacion, Nivel, Raza, Sexo } from "@/enum/Status";
 
-const EstadoDesactivacion = ["APROBADA", "RECHAZADA"] as const;
+const EstadoDesactivacion = ["PENDIENTE", "APROBADA", "RECHAZADA"] as const; // ← ACTUALIZADO
 const ORGANIZACION = ["PCC", "UJC"] as const;
 
 export const deactiveMili = defineAction({
@@ -12,10 +12,10 @@ export const deactiveMili = defineAction({
     motivo: z.string().min(3),
     details: z.string().optional(),
     fecha: z.coerce.date(),
-    estado: z.enum(EstadoDesactivacion),
-    militante: z.any(),
+    estado: z.enum(EstadoDesactivacion).optional().default("PENDIENTE"),
+    militanteId: z.number(), // Recibir militanteId en lugar de militante
   }),
-  handler: async ({ motivo, estado, fecha, details, militante }, context) => {
+  handler: async ({ motivo, estado, fecha, details, militanteId }, context) => {
     const session: any = await getSession(context.request);
     const res = await fetch(`${API_URL}/desactivation`, {
       method: "POST",
@@ -26,8 +26,8 @@ export const deactiveMili = defineAction({
       body: JSON.stringify({
         motivo,
         fecha,
-        estado,
-        militante,
+        estado: estado || "PENDIENTE",
+        militanteId, // ✅ CAMBIO: Enviar militanteId
         details,
       }),
     });
@@ -43,14 +43,14 @@ export const deactiveMili = defineAction({
 
 export const updateDeactivation = defineAction({
   input: z.object({
-    id: z.number(),
+    id: z.coerce.number(),
     motivo: z.string().min(3).optional(),
     details: z.string().optional(),
     fecha: z.coerce.date().optional(),
     estado: z.enum(EstadoDesactivacion).optional(),
-    militante: z.any().optional(),
+    // ❌ NO incluir militante ni militanteId en actualización
   }),
-  async handler({ id, motivo, details, fecha, estado, militante }, context) {
+  async handler({ id, motivo, details, fecha, estado }, context) {
     const session: any = await getSession(context.request);
     const res = await fetch(`${API_URL}/desactivation/${id}`, {
       method: "PATCH",
@@ -62,8 +62,8 @@ export const updateDeactivation = defineAction({
         motivo,
         fecha,
         estado,
-        militante,
         details,
+        // ❌ NO enviar militante ni militanteId
       }),
     });
     if (!res.ok) {
@@ -245,6 +245,7 @@ export const updateMember = defineAction({
     if (raza !== undefined) updateData.raza = raza;
     if (sexo !== undefined) updateData.sexo = sexo;
 
+    const body = JSON.stringify(updateData);
     const body = JSON.stringify(updateData);
 
     const res = await fetch(`${API_URL}/militant/${id}`, {

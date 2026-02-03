@@ -10,11 +10,12 @@ import CoreService from "@/services/CoreService";
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
 const page = Number(searchParams.get("page") ?? 1);
+const limit = Number(searchParams.get("limit") ?? 10);
 
 async function getTraslado(): Promise<any> {
   const traslado = new TrasladoService();
   try {
-    return await traslado.getAll(page, session);
+    return await traslado.getAll(page, limit, session);
   } catch (e) {
     console.error(e);
   }
@@ -49,6 +50,7 @@ const cores = await getCore();
       traslados={traslados}
       members={members}
       cores={cores}
+      page={page}
       client:load
     />
   </ProcessLayout>

@@ -1,113 +1,416 @@
 <script setup lang="ts">
-import {format} from "date-fns";
-import {navigate} from "astro:transitions/client";
-import {ArrowLeft, ArrowRight, Search} from "lucide-vue-next";
-import {ref} from "vue";
+import { format } from "date-fns";
+import { ArrowLeft, ArrowRight } from "lucide-vue-next";
+import { ref, onMounted, computed } from "vue";
 import Filters from "@/components/filters/filters.vue";
 
-const {actas, limit, page, cores} = defineProps<{
-  actas: any;
-  limit: any;
-  page: any;
-  cores: any
-}>();
+interface CurrentUser {
+  roleId: number;
+  coreId: number;
+  name: string;
+}
+
+const { actas, limit, page, cores, searchTerm, currentUser, hasActiveFilters } =
+  defineProps<{
+    actas: any;
+    limit: number;
+    page: number;
+    cores: any;
+    searchTerm: string;
+    currentUser: CurrentUser | null;
+    hasActiveFilters: boolean;
+  }>();
 
 const found = ref(actas?.numFound || 0);
-const currentPage = ref(page);
+const currentPage = ref(actas?.currentPage || Number(page) || 1);
+const totalPages = ref(actas?.totalPages || Math.ceil(found.value / limit));
+const currentSearchTerm = ref(searchTerm);
+const expandedActas = ref<number[]>([]);
 
-const total = ref(actas?.total);
+// Constantes de roles
+const ADMIN_ROLE_ID = 1; // Administrador
+const COMITE_MEMBER_ROLE_ID = 6; // Miembro del Comité CUJAE
 
-//next a la carga de la query hacer bien
+// Determinar si el usuario tiene acceso total
+const hasFullAccess = computed(() => {
+  if (!currentUser) return false;
+  return (
+    currentUser.roleId === ADMIN_ROLE_ID ||
+    currentUser.roleId === COMITE_MEMBER_ROLE_ID
+  );
+});
+
+// Obtener el núcleo del usuario
+const userCoreName = computed(() => {
+  if (!currentUser || !cores) return null;
+  const userCore = cores.find((c: any) => c.id === currentUser.coreId);
+  return userCore?.name || null;
+});
+
+// Mostrar resultados solo si hay filtros activos
+const showResults = computed(() => {
+  return hasActiveFilters;
+});
+
+function toggleActa(id: number) {
+  const index = expandedActas.value.indexOf(id);
+  if (index === -1) expandedActas.value.push(id);
+  else expandedActas.value.splice(index, 1);
+}
+
+function isExpanded(id: number) {
+  return expandedActas.value.includes(id);
+}
+
+function openActa(acta: any, event?: Event) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  console.log("📄 Datos del acta:", acta);
+
+  // Verificar si es un acta CARGADA (documento) por el nombre del archivo
+  // Las actas cargadas tienen nombres de archivo en el campo 'name' (terminan en .pdf, .html, etc.)
+  const isLoadedDocument =
+    acta.name &&
+    (acta.name.toLowerCase().endsWith(".pdf") ||
+      acta.name.toLowerCase().endsWith(".html") ||
+      acta.name.toLowerCase().endsWith(".htm"));
+
+  console.log("✅ isLoadedDocument:", isLoadedDocument);
+
+  if (isLoadedDocument) {
+    // Acta CARGADA - abrir el documento HTML/PDF
+    console.log(
+      "🔗 Abriendo documento:",
+      `http://localhost:3000/minutes/${acta.id}/file/html`,
+    );
+    window.open(`http://localhost:3000/minutes/${acta.id}/file/html`, "_blank");
+  } else {
+    // Acta de FORMULARIO - navegar a la página de visualización
+    console.log("📋 Navegando a formulario tipo:", acta.doc_type);
+    if (acta.doc_type === "ro") {
+      window.location.href = `/view/${acta.id}`;
+    } else if (acta.doc_type === "cp") {
+      window.location.href = `/cp_view/${acta.id}`;
+    } else {
+      console.error("❌ Tipo de acta desconocido:", acta.doc_type);
+    }
+  }
+}
+
+function getRelevantSnippet(
+  text: string | string[],
+  searchTerm: string,
+  contextChars: number = 150,
+): string {
+  if (!searchTerm || !text) return "";
+
+  const fullText = Array.isArray(text) ? text.join(" ") : text;
+  const lowerText = fullText.toLowerCase();
+  const lowerTerm = searchTerm.toLowerCase();
+  const index = lowerText.indexOf(lowerTerm);
+
+  if (index === -1) {
+    return fullText.substring(0, contextChars * 2) + "...";
+  }
+
+  const start = Math.max(0, index - contextChars);
+  const end = Math.min(
+    fullText.length,
+    index + searchTerm.length + contextChars,
+  );
+
+  let snippet = fullText.substring(start, end);
+
+  if (start > 0) snippet = "..." + snippet;
+  if (end < fullText.length) snippet = snippet + "...";
+
+  return snippet;
+}
+
+function highlightTerm(text: string, searchTerm: string): string {
+  if (!searchTerm || !text) return text;
+
+  const regex = new RegExp(`(${searchTerm})`, "gi");
+  return text.replace(
+    regex,
+    '<mark class="bg-yellow-300 dark:bg-yellow-600 px-1 rounded">$1</mark>',
+  );
+}
+
+const processedActas = computed(() => {
+  if (!actas?.docs) return [];
+
+  return actas.docs.map((acta: any) => ({
+    ...acta,
+    snippet: getRelevantSnippet(acta.text, currentSearchTerm.value),
+    highlightedSnippet: highlightTerm(
+      getRelevantSnippet(acta.text, currentSearchTerm.value),
+      currentSearchTerm.value,
+    ),
+  }));
+});
+
+onMounted(() => {
+  if (typeof window !== "undefined" && !currentSearchTerm.value) {
+    const urlParams = new URLSearchParams(window.location.search);
+    currentSearchTerm.value =
+      urlParams.get("text") || urlParams.get("indicators") || "";
+  }
+});
+
+function buildPaginationUrl(newPage: number) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("page", newPage.toString());
+  urlParams.set("limit", limit.toString());
+  return `/busqueda?${urlParams.toString()}`;
+}
+
 function goToNextPage() {
-  if (actas.total > currentPage.value) {
-    currentPage.value++;
-    navigate(`/busqueda?page=${currentPage.value}&limit=${limit}`);
+  if (currentPage.value < totalPages.value) {
+    window.location.href = buildPaginationUrl(currentPage.value + 1);
   }
 }
 
 function goToPreviousPage() {
   if (currentPage.value > 1) {
-    currentPage.value--;
-    navigate(`/busqueda?page=${currentPage.value}&limit=${limit}`);
+    window.location.href = buildPaginationUrl(currentPage.value - 1);
   }
 }
-
 </script>
 
 <template>
   <div
-      class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:bg-zinc-800"
+    class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:bg-zinc-800"
   >
     <div class="flex">
-      <Filters :cores/>
+      <Filters
+        :cores="cores"
+        :search-term="currentSearchTerm"
+        :current-user="currentUser"
+        :show-core-filter="hasFullAccess"
+      />
       <div class="max-w-[1600px] mx-auto p-6 flex-1">
         <div
-            class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+          class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
         >
+          <!-- Header -->
           <div class="p-8 border-b">
             <h2 class="font-bold text-3xl">Resultado de la búsqueda</h2>
-            <p v-if="found === 0" class="text-md text-gray-500">
-              0 coincidencias encontradas
-            </p>
-            <p v-else-if="found === 1" class="text-md text-gray-500">
-              {{ found }} coincidencia encontrada
-            </p>
-            <p v-else class="text-md text-gray-500">
-              {{ found }} coincidencias encontradas
-            </p>
-          </div>
-          <div>Poner lo q se busca</div>
-          <!-- Results -->
 
-          <div class="space-y-4">
+            <!-- Mensaje cuando no hay filtros aplicados -->
+            <p v-if="!showResults" class="text-md text-gray-500">
+              Por favor, introduce un término de búsqueda o selecciona al menos
+              un filtro
+            </p>
+
+            <!-- Mensajes cuando hay filtros aplicados -->
+            <template v-else>
+              <p v-if="found === 0" class="text-md text-gray-500">
+                0 coincidencias encontradas<span v-if="currentSearchTerm">
+                  para "<strong>{{ currentSearchTerm }}</strong
+                  >"</span
+                >
+              </p>
+              <p v-else-if="found === 1" class="text-md text-gray-500">
+                {{ found }} coincidencia encontrada<span
+                  v-if="currentSearchTerm"
+                >
+                  para "<strong>{{ currentSearchTerm }}</strong
+                  >"</span
+                >
+              </p>
+              <p v-else class="text-md text-gray-500">
+                {{ found }} coincidencias encontradas<span
+                  v-if="currentSearchTerm"
+                >
+                  para "<strong>{{ currentSearchTerm }}</strong
+                  >"</span
+                >
+              </p>
+
+              <!-- Mostrar filtro activo de núcleo para usuarios restringidos -->
+              <p
+                v-if="!hasFullAccess && userCoreName"
+                class="text-sm text-blue-600 mt-2"
+              >
+                Mostrando solo actas de: <strong>{{ userCoreName }}</strong>
+              </p>
+            </template>
+          </div>
+
+          <!-- Results -->
+          <div v-if="showResults" class="space-y-4">
             <div
-                v-for="acta in actas?.docs"
-                :key="acta.id"
-                class="p-6 border-b border-gray-200 pb-6"
+              v-for="acta in processedActas"
+              :key="acta.id"
+              class="p-6 border-b border-gray-200 pb-6"
             >
-              <!-- Title and PDF link -->
               <div class="flex justify-between items-start mb-2">
-                <a target="_blank"
-                   class="text-xl font-normal"
+                <a
+                  class="text-lg font-bold text-blue-600 hover:text-blue-800 underline cursor-pointer"
+                  href="#"
+                  @click="openActa(acta, $event)"
                 >
                   {{ acta.name }}
                 </a>
-
               </div>
 
-              <!-- Metadata -->
-              <div class="text-green-700 text-md mb-2">
-                {{ acta.core }}, {{ format(acta.creation_date, 'yyyy-MM-dd') }}
+              <div class="text-green-700 text-sm mb-2">
+                {{ acta.core }}, {{ format(acta.creation_date, "yyyy-MM-dd") }}
               </div>
 
-              <!-- Description -->
-              <div class="text-gray-700 text-md mb-3 leading-relaxed line-clamp-2 text-justify">
-                {{ acta.text || 'Actas' }}
-              </div>
+              <div
+                class="text-gray-700 text-sm mb-3 leading-relaxed"
+                v-html="acta.highlightedSnippet || 'Sin contenido disponible'"
+              ></div>
+
+              <transition name="accordion">
+                <div
+                  v-if="isExpanded(acta.id)"
+                  class="mt-2 p-4 border-l-4 border-blue-500 bg-gray-50 dark:bg-zinc-700 rounded acta-detail"
+                >
+                  <p><strong>ID:</strong> {{ acta.id }}</p>
+                  <p><strong>Tipo:</strong> {{ acta.doc_type }}</p>
+                  <p>
+                    <strong>Texto completo:</strong>
+                    {{
+                      Array.isArray(acta.text)
+                        ? acta.text.join(" ")
+                        : acta.text || "Sin texto disponible"
+                    }}
+                  </p>
+                  <p><strong>Core:</strong> {{ acta.core }}</p>
+                  <p>
+                    <strong>Fecha de creación:</strong>
+                    {{ format(acta.creation_date, "yyyy-MM-dd") }}
+                  </p>
+                </div>
+              </transition>
             </div>
-            <div v-if="found === 0" class="border border-b-gray-300 text-center text-gray-500 font-medium p-8">
+
+            <!-- Mensaje cuando no hay resultados -->
+            <div
+              v-if="found === 0"
+              class="border border-b-gray-300 text-center text-gray-500 font-medium p-8"
+            >
               No hay coincidencias
             </div>
-
           </div>
 
-          <div class="flex justify-between">
-            <div class="p-4 text-muted-foreground">
+          <!-- Paginación - Solo mostrar si hay filtros Y hay resultados -->
+          <div
+            v-if="showResults && found > 0"
+            class="flex justify-between items-center border-t border-gray-200 p-4"
+          >
+            <div class="text-sm text-gray-600">
+              Página {{ currentPage }} de {{ totalPages }}
             </div>
-            <div class="space-x-4 p-4 flex justify-end">
-              <button @click="goToPreviousPage" type="button"
-                      class="flex gap-2 border rounded text-md font-medium px-4 py-2 mr-4 ">
-                <ArrowLeft class="w-4 h-4"/>
+
+            <div class="space-x-4 flex justify-end">
+              <button
+                @click="goToPreviousPage"
+                type="button"
+                :disabled="currentPage <= 1"
+                class="pagination-btn"
+                :class="{ disabled: currentPage <= 1 }"
+              >
+                <ArrowLeft class="w-4 h-4" /> Anterior
               </button>
-              <button @click="goToNextPage" type="button"
-                      class="flex gap-2 rounded border text-md font-medium px-4 py-2 mr-4 ">
-                <ArrowRight class="w-4 h-4"/>
+
+              <button
+                @click="goToNextPage"
+                type="button"
+                :disabled="currentPage >= totalPages"
+                class="pagination-btn"
+                :class="{ disabled: currentPage >= totalPages }"
+              >
+                Siguiente <ArrowRight class="w-4 h-4" />
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.clickable {
+  cursor: pointer;
+  color: #61666b;
+}
+.clickable:hover {
+  color: #0c0e0f;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.pagination-btn:hover:not(.disabled) {
+  background-color: #2563eb;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.pagination-btn:active:not(.disabled) {
+  transform: scale(0.98);
+}
+
+.pagination-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f3f4f6;
+}
+
+.acta-detail {
+  overflow: hidden;
+}
+
+.accordion-enter-from,
+.accordion-leave-to {
+  max-height: 0;
+  opacity: 0;
+  transform: scaleY(0.95);
+}
+.accordion-enter-to,
+.accordion-leave-from {
+  max-height: 500px;
+  opacity: 1;
+  transform: scaleY(1);
+}
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+:deep(mark) {
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+</style>

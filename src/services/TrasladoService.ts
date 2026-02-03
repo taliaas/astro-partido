@@ -1,9 +1,9 @@
 import {API_URL} from "astro:env/client";
 
 export default class TrasladoService {
-    async getAll(page: any, session: any) { 
+    async getAll(page: any, limit: number, session: any) { 
         try {
-            const response = await fetch(`${API_URL}/trasfer?page=${page}`, {
+            const response = await fetch(`${API_URL}/trasfer?page=${page}&limit=${limit}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

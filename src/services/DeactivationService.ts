@@ -1,9 +1,9 @@
 import {API_URL} from "astro:env/client";
 
 export default class DeactivationService {
-    async getAllDesactivation(page: any, session: any){
+    async getAllDesactivation(page: any, limit: number, session: any){  // ← AGREGAR limit
         try {
-            const response = await fetch(`${API_URL}/desactivation?page=${page}`, {
+            const response = await fetch(`${API_URL}/desactivation?page=${page}&limit=${limit}`, {  // ← AGREGAR &limit=${limit}
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -18,5 +18,4 @@ export default class DeactivationService {
             console.error(error);
         }
     }
-
 }

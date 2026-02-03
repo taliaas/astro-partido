@@ -21,17 +21,24 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { z } from "zod";
 
-const { cores } = defineProps<{
-  cores: any[];
+interface CurrentUser {
+  roleId: number;
+  coreId: number;
+  name: string;
+}
+
+const { showCoreFilter, currentUser } = defineProps<{
+  showCoreFilter: boolean;
+  currentUser: CurrentUser | null;
 }>();
 
-type SearchData = z.infer<typeof searchSchema>;
-const searchSchema = z.object({
-  name: z.string(),
-  doc_type: z.string(),
-  core: z.coerce.string(),
-  status: z.nativeEnum(MinuteStatus).nullable(),
-  keywords: z.string(),
+const filters = reactive({
+  core: "",
+  doc_type: "",
+  indicators: "",
+  dateFrom: "",
+  dateTo: "",
+  text: "",
 });
 
 const form = useForm<SearchData>({
@@ -45,91 +52,80 @@ const form = useForm<SearchData>({
   },
 });
 
-const statuses = [
-  MinuteStatus.CREATE,
-  MinuteStatus.ERROR,
-  MinuteStatus.PENDIENTE,
-  MinuteStatus.PROCESADA,
-  MinuteStatus.PROCESSING,
+// Lista predefinida de núcleos
+const coresList = [
+  "Ing. Industrial",
+  "Arquitectura",
+  "Automática",
+  "CIPEL",
+  "CEIS",
+  "Telecomunicaciones",
+  "CIME",
+  "Rectorado",
+  "VRD",
+  "VREAS",
+  "VREU",
+  "VRIPG",
+  "VRP",
+  "CEIM-CETER",
+  "TCM",
+  "CEMAT",
+  "CIFQ",
+  "DPPD",
+  "MARXISMO",
+  "CECAT",
+  "CIH",
+  "Geociencias",
+  "Química",
 ];
 
-const typeMinutes = [
-  { value: "Ordinaria", name: "Acta Ordinaria" },
-  { value: "Circulo Politico", name: "Círculo Político" },
-  { value: "Extraordinaria", name: "Acta Extraordinaria" },
-];
+const clearFilters = () => {
+  filters.core = "";
+  filters.doc_type = "";
+  filters.indicators = "";
+  filters.dateFrom = "";
+  filters.dateTo = "";
+  filters.text = "";
+};
 </script>
 
 <template>
   <div class="h-full flex flex-col bg-white border-r shadow-sm pt-12">
     <!-- Form Content -->
     <form
-      name="busqueda"
       action="/busqueda"
       method="post"
       class="px-6 py-2 space-y-6 flex flex-col flex-1"
     >
-      <!--Nombre -->
-      <div class="space-y-4">
-        <FormField v-slot="{ componentField }" name="name">
-          <FormItem>
-            <FormLabel> Nombre </FormLabel>
-            <FormControl>
-              <Input type="text" placeholder="Nombre" :="componentField" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+      <!-- Núcleo - Solo visible para Admin y Comité CUJAE -->
+      <div v-if="showCoreFilter" class="space-y-4">
+        <label class="text-sm font-medium text-gray-700">Núcleo</label>
+        <select
+          name="core"
+          v-model="filters.core"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
+        >
+          <option value="">Todos los núcleos</option>
+          <option v-for="nucleo in coresList" :key="nucleo" :value="nucleo">
+            {{ nucleo }}
+          </option>
+        </select>
       </div>
 
       <!-- Tipo de documento -->
       <div class="space-y-4">
-        <FormField v-slot="{ componentField }" name="doc_type">
-          <FormItem>
-            <FormLabel> Tipo de documento </FormLabel>
-            <FormControl>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccione un tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="type in typeMinutes"
-                    :key="type.value"
-                    :value="type.value"
-                    >{{ type.name }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </div>
-      <!-- Nucleo -->
-      <div class="space-y-4">
-        <FormField v-slot="{ componentField }" name="core">
-          <FormItem>
-            <FormLabel> Núcleo </FormLabel>
-            <FormControl>
-              <Select v-bind="componentField">
-                <SelectTrigger class="w-full">
-                  <SelectValue placeholder="Seleccione un núcleo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="nucleo in cores"
-                    :key="nucleo.id"
-                    :value="nucleo.id"
-                  >
-                    {{ nucleo.name }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+        <label class="text-sm font-medium text-gray-700"
+          >Tipo de documento</label
+        >
+        <select
+          name="doc_type"
+          v-model="filters.doc_type"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
+        >
+          <option value="">Todos las actas</option>
+          <option value="ro">Reunión Ordinaria</option>
+          <option value="cp">Círculo Político</option>
+        </select>
       </div>
 
       <!-- Estado -->
@@ -176,9 +172,22 @@ const typeMinutes = [
       </div>
 
       <!-- Footer Buttons -->
-      <div class="flex justify-between gap-2">
-        <Button type="reset" variant="outline"> Limpiar </Button>
-        <Button type="submit"> Aplicar filtros </Button>
+      <div
+        class="flex justify-between p-2 pt-4 border-t border-gray-300 mt-auto"
+      >
+        <button
+          type="button"
+          @click.prevent="clearFilters"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        >
+          Limpiar
+        </button>
+        <button
+          type="submit"
+          class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md"
+        >
+          Aplicar filtros
+        </button>
       </div>
     </form>
   </div>

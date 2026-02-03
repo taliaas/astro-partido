@@ -5,59 +5,242 @@ import RootLayout from "../../layouts/RootLayout.astro";
 import Busqueda from "../../components/filters/Busqueda.vue";
 import SolrService from "../../services/SolrService";
 
-if (Astro.request.method !== "POST") {
-  return Astro.redirect("/minutes");
-}
-
 const session = (await getSession(Astro.request)) as any;
-const formData = await Astro.request.formData();
-const query = Object.fromEntries(
-  Array.from(formData.entries()).filter((entry) => entry[1])
-);
 
-const searchParams = Astro.url.searchParams;
-const limit = searchParams.get("limit") || 10;
-const page = searchParams.get("page") || 0;
+// Constantes de roles
+const ADMIN_ROLE_ID = 1;
+const COMITE_MEMBER_ROLE_ID = 6;
 
+// Interfaz para el usuario actual
+interface CurrentUser {
+  roleId: number;
+  coreId: number;
+  name: string;
+}
+
+// Obtener información del usuario actual desde la sesión
+let currentUser: CurrentUser | null = null;
+if (session?.user) {
+  currentUser = {
+    roleId: session.user.role?.id || session.user.roleId,
+    coreId: session.user.core?.id || session.user.coreId,
+    name: session.user.name,
+  };
+}
+
+// Función para obtener el core del usuario
+async function getUserCoreName(): Promise<string | null> {
+  if (!currentUser) return null;
+
+  const coreService = new CoreService();
+  try {
+    const allCores = await coreService.getAllCore(session.jwt);
+    const userCore = allCores.find((c: any) => c.id === currentUser!.coreId);
+    return userCore?.name || null;
+  } catch (e) {
+    console.warn("Error obteniendo cores, usando sesión:", e);
+    return session?.user?.core?.name || null;
+  }
+}
+
+// --- Obtener parámetros de búsqueda ---
+let query: any = {};
+let searchParams = Astro.url.searchParams;
+
+// Obtener el nombre del núcleo del usuario UNA VEZ
+const userCoreName = await getUserCoreName();
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  query = Object.fromEntries(
+    Array.from(formData.entries()).filter((entry) => entry[1]),
+  );
+
+  // IMPORTANTE: Aplicar restricción de núcleo si el usuario NO tiene acceso total
+  if (
+    currentUser &&
+    currentUser.roleId !== ADMIN_ROLE_ID &&
+    currentUser.roleId !== COMITE_MEMBER_ROLE_ID &&
+    userCoreName
+  ) {
+    console.log(
+      "[RESTRICCIÓN APLICADA] Usuario sin acceso total, forzando núcleo:",
+      userCoreName,
+    );
+    query.core = userCoreName; // Forzar el filtro de núcleo
+  }
+
+  const params = new URLSearchParams(query);
+  console.log("[DEBUG POST - Query Final]", query);
+  return Astro.redirect(`/busqueda?${params.toString()}&page=1&limit=10`);
+} else {
+  query = Object.fromEntries(searchParams.entries());
+
+  // IMPORTANTE: También aplicar restricción en GET
+  if (
+    currentUser &&
+    currentUser.roleId !== ADMIN_ROLE_ID &&
+    currentUser.roleId !== COMITE_MEMBER_ROLE_ID &&
+    userCoreName
+  ) {
+    console.log(
+      "[RESTRICCIÓN APLICADA GET] Usuario sin acceso total, forzando núcleo:",
+      userCoreName,
+    );
+    query.core = userCoreName;
+  }
+
+  console.log("[DEBUG GET - Query Final]", query);
+}
+
+const limit = Number(searchParams.get("limit")) || 10;
+const page = Math.max(Number(searchParams.get("page")) || 1, 1);
+
+// Verificar si hay filtros aplicados por el usuario (excluyendo page, limit, y core forzado)
+function hasUserAppliedFilters(query: any): boolean {
+  // Para usuarios con acceso restringido, el core se aplica automáticamente
+  // así que lo excluimos de la verificación de filtros del usuario
+  const isRestrictedUser =
+    currentUser &&
+    currentUser.roleId !== ADMIN_ROLE_ID &&
+    currentUser.roleId !== COMITE_MEMBER_ROLE_ID;
+
+  const keysToCheck = Object.keys(query).filter((key) => {
+    // Excluir siempre page y limit
+    if (key === "page" || key === "limit") return false;
+
+    // Si es usuario restringido y el key es 'core', también excluir
+    // porque se aplicó automáticamente
+    if (isRestrictedUser && key === "core") return false;
+
+    return true;
+  });
+
+  // Verificar si alguno de estos keys tiene valor
+  return keysToCheck.some((key) => query[key]?.trim());
+}
+
+const hasActiveFilters = hasUserAppliedFilters(query);
+
+// --- Función para obtener el término de búsqueda ---
+function getSearchTerm(query: any): string {
+  const terms: string[] = [];
+
+  if (query.text?.trim()) terms.push(query.text.trim());
+  if (query.name?.trim()) terms.push(query.name.trim());
+
+  // Solo mostrar el núcleo en el término de búsqueda si el usuario tiene acceso total
+  if (
+    currentUser &&
+    (currentUser.roleId === ADMIN_ROLE_ID ||
+      currentUser.roleId === COMITE_MEMBER_ROLE_ID)
+  ) {
+    if (query.core?.trim()) terms.push(query.core.trim());
+  }
+
+  if (query.doc_type?.trim()) terms.push(query.doc_type.trim());
+
+  if (query.dateFrom?.trim() || query.dateTo?.trim()) {
+    const from = query.dateFrom?.trim() || "...";
+    const to = query.dateTo?.trim() || "...";
+    terms.push(`Fecha: ${from} - ${to}`);
+  }
+
+  return terms.join(", ");
+}
+
+// --- Servicios auxiliares ---
 async function getActas() {
-  try {
-    const service = new SolrService();
-    if (!service) {
-      throw new Error("Error al leer");
-    }
-    return service.getAllMinutes(Number(limit));
-  } catch (error) {
-    console.error("Error fetching actas:", error);
-    throw new Error();
-  }
+  // NO hacer búsqueda si no hay filtros aplicados
+  return {
+    docs: [],
+    numFound: 0,
+    total: 0,
+    searchTerm: "",
+  };
 }
+
 async function getActasByQuery() {
-  try {
-    const service = new SolrService();
-    if (!service) {
-      throw new Error("Error al leer");
-    }
-    return service.queryMinutes(query, Number(page), Number(limit), "OR");
-  } catch (error) {
-    console.error("Error fetching actas:", error);
-    throw new Error();
-  }
+  const service = new SolrService();
+  console.log("[GET ACTAS BY QUERY] Query enviado a Solr:", query);
+  const actasData = await service.queryMinutes(query, page, limit, "AND");
+  return {
+    ...actasData,
+    searchTerm: getSearchTerm(query),
+  };
 }
+
 async function getCore() {
   const service = new CoreService();
   try {
-    return await service.getAllCore(session.jwt);
+    const allCores = await service.getAllCore(session.jwt);
+    return allCores;
   } catch (e) {
-    console.error(e);
+    console.error("Error al cargar todos los nucleos", e);
+    if (session?.user?.core) {
+      console.log("Usando core del usuario desde sesión");
+      return [session.user.core];
+    }
+    return [];
   }
 }
-const actas =
-  Array.from(Object.entries(query)).length === 0
-    ? await getActas()
-    : await getActasByQuery();
-const cores = await getCore();
+
+// --- Decidir si es búsqueda vacía o con filtros ---
+// Solo hacer búsqueda si el usuario aplicó filtros
+const actasResult = hasActiveFilters
+  ? await getActasByQuery()
+  : await getActas();
+
+const actas = {
+  docs: actasResult.docs || [],
+  numFound: actasResult.numFound || 0,
+  total: actasResult.total || 0,
+  totalPages:
+    actasResult.totalPages || Math.ceil((actasResult.numFound || 0) / limit),
+  currentPage: actasResult.currentPage || page,
+};
+
+const searchTerm = actasResult.searchTerm || "";
+let cores = await getCore();
+
+// Asegurar que cores sea un array serializable
+if (!cores || !Array.isArray(cores)) {
+  cores = [];
+}
+
+// Si no hay cores, usar el del usuario desde la sesión
+if (cores.length === 0 && session?.user?.core) {
+  cores = [session.user.core];
+}
+
+// Serializar cores para pasarlo a Vue
+const serializedCores = JSON.parse(JSON.stringify(cores));
+
+// Debug completo
+console.log("=== DEBUG COMPLETO ===");
+console.log("Usuario:", currentUser);
+console.log("Núcleo del usuario:", userCoreName);
+console.log(
+  "Tiene acceso total:",
+  currentUser &&
+    (currentUser.roleId === ADMIN_ROLE_ID ||
+      currentUser.roleId === COMITE_MEMBER_ROLE_ID),
+);
+console.log("Tiene filtros activos:", hasActiveFilters);
+console.log("Query final enviado:", query);
+console.log("Actas encontradas:", actas.numFound);
+console.log("======================");
 ---
 
 <RootLayout>
-  <Busqueda actas={actas} limit={limit} page={page} cores={cores} />
+  <Busqueda
+    actas={actas}
+    limit={limit}
+    page={page}
+    cores={serializedCores}
+    searchTerm={searchTerm}
+    currentUser={currentUser}
+    hasActiveFilters={hasActiveFilters}
+    client:load
+  />
 </RootLayout>

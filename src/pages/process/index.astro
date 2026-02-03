@@ -10,11 +10,12 @@ import CoreService from "@/services/CoreService";
 const session = (await getSession(Astro.request)) as any;
 const searchParams = Astro.url.searchParams;
 const page = Number(searchParams.get("page") ?? 1);
+const limit = Number(searchParams.get("limit") ?? 10);
 
 async function getSanciones() {
   const sancion = new SancionService();
   try {
-    return await sancion.getAll(page, session);
+    return await sancion.getAll(page, limit, session);
   } catch (e) {
     console.error(e);
     return [];
@@ -48,6 +49,7 @@ const members = await getMembers();
       sanciones={sanciones}
       members={members}
       cores={cores}
+      page={page}
       client:load
     />
   </ProcessLayout>
