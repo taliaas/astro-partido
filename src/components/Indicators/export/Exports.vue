@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
 import type { Computo } from "@/interface/Indicadores";
-import { buildExcel } from "@/utils/excel";
+import { buildExcel } from "@/components/Indicators/export/excel";
 import { Download } from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";

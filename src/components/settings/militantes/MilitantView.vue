@@ -75,14 +75,6 @@
               {{ militant.nivel_escolar || "No especificado" }}
             </p>
           </div>
-          <div>
-            <Label class="text-sm font-medium text-muted-foreground">
-              Fundador
-            </Label>
-            <p className="mt-1 text-base text-foreground">
-              {{ militant.fundador ? "Sí" : "No" }}
-            </p>
-          </div>
         </CardContent>
       </Card>
 
@@ -152,6 +144,14 @@
           </div>
           <div>
             <Label class="text-md font-medium text-muted-foreground"
+              >Fecha de incorporación</Label
+            >
+            <p class="text-lg">
+              {{ militant.date || "No especificado" }}
+            </p>
+          </div>
+          <div>
+            <Label class="text-md font-medium text-muted-foreground"
               >Puesto de Trabajo</Label
             >
             <p class="text-lg">
@@ -190,7 +190,14 @@
               {{ militant.cuenta_propia ? "Sí" : "No" }}
             </p>
           </div>
-
+          <div>
+            <Label class="text-sm font-medium text-muted-foreground">
+              Fundador
+            </Label>
+            <p className="mt-1 text-base text-foreground">
+              {{ militant.fundador ? "Sí" : "No" }}
+            </p>
+          </div>
           <div>
             <Label class="text-md font-medium text-muted-foreground"
               >Militante Doble</Label

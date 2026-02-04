@@ -28,7 +28,6 @@
           <Exports :computos :month />
         </div>
       </div>
-      <!-- Indicators List with Collapsible Sections -->
 
       <div
         v-for="category of categories"
@@ -117,7 +116,7 @@ const handleModelFilter = (filter: string, value: string) => {
 // Función para obtener indicadores por categoría
 const getIndicatorsByCategory = (category: string) => {
   return Object.entries(indicators).filter(
-    ([key, indicator]) => indicator.category === category
+    ([key, indicator]) => indicator.category === category,
   );
 };
 

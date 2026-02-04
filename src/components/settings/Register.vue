@@ -135,7 +135,7 @@
                 {{ format(traza.createdAt, "yyyy-MM-dd") }}
               </td>
               <td class="text-center">
-                {{ format(traza.createdAt, "HH:mm:ss") }}
+                {{ format(traza.time, "HH:mm:ss") }}
               </td>
 
               <td class="text-muted-foreground text-center py-2">
@@ -354,6 +354,7 @@ export interface Logs {
   createdAt: Date;
   entityId?: string;
   user: User;
+  time: Date;
   expiresAt: Date | null;
 }
 

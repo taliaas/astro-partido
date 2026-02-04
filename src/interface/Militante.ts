@@ -92,7 +92,7 @@ export interface Militant {
   work: string;
   cuenta_propia: boolean;
   fundador: boolean;
-  date: Date;
+  date: string;
   CIPCC: string;
   militant_doble: boolean;
   expediente: string;

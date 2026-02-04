@@ -52,7 +52,7 @@ const handleModelFilter = (filter: string, value: string) => {
 
 const handleNavigate = (ind: AcceptableValue) => {
   navigate(
-    `/indicators/comite/${ind}?${new URLSearchParams(searchParams as any).toString()}`
+    `/indicators/comite/${ind}?${new URLSearchParams(searchParams as any).toString()}`,
   );
 };
 </script>
@@ -67,7 +67,7 @@ const handleNavigate = (ind: AcceptableValue) => {
           @click=""
           class="text-gray-500 hover:text-gray-700"
         >
-          <a href="/analisis_indicador/comite"><XIcon class="h-5 w-5" /></a>
+          <a href="/indicators/comite"><XIcon class="h-5 w-5" /></a>
         </Button>
       </div>
       <div class="flex items-center justify-between mb-6">

@@ -26,7 +26,7 @@ import {
 import { toTypedSchema } from "@vee-validate/zod";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ArrowLeft, Loader2, Save } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { toast } from "vue-sonner";
@@ -44,10 +44,7 @@ const form = useForm<MilitanteSchema>({
     lastname: militant?.lastname || "",
     address: militant?.address || "",
     ci: militant?.ci || "",
-    date: format(
-      militant?.date ? new Date(militant.date) : new Date(),
-      "yyyy-MM-dd",
-    ),
+    date: militant?.date,
     firstname: militant?.firstname || "",
     organization: militant?.organization || "PCC",
     phone: militant?.phone || "",
@@ -75,12 +72,15 @@ const previous = () => {
 const saveMember = form.handleSubmit(async (data: MilitanteSchema) => {
   try {
     if (militant) {
+      console.log(data.date);
+
       await actions.militants.updateMember.orThrow({
         ...data,
         core: { id: data.core },
       });
       toast.success("Militante actualizado correctamente");
     } else {
+      console.log(data.date);
       await actions.militants.createMember.orThrow({
         ...data,
         core: { id: data.core },
@@ -346,7 +346,7 @@ const saveMember = form.handleSubmit(async (data: MilitanteSchema) => {
                 <FormMessage />
               </FormItem>
             </FormField>
-            <FormField v-slot="{ componentField, field }" name="date">
+            <FormField v-slot="{ componentField }" name="date">
               <FormItem>
                 <FormLabel class=""> Fecha de incorporación </FormLabel>
                 <FormControl>

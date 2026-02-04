@@ -1,4 +1,5 @@
-import type { Computo } from "@/interface/Indicadores";
+import type { Computo, Indicator } from "@/interface/Indicadores";
+import type { Indicators } from "@/utils/indicators";
 import ExcelJS, { type Workbook } from "exceljs";
 import { toast } from "vue-sonner";
 
@@ -10,6 +11,59 @@ export interface DataComputo {
   militants_minute: number;
   difference: number;
 }
+
+const indicatorsOrder = [
+  "ptos",
+  "participacionOrgSup_Cte",
+  "participacionOrgSup_Mun",
+  "invitados",
+  "invitados",
+  "invitados",
+  "invitados",
+  "invitados",
+  "rendicionMilitante",
+  "rendicionOrganizacionesYOtros",
+  "rendicionDirigente",
+  "",
+  "",
+  "implOrtcsOrgSup",
+  "analisisAusenciasRO",
+  "otrosAnalisisDisciplinarios",
+  "analisisActFtal",
+  "",
+  "discusionDelitoCorrupcionIlegalidad",
+  "",
+  "usoComisiones",
+  "politicaDeCuadros",
+  "reglamentosEstatutos",
+  "planDeTrabajo",
+  "",
+  "evaluacion",
+  "trasladosIncorporacion",
+  "",
+  "crecimiento",
+  "crecimiento",
+  "crecimiento",
+  "crecimiento",
+  "crecimiento",
+  "crecimiento",
+  "crecimiento",
+  "sanciones",
+  "desactivacion",
+  "",
+  "atencionFEU",
+  "atencionUJC",
+  "funcionamientoSindicato",
+  "",
+  "",
+  "cp",
+  "",
+  "cp_agree",
+  "acuerdosSalidasExternas",
+  "guardiaPCC",
+  "",
+  "",
+] as (keyof Indicators)[];
 
 const meses = [
   "Enero",
@@ -49,7 +103,7 @@ export function buildExcel(computos: Computo[], month: string) {
       resto,
     ]);
   });
-  const computoWorkSheet = buildComputoSheet(workbook, month);
+  const computoWorkSheet = buildComputoSheet(workbook, Number(month), computos);
   return workbook;
 }
 
@@ -110,7 +164,7 @@ function buildAsistenciaSheet(workbook: Workbook, month: string) {
           horizontal: "center",
           vertical: "middle",
           wrapText: true,
-        })
+        }),
     );
   });
   return worksheet;
@@ -126,7 +180,11 @@ function colToLetter(colNum: number) {
   return letter;
 }
 
-function buildComputoSheet(workbook: Workbook, month: string) {
+function buildComputoSheet(
+  workbook: Workbook,
+  month: number,
+  computos: Computo[],
+) {
   const worksheet = workbook.addWorksheet("Computo");
   const $ = (key: string) => worksheet.getCell(key);
 
@@ -413,6 +471,29 @@ function buildComputoSheet(workbook: Workbook, month: string) {
       };
       cell.font = { bold: true, name: "Arial" };
     });
+  });
+
+  let rowIndex = 7; // primera fila de datos
+
+  computos.forEach((computo, index) => {
+    if (computo.month === month) {
+      const row = worksheet.getRow(rowIndex++); // cada computo en una fila nueva
+
+      row.getCell(1).value = index + 1;
+
+      // combinar columnas 2 y 3 en esa fila
+      worksheet.mergeCells(row.number, 2, row.number, 3);
+      row.getCell(2).value = computo.minute.core?.name;
+
+      indicatorsOrder.forEach((indicator, i) => {
+        const value = computo.indicators.find(
+          (ind) => ind.key === indicator,
+        )?.value;
+        row.getCell(4 + i).value = value;
+      });
+
+      row.commit();
+    }
   });
 
   return worksheet;
