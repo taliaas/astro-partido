@@ -104,7 +104,7 @@ useSse("minute.status", ({ id, status }) => {
 });
 
 const currentUser = session;
-const currentsMinute = ref<any>(null);
+const currentsMinute = ref<Minute | null>(null);
 const currentCore = ref<number>(1);
 const actas = reactive(actasResponse);
 const searchParams = useUrlSearchParams();
@@ -149,7 +149,6 @@ function handleSort() {
 
 const indexPage = (index: number) => {
   const limit: number = actas.limit;
-  const page: number = actas.page_total;
   return Number(page - 1) * Number(limit) + (index + 1);
 };
 
@@ -160,22 +159,11 @@ const openCore = (acta: any) => {
   update.value = true;
 };
 const handleCore = async () => {
-  if (currentsMinute.value.isLoaded) {
-    await actions.minute.updateCore({
-      minuteId: currentsMinute.value.id,
-      coreId: selectedCore.value,
-    });
-  } else if (currentsMinute.value.type === "ro") {
-    await actions.ordinary.updateCore({
-      minuteId: currentsMinute.value.id,
-      coreId: selectedCore.value,
-    });
-  } else {
-    await actions.political.updateCore({
-      minuteId: currentsMinute.value.id,
-      coreId: selectedCore.value,
-    });
-  }
+  await actions.minute.updateCore({
+    minuteId: Number(currentsMinute.value?.id),
+    coreId: selectedCore.value,
+  });
+
   navigate("");
 };
 
@@ -252,7 +240,7 @@ const handleAction = (action: any, acta: Minute) => {
 
 const handleRetry = () => {
   actions.minute.retryModel({
-    actaID: currentsMinute.value?.id,
+    actaID: currentsMinute.value?.id ?? "",
     mode: mode.value as any,
   });
   navigate(`minutes`);
@@ -797,7 +785,7 @@ function goToPreviousPage() {
               <p class="text-lg text-foreground">
                 ¿Estás seguro que desea eliminar
                 <span class="font-semibold"
-                  >{{ currentsMinute.name }} {{ currentsMinute.id }}</span
+                  >{{ currentsMinute?.name }} {{ currentsMinute?.id }}</span
                 >?
               </p>
             </div>

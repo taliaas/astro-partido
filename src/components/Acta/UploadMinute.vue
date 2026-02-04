@@ -227,7 +227,7 @@ const close = () => {};
           class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           :loading
         >
-          Cargar archivos
+          {{ !loading ? "Cargar archivos" : "Cargando..." }}
         </Button>
       </DialogFooter>
     </DialogContent>
