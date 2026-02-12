@@ -4,14 +4,7 @@ import DropdownMenu from "@/components/ui/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuContent from "@/components/ui/dropdown-menu/DropdownMenuContent.vue";
 import DropdownMenuItem from "@/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";  
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { format, addDays } from "date-fns";
@@ -22,24 +15,19 @@ import {
   PlusIcon,
   Download,
   XIcon,
-  ChevronLeft,
-  ChevronRight,
-  FileDown,
+  ChevronLeft,   
+  ChevronRight,  
+  FileDown, 
 } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
-import { useUrlSearchParams } from "@vueuse/core";
+import { useUrlSearchParams } from "@vueuse/core";  
 
-const {
-  cores,
-  desactivations,
-  members,
-  page: initialPage,
-} = defineProps<{
+const { cores, desactivations, members, page: initialPage } = defineProps<{  
   cores: any;
   desactivations: any;
   members: any;
-  page: number;
+  page: number;  
 }>();
 
 const EstadoDesactivacion = ["PENDIENTE", "APROBADA", "RECHAZADA"] as const;
@@ -51,7 +39,7 @@ const showDetailmdodal = ref(false);
 const isLoading = ref(false);
 const isEditing = ref(false);
 const statusFilter = ref("");
-const searchParams = useUrlSearchParams();
+const searchParams = useUrlSearchParams(); 
 
 // Paginación
 const currentPage = ref(initialPage || 1);
@@ -65,7 +53,7 @@ const getEstadoBadgeClass = (estado: string) => {
   const classes: Record<string, string> = {
     PENDIENTE: "bg-gray-100 text-gray-800",
     APROBADA: "bg-green-100 text-green-800",
-    RECHAZADA: "bg-red-100 text-red-800",
+    RECHAZADA: "bg-red-100 text-red-800"
   };
   return classes[estado] || "bg-gray-100 text-gray-800";
 };
@@ -75,7 +63,7 @@ const getEstadoLabel = (estado: string) => {
   const labels: Record<string, string> = {
     PENDIENTE: "Pendiente",
     APROBADA: "Aprobada",
-    RECHAZADA: "Rechazada",
+    RECHAZADA: "Rechazada"
   };
   return labels[estado] || estado;
 };
@@ -118,9 +106,9 @@ const currentDeactivation = ref<{
   motivo: string;
   fecha: string;
   estado: string;
-  militante: {
-    id: string | number;
-    firstname?: string;
+  militante: { 
+    id: string | number; 
+    firstname?: string; 
     lastname?: string;
     ci?: string;
   };
@@ -136,13 +124,9 @@ const currentDeactivation = ref<{
 // Filtrar militantes que no tienen desactivación activa
 const availableMembers = computed(() => {
   if (!members || !desactivations?.data) return members;
-
-  const deactivatedMemberIds = desactivations.data.map(
-    (d: any) => d.militante.id,
-  );
-  return members.filter(
-    (member: any) => !deactivatedMemberIds.includes(member.id),
-  );
+  
+  const deactivatedMemberIds = desactivations.data.map((d: any) => d.militante.id);
+  return members.filter((member: any) => !deactivatedMemberIds.includes(member.id));
 });
 
 const filteredDeactivations = computed(() => {
@@ -152,12 +136,8 @@ const filteredDeactivations = computed(() => {
       deactivation?.militante.firstname
         .toLowerCase()
         .includes(searchTerm.value.toLowerCase()) ||
-      deactivation.militante.lastname
-        .toLowerCase()
-        .includes(searchTerm.value.toLowerCase()) ||
-      deactivation?.motivo
-        .toLowerCase()
-        .includes(searchTerm.value.toLowerCase());
+      deactivation.militante.lastname.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      deactivation?.motivo.toLowerCase().includes(searchTerm.value.toLowerCase());
     const matchesCore =
       !currentNucleos.value ||
       deactivation.militante.core.id === currentNucleos.value;
@@ -171,7 +151,7 @@ const filteredDeactivations = computed(() => {
 const openAddModal = () => {
   isEditing.value = false;
   selectedMilitanteId.value = null;
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
   currentDeactivation.value = {
     motivo: "",
     fecha: today,
@@ -184,18 +164,17 @@ const openAddModal = () => {
 
 const editModal = (deactivation: any) => {
   isEditing.value = true;
-  const fechaFormateada =
-    deactivation.fecha instanceof Date
-      ? deactivation.fecha.toISOString().split("T")[0]
-      : new Date(deactivation.fecha).toISOString().split("T")[0];
-
+  const fechaFormateada = deactivation.fecha instanceof Date 
+    ? deactivation.fecha.toISOString().split('T')[0]
+    : new Date(deactivation.fecha).toISOString().split('T')[0];
+    
   currentDeactivation.value = {
     id: deactivation.id,
     motivo: deactivation.motivo,
     fecha: formatDateForEdit(deactivation.fecha),
     estado: deactivation.estado,
     details: deactivation.details,
-    militante: {
+    militante: { 
       id: deactivation.militante.id,
       firstname: deactivation.militante.firstname,
       lastname: deactivation.militante.lastname,
@@ -226,30 +205,30 @@ const saveDeactivation = async () => {
   try {
     if (!isEditing.value) {
       const militanteIdNumber = Number(selectedMilitanteId.value);
-
+      
       if (!militanteIdNumber || isNaN(militanteIdNumber)) {
         toast.error("Por favor selecciona un militante válido");
         isLoading.value = false;
         return;
       }
-
+      
       const dataToSend = {
         motivo: currentDeactivation.value.motivo,
         fecha: currentDeactivation.value.fecha,
         militanteId: militanteIdNumber,
         details: currentDeactivation.value.details,
       };
-
+      
       console.log("Datos a enviar (crear):", dataToSend);
-
-      const result = await actions.militants.deactiveMili(dataToSend as any);
-
+      
+      const result = await actions.deactivations.deactiveMili(dataToSend as any);
+      
       if (result.error) {
         console.error("Error del servidor:", result.error);
         toast.error(result.error.message || "Error al crear la desactivación");
         return;
       }
-
+      
       toast.success("Desactivación creada correctamente");
     } else {
       const dataToUpdate = {
@@ -259,29 +238,25 @@ const saveDeactivation = async () => {
         estado: currentDeactivation.value.estado,
         details: currentDeactivation.value.details,
       };
-
+      
       console.log("Datos a actualizar:", dataToUpdate);
-      const result = await actions.militants.updateDeactivation(
-        dataToUpdate as any,
+      const result = await actions.deactivations.updateDeactivation(
+        dataToUpdate as any
       );
-
+      
       if (result.error) {
         console.error("Error del servidor:", result.error);
-        toast.error(
-          result.error.message || "Error al actualizar la desactivación",
-        );
+        toast.error(result.error.message || "Error al actualizar la desactivación");
         return;
       }
-
+      
       toast.success("Desactivación actualizada correctamente");
     }
     showModal.value = false;
     navigate("");
   } catch (error) {
     console.error("Error completo:", error);
-    toast.error(
-      `Error: ${error instanceof Error ? error.message : "Error desconocido"}`,
-    );
+    toast.error(`Error: ${error instanceof Error ? error.message : 'Error desconocido'}`);
   } finally {
     isLoading.value = false;
   }
@@ -290,31 +265,31 @@ const saveDeactivation = async () => {
 const exportar = async (id: number) => {
   try {
     toast.info("Generando PDF...");
-    const result = await actions.militants.exportDesactivation({ id });
-
+    const result = await actions.deactivations.exportDesactivation({ id });
+    
     if (result.error) {
       toast.error(result.error.message || "Error al exportar");
       return;
     }
-
+    
     const byteCharacters = atob(result.data.pdf);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
-
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = result.data.filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-
-    toast.success("Desactivación exportada correctamente");
+    
+    toast.success('Desactivación exportada correctamente');
   } catch (error) {
     console.error("Error:", error);
     toast.error("No se pudo exportar la desactivación");
@@ -324,35 +299,35 @@ const exportar = async (id: number) => {
 const exportarListado = async () => {
   try {
     toast.info("Generando listado de desactivaciones...");
-
-    const result = await actions.militants.exportListadoDesactivaciones({
-      estado: statusFilter.value || undefined,
-      nucleoId: currentNucleos.value ? String(currentNucleos.value) : undefined,
+    
+    const result = await actions.deactivations.exportListadoDesactivaciones({
+      estado: statusFilter.value || undefined,  
+      nucleoId: currentNucleos.value ? String(currentNucleos.value) : undefined,  
     });
-
+    
     if (result.error) {
       toast.error(result.error.message || "Error al exportar listado");
       return;
     }
-
+    
     const byteCharacters = atob(result.data.pdf);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
-
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = result.data.filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-
-    toast.success("Listado exportado correctamente");
+    
+    toast.success('Listado exportado correctamente');
   } catch (error) {
     console.error("Error:", error);
     toast.error("No se pudo exportar el listado");
@@ -382,18 +357,18 @@ function goToPreviousPage() {
 
 const handleFilterByValue = (filter: string, value: any) => {
   const query = new URLSearchParams(searchParams as any);
-
-  if (filter === "limit") {
-    query.set("page", "1");
+  
+  if (filter === 'limit') {
+    query.set('page', '1');
     currentPage.value = 1;
   }
-
+  
   if (value && value !== "all") {
     query.set(filter, value);
   } else {
     query.delete(filter);
   }
-
+  
   navigate("?" + query.toString());
 };
 </script>
@@ -410,8 +385,8 @@ const handleFilterByValue = (filter: string, value: any) => {
         </p>
       </div>
       <div class="flex gap-2">
-        <Button
-          @click="exportarListado"
+        <Button 
+          @click="exportarListado" 
           variant="outline"
           class="px-4 py-2 rounded-lg flex items-center gap-2 transition-colors hover:bg-gray-100"
         >
@@ -511,16 +486,11 @@ const handleFilterByValue = (filter: string, value: any) => {
                 </div>
               </td>
               <td class="px-6 py-4">
-                <span
-                  class="text-sm text-gray-900 max-w-xs truncate block"
-                  :title="deactivation.motivo"
-                >
+                <span class="text-sm text-gray-900 max-w-xs truncate block" :title="deactivation.motivo">
                   {{ deactivation.motivo }}
                 </span>
               </td>
-              <td
-                class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900"
-              >
+              <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
                 {{ formatDate(deactivation.fecha) }}
               </td>
               <td
@@ -541,11 +511,7 @@ const handleFilterByValue = (filter: string, value: any) => {
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger class="focus:outline-none">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="rounded-full hover:bg-gray-100"
-                    >
+                    <Button variant="ghost" size="icon" class="rounded-full hover:bg-gray-100">
                       <MoreVerticalIcon class="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -557,17 +523,11 @@ const handleFilterByValue = (filter: string, value: any) => {
                       <Eye class="h-4 w-4 mr-2" />
                       Ver detalles
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="editModal(deactivation)"
-                      class="cursor-pointer"
-                    >
+                    <DropdownMenuItem @click="editModal(deactivation)" class="cursor-pointer">
                       <Pencil class="h-4 w-4 mr-2" />
                       Editar
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="exportar(deactivation.id)"
-                      class="cursor-pointer"
-                    >
+                    <DropdownMenuItem @click="exportar(deactivation.id)" class="cursor-pointer">
                       <Download class="h-4 w-4 mr-2" />
                       Exportar PDF
                     </DropdownMenuItem>
@@ -578,9 +538,7 @@ const handleFilterByValue = (filter: string, value: any) => {
             <tr v-if="filteredDeactivations?.length === 0">
               <td colspan="6" class="text-center py-12 text-gray-500">
                 <p class="text-lg">No hay desactivaciones registradas</p>
-                <p class="text-sm mt-2">
-                  Usa el botón "Nueva Desactivación" para agregar una
-                </p>
+                <p class="text-sm mt-2">Usa el botón "Nueva Desactivación" para agregar una</p>
               </td>
             </tr>
           </tbody>
@@ -589,42 +547,20 @@ const handleFilterByValue = (filter: string, value: any) => {
       <!-- Paginación -->
       <div class="flex justify-between p-4 border-t">
         <div v-if="desactivations?.totalPages === 0"></div>
-        <div
-          v-else
-          class="flex text-md text-muted-foreground items-center gap-2"
-        >
-          <div>
-            Mostrando <span class="font-medium">{{ currentPage || 1 }}</span> de
-            <span class="font-medium">{{
-              desactivations?.totalPages || 1
-            }}</span>
-            páginas
-          </div>
+        <div v-else class="flex text-md text-muted-foreground items-center gap-2">
+          <div>Mostrando <span class="font-medium">{{ currentPage || 1 }}</span> de <span class="font-medium">{{ desactivations?.totalPages || 1 }}</span> páginas</div>
         </div>
-
+        
         <div class="flex justify-end gap-4">
-          <Button
-            size="icon"
-            :disabled="currentPage === 1"
-            variant="outline"
-            @click="goToPreviousPage"
-          >
-            <ChevronLeft />
+          <Button size="icon" :disabled="currentPage === 1" variant="outline" @click="goToPreviousPage">
+            <ChevronLeft/> 
           </Button>
-          <Button
-            size="icon"
-            :disabled="currentPage >= hasNextPage"
-            variant="outline"
-            @click="goToNextPage"
-          >
-            <ChevronRight />
+          <Button size="icon" :disabled="currentPage >= hasNextPage" variant="outline" @click="goToNextPage">
+            <ChevronRight/> 
           </Button>
-
+        
           <div>
-            <Select
-              :default-value="searchParams.limit ?? '10'"
-              @update:model-value="handleFilterByValue('limit', $event)"
-            >
+            <Select :default-value="searchParams.limit ?? '10'" @update:model-value="handleFilterByValue('limit', $event)">
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -648,12 +584,10 @@ const handleFilterByValue = (filter: string, value: any) => {
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       @click.self="showModal = false"
     >
-      <div
-        class="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto"
-      >
+      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900">
-            {{ isEditing ? "Editar Desactivación" : "Nueva Desactivación" }}
+            {{ isEditing ? 'Editar Desactivación' : 'Nueva Desactivación' }}
           </h3>
           <button
             @click="showModal = false"
@@ -692,12 +626,8 @@ const handleFilterByValue = (filter: string, value: any) => {
                 {{ member.firstname }} {{ member.lastname }}
               </option>
             </select>
-            <p
-              v-if="!isEditing && availableMembers?.length === 0"
-              class="text-sm text-red-600 mt-1"
-            >
-              No hay militantes disponibles. Todos ya tienen desactivaciones
-              registradas.
+            <p v-if="!isEditing && availableMembers?.length === 0" class="text-sm text-red-600 mt-1">
+              No hay militantes disponibles. Todos ya tienen desactivaciones registradas.
             </p>
           </div>
 
@@ -726,10 +656,7 @@ const handleFilterByValue = (filter: string, value: any) => {
           </div>
 
           <!-- Campo de Estado (solo visible en modo edición) -->
-          <div
-            v-if="isEditing"
-            class="bg-blue-50 border border-blue-200 rounded-md p-3"
-          >
+          <div v-if="isEditing" class="bg-blue-50 border border-blue-200 rounded-md p-3">
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Estado <span class="text-red-500">*</span>
             </label>
@@ -738,11 +665,7 @@ const handleFilterByValue = (filter: string, value: any) => {
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
             >
-              <option
-                v-for="estado in EstadoDesactivacion"
-                :key="estado"
-                :value="estado"
-              >
+              <option v-for="estado in EstadoDesactivacion" :key="estado" :value="estado">
                 {{ getEstadoLabel(estado) }}
               </option>
             </select>
@@ -769,11 +692,13 @@ const handleFilterByValue = (filter: string, value: any) => {
             >
               Cancelar
             </Button>
-            <Button type="submit" :disabled="isLoading" class="px-4 py-2">
+            <Button
+              type="submit"
+              :disabled="isLoading"
+              class="px-4 py-2"
+            >
               <span v-if="isLoading">Procesando...</span>
-              <span v-else>{{
-                isEditing ? "Actualizar" : "Crear Desactivación"
-              }}</span>
+              <span v-else>{{ isEditing ? 'Actualizar' : 'Crear Desactivación' }}</span>
             </Button>
           </div>
         </form>
@@ -786,13 +711,9 @@ const handleFilterByValue = (filter: string, value: any) => {
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       @click.self="closeDetailmdodal"
     >
-      <div
-        class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto"
-      >
+      <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">
-            Detalles de la Desactivación
-          </h3>
+          <h3 class="text-xl font-bold text-gray-900">Detalles de la Desactivación</h3>
           <button
             @click="closeDetailmdodal"
             class="text-gray-400 hover:text-gray-600 transition-colors"
@@ -804,23 +725,17 @@ const handleFilterByValue = (filter: string, value: any) => {
         <div v-if="selectedDeactivation" class="space-y-5">
           <!-- Información del Militante -->
           <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="font-semibold text-gray-700 mb-3">
-              Información del Militante
-            </h4>
+            <h4 class="font-semibold text-gray-700 mb-3">Información del Militante</h4>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Nombre completo</label
-                >
+                <label class="block text-sm font-medium text-gray-500">Nombre completo</label>
                 <p class="text-base text-gray-900 font-medium">
                   {{ selectedDeactivation.militante?.firstname }}
                   {{ selectedDeactivation.militante?.lastname }}
                 </p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >CI</label
-                >
+                <label class="block text-sm font-medium text-gray-500">CI</label>
                 <p class="text-base text-gray-900">
                   {{ selectedDeactivation.militante?.ci }}
                 </p>
@@ -830,30 +745,22 @@ const handleFilterByValue = (filter: string, value: any) => {
 
           <!-- Detalles de la Desactivación -->
           <div>
-            <h4 class="font-semibold text-gray-700 mb-3">
-              Detalles de la Desactivación
-            </h4>
+            <h4 class="font-semibold text-gray-700 mb-3">Detalles de la Desactivación</h4>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Motivo</label
-                >
+                <label class="block text-sm font-medium text-gray-500">Motivo</label>
                 <p class="text-base text-gray-900 font-medium">
                   {{ selectedDeactivation.motivo }}
                 </p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Fecha</label
-                >
+                <label class="block text-sm font-medium text-gray-500">Fecha</label>
                 <p class="text-base text-gray-900">
                   {{ formatDate(selectedDeactivation.fecha) }}
                 </p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Estado</label
-                >
+                <label class="block text-sm font-medium text-gray-500">Estado</label>
                 <span
                   class="inline-block px-3 py-1 text-sm font-medium rounded-full"
                   :class="getEstadoBadgeClass(selectedDeactivation.estado)"
@@ -866,9 +773,7 @@ const handleFilterByValue = (filter: string, value: any) => {
 
           <!-- Notas Adicionales -->
           <div v-if="selectedDeactivation.details">
-            <label class="block text-sm font-medium text-gray-500 mb-2"
-              >Notas Adicionales</label
-            >
+            <label class="block text-sm font-medium text-gray-500 mb-2">Notas Adicionales</label>
             <div class="bg-gray-50 rounded-lg p-4">
               <p class="text-base text-gray-900 whitespace-pre-wrap">
                 {{ selectedDeactivation.details }}

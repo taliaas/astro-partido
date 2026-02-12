@@ -96,10 +96,47 @@ const {
   session: any;
 }>();
 
-useSse("minute.status", ({ id, status }) => {
-  const acta = actas?.data?.find((acta: Minute) => acta.id == id);
-  if (acta) {
-    acta.status = status;
+useSse("minute.status", async ({ id, status }) => {
+  console.log('🔔 SSE minute.status:', { id, status });
+  
+  const actaIndex = actas.data.findIndex((acta: Minute) => acta.id == id);
+  
+  if (actaIndex !== -1) {
+    // Actualizar el status inmediatamente
+    actas.data[actaIndex].status = status;
+    
+    if (status === MinuteStatus.PENDIENTE || status === MinuteStatus.PROCESADA) {
+      
+      try {
+        const response = await actions.minute.getMinuteById({ 
+          id: id.toString() 
+        });
+        
+        if (response?.data?.success && response.data.data) {
+          const actaActualizada = response.data.data;
+          
+          // Guardar el núcleo original para comparar
+          const nucleoOriginal = actas.data[actaIndex].core?.name;
+          
+          // Reemplazar el acta completa con los datos frescos de la BD
+          actas.data.splice(actaIndex, 1, actaActualizada);
+          
+          // Mostrar notificación si el núcleo cambió
+          const nucleoNuevo = actaActualizada.core?.name;
+          
+          if (nucleoOriginal !== nucleoNuevo) {
+            toast.success(`Núcleo detectado: ${nucleoNuevo}`);
+          }
+        } else {
+          console.error('❌ Respuesta del servidor inválida:', response);
+        }
+      } catch (error) {
+        console.error('❌ Error recargando acta:', error);
+        toast.error('Error al actualizar la información del acta');
+      }
+    }
+  } else {
+    console.warn(`⚠️ Acta con ID ${id} NO encontrada en la lista actual`);
   }
 });
 
@@ -153,18 +190,51 @@ const indexPage = (index: number) => {
 };
 
 const openCore = (acta: any) => {
+  console.log('🔧 === ABRIENDO MODAL DE NÚCLEO ===');
+  console.log('📄 Acta seleccionada:', acta);
+  console.log('🎯 Núcleo actual:', acta?.core);
+  
   currentsMinute.value = acta;
-  selectedCore.value = acta?.core?.id;
-  currentCore.value = acta?.core?.id;
+  selectedCore.value = acta?.core?.id || 1;
+  currentCore.value = acta?.core?.id || 1;
   update.value = true;
 };
-const handleCore = async () => {
-  await actions.minute.updateCore({
-    minuteId: Number(currentsMinute.value?.id),
-    coreId: selectedCore.value,
-  });
 
-  navigate("");
+const handleCore = async () => {
+  try {
+    console.log('💾 === INICIANDO ACTUALIZACIÓN MANUAL DE NÚCLEO ===');
+
+    await actions.minute.updateCore({
+      minuteId: Number(currentsMinute.value?.id),
+      coreId: selectedCore.value,
+    });
+
+    // Buscar el núcleo en la lista
+    const nuevoCore = nucleos.find((n: any) => n.id === selectedCore.value);
+    
+    if (nuevoCore) {
+      const actaIndex = actas.data.findIndex(
+        (acta: Minute) => acta.id === currentsMinute.value?.id
+      );
+      
+      if (actaIndex !== -1) {
+        const actaActualizada = {
+          ...actas.data[actaIndex],
+          core: { ...nuevoCore }
+        };
+        
+        actas.data.splice(actaIndex, 1, actaActualizada);
+      }
+    }
+    
+    update.value = false;
+    toast.success("Núcleo actualizado correctamente");
+    
+  } catch (error) {
+    console.error("❌ Error al actualizar núcleo:", error);
+    toast.error("Error al actualizar el núcleo");
+    update.value = false;
+  }
 };
 
 const handleFilterByValue = (filter: string, value: any) => {
@@ -198,6 +268,7 @@ const getStatusClass = (status: any) => {
     Procesada: "bg-green-100 text-green-800 hover:bg-green-200",
     Error: "bg-red-100 text-red-800 hover:bg-red-200",
     Validada: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
+    Procesando: "bg-orange-100 text-orange-800 hover:bg-orange-200",
   };
   return (
     classes[status as keyof typeof classes] ||
@@ -208,8 +279,6 @@ const getStatusClass = (status: any) => {
 const handleAction = (action: any, acta: Minute) => {
   currentsMinute.value = acta;
   if (action === "ver") {
-    console.log(acta);
-
     if (acta.file) {
       navigate(`minutes/loaded-view/${acta.id}`);
     } else if (acta.type === "Ordinaria") {
@@ -224,7 +293,7 @@ const handleAction = (action: any, acta: Minute) => {
       navigate(`minutes/cp/${acta.id}/edit`);
     }
   } else if (action === "revisar" && acta.type === MinuteType[0]) {
-    navigate(`/indicators/create/${acta.id}`); //revisar ruta
+    navigate(`/indicators/create/${acta.id}`);
   } else if (action === "retry") {
     openModal.value = true;
   } else if (action === "observation") {
@@ -238,12 +307,22 @@ const handleAction = (action: any, acta: Minute) => {
   }
 };
 
-const handleRetry = () => {
-  actions.minute.retryModel({
-    actaID: currentsMinute.value?.id ?? "",
-    mode: mode.value as any,
-  });
-  navigate(`minutes`);
+const handleRetry = async () => {
+  try {
+    const modeCapitalized = mode.value.charAt(0).toUpperCase() + mode.value.slice(1);
+    
+    await actions.minute.retryModel({
+      actaID: currentsMinute.value?.id ?? "",
+      mode: modeCapitalized as any,
+    });
+    
+    openModal.value = false;
+    toast.success("Procesamiento iniciado correctamente");
+    navigate(`/minutes`);
+  } catch (error) {
+    console.error("Error al procesar acta:", error);
+    toast.error("Error al iniciar el procesamiento");
+  }
 };
 
 const handleDelete = () => {
@@ -286,6 +365,7 @@ function goToPreviousPage() {
   }
 }
 </script>
+
 <template>
   <div
     class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:bg-zinc-800"
@@ -316,22 +396,22 @@ function goToPreviousPage() {
                 </Button>
               </div>
               <div class="flex gap-3">
-                <a
-                  href="/minutes/ro/new"
+                
+                <a href="/minutes/ro/new"
                   class="flex gap-2 text-white rounded text-sm font-medium px-4 py-2 mr-4 bg-button"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />
                   Ordinaria
                 </a>
-                <a
-                  href="/minutes/cp/new"
+                
+                <a  href="/minutes/cp/new"
                   class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />
                   C. Político
                 </a>
-                <a
-                  href="/minutes/extra/new"
+                
+                <a  href="/minutes/extra/new"
                   class="px-4 py-2 mr-4 flex bg-button gap-2 text-white rounded text-sm font-medium"
                 >
                   <PlusIcon class="h-4 w-4 mr-2" />
@@ -749,18 +829,17 @@ function goToPreviousPage() {
           </DialogDescription>
         </DialogHeader>
         <div class="flex justify-center p-2">
-          <Select v-model:model-value="selectedCore">
+          <Select v-model="selectedCore">
             <SelectTrigger class="w-full">
               <SelectValue placeholder="Seleccione el núcleo" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="null">Seleccione el núcleo</SelectItem>
               <SelectItem
-                v-for="value in nucleos"
-                :key="value.id"
-                :value="value.id"
+                v-for="nucleo in nucleos"
+                :key="nucleo.id"
+                :value="nucleo.id"
               >
-                {{ value.name }}
+                {{ nucleo.name }}
               </SelectItem>
             </SelectContent>
           </Select>

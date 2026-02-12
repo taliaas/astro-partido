@@ -10,8 +10,8 @@ export const deactiveMili = defineAction({
     motivo: z.string().min(3),
     details: z.string().optional(),
     fecha: z.coerce.date(),
-    estado: z.enum(EstadoDesactivacion).optional().default("PENDIENTE"),
-    militanteId: z.number(), // Recibir militanteId en lugar de militante
+    estado: z.enum(EstadoDesactivacion).optional().default('PENDIENTE'),
+    militanteId: z.number(),
   }),
   handler: async ({ motivo, estado, fecha, details, militanteId }, context) => {
     const session: any = await getSession(context.request);
@@ -24,8 +24,8 @@ export const deactiveMili = defineAction({
       body: JSON.stringify({
         motivo,
         fecha,
-        estado: estado || "PENDIENTE",
-        militanteId, // ✅ CAMBIO: Enviar militanteId
+        estado: estado || 'PENDIENTE',
+        militanteId,
         details,
       }),
     });
@@ -60,7 +60,6 @@ export const updateDeactivation = defineAction({
         fecha,
         estado,
         details,
-        // ❌ NO enviar militante ni militanteId
       }),
     });
     if (!res.ok) {
@@ -71,4 +70,84 @@ export const updateDeactivation = defineAction({
     }
     return await res.json();
   },
+});
+
+export const exportDesactivation = defineAction({
+  input: z.object({ id: z.number().int().positive() }),
+  handler: async ({ id }, context) => {
+    const session: any = await getSession(context.request);
+    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+
+    const res = await fetch(`${API_URL}/desactivation/${id}/export`, {
+      headers: {
+        Authorization: `Bearer ${session.jwt}`,
+      },
+    });
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Error al generar el PDF: ${errorText}`
+      });
+    }
+    
+    const arrayBuffer = await res.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+    
+    return { 
+      pdf: base64,
+      filename: `desactivacion_${id}.pdf`
+    };
+  }
+});
+
+// Exportar listado de desactivaciones con filtros
+export const exportListadoDesactivaciones = defineAction({
+  input: z.object({
+    estado: z.string().optional(),
+    nucleoId: z.string().optional(),
+  }),
+  handler: async ({ estado, nucleoId }, context) => {
+    const session: any = await getSession(context.request);
+    if (!session) {
+      throw new ActionError({ 
+        code: "UNAUTHORIZED",
+        message: "Debe iniciar sesión para realizar esta acción"
+      });
+    }
+
+    // Construir URL con parámetros de filtro
+    const params = new URLSearchParams();
+    if (estado) params.append('estado', estado);
+    if (nucleoId) params.append('nucleoId', nucleoId);
+
+    const url = `${API_URL}/desactivation/export/listado${params.toString() ? `?${params.toString()}` : ''}`;
+
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${session.jwt}`,
+      },
+    });
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Error al generar el PDF: ${errorText}`
+      });
+    }
+    
+    const arrayBuffer = await res.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+    
+    const filename = estado 
+      ? `desactivaciones_${estado.toLowerCase()}_${new Date().toISOString().split('T')[0]}.pdf`
+      : `desactivaciones_todas_${new Date().toISOString().split('T')[0]}.pdf`;
+    
+    return { 
+      pdf: base64,
+      filename
+    };
+  }
 });

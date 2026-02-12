@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { ref, onMounted, computed } from "vue";
 import Filters from "@/components/filters/filters.vue";
+import { navigate } from "astro:transitions/client";
 
 interface CurrentUser {
   roleId: number;
@@ -10,16 +11,15 @@ interface CurrentUser {
   name: string;
 }
 
-const { actas, limit, page, cores, searchTerm, currentUser, hasActiveFilters } =
-  defineProps<{
-    actas: any;
-    limit: number;
-    page: number;
-    cores: any;
-    searchTerm: string;
-    currentUser: CurrentUser | null;
-    hasActiveFilters: boolean;
-  }>();
+const { actas, limit, page, cores, searchTerm, currentUser, hasActiveFilters } = defineProps<{
+  actas: any;
+  limit: number;
+  page: number;
+  cores: any;
+  searchTerm: string;
+  currentUser: CurrentUser | null;
+  hasActiveFilters: boolean;
+}>();
 
 const found = ref(actas?.numFound || 0);
 const currentPage = ref(actas?.currentPage || Number(page) || 1);
@@ -34,10 +34,7 @@ const COMITE_MEMBER_ROLE_ID = 6; // Miembro del Comité CUJAE
 // Determinar si el usuario tiene acceso total
 const hasFullAccess = computed(() => {
   if (!currentUser) return false;
-  return (
-    currentUser.roleId === ADMIN_ROLE_ID ||
-    currentUser.roleId === COMITE_MEMBER_ROLE_ID
-  );
+  return currentUser.roleId === ADMIN_ROLE_ID || currentUser.roleId === COMITE_MEMBER_ROLE_ID;
 });
 
 // Obtener el núcleo del usuario
@@ -65,90 +62,77 @@ function isExpanded(id: number) {
 function openActa(acta: any, event?: Event) {
   if (event) {
     event.preventDefault();
+    event.stopPropagation();
   }
+  
+  console.log('📄 ===== INICIO OPENACTA =====');
+  console.log('Nombre:', acta.name);
+  console.log('ID:', acta.id);
+  
+  // Verificar extensión
+  const hasExtension = acta.name && (
+    acta.name.toLowerCase().includes('.pdf') ||
+    acta.name.toLowerCase().includes('.html') ||
+    acta.name.toLowerCase().includes('.htm')
+  );
+  
+  console.log('Tiene extensión:', hasExtension);
 
-  console.log("📄 Datos del acta:", acta);
-
-  // Verificar si es un acta CARGADA (documento) por el nombre del archivo
-  // Las actas cargadas tienen nombres de archivo en el campo 'name' (terminan en .pdf, .html, etc.)
-  const isLoadedDocument =
-    acta.name &&
-    (acta.name.toLowerCase().endsWith(".pdf") ||
-      acta.name.toLowerCase().endsWith(".html") ||
-      acta.name.toLowerCase().endsWith(".htm"));
-
-  console.log("✅ isLoadedDocument:", isLoadedDocument);
-
-  if (isLoadedDocument) {
-    // Acta CARGADA - abrir el documento HTML/PDF
-    console.log(
-      "🔗 Abriendo documento:",
-      `http://localhost:3000/minutes/${acta.id}/file/html`,
-    );
-    window.open(`http://localhost:3000/minutes/${acta.id}/file/html`, "_blank");
+  if (hasExtension) {
+    console.log('✅ Navegando a loaded-view');
+    // Usar window.location en lugar de navigate para evitar problemas con transiciones
+    window.location.href = `/minutes/loaded-view/${acta.id}`;
   } else {
-    // Acta de FORMULARIO - navegar a la página de visualización
-    console.log("📋 Navegando a formulario tipo:", acta.doc_type);
     if (acta.doc_type === "ro") {
-      window.location.href = `/view/${acta.id}`;
+      console.log('➡️ Navegando a RO');
+      window.location.href = `/minutes/ro/${acta.id}`;
     } else if (acta.doc_type === "cp") {
-      window.location.href = `/cp_view/${acta.id}`;
-    } else {
-      console.error("❌ Tipo de acta desconocido:", acta.doc_type);
+      console.log('➡️ Navegando a CP');
+      window.location.href = `/minutes/cp/${acta.id}`;
     }
   }
 }
 
-function getRelevantSnippet(
-  text: string | string[],
-  searchTerm: string,
-  contextChars: number = 150,
-): string {
-  if (!searchTerm || !text) return "";
-
-  const fullText = Array.isArray(text) ? text.join(" ") : text;
+function getRelevantSnippet(text: string | string[], searchTerm: string, contextChars: number = 150): string {
+  if (!searchTerm || !text) return '';
+  
+  const fullText = Array.isArray(text) ? text.join(' ') : text;
   const lowerText = fullText.toLowerCase();
   const lowerTerm = searchTerm.toLowerCase();
   const index = lowerText.indexOf(lowerTerm);
-
+  
   if (index === -1) {
-    return fullText.substring(0, contextChars * 2) + "...";
+    return fullText.substring(0, contextChars * 2) + '...';
   }
-
+  
   const start = Math.max(0, index - contextChars);
-  const end = Math.min(
-    fullText.length,
-    index + searchTerm.length + contextChars,
-  );
-
+  const end = Math.min(fullText.length, index + searchTerm.length + contextChars);
+  
   let snippet = fullText.substring(start, end);
-
-  if (start > 0) snippet = "..." + snippet;
-  if (end < fullText.length) snippet = snippet + "...";
-
+  
+  if (start > 0) snippet = '...' + snippet;
+  if (end < fullText.length) snippet = snippet + '...';
+  
   return snippet;
 }
 
 function highlightTerm(text: string, searchTerm: string): string {
   if (!searchTerm || !text) return text;
-
-  const regex = new RegExp(`(${searchTerm})`, "gi");
-  return text.replace(
-    regex,
-    '<mark class="bg-yellow-300 dark:bg-yellow-600 px-1 rounded">$1</mark>',
-  );
+  
+  const regex = new RegExp(`(${searchTerm})`, 'gi');
+  return text.replace(regex, '<mark class="bg-yellow-300 dark:bg-yellow-600 px-1 rounded">$1</mark>');
 }
 
 const processedActas = computed(() => {
   if (!actas?.docs) return [];
-
+  
   return actas.docs.map((acta: any) => ({
     ...acta,
     snippet: getRelevantSnippet(acta.text, currentSearchTerm.value),
     highlightedSnippet: highlightTerm(
       getRelevantSnippet(acta.text, currentSearchTerm.value),
-      currentSearchTerm.value,
-    ),
+      currentSearchTerm.value
+    )
   }));
 });
 
@@ -181,60 +165,39 @@ function goToPreviousPage() {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:bg-zinc-800"
-  >
+  <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:bg-zinc-800">
     <div class="flex">
-      <Filters
-        :cores="cores"
+      <Filters 
+        :cores="cores" 
         :search-term="currentSearchTerm"
         :current-user="currentUser"
         :show-core-filter="hasFullAccess"
       />
       <div class="max-w-[1600px] mx-auto p-6 flex-1">
-        <div
-          class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
-        >
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <!-- Header -->
           <div class="p-8 border-b">
             <h2 class="font-bold text-3xl">Resultado de la búsqueda</h2>
 
             <!-- Mensaje cuando no hay filtros aplicados -->
             <p v-if="!showResults" class="text-md text-gray-500">
-              Por favor, introduce un término de búsqueda o selecciona al menos
-              un filtro
+              Por favor, introduce un término de búsqueda o selecciona al menos un filtro
             </p>
-
+            
             <!-- Mensajes cuando hay filtros aplicados -->
             <template v-else>
               <p v-if="found === 0" class="text-md text-gray-500">
-                0 coincidencias encontradas<span v-if="currentSearchTerm">
-                  para "<strong>{{ currentSearchTerm }}</strong
-                  >"</span
-                >
+                0 coincidencias encontradas<span v-if="currentSearchTerm"> para "<strong>{{ currentSearchTerm }}</strong>"</span>
               </p>
               <p v-else-if="found === 1" class="text-md text-gray-500">
-                {{ found }} coincidencia encontrada<span
-                  v-if="currentSearchTerm"
-                >
-                  para "<strong>{{ currentSearchTerm }}</strong
-                  >"</span
-                >
+                {{ found }} coincidencia encontrada<span v-if="currentSearchTerm"> para "<strong>{{ currentSearchTerm }}</strong>"</span>
               </p>
               <p v-else class="text-md text-gray-500">
-                {{ found }} coincidencias encontradas<span
-                  v-if="currentSearchTerm"
-                >
-                  para "<strong>{{ currentSearchTerm }}</strong
-                  >"</span
-                >
+                {{ found }} coincidencias encontradas<span v-if="currentSearchTerm"> para "<strong>{{ currentSearchTerm }}</strong>"</span>
               </p>
-
+              
               <!-- Mostrar filtro activo de núcleo para usuarios restringidos -->
-              <p
-                v-if="!hasFullAccess && userCoreName"
-                class="text-sm text-blue-600 mt-2"
-              >
+              <p v-if="!hasFullAccess && userCoreName" class="text-sm text-blue-600 mt-2">
                 Mostrando solo actas de: <strong>{{ userCoreName }}</strong>
               </p>
             </template>
@@ -251,7 +214,7 @@ function goToPreviousPage() {
                 <a
                   class="text-lg font-bold text-blue-600 hover:text-blue-800 underline cursor-pointer"
                   href="#"
-                  @click="openActa(acta, $event)"
+                  @click.prevent="openActa(acta)"
                 >
                   {{ acta.name }}
                 </a>
@@ -261,10 +224,11 @@ function goToPreviousPage() {
                 {{ acta.core }}, {{ format(acta.creation_date, "yyyy-MM-dd") }}
               </div>
 
-              <div
+              <div 
                 class="text-gray-700 text-sm mb-3 leading-relaxed"
                 v-html="acta.highlightedSnippet || 'Sin contenido disponible'"
-              ></div>
+              >
+              </div>
 
               <transition name="accordion">
                 <div
@@ -273,37 +237,21 @@ function goToPreviousPage() {
                 >
                   <p><strong>ID:</strong> {{ acta.id }}</p>
                   <p><strong>Tipo:</strong> {{ acta.doc_type }}</p>
-                  <p>
-                    <strong>Texto completo:</strong>
-                    {{
-                      Array.isArray(acta.text)
-                        ? acta.text.join(" ")
-                        : acta.text || "Sin texto disponible"
-                    }}
-                  </p>
+                  <p><strong>Texto completo:</strong> {{ Array.isArray(acta.text) ? acta.text.join(' ') : acta.text || "Sin texto disponible" }}</p>
                   <p><strong>Core:</strong> {{ acta.core }}</p>
-                  <p>
-                    <strong>Fecha de creación:</strong>
-                    {{ format(acta.creation_date, "yyyy-MM-dd") }}
-                  </p>
+                  <p><strong>Fecha de creación:</strong> {{ format(acta.creation_date, "yyyy-MM-dd") }}</p>
                 </div>
               </transition>
             </div>
 
             <!-- Mensaje cuando no hay resultados -->
-            <div
-              v-if="found === 0"
-              class="border border-b-gray-300 text-center text-gray-500 font-medium p-8"
-            >
+            <div v-if="found === 0" class="border border-b-gray-300 text-center text-gray-500 font-medium p-8">
               No hay coincidencias
             </div>
           </div>
-
+          
           <!-- Paginación - Solo mostrar si hay filtros Y hay resultados -->
-          <div
-            v-if="showResults && found > 0"
-            class="flex justify-between items-center border-t border-gray-200 p-4"
-          >
+          <div v-if="showResults && found > 0" class="flex justify-between items-center border-t border-gray-200 p-4">
             <div class="text-sm text-gray-600">
               Página {{ currentPage }} de {{ totalPages }}
             </div>
@@ -314,7 +262,7 @@ function goToPreviousPage() {
                 type="button"
                 :disabled="currentPage <= 1"
                 class="pagination-btn"
-                :class="{ disabled: currentPage <= 1 }"
+                :class="{ 'disabled': currentPage <= 1 }"
               >
                 <ArrowLeft class="w-4 h-4" /> Anterior
               </button>
@@ -324,7 +272,7 @@ function goToPreviousPage() {
                 type="button"
                 :disabled="currentPage >= totalPages"
                 class="pagination-btn"
-                :class="{ disabled: currentPage >= totalPages }"
+                :class="{ 'disabled': currentPage >= totalPages }"
               >
                 Siguiente <ArrowRight class="w-4 h-4" />
               </button>

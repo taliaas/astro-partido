@@ -45,8 +45,17 @@ const handleDrop = async () => {
   files.forEach((f) => {
     formData.append("files", f);
   });
+
   try {
-    await actions.minute.uploadMinutes.orThrow(formData);
+    // Condicional según el modo seleccionado
+    if (mode.value === "Spacy") {
+      // Llamar a la función específica para modo Spacy
+      await actions.minute.uploadMinutesA.orThrow(formData);
+    } else {
+      // Llamar a la función por defecto para otros modos (Model)
+      await actions.minute.uploadMinutes.orThrow(formData);
+    }
+    
     open.value = false;
     uploadedFiles.value = [];
     navigate("/minutes");

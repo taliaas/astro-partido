@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import Button from "@/components/ui/button/Button.vue";
-import { indicators } from "@/enum/indicators";
-import type { Core } from "@/interface/Militante";
+import { indicators } from "@/enum/indicators.ts";
 import { reactive } from "vue";
 
 interface CurrentUser {
@@ -10,20 +8,19 @@ interface CurrentUser {
   name: string;
 }
 
-const { showCoreFilter, currentUser, cores } = defineProps<{
+const { showCoreFilter, currentUser } = defineProps<{
   showCoreFilter: boolean;
   currentUser: CurrentUser | null;
-  cores: Core[];
 }>();
 
 const filters = reactive({
-  core: "",
-  doc_type: "",
-  indicators: "",
-  dateFrom: "",
-  dateTo: "",
-  text: "",
-});
+  core: '',
+  doc_type: '',
+  indicators: '',
+  dateFrom: '',
+  dateTo: '',
+  text: '',
+})
 
 const indicatorsList = [
   indicators.SANCION,
@@ -31,37 +28,41 @@ const indicatorsList = [
   indicators.DESACTIVACION,
   indicators.RENDICION_DE_CUENTAS,
   indicators.INVITADOS,
-];
+]
+
+// Lista predefinida de núcleos
+const coresList = [
+  'Ing. Industrial',  'Arquitectura',  'Automática',
+  'CIPEL',  'CEIS',  'Telecomunicaciones',  'CIME',
+  'Rectorado',  'VRD',  'VREAS',  'VREU',  'VRIPG',
+  'VRP',  'CEIM-CETER',  'TCM',  'CEMAT',  'CIFQ',
+  'DPPD',  'MARXISMO',  'CECAT', 'CIH', 'Geociencias',
+  'Química', 
+]
 
 const clearFilters = () => {
-  filters.core = "";
-  filters.doc_type = "";
-  filters.indicators = "";
-  filters.dateFrom = "";
-  filters.dateTo = "";
-  filters.text = "";
-};
+  filters.core = ''
+  filters.doc_type = ''
+  filters.indicators = ''
+  filters.dateFrom = ''
+  filters.dateTo = ''
+  filters.text = ''
+}
+
 </script>
 
 <template>
   <div class="h-full flex flex-col bg-white border-r shadow-sm pt-12">
     <!-- Form Content -->
-    <form
-      action="/busqueda"
-      method="post"
-      class="px-6 py-2 space-y-6 flex flex-col flex-1"
-    >
+    <form action="/busqueda" method="post" class="px-6 py-2 space-y-6 flex flex-col flex-1">
+      
       <!-- Núcleo - Solo visible para Admin y Comité CUJAE -->
       <div v-if="showCoreFilter" class="space-y-4">
         <label class="text-sm font-medium text-gray-700">Núcleo</label>
-        <select
-          name="core"
-          v-model="filters.core"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-        >
+        <select name="core" v-model="filters.core" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white">
           <option value="">Todos los núcleos</option>
-          <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo">
-            {{ nucleo.name }}
+          <option v-for="nucleo in coresList" :key="nucleo" :value="nucleo">
+            {{ nucleo }}
           </option>
         </select>
       </div>
@@ -77,7 +78,7 @@ const clearFilters = () => {
           class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
         >
           <option value="">Todos las actas</option>
-          <option value="ro">Reunión Ordinaria</option>
+          <option value="ro"> Reunión Ordinaria</option>
           <option value="cp">Círculo Político</option>
         </select>
       </div>
@@ -88,16 +89,15 @@ const clearFilters = () => {
         <select
           name="text"
           v-model="filters.text"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-        >
+          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white">
           <option value="">Todos los indicadores</option>
           <option v-for="stats in indicatorsList" :value="stats">
-            {{ stats }}
+            {{stats}}
           </option>
         </select>
       </div>
 
-      <!-- Periodo-->
+       <!-- Periodo-->
       <div class="space-y-4">
         <label class="text-sm font-medium text-gray-700">Período</label>
         <div class="grid grid-cols-2 gap-3">
@@ -124,16 +124,23 @@ const clearFilters = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> 
 
       <!-- Footer Buttons -->
-      <div
-        class="flex justify-between p-2 pt-4 border-t border-gray-300 mt-auto"
-      >
-        <Button type="button" @click.prevent="clearFilters" variant="outline">
+      <div class="flex justify-between p-2 pt-4 border-t border-gray-300 mt-auto">
+        <button
+          type="button"
+          @click.prevent="clearFilters"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        >
           Limpiar
-        </Button>
-        <Button type="submit"> Aplicar filtros </Button>
+        </button>
+        <button
+          type="submit"
+          class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md"
+        >
+          Aplicar filtros
+        </button>
       </div>
     </form>
   </div>

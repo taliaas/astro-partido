@@ -8,15 +8,15 @@
         </p>
       </div>
       <div class="flex gap-2">
-        <Button
-          @click="exportarListado"
+        <Button 
+          @click="exportarListado" 
           variant="outline"
           class="px-4 py-2 rounded-lg flex items-center gap-2 transition-colors hover:bg-gray-100"
         >
           <FileDown class="size-4" />
           Exportar Listado
         </Button>
-
+        
         <Button
           @click="openAddModal"
           class="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors hover:bg-primary/90"
@@ -31,10 +31,11 @@
     <div class="bg-white p-4 rounded-lg border shadow-sm">
       <div class="flex gap-4 items-center flex-wrap">
         <div class="flex-1 min-w-[250px]">
-          <Input
+          <input
             v-model="searchTerm"
             type="text"
             placeholder="Buscar por nombre del miembro..."
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         <select
@@ -65,22 +66,17 @@
           <thead class="bg-gray-50 border-b">
             <tr>
               <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
-              >
-                No.
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Militante
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Origen
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Destino
               </th>
@@ -95,7 +91,7 @@
                 Estado
               </th>
               <th
-                class="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
               </th>
@@ -103,13 +99,10 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr
-              v-for="(transfer, index) in filteredTransfers"
+              v-for="transfer in filteredTransfers"
               :key="transfer.id"
               class="hover:bg-gray-50 transition-colors"
             >
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ indexPage(Number(index)) }}
-              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
                   <template v-if="transfer.militante">
@@ -127,13 +120,11 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ transfer.destino }}
               </td>
-              <td
-                class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900"
-              >
+              <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
                 {{ formatDate(transfer.fecha) }}
               </td>
               <td class="px-6 py-4 text-center whitespace-nowrap">
-                <span
+                <span 
                   class="px-3 py-1 text-xs font-medium rounded-full"
                   :class="getEstadoBadgeClass(transfer.estado)"
                 >
@@ -145,33 +136,20 @@
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger class="focus:outline-none">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="rounded-full hover:bg-gray-100"
-                    >
+                    <Button variant="ghost" size="icon" class="rounded-full hover:bg-gray-100">
                       <MoreVerticalIcon class="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      @click="openDetails(transfer)"
-                      class="cursor-pointer"
-                    >
+                    <DropdownMenuItem @click="openDetails(transfer)" class="cursor-pointer">
                       <Eye class="h-4 w-4 mr-2" />
                       Ver detalles
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="openEdit(transfer)"
-                      class="cursor-pointer"
-                    >
+                    <DropdownMenuItem @click="openEdit(transfer)" class="cursor-pointer">
                       <Pencil class="h-4 w-4 mr-2" />
                       Editar
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="exportar(transfer.id)"
-                      class="cursor-pointer"
-                    >
+                    <DropdownMenuItem @click="exportar(transfer.id)" class="cursor-pointer">
                       <Download class="h-4 w-4 mr-2" />
                       Exportar PDF
                     </DropdownMenuItem>
@@ -182,9 +160,7 @@
             <tr v-if="!filteredTransfers?.length">
               <td colspan="6" class="text-center py-12 text-gray-500">
                 <p class="text-lg">No hay traslados registrados</p>
-                <p class="text-sm mt-2">
-                  Usa el botón "Nuevo Traslado" para agregar uno
-                </p>
+                <p class="text-sm mt-2">Usa el botón "Nuevo Traslado" para agregar uno</p>
               </td>
             </tr>
           </tbody>
@@ -193,41 +169,20 @@
         <!-- Paginación -->
         <div class="flex justify-between p-4 border-t">
           <div v-if="traslados?.total === 0"></div>
-          <div
-            v-else
-            class="flex text-md text-muted-foreground items-center gap-2"
-          >
-            <div>
-              Mostrando
-              <span class="font-medium">{{ currentPage || 1 }}</span> de
-              <span class="font-medium">{{ traslados?.total || 1 }}</span>
-              páginas
-            </div>
+          <div v-else class="flex text-md text-muted-foreground items-center gap-2">
+            <div>Mostrando <span class="font-medium">{{ currentPage || 1 }}</span> de <span class="font-medium">{{ traslados?.total || 1 }}</span> páginas</div>
           </div>
-
+          
           <div class="flex justify-end gap-4">
-            <Button
-              size="icon"
-              :disabled="currentPage === 1"
-              variant="outline"
-              @click="goToPreviousPage"
-            >
-              <ChevronLeft />
+            <Button size="icon" :disabled="currentPage === 1" variant="outline" @click="goToPreviousPage">
+              <ChevronLeft/> 
             </Button>
-            <Button
-              size="icon"
-              :disabled="currentPage >= hasNextPage"
-              variant="outline"
-              @click="goToNextPage"
-            >
-              <ChevronRight />
+            <Button size="icon" :disabled="currentPage >= hasNextPage" variant="outline" @click="goToNextPage">
+              <ChevronRight/> 
             </Button>
-
+          
             <div>
-              <Select
-                :default-value="searchParams.limit ?? '10'"
-                @update:model-value="handleFilterByValue('limit', $event)"
-              >
+              <Select :default-value="searchParams.limit ?? '10'" @update:model-value="handleFilterByValue('limit', $event)">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -252,17 +207,12 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       @click.self="closeModal"
     >
-      <div
-        class="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto"
-      >
+      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900">
             {{ isEdit ? "Editar Traslado" : "Nuevo Traslado" }}
           </h3>
-          <button
-            @click="closeModal"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button @click="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
             <XIcon class="h-5 w-5" />
           </button>
         </div>
@@ -270,9 +220,9 @@
         <form @submit.prevent="saveTransfer()" class="space-y-4">
           <!-- Tipo de Militante (solo en crear) -->
           <div v-if="!isEdit">
-            <Label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
               Tipo de Militante <span class="text-red-500">*</span>
-            </Label>
+            </label>
             <select
               v-model="tipoMilitante"
               required
@@ -287,14 +237,10 @@
           <!-- Militante Interno (select) o Externo (input) -->
           <div v-if="!isEdit && tipoMilitante">
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              {{
-                tipoMilitante === "interno"
-                  ? "Militante"
-                  : "Nombre del Militante Externo"
-              }}
+              {{ tipoMilitante === 'interno' ? 'Militante' : 'Nombre del Militante Externo' }}
               <span class="text-red-500">*</span>
             </label>
-
+            
             <!-- Select para militante interno -->
             <select
               v-if="tipoMilitante === 'interno'"
@@ -326,16 +272,12 @@
 
           <!-- Mostrar input de solo lectura cuando está editando -->
           <div v-if="isEdit">
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Militante</label
-            >
+            <label class="block text-sm font-medium text-gray-700 mb-1">Militante</label>
             <input
               type="text"
-              :value="
-                currentTransfer.militante?.firstname
-                  ? `${currentTransfer.militante.firstname} ${currentTransfer.militante.lastname}`
-                  : currentTransfer.nombreMilitanteExterno || 'N/A'
-              "
+              :value="currentTransfer.militante?.firstname 
+                ? `${currentTransfer.militante.firstname} ${currentTransfer.militante.lastname}` 
+                : currentTransfer.nombreMilitanteExterno || 'N/A'"
               disabled
               class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed text-gray-700"
             />
@@ -359,16 +301,14 @@
 
           <!-- Tipo de Traslado en edición -->
           <div v-if="isEdit">
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Tipo de Militante</label
-            >
+            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Militante</label>
             <input
               type="text"
               :value="tipoMilitante === 'interno' ? 'Interno' : 'Externo'"
               disabled
               class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed text-gray-700 mb-3"
             />
-
+            
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Tipo de Traslado <span class="text-red-500">*</span>
             </label>
@@ -412,13 +352,10 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Núcleo Destino <span class="text-red-500">*</span>
             </label>
-
+            
             <!-- Traslado interno: select de núcleos -->
             <select
-              v-if="
-                (tipoMilitante === 'interno' && tipoTraslado === 'interno') ||
-                (tipoMilitante === 'externo' && !isEdit)
-              "
+              v-if="(tipoMilitante === 'interno' && tipoTraslado === 'interno') || (tipoMilitante === 'externo' && !isEdit)"
               v-model="currentTransfer.destino"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -452,10 +389,7 @@
 
             <!-- Traslado externo: input manual -->
             <Input
-              v-else-if="
-                (tipoMilitante === 'interno' && tipoTraslado === 'externo') ||
-                (isEdit && tipoTraslado === 'externo')
-              "
+              v-else-if="(tipoMilitante === 'interno' && tipoTraslado === 'externo') || (isEdit && tipoTraslado === 'externo')"
               v-model="currentTransfer.destino"
               type="text"
               required
@@ -492,10 +426,7 @@
           </div>
 
           <!-- Estado (solo en edición) -->
-          <div
-            v-if="isEdit"
-            class="bg-blue-50 border border-blue-200 rounded-md p-3"
-          >
+          <div v-if="isEdit" class="bg-blue-50 border border-blue-200 rounded-md p-3">
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Estado <span class="text-red-500">*</span>
             </label>
@@ -518,7 +449,11 @@
             >
               Cancelar
             </Button>
-            <Button type="submit" :disabled="isLoading" class="px-4 py-2">
+            <Button
+              type="submit"
+              :disabled="isLoading"
+              class="px-4 py-2"
+            >
               <span v-if="isLoading">Guardando...</span>
               <span v-else>{{ isEdit ? "Actualizar" : "Crear Traslado" }}</span>
             </Button>
@@ -533,9 +468,7 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       @click.self="closeDetailsModal"
     >
-      <div
-        class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto"
-      >
+      <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-xl font-bold text-gray-900">Detalles del Traslado</h3>
           <button
@@ -549,14 +482,10 @@
         <div v-if="selectedTransfer" class="space-y-5">
           <!-- Información del Militante -->
           <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="font-semibold text-gray-700 mb-3">
-              Información del Militante
-            </h4>
+            <h4 class="font-semibold text-gray-700 mb-3">Información del Militante</h4>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Nombre</label
-                >
+                <label class="block text-sm font-medium text-gray-500">Nombre</label>
                 <p class="text-base text-gray-900 font-medium">
                   <template v-if="selectedTransfer.militante">
                     {{ selectedTransfer.militante.firstname }}
@@ -568,66 +497,38 @@
                 </p>
               </div>
               <div v-if="selectedTransfer.militante">
-                <label class="block text-sm font-medium text-gray-500"
-                  >CI</label
-                >
-                <p class="text-base text-gray-900">
-                  {{ selectedTransfer.militante.ci }}
-                </p>
+                <label class="block text-sm font-medium text-gray-500">CI</label>
+                <p class="text-base text-gray-900">{{ selectedTransfer.militante.ci }}</p>
               </div>
             </div>
           </div>
 
           <!-- Detalles del Traslado -->
           <div>
-            <h4 class="font-semibold text-gray-700 mb-3">
-              Detalles del Traslado
-            </h4>
+            <h4 class="font-semibold text-gray-700 mb-3">Detalles del Traslado</h4>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Origen</label
-                >
-                <p class="text-base text-gray-900 font-medium">
-                  {{ selectedTransfer.origen }}
-                </p>
+                <label class="block text-sm font-medium text-gray-500">Origen</label>
+                <p class="text-base text-gray-900 font-medium">{{ selectedTransfer.origen }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Destino</label
-                >
-                <p class="text-base text-gray-900 font-medium">
-                  {{ selectedTransfer.destino }}
-                </p>
+                <label class="block text-sm font-medium text-gray-500">Destino</label>
+                <p class="text-base text-gray-900 font-medium">{{ selectedTransfer.destino }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Tipo de Militante</label
-                >
-                <p class="text-base text-gray-900">
-                  {{ selectedTransfer.tipoMilitante || "Interno" }}
-                </p>
+                <label class="block text-sm font-medium text-gray-500">Tipo de Militante</label>
+                <p class="text-base text-gray-900">{{ selectedTransfer.tipoMilitante || 'Interno' }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Tipo de Traslado</label
-                >
-                <p class="text-base text-gray-900">
-                  {{ selectedTransfer.tipoTraslado || "N/A" }}
-                </p>
+                <label class="block text-sm font-medium text-gray-500">Tipo de Traslado</label>
+                <p class="text-base text-gray-900">{{ selectedTransfer.tipoTraslado || 'N/A' }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Fecha</label
-                >
-                <p class="text-base text-gray-900">
-                  {{ formatDate(selectedTransfer.fecha) }}
-                </p>
+                <label class="block text-sm font-medium text-gray-500">Fecha</label>
+                <p class="text-base text-gray-900">{{ formatDate(selectedTransfer.fecha) }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-500"
-                  >Estado</label
-                >
+                <label class="block text-sm font-medium text-gray-500">Estado</label>
                 <span
                   class="inline-block px-3 py-1 text-sm font-medium rounded-full"
                   :class="getEstadoBadgeClass(selectedTransfer.estado)"
@@ -640,13 +541,9 @@
 
           <!-- Motivo -->
           <div>
-            <label class="block text-sm font-medium text-gray-500 mb-2"
-              >Motivo del Traslado</label
-            >
+            <label class="block text-sm font-medium text-gray-500 mb-2">Motivo del Traslado</label>
             <div class="bg-gray-50 rounded-lg p-4">
-              <p class="text-base text-gray-900 whitespace-pre-wrap">
-                {{ selectedTransfer.details }}
-              </p>
+              <p class="text-base text-gray-900 whitespace-pre-wrap">{{ selectedTransfer.details }}</p>
             </div>
           </div>
         </div>
@@ -674,35 +571,14 @@ import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigg
 import Input from "@/components/ui/input/Input.vue";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import {
-  Eye,
-  MoreVerticalIcon,
-  Pencil,
-  PlusIcon,
-  XIcon,
-  Download,
-  FileDown,
-} from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, PlusIcon, XIcon, Download, FileDown} from "lucide-vue-next";
 import { ref, computed, watch } from "vue";
-import { toast } from "vue-sonner";
+import { toast } from "vue-sonner";  
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { useUrlSearchParams } from "@vueuse/core";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Label from "@/components/ui/label/Label.vue";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";  
 
-const {
-  traslados,
-  members,
-  cores,
-  page: initialPage,
-} = defineProps<{
+const { traslados, members, cores, page: initialPage } = defineProps<{
   traslados: any;
   members: any[];
   cores: any;
@@ -717,7 +593,7 @@ const showDetailsModal = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
 const isEdit = ref(false);
-const searchParams = useUrlSearchParams();
+const searchParams = useUrlSearchParams(); 
 
 // Nuevos estados para el flujo de creación
 const tipoMilitante = ref<"interno" | "externo" | "">("");
@@ -731,17 +607,11 @@ const Estado = ["Pendiente", "Completado"] as const;
 const currentPage = ref(initialPage || 1);
 const hasNextPage = ref(traslados?.total || 1);
 
-const indexPage = (index: number) => {
-  const limit: number = traslados.limit;
-  const page: number = traslados.total;
-  return Number(page - 1) * Number(limit) + (index + 1);
-};
-
 // Función para obtener clases CSS según el estado
 const getEstadoBadgeClass = (estado: string) => {
   const classes: Record<string, string> = {
     Pendiente: "bg-gray-100 text-gray-800",
-    Completado: "bg-green-100 text-green-800",
+    Completado: "bg-green-100 text-green-800"
   };
   return classes[estado] || "bg-gray-100 text-gray-800";
 };
@@ -752,8 +622,8 @@ const formatDate = (date: string | Date) => {
   try {
     // Si viene como string desde el backend (ej: "2024-12-31T00:00:00.000Z")
     // lo parseamos como fecha local, no UTC
-    const dateStr = typeof date === "string" ? date : date.toISOString();
-    const [year, month, day] = dateStr.split("T")[0].split("-");
+    const dateStr = typeof date === 'string' ? date : date.toISOString();
+    const [year, month, day] = dateStr.split('T')[0].split('-');
     return `${day}/${month}/${year}`;
   } catch (error) {
     console.error("Error formateando fecha:", error);
@@ -765,13 +635,13 @@ const formatDate = (date: string | Date) => {
 const formatDateForEdit = (date: string | Date) => {
   try {
     // Extraer solo la parte de la fecha (YYYY-MM-DD) sin conversiones
-    const dateStr = typeof date === "string" ? date : date.toISOString();
-    return dateStr.split("T")[0]; // Devuelve "2024-12-31"
+    const dateStr = typeof date === 'string' ? date : date.toISOString();
+    return dateStr.split('T')[0]; // Devuelve "2024-12-31"
   } catch {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 };
@@ -785,7 +655,7 @@ const selectedTransfer = ref<any>({
   estado: Estado[0],
   tipoMilitante: "",
   tipoTraslado: "",
-  nombreMilitanteExterno: "",
+  nombreMilitanteExterno: ""
 });
 
 const currentTransfer = ref<{
@@ -799,7 +669,7 @@ const currentTransfer = ref<{
     lastname?: string;
   };
   fecha: Date | string;
-  estado: (typeof Estado)[number];
+  estado: typeof Estado[number];
   nombreMilitanteExterno?: string;
 }>({
   origen: "",
@@ -812,22 +682,18 @@ const currentTransfer = ref<{
 
 // Computed properties
 const filteredTransfers = computed(() => {
-  return traslados?.data.filter((transfer: any) => {
-    const nombreCompleto = transfer.militante
+  return traslados.data.filter((transfer: any) => {
+    const nombreCompleto = transfer.militante 
       ? `${transfer.militante.firstname} ${transfer.militante.lastname}`.toLowerCase()
       : (transfer.nombreMilitanteExterno || "").toLowerCase();
-
-    const matchesSearch = nombreCompleto.includes(
-      searchTerm.value.toLowerCase(),
-    );
-
-    const matchedCores =
-      selectNucleo.value === "" ||
+    
+    const matchesSearch = nombreCompleto.includes(searchTerm.value.toLowerCase());
+    
+    const matchedCores = selectNucleo.value === "" || 
       (transfer.militante && transfer.militante.core.id === selectNucleo.value);
-
-    const matchesStatus =
-      statusFilter.value === "" || transfer.estado === statusFilter.value;
-
+    
+    const matchesStatus = statusFilter.value === "" || transfer.estado === statusFilter.value;
+    
     return matchesSearch && matchesStatus && matchedCores;
   });
 });
@@ -835,16 +701,15 @@ const filteredTransfers = computed(() => {
 const shouldShowDestino = computed(() => {
   if (isEdit.value) return true;
   if (!tipoMilitante.value) return false;
-  if (tipoMilitante.value === "externo") return true;
-  return tipoTraslado.value !== "";
+  if (tipoMilitante.value === 'externo') return true;
+  return tipoTraslado.value !== '';
 });
 
 const shouldShowOtherFields = computed(() => {
   if (isEdit.value) return true;
   if (!tipoMilitante.value) return false;
-  if (tipoMilitante.value === "externo")
-    return currentTransfer.value.destino !== "";
-  return tipoTraslado.value !== "" && currentTransfer.value.destino !== "";
+  if (tipoMilitante.value === 'externo') return currentTransfer.value.destino !== '';
+  return tipoTraslado.value !== '' && currentTransfer.value.destino !== '';
 });
 
 // Métodos
@@ -854,7 +719,7 @@ const openAddModal = () => {
   tipoTraslado.value = "";
   nombreMilitanteExterno.value = "";
   nucleoOrigenFromDB.value = "";
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
   currentTransfer.value = {
     origen: "",
     destino: "",
@@ -868,7 +733,7 @@ const openAddModal = () => {
 
 const onMilitanteChange = () => {
   const selectedMember = members.find(
-    (m: any) => m.id === currentTransfer.value.militante.id,
+    (m: any) => m.id === currentTransfer.value.militante.id
   );
   if (selectedMember && selectedMember.core) {
     nucleoOrigenFromDB.value = selectedMember.core.name;
@@ -885,26 +750,25 @@ const openEdit = (transfer: any) => {
   isEdit.value = true;
   tipoMilitante.value = transfer.militante ? "interno" : "externo";
   tipoTraslado.value = transfer.tipoTraslado || "interno";
-
+  
   if (!transfer.militante && transfer.nombreMilitanteExterno) {
     nombreMilitanteExterno.value = transfer.nombreMilitanteExterno;
   }
-
+  
   if (transfer.militante && transfer.militante.core) {
     nucleoOrigenFromDB.value = transfer.militante.core.name;
   }
-
-  const fechaFormateada =
-    transfer.fecha instanceof Date
-      ? transfer.fecha.toISOString().split("T")[0]
-      : new Date(transfer.fecha).toISOString().split("T")[0];
-
+  
+  const fechaFormateada = transfer.fecha instanceof Date 
+    ? transfer.fecha.toISOString().split('T')[0]
+    : new Date(transfer.fecha).toISOString().split('T')[0];
+  
   currentTransfer.value = {
     ...transfer,
     fecha: formatDateForEdit(transfer.fecha),
-    militante: transfer.militante || { id: "" },
+    militante: transfer.militante || { id: "" }
   };
-
+  
   showModal.value = true;
 };
 
@@ -928,7 +792,7 @@ const closeDetailsModal = () => {
     estado: Estado[0],
     tipoMilitante: "",
     tipoTraslado: "",
-    nombreMilitanteExterno: "",
+    nombreMilitanteExterno: ""
   };
 };
 
@@ -967,13 +831,10 @@ const saveTransfer = async () => {
         details: currentTransfer.value.details,
         fecha: fechaISO, // Usar fecha en formato ISO
         estado: currentTransfer.value.estado,
-        tipoTraslado: tipoTraslado.value,
+        tipoTraslado: tipoTraslado.value
       };
 
-      if (
-        tipoMilitante.value === "interno" &&
-        currentTransfer.value.militante?.id
-      ) {
+      if (tipoMilitante.value === "interno" && currentTransfer.value.militante?.id) {
         updateData.militante = { id: currentTransfer.value.militante.id };
       }
 
@@ -994,30 +855,30 @@ const exportar = async (id: number) => {
   try {
     toast.info("Generando PDF...");
     const result = await actions.transfer.exportTransfer({ id });
-
+    
     if (result.error) {
       toast.error(result.error.message || "Error al exportar");
       return;
     }
-
+    
     const byteCharacters = atob(result.data.pdf);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
-
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = result.data.filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-
-    toast.success("Traslado exportado correctamente");
+    
+    toast.success('Traslado exportado correctamente');
   } catch (error) {
     console.error("Error:", error);
     toast.error("No se pudo exportar el traslado");
@@ -1027,35 +888,35 @@ const exportar = async (id: number) => {
 const exportarListado = async () => {
   try {
     toast.info("Generando listado de traslados...");
-
+    
     const result = await actions.transfer.exportListadoTransfers({
-      estado: statusFilter.value || undefined,
-      nucleoId: selectNucleo.value ? String(selectNucleo.value) : undefined,
+      estado: statusFilter.value || undefined, 
+      nucleoId: selectNucleo.value ? String(selectNucleo.value) : undefined,  
     });
-
+    
     if (result.error) {
       toast.error(result.error.message || "Error al exportar listado");
       return;
     }
-
+    
     const byteCharacters = atob(result.data.pdf);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
-
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = result.data.filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-
-    toast.success("Listado exportado correctamente");
+    
+    toast.success('Listado exportado correctamente');
   } catch (error) {
     console.error("Error:", error);
     toast.error("No se pudo exportar el listado");
@@ -1085,18 +946,18 @@ function goToPreviousPage() {
 
 const handleFilterByValue = (filter: string, value: any) => {
   const query = new URLSearchParams(searchParams as any);
-
-  if (filter === "limit") {
-    query.set("page", "1");
+  
+  if (filter === 'limit') {
+    query.set('page', '1');
     currentPage.value = 1;
   }
-
+  
   if (value && value !== "all") {
     query.set(filter, value);
   } else {
     query.delete(filter);
   }
-
+  
   navigate("?" + query.toString());
 };
 
