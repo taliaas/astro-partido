@@ -3,17 +3,17 @@ import { z } from "zod";
 import { getSession } from "auth-astro/server.ts";
 import { API_URL } from "astro:env/client";
 
-const EstadoDesactivacion = ["PENDIENTE", "APROBADA", "RECHAZADA"] as const;
+const statusDesactivacion = ["PENDIENTE", "APROBADA", "RECHAZADA"] as const;
 
 export const deactiveMili = defineAction({
   input: z.object({
-    motivo: z.string().min(3),
+    reason: z.string().min(3, "El motivo debe tener al menos 3 caracteres"),
     details: z.string().optional(),
-    fecha: z.coerce.date(),
-    estado: z.enum(EstadoDesactivacion).optional().default('PENDIENTE'),
-    militanteId: z.number(),
+    date: z.string().min(1, "La fecha es requerida"),
+    status: z.enum(statusDesactivacion).optional().default('PENDIENTE'),
+    militantId: z.number(),
   }),
-  handler: async ({ motivo, estado, fecha, details, militanteId }, context) => {
+  handler: async ({ reason, status, date, details, militantId }, context) => {
     const session: any = await getSession(context.request);
     const res = await fetch(`${API_URL}/desactivation`, {
       method: "POST",
@@ -22,10 +22,10 @@ export const deactiveMili = defineAction({
         Authorization: "Bearer " + session?.jwt,
       },
       body: JSON.stringify({
-        motivo,
-        fecha,
-        estado: estado || 'PENDIENTE',
-        militanteId,
+        reason,
+        date,
+        status: status || 'PENDIENTE',
+        militantId,
         details,
       }),
     });
@@ -42,12 +42,12 @@ export const deactiveMili = defineAction({
 export const updateDeactivation = defineAction({
   input: z.object({
     id: z.coerce.number(),
-    motivo: z.string().min(3).optional(),
+    reason: z.string().min(3, "El motivo debe tener al menos 3 caracteres").optional(),
     details: z.string().optional(),
-    fecha: z.coerce.date().optional(),
-    estado: z.enum(EstadoDesactivacion).optional(),
+    date: z.string().optional(),
+    status: z.enum(statusDesactivacion).optional(),
   }),
-  async handler({ id, motivo, details, fecha, estado }, context) {
+  async handler({ id, reason, details, date, status }, context) {
     const session: any = await getSession(context.request);
     const res = await fetch(`${API_URL}/desactivation/${id}`, {
       method: "PATCH",
@@ -56,9 +56,9 @@ export const updateDeactivation = defineAction({
         Authorization: "Bearer " + session?.jwt,
       },
       body: JSON.stringify({
-        motivo,
-        fecha,
-        estado,
+        reason,
+        date,
+        status,
         details,
       }),
     });
@@ -105,10 +105,11 @@ export const exportDesactivation = defineAction({
 // Exportar listado de desactivaciones con filtros
 export const exportListadoDesactivaciones = defineAction({
   input: z.object({
-    estado: z.string().optional(),
+    status: z.string().optional(),
     nucleoId: z.string().optional(),
+    date: z.string().optional(),
   }),
-  handler: async ({ estado, nucleoId }, context) => {
+  handler: async ({ status, nucleoId, date }, context) => {
     const session: any = await getSession(context.request);
     if (!session) {
       throw new ActionError({ 
@@ -119,8 +120,9 @@ export const exportListadoDesactivaciones = defineAction({
 
     // Construir URL con parámetros de filtro
     const params = new URLSearchParams();
-    if (estado) params.append('estado', estado);
+    if (status) params.append('status', status);
     if (nucleoId) params.append('nucleoId', nucleoId);
+    if (date) params.append('date', date);
 
     const url = `${API_URL}/desactivation/export/listado${params.toString() ? `?${params.toString()}` : ''}`;
 
@@ -141,8 +143,8 @@ export const exportListadoDesactivaciones = defineAction({
     const arrayBuffer = await res.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString('base64');
     
-    const filename = estado 
-      ? `desactivaciones_${estado.toLowerCase()}_${new Date().toISOString().split('T')[0]}.pdf`
+    const filename = status 
+      ? `desactivaciones_${status.toLowerCase()}_${new Date().toISOString().split('T')[0]}.pdf`
       : `desactivaciones_todas_${new Date().toISOString().split('T')[0]}.pdf`;
     
     return { 

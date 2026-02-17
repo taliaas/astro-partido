@@ -1,5 +1,4 @@
 ---
-import MilitantService from "../../services/MilitantService";
 import { getSession } from "auth-astro/server";
 import Transfer from "../../components/Process/Traslado.vue";
 import RootLayout from "../../layouts/RootLayout.astro";
@@ -31,17 +30,21 @@ async function getCore() {
 }
 
 async function getMembers(): Promise<any[]> {
-  const service = new MilitantService();
+  const service = new TrasladoService();
   try {
-    return await service.getAll(session);
+    // Obtener el coreId del usuario actual
+    const userCoreId = session?.user?.militant?.core?.id;
+    return await service.getMilitantsForTransfer(userCoreId, session);
   } catch (error) {
     console.error(error);
     throw new Error();
   }
 }
+
 const members = await getMembers();
 const traslados = await getTraslado();
 const cores = await getCore();
+
 ---
 
 <RootLayout>

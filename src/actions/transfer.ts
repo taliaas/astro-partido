@@ -9,47 +9,56 @@ export const createTransfer = defineAction({
   input: z.object({
     origen: z.string().min(3),
     destino: z.string().min(3),
-    details: z.string().optional(),
-    fecha: z.coerce.date(),
+    details: z.string().min(1),
+    date: z.coerce.date(),
     estado: z.enum(Estado),
-    militante: z.object({ id: z.coerce.number() }).nullable().optional(),
-    tipoMilitante: z.enum(["interno", "externo"]).optional(),
+    militante: z.object({ 
+      id: z.coerce.number(),
+      core: z.object({
+        id: z.number(),
+        name: z.string()
+      }).nullable().optional()
+    }).nullable().optional(),
+    tipoMilitante: z.string().optional(),
     tipoTraslado: z.enum(["interno", "externo"]).optional(),
     nombreMilitanteExterno: z.string().optional(),
   }),
-  async handler(
-    {
+  async handler(input, context) {
+
+    const session: any = await getSession(context.request);
+    
+    if (!session) {
+      throw new ActionError({ code: "UNAUTHORIZED" });
+    }
+
+    const {
       origen,
       destino,
-      fecha,
+      date,
       estado,
       militante,
       details,
       tipoMilitante,
       tipoTraslado,
       nombreMilitanteExterno,
-    },
-    context,
-  ) {
-    const session: any = await getSession(context.request);
-    if (!session) throw new ActionError({ code: "UNAUTHORIZED" });
+    } = input;
 
     try {
-      const body = JSON.stringify({
+      const body = {
         origen,
         destino,
-        fecha,
+        date,
         estado,
         details,
         militante,
         tipoMilitante,
         tipoTraslado,
         nombreMilitanteExterno,
-      });
+      };
 
       const res = await fetch(`${API_URL}/transfer`, {
         method: "POST",
-        body,
+        body: JSON.stringify(body),
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.jwt}`,
@@ -57,12 +66,19 @@ export const createTransfer = defineAction({
       });
 
       if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
+        const errorText = await res.text();
+        console.error("❌ ERROR RESPONSE:", errorText);
+        throw new ActionError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Error ${res.status}: ${errorText}`
+        });
       }
-      return res.json();
-    } catch (error) {
-      console.log(error);
-      throw new Error();
+      
+      const data = await res.json();
+      return data;
+      
+    } catch (error: any) {
+      throw error;
     }
   },
 });
@@ -73,13 +89,13 @@ export const updateTransfer = defineAction({
     origen: z.string().min(3).optional(),
     destino: z.string().min(3).optional(),
     details: z.string().optional(),
-    fecha: z.coerce.date().optional(),
+    date: z.coerce.date().optional(), 
     estado: z.enum(Estado).optional(),
-    militante: z.object({ id: z.coerce.number() }).optional(),
+    militante: z.object({ id: z.coerce.number() }).optional(),  
     tipoTraslado: z.enum(["interno", "externo"]).optional(),
   }),
   async handler(
-    { id, origen, destino, fecha, estado, militante, details, tipoTraslado },
+    { id, origen, destino, date, estado, militante, details, tipoTraslado },
     context,
   ) {
     const session: any = await getSession(context.request);
@@ -89,14 +105,14 @@ export const updateTransfer = defineAction({
       const body: any = {
         origen,
         destino,
-        fecha: fecha?.toISOString(),
+        date: date?.toISOString(), 
         estado,
         details,
         tipoTraslado,
       };
 
       if (militante && militante.id) {
-        body.militante = militante;
+        body.militante = militante;  
       }
 
       const res = await fetch(`${API_URL}/transfer/${id}`, {
@@ -108,14 +124,16 @@ export const updateTransfer = defineAction({
         },
       });
 
-      if (res.status === 400) throw new Error();
       if (!res.ok) {
+        const errorText = await res.text();
+        console.error("❌ ERROR UPDATE:", errorText);
         throw new Error(`HTTP error! status: ${res.status}`);
       }
+      
       return await res.json();
     } catch (error) {
-      console.log(error);
-      throw new Error();
+      console.error("❌ ERROR UPDATE:", error);
+      throw error;
     }
   },
 });
@@ -150,13 +168,13 @@ export const exportTransfer = defineAction({
   },
 });
 
-//  Exportar listado de traslados
 export const exportListadoTransfers = defineAction({
   input: z.object({
     estado: z.string().optional(),
     nucleoId: z.string().optional(),
+    fecha: z.string().optional(), 
   }),
-  handler: async ({ estado, nucleoId }, context) => {
+  handler: async ({ estado, nucleoId, fecha }, context) => {
     const session: any = await getSession(context.request);
     if (!session)
       throw new ActionError({
@@ -168,6 +186,7 @@ export const exportListadoTransfers = defineAction({
     const params = new URLSearchParams();
     if (estado) params.append("estado", estado);
     if (nucleoId) params.append("nucleoId", nucleoId);
+    if (fecha) params.append("fecha", fecha); // ✅ NUEVO
 
     const url = `${API_URL}/transfer/export/listado${params.toString() ? `?${params.toString()}` : ""}`;
 

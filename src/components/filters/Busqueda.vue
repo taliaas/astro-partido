@@ -3,15 +3,16 @@ import { format } from "date-fns";
 import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import { ref, onMounted, computed } from "vue";
 import Filters from "@/components/filters/filters.vue";
-import { navigate } from "astro:transitions/client";
+import { API_URL } from "astro:env/client";
 
 interface CurrentUser {
-  roleId: number;
-  coreId: number;
-  name: string;
+  userId: number;      
+  roleId: number;     
+  coreId?: string;    
+  name: string;       
 }
 
-const { actas, limit, page, cores, searchTerm, currentUser, hasActiveFilters } = defineProps<{
+const { actas, limit, page, cores, searchTerm, currentUser, hasActiveFilters, showCoreFilter  } = defineProps<{
   actas: any;
   limit: number;
   page: number;
@@ -19,6 +20,7 @@ const { actas, limit, page, cores, searchTerm, currentUser, hasActiveFilters } =
   searchTerm: string;
   currentUser: CurrentUser | null;
   hasActiveFilters: boolean;
+  showCoreFilter: boolean;
 }>();
 
 const found = ref(actas?.numFound || 0);
@@ -27,9 +29,8 @@ const totalPages = ref(actas?.totalPages || Math.ceil(found.value / limit));
 const currentSearchTerm = ref(searchTerm);
 const expandedActas = ref<number[]>([]);
 
-// Constantes de roles
-const ADMIN_ROLE_ID = 1; // Administrador
-const COMITE_MEMBER_ROLE_ID = 6; // Miembro del Comité CUJAE
+const ADMIN_ROLE_ID = 1; 
+const COMITE_MEMBER_ROLE_ID = 4; 
 
 // Determinar si el usuario tiene acceso total
 const hasFullAccess = computed(() => {
@@ -39,7 +40,7 @@ const hasFullAccess = computed(() => {
 
 // Obtener el núcleo del usuario
 const userCoreName = computed(() => {
-  if (!currentUser || !cores) return null;
+  if (!currentUser || !currentUser.coreId || !cores) return null;
   const userCore = cores.find((c: any) => c.id === currentUser.coreId);
   return userCore?.name || null;
 });
@@ -47,6 +48,29 @@ const userCoreName = computed(() => {
 // Mostrar resultados solo si hay filtros activos
 const showResults = computed(() => {
   return hasActiveFilters;
+});
+
+// Obtener los términos de búsqueda activos
+const activeSearchTerms = computed(() => {
+  if (typeof window === 'undefined') return [];
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const terms: string[] = [];
+  
+  if (urlParams.get('text')) terms.push(urlParams.get('text')!);
+  if (urlParams.get('doc_type')) {
+    const docType = urlParams.get('doc_type');
+    if (docType === 'ro') terms.push('Reunión Ordinaria');
+    if (docType === 'cp') terms.push('Círculo Político');
+  }
+  if (hasFullAccess.value && urlParams.get('core')) terms.push(urlParams.get('core')!);
+  if (urlParams.get('dateFrom') || urlParams.get('dateTo')) {
+    const from = urlParams.get('dateFrom') || '...';
+    const to = urlParams.get('dateTo') || '...';
+    terms.push(`Fecha: ${from} - ${to}`);
+  }
+  
+  return terms;
 });
 
 function toggleActa(id: number) {
@@ -62,32 +86,38 @@ function isExpanded(id: number) {
 function openActa(acta: any, event?: Event) {
   if (event) {
     event.preventDefault();
-    event.stopPropagation();
   }
   
-  console.log('📄 ===== INICIO OPENACTA =====');
-  console.log('Nombre:', acta.name);
-  console.log('ID:', acta.id);
-  
-  // Verificar extensión
-  const hasExtension = acta.name && (
-    acta.name.toLowerCase().includes('.pdf') ||
-    acta.name.toLowerCase().includes('.html') ||
-    acta.name.toLowerCase().includes('.htm')
+  const isLoadedDocument = acta.name && (
+    acta.name.toLowerCase().endsWith('.pdf') || 
+    acta.name.toLowerCase().endsWith('.html') ||
+    acta.name.toLowerCase().endsWith('.htm') ||
+    acta.name.toLowerCase().endsWith('.docx') ||
+    acta.name.toLowerCase().endsWith('.doc')
   );
   
-  console.log('Tiene extensión:', hasExtension);
-
-  if (hasExtension) {
-    console.log('✅ Navegando a loaded-view');
-    // Usar window.location en lugar de navigate para evitar problemas con transiciones
-    window.location.href = `/minutes/loaded-view/${acta.id}`;
+  if (isLoadedDocument) {
+    window.open(`${API_URL}/minute/${acta.id}/file`, '_blank');
   } else {
-    if (acta.doc_type === "ro") {
-      console.log('➡️ Navegando a RO');
+    const docTypeMap: Record<string, string> = {
+      'Ordinaria': 'ro',
+      'ro': 'ro',
+      'Circulo Politico': 'cp',
+      'Círculo Político': 'cp',
+      'cp': 'cp',
+      'Extraordinaria': 'ex',
+      'ex': 'ex'
+    };
+    
+    const routeType = docTypeMap[acta.doc_type];
+    
+    if (!routeType) {
+      return;
+    }
+    
+    if (routeType === 'ro') {
       window.location.href = `/minutes/ro/${acta.id}`;
-    } else if (acta.doc_type === "cp") {
-      console.log('➡️ Navegando a CP');
+    } else if (routeType === 'cp' || routeType === 'ex') {
       window.location.href = `/minutes/cp/${acta.id}`;
     }
   }
@@ -171,7 +201,7 @@ function goToPreviousPage() {
         :cores="cores" 
         :search-term="currentSearchTerm"
         :current-user="currentUser"
-        :show-core-filter="hasFullAccess"
+        :show-core-filter="showCoreFilter"
       />
       <div class="max-w-[1600px] mx-auto p-6 flex-1">
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -181,19 +211,33 @@ function goToPreviousPage() {
 
             <!-- Mensaje cuando no hay filtros aplicados -->
             <p v-if="!showResults" class="text-md text-gray-500">
-              Por favor, introduce un término de búsqueda o selecciona al menos un filtro
+              Por favor, selecciona al menos un filtro para realizar la búsqueda
             </p>
             
             <!-- Mensajes cuando hay filtros aplicados -->
             <template v-else>
-              <p v-if="found === 0" class="text-md text-gray-500">
-                0 coincidencias encontradas<span v-if="currentSearchTerm"> para "<strong>{{ currentSearchTerm }}</strong>"</span>
+              <!-- Mostrar términos de búsqueda activos -->
+              <div v-if="activeSearchTerms.length > 0" class="mt-2 mb-3">
+                <p class="text-sm text-gray-600 mb-2">Buscando por:</p>
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    v-for="(term, index) in activeSearchTerms"
+                    :key="index"
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 border border-blue-200"
+                  >
+                    {{ term }}
+                  </span>
+                </div>
+              </div>
+
+              <p v-if="found === 0" class="text-md text-gray-500 mt-3">
+                0 coincidencias encontradas
               </p>
-              <p v-else-if="found === 1" class="text-md text-gray-500">
-                {{ found }} coincidencia encontrada<span v-if="currentSearchTerm"> para "<strong>{{ currentSearchTerm }}</strong>"</span>
+              <p v-else-if="found === 1" class="text-md text-gray-500 mt-3">
+                {{ found }} coincidencia encontrada
               </p>
-              <p v-else class="text-md text-gray-500">
-                {{ found }} coincidencias encontradas<span v-if="currentSearchTerm"> para "<strong>{{ currentSearchTerm }}</strong>"</span>
+              <p v-else class="text-md text-gray-500 mt-3">
+                {{ found }} coincidencias encontradas
               </p>
               
               <!-- Mostrar filtro activo de núcleo para usuarios restringidos -->

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { Eye, MoreVerticalIcon, Pencil, PlusIcon, XIcon, Download, ChevronLeft, ChevronRight, FileDown, HelpCircle } from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, PlusIcon, XIcon, Download, ChevronLeft, ChevronRight, FileDown, HelpCircle, X } from "lucide-vue-next";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu/index.js";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";  
 import { Button } from "@/components/ui/button/index.js";
@@ -19,11 +19,14 @@ const { sanciones, members, cores, page: initialPage } = defineProps<{
 const searchTerm = ref("");
 const showDetailsModal = ref(false);
 const showModal = ref(false);
-const showHelpModal = ref(false); //Estado para el modal de ayuda
+const showHelpModal = ref(false);
 const isEditing = ref(false);
 const isLoading = ref(false);
 const selectNucleo = ref("");
 const statusFilter = ref("");
+const tipoFilter = ref(""); // ✅ NUEVO
+const fechaFilter = ref(""); // ✅ NUEVO
+const duracionFilter = ref(""); // ✅ NUEVO
 const searchParams = useUrlSearchParams(); 
 
 //Datos de ayuda para las causas de sanciones
@@ -142,6 +145,32 @@ const EstadoSancion = [
   "CUMPLIDA"
 ] as const;
 
+const TipoSancion = [
+  "AMONESTACION",
+  "SEPARACION_CARGO",
+  "SUSPENSION_TEMPORAL",
+  "SEPARACION_FILAS",
+  "EXPULSION"
+] as const;
+
+// Computed para saber si hay filtros activos
+const hasActiveFilters = computed(() => {
+  return statusFilter.value !== "" || 
+         selectNucleo.value !== "" || 
+         tipoFilter.value !== "" ||
+         fechaFilter.value !== "" ||
+         duracionFilter.value !== "";
+});
+
+// Limpiar todos los filtros
+const clearAllFilters = () => {
+  statusFilter.value = "";
+  selectNucleo.value = "";
+  tipoFilter.value = "";
+  fechaFilter.value = "";
+  duracionFilter.value = "";
+};
+
 // Función para obtener estados disponibles según el tipo de sanción
 const getAvailableEstados = (severidad: string) => {
   if (severidad === "AMONESTACION") {
@@ -236,7 +265,7 @@ const currentSanction = ref<{
   severidad: string;
   duracion: number;
   estado: typeof EstadoSancion[number];
-  militante: {
+  militant: {
     id: number | string;
     firstname?: string;
     lastname?: string;
@@ -247,7 +276,7 @@ const currentSanction = ref<{
   severidad: "",
   duracion: 0,
   estado: "PENDIENTE",
-  militante: { id: "" },
+  militant: { id: "" },
 });
 
 const selectSanction = ref({
@@ -256,24 +285,48 @@ const selectSanction = ref({
   severidad: "AMONESTACION",
   duracion: 0,
   estado: "PENDIENTE" as typeof EstadoSancion[number],
-  militante: { id: "", firstname: '', lastname: '', ci: '', core: { name: '' } },
+  militant: { id: "", firstname: '', lastname: '', ci: '', core: { name: '' } },
 });
 
 const filteredSanctions = computed(() => {
   return sanciones?.data.filter((sanction: any) => {
+    // Búsqueda por texto
     const matchesSearch = 
-      sanction?.militante.firstname.toLowerCase().includes(searchTerm.value.toLowerCase()) || 
-      sanction.militante.lastname.toLowerCase().includes(searchTerm.value.toLowerCase());
-    const matchedCores = selectNucleo.value === "" || sanction?.militante.core.id === selectNucleo.value;
+      sanction?.militant.firstname.toLowerCase().includes(searchTerm.value.toLowerCase()) || 
+      sanction.militant.lastname.toLowerCase().includes(searchTerm.value.toLowerCase());
+    
+    // Filtro por núcleo
+    const matchedCores = selectNucleo.value === "" || sanction?.militant.core.id === selectNucleo.value;
+    
+    // Filtro por estado
     const matchesStatus = statusFilter.value === "" || sanction.estado === statusFilter.value;
-    return matchesSearch && matchesStatus && matchedCores;
+    
+    // ✅ NUEVO: Filtro por tipo
+    const matchesTipo = tipoFilter.value === "" || sanction.severidad === tipoFilter.value;
+    
+    // ✅ NUEVO: Filtro por fecha exacta
+    let matchesFecha = true;
+    if (fechaFilter.value) {
+      const filterDate = new Date(fechaFilter.value);
+      filterDate.setHours(0, 0, 0, 0);
+      
+      const sancionDate = new Date(sanction.fecha);
+      sancionDate.setHours(0, 0, 0, 0);
+      
+      matchesFecha = sancionDate.getTime() === filterDate.getTime();
+    }
+    
+    // ✅ NUEVO: Filtro por duración
+    const matchesDuracion = duracionFilter.value === "" || sanction.duracion === Number(duracionFilter.value);
+    
+    return matchesSearch && matchesStatus && matchedCores && matchesTipo && matchesFecha && matchesDuracion;
   });
 });
 
 const openAddModal = () => {
   isEditing.value = false;
   currentSanction.value = {
-    militante: { id: "" },
+    militant: { id: "" },
     causa: "",
     fecha: "",
     severidad: "",
@@ -305,7 +358,7 @@ const closeModal = () => {
 const closeDetailsModal = () => {
   showDetailsModal.value = false;
   selectSanction.value = {
-    militante: { id: "", firstname: '', lastname: '', ci: '', core: { name: '' } },
+    militant: { id: "", firstname: '', lastname: '', ci: '', core: { name: '' } },
     causa: "",
     fecha: "",
     severidad: "AMONESTACION",
@@ -322,7 +375,7 @@ const closeHelpModal = () => {
 const saveSanction = async () => {
   isLoading.value = true;
   try {
-    if (!currentSanction.value.militante.id || currentSanction.value.militante.id === "") {
+    if (!currentSanction.value.militant.id || currentSanction.value.militant.id === "") {
       toast.error("Debe seleccionar un militante");
       isLoading.value = false;
       return;
@@ -344,8 +397,8 @@ const saveSanction = async () => {
     const sancionData = {
       ...currentSanction.value,
       fecha: fechaISO,
-      militante: {
-        id: Number(currentSanction.value.militante.id)
+      militant: {
+        id: Number(currentSanction.value.militant.id)
       }
     };
 
@@ -408,7 +461,10 @@ const exportarListado = async () => {
     
     const result = await actions.sancion.exportListadoSanciones({
       estado: statusFilter.value || undefined,  
-      nucleoId: selectNucleo.value ? String(selectNucleo.value) : undefined,  
+      nucleoId: selectNucleo.value ? String(selectNucleo.value) : undefined,
+      severidad: tipoFilter.value || undefined, // ✅ NUEVO
+      fecha: fechaFilter.value || undefined, // ✅ NUEVO
+      duracion: duracionFilter.value ? Number(duracionFilter.value) : undefined, // ✅ NUEVO
     });
     
     if (result.error) {
@@ -505,33 +561,76 @@ const handleFilterByValue = (filter: string, value: any) => {
 
     <!-- Filtros -->
     <div class="bg-white p-4 rounded-lg border shadow-sm">
-      <div class="flex gap-4 items-center flex-wrap">
-        <div class="flex-1 min-w-[250px]">
+      <div class="flex flex-col gap-4">
+        <div class="flex gap-2 items-center flex-wrap">
           <input 
             v-model="searchTerm" 
             type="text" 
-            placeholder="Buscar por nombre del miembro..." 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent" 
+            placeholder="Buscar por nombre..." 
+            class="px-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-sm w-48" 
           />
+          
+          <div class="flex items-center gap-1.5">
+            <label class="text-xs font-medium text-gray-700 whitespace-nowrap">Fecha:</label>
+            <input
+              v-model="fechaFilter"
+              type="date"
+              class="px-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-sm w-36"
+            />
+          </div>
+          
+          <select 
+            v-model="tipoFilter" 
+            class="px-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-sm w-40"
+          >
+            <option value="">Todos los tipos</option>
+            <option v-for="tipo in TipoSancion" :key="tipo" :value="tipo">
+              {{ getSeveridadLabel(tipo) }}
+            </option>
+          </select>
+          
+          <select 
+            v-model="duracionFilter" 
+            class="px-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-sm w-28"
+          >
+            <option value="">Duración</option>
+            <option value="1">1 mes</option>
+            <option value="3">3 meses</option>
+            <option value="6">6 meses</option>
+            <option value="12">1 año</option>
+          </select>
+          
+          <select 
+            v-model="selectNucleo" 
+            class="px-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-sm w-32"
+          >
+            <option value="">Núcleos</option>
+            <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.id">
+              {{ nucleo.name }}
+            </option>
+          </select>
+          
+          <select 
+            v-model="statusFilter" 
+            class="px-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-sm w-32"
+          >
+            <option value="">Estados</option>
+            <option v-for="stat in EstadoSancion" :key="stat" :value="stat">
+              {{ getEstadoLabel(stat) }}
+            </option>
+          </select>
+          
+          <Button
+            v-if="hasActiveFilters"
+            @click="clearAllFilters"
+            variant="outline"
+            size="sm"
+            class="flex items-center gap-1 px-2"
+          >
+            <X class="h-3 w-3" />
+            <span class="text-xs">Limpiar</span>
+          </Button>
         </div>
-        <select 
-          v-model="statusFilter" 
-          class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-        >
-          <option value="">Todos los estados</option>
-          <option v-for="stat in EstadoSancion" :key="stat" :value="stat">
-            {{ getEstadoLabel(stat) }}
-          </option>
-        </select>
-        <select 
-          v-model="selectNucleo" 
-          class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-        >
-          <option value="">Todos los núcleos</option>
-          <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.id">
-            {{ nucleo.name }}
-          </option>
-        </select>
       </div>
     </div>
 
@@ -554,7 +653,7 @@ const handleFilterByValue = (filter: string, value: any) => {
             <tr v-for="sanction in filteredSanctions" :key="sanction.id" class="hover:bg-gray-50 transition-colors">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
-                  {{ sanction.militante.firstname }} {{ sanction.militante.lastname }}
+                  {{ sanction.militant.firstname }} {{ sanction.militant.lastname }}
                 </div>
               </td>
               <td class="px-6 py-4 text-center whitespace-nowrap">
@@ -569,7 +668,7 @@ const handleFilterByValue = (filter: string, value: any) => {
                 {{ sanction.duracion > 1 ? `${sanction.duracion} meses` : `${sanction.duracion} mes` }}
               </td>
               <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
-                {{ sanction.militante.core.name }}
+                {{ sanction.militant.core.name }}
               </td>
               <td class="px-6 py-4 text-center whitespace-nowrap">
                 <span 
@@ -673,13 +772,13 @@ const handleFilterByValue = (filter: string, value: any) => {
             <input 
               v-if="isEditing" 
               type="text" 
-              :value="`${currentSanction.militante?.firstname || ''} ${currentSanction.militante?.lastname || ''}`" 
+              :value="`${currentSanction.militant?.firstname || ''} ${currentSanction.militant?.lastname || ''}`" 
               disabled 
               class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed text-gray-700" 
             />
             <select 
               v-else 
-              v-model="currentSanction.militante.id" 
+              v-model="currentSanction.militant.id" 
               required 
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
             >
@@ -901,16 +1000,16 @@ const handleFilterByValue = (filter: string, value: any) => {
               <div>
                 <label class="block text-sm font-medium text-gray-500">Nombre completo</label>
                 <p class="text-base text-gray-900 font-medium">
-                  {{ selectSanction.militante.firstname }} {{ selectSanction.militante.lastname }}
+                  {{ selectSanction.militant.firstname }} {{ selectSanction.militant.lastname }}
                 </p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-500">CI</label>
-                <p class="text-base text-gray-900">{{ selectSanction.militante.ci }}</p>
+                <p class="text-base text-gray-900">{{ selectSanction.militant.ci }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-500">Núcleo</label>
-                <p class="text-base text-gray-900">{{ selectSanction.militante.core?.name || 'N/A' }}</p>
+                <p class="text-base text-gray-900">{{ selectSanction.militant.core?.name || 'N/A' }}</p>
               </div>
             </div>
           </div>

@@ -31,12 +31,12 @@ export const createSancion = defineAction({
     }),
     duracion: z.coerce.number().min(1, "La duración mínima es 1 mes").max(365, "La duración máxima es 365 meses"),
     estado: z.enum(estado).optional(),
-    militante: z.object({ 
+    militant: z.object({ 
       id: z.coerce.number().int().positive("ID de militante inválido")
     }),
   }),
   async handler(
-    { causa, fecha, severidad, duracion, estado, militante },
+    { causa, fecha, severidad, duracion, estado, militant },
     context
   ) {
     const session: any = await getSession(context.request);
@@ -47,8 +47,8 @@ export const createSancion = defineAction({
       });
     }
 
-    const militanteId = Number(militante.id);
-    if (isNaN(militanteId)) {
+    const militantId = Number(militant.id);
+    if (isNaN(militantId)) {
       throw new ActionError({ 
         code: "BAD_REQUEST", 
         message: "ID de militante inválido" 
@@ -64,7 +64,7 @@ export const createSancion = defineAction({
       severidad: severidad || "AMONESTACION", 
       duracion: Number(duracion),
       estado: estado || "PENDIENTE",
-      militante: { id: militanteId },
+      militant: { id: militantId },
     });
 
     console.log("Enviando al backend:", body);
@@ -103,12 +103,12 @@ export const updateSancion = defineAction({
     estado: z.enum(estado, {
       errorMap: () => ({ message: "Estado de sanción inválido" })
     }).optional(),
-    militante: z.object({ 
+    militant: z.object({ 
       id: z.coerce.number().int().positive() 
     }).optional(),
   }),
   async handler(
-    { id, causa, fecha, severidad, duracion, estado, militante },
+    { id, causa, fecha, severidad, duracion, estado, militant },
     context
   ) {
     const session: any = await getSession(context.request);
@@ -125,9 +125,9 @@ export const updateSancion = defineAction({
     if (severidad !== undefined) updateData.severidad = severidad;
     if (duracion !== undefined) updateData.duracion = Number(duracion);
     if (estado !== undefined) updateData.estado = estado;
-    if (militante !== undefined) {
-      const militanteId = Number(militante.id);
-      updateData.militanteId = militanteId;
+    if (militant !== undefined) {
+      const militantId = Number(militant.id);
+      updateData.militant = { id: militantId };
     }
 
     const body = JSON.stringify(updateData);
@@ -192,13 +192,16 @@ export const exportSancion = defineAction({
   }
 });
 
-// Exportar listado de sanciones con filtros
+// ✅ ACTUALIZADO: Exportar listado de sanciones con filtros adicionales
 export const exportListadoSanciones = defineAction({
   input: z.object({
     estado: z.string().optional(),
     nucleoId: z.string().optional(),
+    severidad: z.string().optional(), // ✅ NUEVO
+    fecha: z.string().optional(), // ✅ NUEVO
+    duracion: z.number().optional(), // ✅ NUEVO
   }),
-  handler: async ({ estado, nucleoId }, context) => {
+  handler: async ({ estado, nucleoId, severidad, fecha, duracion }, context) => {
     const session: any = await getSession(context.request);
     if (!session) {
       throw new ActionError({ 
@@ -211,6 +214,9 @@ export const exportListadoSanciones = defineAction({
     const params = new URLSearchParams();
     if (estado) params.append('estado', estado);
     if (nucleoId) params.append('nucleoId', nucleoId);
+    if (severidad) params.append('severidad', severidad); // ✅ NUEVO
+    if (fecha) params.append('fecha', fecha); // ✅ NUEVO
+    if (duracion) params.append('duracion', String(duracion)); // ✅ NUEVO
 
     const url = `${API_URL}/sancion/export/listado${params.toString() ? `?${params.toString()}` : ''}`;
 

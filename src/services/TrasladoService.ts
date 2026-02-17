@@ -24,4 +24,28 @@ export default class TrasladoService {
       throw error;
     }
   }
+
+  async getMilitantsForTransfer(coreId: string, session: any): Promise<any[]> {
+    try {
+      const response = await fetch(
+        `${API_URL}/transfer/militants-for-transfer/${coreId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error obteniendo militantes para traslado:', error);
+      throw error;
+    }
+  }
 }

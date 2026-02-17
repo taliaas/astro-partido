@@ -17,20 +17,23 @@ import {
   XIcon,
   ChevronLeft,   
   ChevronRight,  
-  FileDown, 
+  FileDown,
+  X,
 } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 import { useUrlSearchParams } from "@vueuse/core";  
 
-const { cores, desactivations, members, page: initialPage } = defineProps<{  
+const { cores, desactivations, members, page: initialPage, userRole, userComiteId } = defineProps<{  
   cores: any;
   desactivations: any;
   members: any;
-  page: number;  
+  page: number;
+  userRole?: string;
+  userComiteId?: string;
 }>();
 
-const EstadoDesactivacion = ["PENDIENTE", "APROBADA", "RECHAZADA"] as const;
+const statusDesactivacion = ["PENDIENTE", "APROBADA", "RECHAZADA"] as const;
 
 const currentNucleos = ref("");
 const searchTerm = ref("");
@@ -39,53 +42,52 @@ const showDetailmdodal = ref(false);
 const isLoading = ref(false);
 const isEditing = ref(false);
 const statusFilter = ref("");
+const dateFilter = ref("");
 const searchParams = useUrlSearchParams(); 
 
 // Paginación
 const currentPage = ref(initialPage || 1);
 const hasNextPage = ref(desactivations?.totalPages || 1);
 
-// Usar un ref separado para el militante seleccionado
-const selectedMilitanteId = ref<number | null>(null);
+// Usar un ref separado para el militant seleccionado
+const selectedmilitantId = ref<number | null>(null);
 
-// Función para obtener clases CSS según el estado
-const getEstadoBadgeClass = (estado: string) => {
+// Función para obtener clases CSS según el status
+const getstatusBadgeClass = (status: string) => {
   const classes: Record<string, string> = {
     PENDIENTE: "bg-gray-100 text-gray-800",
     APROBADA: "bg-green-100 text-green-800",
     RECHAZADA: "bg-red-100 text-red-800"
   };
-  return classes[estado] || "bg-gray-100 text-gray-800";
+  return classes[status] || "bg-gray-100 text-gray-800";
 };
 
-// Función para obtener el label legible del estado
-const getEstadoLabel = (estado: string) => {
+// Función para obtener el label legible del status
+const getstatusLabel = (status: string) => {
   const labels: Record<string, string> = {
     PENDIENTE: "Pendiente",
     APROBADA: "Aprobada",
     RECHAZADA: "Rechazada"
   };
-  return labels[estado] || estado;
+  return labels[status] || status;
 };
 
-// Función para formatear fecha en la TABLA y DETALLES (+2 día)
+// Función para formatear date en la TABLA y DETALLES (+1 día)
 const formatDate = (date: string | Date) => {
   try {
     const dateObj = new Date(date);
-    // Sumar 1 día para compensar el desfase
     const adjustedDate = addDays(dateObj, 1);
     return format(adjustedDate, "dd/MM/yyyy");
   } catch (error) {
-    console.error("Error formateando fecha:", error);
+    console.error("Error formateando date:", error);
     return "";
   }
 };
 
-// Función para formatear fecha en el MODAL DE EDICIÓN (+2 días)
+// Función para formatear date en el MODAL DE EDICIÓN (+1 día)
 const formatDateForEdit = (date: string | Date) => {
   try {
     const dateObj = new Date(date);
-    // Sumar 2 días para compensar el desfase en el input date
     const adjustedDate = addDays(dateObj, 1);
     return format(adjustedDate, "yyyy-MM-dd");
   } catch {
@@ -94,19 +96,19 @@ const formatDateForEdit = (date: string | Date) => {
 };
 
 const selectedDeactivation = ref({
-  motivo: "",
-  fecha: "",
-  estado: EstadoDesactivacion[0],
-  militante: { id: "", firstname: "", lastname: "", ci: "" },
+  reason: "",
+  date: "",
+  status: statusDesactivacion[0],
+  militant: { id: "", firstname: "", lastname: "", ci: "" },
   details: "",
 });
 
 const currentDeactivation = ref<{
   id?: number;
-  motivo: string;
-  fecha: string;
-  estado: string;
-  militante: { 
+  reason: string;
+  date: string;
+  status: string;
+  militant: { 
     id: string | number; 
     firstname?: string; 
     lastname?: string;
@@ -114,49 +116,103 @@ const currentDeactivation = ref<{
   };
   details: string;
 }>({
-  motivo: "",
-  fecha: "",
-  estado: EstadoDesactivacion[0],
-  militante: { id: "" },
+  reason: "",
+  date: "",
+  status: statusDesactivacion[0],
+  militant: { id: "" },
   details: "",
 });
 
-// Filtrar militantes que no tienen desactivación activa
+// Filtrar militants que no tienen desactivación activa y que pertenecen al mismo comité
 const availableMembers = computed(() => {
-  if (!members || !desactivations?.data) return members;
+  if (!members || !desactivations?.data) return [];
   
-  const deactivatedMemberIds = desactivations.data.map((d: any) => d.militante.id);
-  return members.filter((member: any) => !deactivatedMemberIds.includes(member.id));
+  // Obtener IDs de militantes ya desactivados
+  const deactivatedMemberIds = desactivations.data.map((d: any) => d.militant?.id).filter(Boolean);
+  
+  // Filtrar militantes
+  return members.filter((member: any) => {
+    // Excluir militantes ya desactivados
+    if (deactivatedMemberIds.includes(member.id)) return false;
+    
+    // Si el usuario es Cmte, filtrar por comité
+    if (userRole === 'Cmte' && userComiteId && member.core?.comite?.id) {
+      return member.core.comite.id === userComiteId;
+    }
+    
+    // Si el usuario es Gnral u otro rol, filtrar por núcleo
+    if (userRole === 'Gnral' && desactivations.data.length > 0) {
+      const userCoreId = desactivations.data[0]?.militant?.core?.id;
+      if (userCoreId && member.core?.id) {
+        return member.core.id === userCoreId;
+      }
+    }
+    
+    // Si no hay información suficiente, no mostrar
+    return false;
+  });
 });
 
 const filteredDeactivations = computed(() => {
   if (!desactivations?.data) return [];
   return desactivations.data.filter((deactivation: any) => {
+    // Búsqueda por texto
     const matchesSearch =
-      deactivation?.militante.firstname
+      deactivation?.militant.firstname
         .toLowerCase()
         .includes(searchTerm.value.toLowerCase()) ||
-      deactivation.militante.lastname.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      deactivation?.motivo.toLowerCase().includes(searchTerm.value.toLowerCase());
+      deactivation.militant.lastname.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      deactivation?.reason.toLowerCase().includes(searchTerm.value.toLowerCase());
+    
+    // Filtro por núcleo
     const matchesCore =
       !currentNucleos.value ||
-      deactivation.militante.core.id === currentNucleos.value;
+      deactivation.militant.core.id === currentNucleos.value;
+    
+    // Filtro por estado
     const matchesStatus =
-      statusFilter.value === "" || deactivation.estado === statusFilter.value;
-    return matchesSearch && matchesCore && matchesStatus;
+      statusFilter.value === "" || deactivation.status === statusFilter.value;
+    
+    // Filtro por fecha exacta
+    let matchesDate = true;
+    if (dateFilter.value) {
+      const filterDate = new Date(dateFilter.value);
+      filterDate.setHours(0, 0, 0, 0);
+      
+      const deactivationDate = new Date(deactivation.date);
+      deactivationDate.setHours(0, 0, 0, 0);
+      
+      matchesDate = deactivationDate.getTime() === filterDate.getTime();
+    }
+    
+    return matchesSearch && matchesCore && matchesStatus && matchesDate;
   });
 });
+
+// Computed para saber si hay filtros activos
+const hasActiveFilters = computed(() => {
+  return statusFilter.value !== "" || 
+         currentNucleos.value !== "" || 
+         dateFilter.value !== "";
+});
+
+// Limpiar todos los filtros
+const clearAllFilters = () => {
+  statusFilter.value = "";
+  currentNucleos.value = "";
+  dateFilter.value = "";
+};
 
 // Métodos
 const openAddModal = () => {
   isEditing.value = false;
-  selectedMilitanteId.value = null;
+  selectedmilitantId.value = null;
   const today = new Date().toISOString().split('T')[0];
   currentDeactivation.value = {
-    motivo: "",
-    fecha: today,
-    estado: "PENDIENTE",
-    militante: { id: "" },
+    reason: "",
+    date: today,
+    status: "PENDIENTE",
+    militant: { id: "" },
     details: "",
   };
   showModal.value = true;
@@ -164,21 +220,21 @@ const openAddModal = () => {
 
 const editModal = (deactivation: any) => {
   isEditing.value = true;
-  const fechaFormateada = deactivation.fecha instanceof Date 
-    ? deactivation.fecha.toISOString().split('T')[0]
-    : new Date(deactivation.fecha).toISOString().split('T')[0];
+  const dateFormateada = deactivation.date instanceof Date 
+    ? deactivation.date.toISOString().split('T')[0]
+    : new Date(deactivation.date).toISOString().split('T')[0];
     
   currentDeactivation.value = {
     id: deactivation.id,
-    motivo: deactivation.motivo,
-    fecha: formatDateForEdit(deactivation.fecha),
-    estado: deactivation.estado,
+    reason: deactivation.reason,
+    date: formatDateForEdit(deactivation.date),
+    status: deactivation.status,
     details: deactivation.details,
-    militante: { 
-      id: deactivation.militante.id,
-      firstname: deactivation.militante.firstname,
-      lastname: deactivation.militante.lastname,
-      ci: deactivation.militante.ci,
+    militant: { 
+      id: deactivation.militant.id,
+      firstname: deactivation.militant.firstname,
+      lastname: deactivation.militant.lastname,
+      ci: deactivation.militant.ci,
     },
   };
   showModal.value = true;
@@ -192,10 +248,10 @@ const viewDeactivationDetails = (deactivation: any) => {
 const closeDetailmdodal = () => {
   showDetailmdodal.value = false;
   selectedDeactivation.value = {
-    motivo: "",
-    fecha: "",
-    estado: EstadoDesactivacion[0],
-    militante: { id: "", firstname: "", lastname: "", ci: "" },
+    reason: "",
+    date: "",
+    status: statusDesactivacion[0],
+    militant: { id: "", firstname: "", lastname: "", ci: "" },
     details: "",
   };
 };
@@ -204,18 +260,18 @@ const saveDeactivation = async () => {
   isLoading.value = true;
   try {
     if (!isEditing.value) {
-      const militanteIdNumber = Number(selectedMilitanteId.value);
+      const militantIdNumber = Number(selectedmilitantId.value);
       
-      if (!militanteIdNumber || isNaN(militanteIdNumber)) {
+      if (!militantIdNumber || isNaN(militantIdNumber)) {
         toast.error("Por favor selecciona un militante válido");
         isLoading.value = false;
         return;
       }
       
       const dataToSend = {
-        motivo: currentDeactivation.value.motivo,
-        fecha: currentDeactivation.value.fecha,
-        militanteId: militanteIdNumber,
+        reason: currentDeactivation.value.reason,
+        date: currentDeactivation.value.date,
+        militantId: militantIdNumber,
         details: currentDeactivation.value.details,
       };
       
@@ -233,9 +289,9 @@ const saveDeactivation = async () => {
     } else {
       const dataToUpdate = {
         id: currentDeactivation.value.id,
-        motivo: currentDeactivation.value.motivo,
-        fecha: currentDeactivation.value.fecha,
-        estado: currentDeactivation.value.estado,
+        reason: currentDeactivation.value.reason,
+        date: currentDeactivation.value.date,
+        status: currentDeactivation.value.status,
         details: currentDeactivation.value.details,
       };
       
@@ -301,8 +357,9 @@ const exportarListado = async () => {
     toast.info("Generando listado de desactivaciones...");
     
     const result = await actions.deactivations.exportListadoDesactivaciones({
-      estado: statusFilter.value || undefined,  
-      nucleoId: currentNucleos.value ? String(currentNucleos.value) : undefined,  
+      status: statusFilter.value || undefined,  
+      nucleoId: currentNucleos.value ? String(currentNucleos.value) : undefined,
+      date: dateFilter.value || undefined,
     });
     
     if (result.error) {
@@ -405,33 +462,54 @@ const handleFilterByValue = (filter: string, value: any) => {
 
     <!-- Filtros -->
     <div class="bg-white p-4 rounded-lg border shadow-sm">
-      <div class="flex gap-4 items-center flex-wrap">
-        <div class="flex-1 min-w-[250px]">
-          <input
-            v-model="searchTerm"
-            type="text"
-            placeholder="Buscar por nombre o motivo..."
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-          />
+      <div class="flex flex-col gap-4">
+        <!-- Primera fila de filtros -->
+        <div class="flex gap-4 items-center flex-wrap">
+          <div class="flex-1 min-w-[250px]">
+            <input
+              v-model="searchTerm"
+              type="text"
+              placeholder="Buscar por nombre o motivo..."
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+          <select
+            v-model="statusFilter"
+            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Todos los estados</option>
+            <option v-for="stat in statusDesactivacion" :key="stat" :value="stat">
+              {{ getstatusLabel(stat) }}
+            </option>
+          </select>
+          <select
+            v-model="currentNucleos"
+            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Todos los núcleos</option>
+            <option v-for="core in cores" :key="core.id" :value="core.id">
+              {{ core.name }}
+            </option>
+          </select>
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-medium text-gray-700">Fecha:</label>
+            <input
+              v-model="dateFilter"
+              type="date"
+              class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+          <Button
+            v-if="hasActiveFilters"
+            @click="clearAllFilters"
+            variant="outline"
+            size="sm"
+            class="flex items-center gap-2"
+          >
+            <X class="h-4 w-4" />
+            Limpiar filtros
+          </Button>
         </div>
-        <select
-          v-model="statusFilter"
-          class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-        >
-          <option value="">Todos los estados</option>
-          <option v-for="stat in EstadoDesactivacion" :key="stat" :value="stat">
-            {{ getEstadoLabel(stat) }}
-          </option>
-        </select>
-        <select
-          v-model="currentNucleos"
-          class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-        >
-          <option value="">Todos los núcleos</option>
-          <option v-for="core in cores" :key="core.id" :value="core.id">
-            {{ core.name }}
-          </option>
-        </select>
       </div>
     </div>
 
@@ -481,29 +559,29 @@ const handleFilterByValue = (filter: string, value: any) => {
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
-                  {{ deactivation.militante?.firstname }}
-                  {{ deactivation.militante?.lastname }}
+                  {{ deactivation.militant?.firstname }}
+                  {{ deactivation.militant?.lastname }}
                 </div>
               </td>
               <td class="px-6 py-4">
-                <span class="text-sm text-gray-900 max-w-xs truncate block" :title="deactivation.motivo">
-                  {{ deactivation.motivo }}
+                <span class="text-sm text-gray-900 max-w-xs truncate block" :title="deactivation.reason">
+                  {{ deactivation.reason }}
                 </span>
               </td>
               <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
-                {{ formatDate(deactivation.fecha) }}
+                {{ formatDate(deactivation.date) }}
               </td>
               <td
                 class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900"
               >
-                {{ deactivation.militante?.core.name }}
+                {{ deactivation.militant?.core.name }}
               </td>
               <td class="px-6 py-4 text-center whitespace-nowrap">
                 <span
                   class="px-3 py-1 text-xs font-medium rounded-full"
-                  :class="getEstadoBadgeClass(deactivation.estado)"
+                  :class="getstatusBadgeClass(deactivation.status)"
                 >
-                  {{ getEstadoLabel(deactivation.estado) }}
+                  {{ getstatusLabel(deactivation.status) }}
                 </span>
               </td>
               <td
@@ -606,14 +684,14 @@ const handleFilterByValue = (filter: string, value: any) => {
             <input
               v-if="isEditing"
               type="text"
-              :value="`${currentDeactivation.militante?.firstname || ''} ${currentDeactivation.militante?.lastname || ''}`"
+              :value="`${currentDeactivation.militant?.firstname || ''} ${currentDeactivation.militant?.lastname || ''}`"
               disabled
               class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed text-gray-700"
             />
-            <!-- Usar selectedMilitanteId con v-model.number -->
+            <!-- Usar selectedmilitantId con v-model.number -->
             <select
               v-else
-              v-model.number="selectedMilitanteId"
+              v-model.number="selectedmilitantId"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
             >
@@ -636,7 +714,7 @@ const handleFilterByValue = (filter: string, value: any) => {
               Motivo de Desactivación <span class="text-red-500">*</span>
             </label>
             <input
-              v-model="currentDeactivation.motivo"
+              v-model="currentDeactivation.reason"
               required
               placeholder="Escriba el motivo de la desactivación"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -648,25 +726,25 @@ const handleFilterByValue = (filter: string, value: any) => {
               Fecha de Desactivación <span class="text-red-500">*</span>
             </label>
             <input
-              v-model="currentDeactivation.fecha"
+              v-model="currentDeactivation.date"
               type="date"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
-          <!-- Campo de Estado (solo visible en modo edición) -->
+          <!-- Campo de status (solo visible en modo edición) -->
           <div v-if="isEditing" class="bg-blue-50 border border-blue-200 rounded-md p-3">
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Estado <span class="text-red-500">*</span>
             </label>
             <select
-              v-model="currentDeactivation.estado"
+              v-model="currentDeactivation.status"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
             >
-              <option v-for="estado in EstadoDesactivacion" :key="estado" :value="estado">
-                {{ getEstadoLabel(estado) }}
+              <option v-for="status in statusDesactivacion" :key="status" :value="status">
+                {{ getstatusLabel(status) }}
               </option>
             </select>
           </div>
@@ -723,21 +801,21 @@ const handleFilterByValue = (filter: string, value: any) => {
         </div>
 
         <div v-if="selectedDeactivation" class="space-y-5">
-          <!-- Información del Militante -->
+          <!-- Información del militant -->
           <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="font-semibold text-gray-700 mb-3">Información del Militante</h4>
+            <h4 class="font-semibold text-gray-700 mb-3">Información del militante</h4>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-500">Nombre completo</label>
                 <p class="text-base text-gray-900 font-medium">
-                  {{ selectedDeactivation.militante?.firstname }}
-                  {{ selectedDeactivation.militante?.lastname }}
+                  {{ selectedDeactivation.militant?.firstname }}
+                  {{ selectedDeactivation.militant?.lastname }}
                 </p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-500">CI</label>
                 <p class="text-base text-gray-900">
-                  {{ selectedDeactivation.militante?.ci }}
+                  {{ selectedDeactivation.militant?.ci }}
                 </p>
               </div>
             </div>
@@ -750,22 +828,22 @@ const handleFilterByValue = (filter: string, value: any) => {
               <div>
                 <label class="block text-sm font-medium text-gray-500">Motivo</label>
                 <p class="text-base text-gray-900 font-medium">
-                  {{ selectedDeactivation.motivo }}
+                  {{ selectedDeactivation.reason }}
                 </p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-500">Fecha</label>
                 <p class="text-base text-gray-900">
-                  {{ formatDate(selectedDeactivation.fecha) }}
+                  {{ formatDate(selectedDeactivation.date) }}
                 </p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-500">Estado</label>
                 <span
                   class="inline-block px-3 py-1 text-sm font-medium rounded-full"
-                  :class="getEstadoBadgeClass(selectedDeactivation.estado)"
+                  :class="getstatusBadgeClass(selectedDeactivation.status)"
                 >
-                  {{ getEstadoLabel(selectedDeactivation.estado) }}
+                  {{ getstatusLabel(selectedDeactivation.status) }}
                 </span>
               </div>
             </div>

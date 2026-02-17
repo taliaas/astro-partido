@@ -35,12 +35,12 @@
             v-model="searchTerm"
             type="text"
             placeholder="Buscar por nombre del miembro..."
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
         <select
           v-model="statusFilter"
-          class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
         >
           <option value="">Todos los estados</option>
           <option v-for="est in Estado" :key="est" :value="est">
@@ -49,13 +49,33 @@
         </select>
         <select
           v-model="selectNucleo"
-          class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
         >
           <option value="">Todos los núcleos</option>
           <option v-for="nucleo in cores" :key="nucleo.id" :value="nucleo.id">
             {{ nucleo.name }}
           </option>
         </select>
+        <!-- ✅ NUEVO: Filtro por fecha -->
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700">Fecha:</label>
+          <input
+            v-model="dateFilter"
+            type="date"
+            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
+        <!-- ✅ NUEVO: Botón limpiar filtros -->
+        <Button
+          v-if="hasActiveFilters"
+          @click="clearAllFilters"
+          variant="outline"
+          size="sm"
+          class="flex items-center gap-2"
+        >
+          <X class="h-4 w-4" />
+          Limpiar filtros
+        </Button>
       </div>
     </div>
 
@@ -105,9 +125,9 @@
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="font-medium text-gray-900">
-                  <template v-if="transfer.militante">
-                    {{ transfer.militante.firstname }}
-                    {{ transfer.militante.lastname }}
+                  <template v-if="transfer.militant">
+                    {{ transfer.militant.firstname }}
+                    {{ transfer.militant.lastname }}
                   </template>
                   <template v-else>
                     {{ transfer.nombreMilitanteExterno }}
@@ -244,7 +264,7 @@
             <!-- Select para militante interno -->
             <select
               v-if="tipoMilitante === 'interno'"
-              v-model="currentTransfer.militante.id"
+              v-model="currentTransfer.militant.id"
               @change="onMilitanteChange"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -254,8 +274,10 @@
                 v-for="member in members"
                 :key="member.id"
                 :value="member.id"
+                :disabled="!member.core"
               >
                 {{ member.firstname }} {{ member.lastname }}
+                {{ !member.core ? ' (⚠️ Sin núcleo asignado)' : ` - ${member.core.name}` }}
               </option>
             </select>
 
@@ -275,8 +297,8 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Militante</label>
             <input
               type="text"
-              :value="currentTransfer.militante?.firstname 
-                ? `${currentTransfer.militante.firstname} ${currentTransfer.militante.lastname}` 
+              :value="currentTransfer.militant?.firstname 
+                ? `${currentTransfer.militant.firstname} ${currentTransfer.militant.lastname}` 
                 : currentTransfer.nombreMilitanteExterno || 'N/A'"
               disabled
               class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed text-gray-700"
@@ -487,18 +509,18 @@
               <div>
                 <label class="block text-sm font-medium text-gray-500">Nombre</label>
                 <p class="text-base text-gray-900 font-medium">
-                  <template v-if="selectedTransfer.militante">
-                    {{ selectedTransfer.militante.firstname }}
-                    {{ selectedTransfer.militante.lastname }}
+                  <template v-if="selectedTransfer.militant">
+                    {{ selectedTransfer.militant.firstname }}
+                    {{ selectedTransfer.militant.lastname }}
                   </template>
                   <template v-else>
                     {{ selectedTransfer.nombreMilitanteExterno }}
                   </template>
                 </p>
               </div>
-              <div v-if="selectedTransfer.militante">
+              <div v-if="selectedTransfer.militant">
                 <label class="block text-sm font-medium text-gray-500">CI</label>
-                <p class="text-base text-gray-900">{{ selectedTransfer.militante.ci }}</p>
+                <p class="text-base text-gray-900">{{ selectedTransfer.militant.ci }}</p>
               </div>
             </div>
           </div>
@@ -517,7 +539,7 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-500">Tipo de Militante</label>
-                <p class="text-base text-gray-900">{{ selectedTransfer.tipoMilitante || 'Interno' }}</p>
+                <p class="text-base text-gray-900">{{ selectedTransfer.tipoMilitant || 'Interno' }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-500">Tipo de Traslado</label>
@@ -571,7 +593,7 @@ import DropdownMenuTrigger from "@/components/ui/dropdown-menu/DropdownMenuTrigg
 import Input from "@/components/ui/input/Input.vue";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-import { Eye, MoreVerticalIcon, Pencil, PlusIcon, XIcon, Download, FileDown} from "lucide-vue-next";
+import { Eye, MoreVerticalIcon, Pencil, PlusIcon, XIcon, Download, FileDown, X } from "lucide-vue-next";
 import { ref, computed, watch } from "vue";
 import { toast } from "vue-sonner";  
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
@@ -588,6 +610,7 @@ const { traslados, members, cores, page: initialPage } = defineProps<{
 // Estado reactivo
 const searchTerm = ref("");
 const statusFilter = ref("");
+const dateFilter = ref(""); 
 const showModal = ref(false);
 const showDetailsModal = ref(false);
 const isLoading = ref(false);
@@ -607,6 +630,18 @@ const Estado = ["Pendiente", "Completado"] as const;
 const currentPage = ref(initialPage || 1);
 const hasNextPage = ref(traslados?.total || 1);
 
+const hasActiveFilters = computed(() => {
+  return statusFilter.value !== "" || 
+         selectNucleo.value !== "" || 
+         dateFilter.value !== "";
+});
+
+const clearAllFilters = () => {
+  statusFilter.value = "";
+  selectNucleo.value = "";
+  dateFilter.value = "";
+};
+
 // Función para obtener clases CSS según el estado
 const getEstadoBadgeClass = (estado: string) => {
   const classes: Record<string, string> = {
@@ -616,12 +651,8 @@ const getEstadoBadgeClass = (estado: string) => {
   return classes[estado] || "bg-gray-100 text-gray-800";
 };
 
-// Función para formatear fecha
-// Función para formatear fecha en la TABLA y DETALLES
 const formatDate = (date: string | Date) => {
   try {
-    // Si viene como string desde el backend (ej: "2024-12-31T00:00:00.000Z")
-    // lo parseamos como fecha local, no UTC
     const dateStr = typeof date === 'string' ? date : date.toISOString();
     const [year, month, day] = dateStr.split('T')[0].split('-');
     return `${day}/${month}/${year}`;
@@ -632,11 +663,11 @@ const formatDate = (date: string | Date) => {
 };
 
 // Función para formatear fecha en el MODAL DE EDICIÓN
-const formatDateForEdit = (date: string | Date) => {
+const formatDateForEdit = (fecha: string | Date) => {
   try {
     // Extraer solo la parte de la fecha (YYYY-MM-DD) sin conversiones
-    const dateStr = typeof date === 'string' ? date : date.toISOString();
-    return dateStr.split('T')[0]; // Devuelve "2024-12-31"
+    const dateStr = typeof fecha === 'string' ? fecha : fecha.toISOString();
+    return dateStr.split('T')[0]; 
   } catch {
     const now = new Date();
     const year = now.getFullYear();
@@ -650,7 +681,7 @@ const selectedTransfer = ref<any>({
   origen: "",
   destino: "",
   details: "",
-  militante: null,
+  militant: null,
   fecha: "",
   estado: Estado[0],
   tipoMilitante: "",
@@ -663,7 +694,7 @@ const currentTransfer = ref<{
   origen: string;
   destino: string;
   details: string;
-  militante: {
+  militant: {
     id: string | number;
     firstname?: string;
     lastname?: string;
@@ -675,7 +706,7 @@ const currentTransfer = ref<{
   origen: "",
   destino: "",
   details: "",
-  militante: { id: "" },
+  militant: { id: "" },
   fecha: new Date(),
   estado: Estado[0],
 });
@@ -683,18 +714,38 @@ const currentTransfer = ref<{
 // Computed properties
 const filteredTransfers = computed(() => {
   return traslados.data.filter((transfer: any) => {
-    const nombreCompleto = transfer.militante 
-      ? `${transfer.militante.firstname} ${transfer.militante.lastname}`.toLowerCase()
+    const nombreCompleto = transfer.militant 
+      ? `${transfer.militant.firstname} ${transfer.militant.lastname}`.toLowerCase()
       : (transfer.nombreMilitanteExterno || "").toLowerCase();
     
     const matchesSearch = nombreCompleto.includes(searchTerm.value.toLowerCase());
     
     const matchedCores = selectNucleo.value === "" || 
-      (transfer.militante && transfer.militante.core.id === selectNucleo.value);
+      (transfer.militant && transfer.militant.core.id === selectNucleo.value);
     
     const matchesStatus = statusFilter.value === "" || transfer.estado === statusFilter.value;
     
-    return matchesSearch && matchesStatus && matchedCores;
+    let matchesDate = true;
+    if (dateFilter.value && dateFilter.value.trim() !== '') {
+      // El input type="date" devuelve YYYY-MM-DD
+      const filterDateStr = dateFilter.value;
+      
+      // Extraer YYYY-MM-DD de la fecha del traslado
+      const trasladoDateStr = typeof transfer.fecha === 'string' 
+        ? transfer.fecha.split('T')[0] 
+        : new Date(transfer.fecha).toISOString().split('T')[0];
+      
+      matchesDate = filterDateStr === trasladoDateStr;
+      
+      console.log('📅 Comparando fechas:', {
+        transferId: transfer.id,
+        filterDate: filterDateStr,
+        trasladoDate: trasladoDateStr,
+        matches: matchesDate
+      });
+    }
+    
+    return matchesSearch && matchesStatus && matchedCores && matchesDate;
   });
 });
 
@@ -724,7 +775,7 @@ const openAddModal = () => {
     origen: "",
     destino: "",
     details: "",
-    militante: { id: "" },
+    militant: { id: "" },
     fecha: today,
     estado: Estado[0],
   };
@@ -733,11 +784,19 @@ const openAddModal = () => {
 
 const onMilitanteChange = () => {
   const selectedMember = members.find(
-    (m: any) => m.id === currentTransfer.value.militante.id
+    (m: any) => m.id === currentTransfer.value.militant.id
   );
-  if (selectedMember && selectedMember.core) {
-    nucleoOrigenFromDB.value = selectedMember.core.name;
-    currentTransfer.value.origen = selectedMember.core.name;
+  
+  if (selectedMember) {
+    if (selectedMember.core) {
+      nucleoOrigenFromDB.value = selectedMember.core.name;
+      currentTransfer.value.origen = selectedMember.core.name;
+    } else {
+      // Militante sin núcleo asignado
+      nucleoOrigenFromDB.value = "";
+      currentTransfer.value.origen = "";
+      toast.warning("El militante seleccionado no tiene un núcleo asignado. Por favor, asigne un núcleo primero.");
+    }
   }
 };
 
@@ -748,15 +807,15 @@ const openDetails = (transfer: any) => {
 
 const openEdit = (transfer: any) => {
   isEdit.value = true;
-  tipoMilitante.value = transfer.militante ? "interno" : "externo";
+  tipoMilitante.value = transfer.militant ? "interno" : "externo";
   tipoTraslado.value = transfer.tipoTraslado || "interno";
   
-  if (!transfer.militante && transfer.nombreMilitanteExterno) {
+  if (!transfer.militant && transfer.nombreMilitanteExterno) {
     nombreMilitanteExterno.value = transfer.nombreMilitanteExterno;
   }
   
-  if (transfer.militante && transfer.militante.core) {
-    nucleoOrigenFromDB.value = transfer.militante.core.name;
+  if (transfer.militant && transfer.militant.core) {
+    nucleoOrigenFromDB.value = transfer.militant.core.name;
   }
   
   const fechaFormateada = transfer.fecha instanceof Date 
@@ -766,7 +825,7 @@ const openEdit = (transfer: any) => {
   currentTransfer.value = {
     ...transfer,
     fecha: formatDateForEdit(transfer.fecha),
-    militante: transfer.militante || { id: "" }
+    militant: transfer.militant || { id: "" }
   };
   
   showModal.value = true;
@@ -787,7 +846,7 @@ const closeDetailsModal = () => {
     origen: "",
     destino: "",
     details: "",
-    militante: null,
+    militant: null,
     fecha: "",
     estado: Estado[0],
     tipoMilitante: "",
@@ -797,55 +856,102 @@ const closeDetailsModal = () => {
 };
 
 const saveTransfer = async () => {
+
   isLoading.value = true;
+  
   try {
-    // CLAVE: Crear la fecha en formato ISO con hora al mediodía UTC
-    const fechaLocal = currentTransfer.value.fecha; // "2024-12-31"
-    const fechaISO = `${fechaLocal}T12:00:00.000Z`; // Forzar mediodía UTC
+    const fechaLocal = currentTransfer.value.fecha;
+    const fechaISO = `${fechaLocal}T12:00:00.000Z`;
 
     if (!isEdit.value) {
+      // Validar campos requeridos
+      if (!currentTransfer.value.origen || currentTransfer.value.origen.trim() === "") {
+        toast.error("Debe especificar el núcleo de origen. Si el militante no tiene núcleo asignado, debe asignarlo primero.");
+        isLoading.value = false;
+        return;
+      }
+      
+      if (!currentTransfer.value.destino || currentTransfer.value.destino.trim() === "") {
+        toast.error("Debe especificar el núcleo de destino");
+        isLoading.value = false;
+        return;
+      }
+      
       const transferData: any = {
-        origen: currentTransfer.value.origen,
-        destino: currentTransfer.value.destino,
-        details: currentTransfer.value.details,
-        fecha: fechaISO, // Usar fecha en formato ISO
+        origen: currentTransfer.value.origen.trim(),
+        destino: currentTransfer.value.destino.trim(),
+        details: currentTransfer.value.details.trim(),
+        date: fechaISO,
         estado: Estado[0],
         tipoMilitante: tipoMilitante.value,
       };
 
       if (tipoMilitante.value === "interno") {
-        transferData.militante = { id: currentTransfer.value.militante.id };
+        // Buscar el militante seleccionado para obtener su núcleo
+        const selectedMilitant = members.find(
+          (m: any) => m.id === Number(currentTransfer.value.militant.id)
+        );
+        
+        transferData.militante = {
+          id: Number(currentTransfer.value.militant.id),
+          core: selectedMilitant?.core || null  
+        };
         transferData.tipoTraslado = tipoTraslado.value;
       } else {
-        transferData.nombreMilitanteExterno = nombreMilitanteExterno.value;
+        transferData.nombreMilitanteExterno = nombreMilitanteExterno.value.trim();
         transferData.tipoTraslado = "interno";
       }
-
-      await actions.transfer.createTransfer(transferData);
-      toast.success("Traslado creado correctamente");
-    } else {
-      const updateData: any = {
-        id: currentTransfer.value.id,
-        origen: currentTransfer.value.origen,
-        destino: currentTransfer.value.destino,
-        details: currentTransfer.value.details,
-        fecha: fechaISO, // Usar fecha en formato ISO
-        estado: currentTransfer.value.estado,
-        tipoTraslado: tipoTraslado.value
-      };
-
-      if (tipoMilitante.value === "interno" && currentTransfer.value.militante?.id) {
-        updateData.militante = { id: currentTransfer.value.militante.id };
+      
+      const result = await actions.transfer.createTransfer(transferData);
+      
+      if (result.error) {
+        toast.error(result.error.message || "Error al crear el traslado");
+        isLoading.value = false;
+        return;
       }
 
-      await actions.transfer.updateTransfer(updateData);
-      toast.success("El traslado fue editado correctamente");
+      toast.success("Traslado creado correctamente");
+    } else {
+
+      if (!currentTransfer.value.id) {
+        toast.error("Error: No se encontró el ID del traslado");
+        isLoading.value = false;
+        return;
+      }
+
+      const updateData: any = {
+        id: currentTransfer.value.id,
+        origen: currentTransfer.value.origen.trim(),
+        destino: currentTransfer.value.destino.trim(),
+        details: currentTransfer.value.details.trim(),
+        date: new Date(fechaISO),
+        estado: currentTransfer.value.estado,
+        tipoTraslado: tipoTraslado.value,
+      };
+
+      // Si tiene militante, incluir su ID
+      if (currentTransfer.value.militant && currentTransfer.value.militant.id) {
+        updateData.militante = {
+          id: Number(currentTransfer.value.militant.id)
+        };
+      }
+
+      const result = await actions.transfer.updateTransfer(updateData);
+      
+      if (result.error) {
+        toast.error(result.error.message || "Error al actualizar el traslado");
+        isLoading.value = false;
+        return;
+      }
+      
+      toast.success("Traslado actualizado correctamente");
     }
+    
     closeModal();
     navigate("");
-  } catch (error) {
-    console.error("Error al guardar:", error);
-    toast.error("Error al guardar el traslado");
+    
+  } catch (error: any) {
+    toast.error(error?.message || "Error al guardar el traslado");
   } finally {
     isLoading.value = false;
   }
@@ -888,10 +994,11 @@ const exportar = async (id: number) => {
 const exportarListado = async () => {
   try {
     toast.info("Generando listado de traslados...");
-    
+
     const result = await actions.transfer.exportListadoTransfers({
       estado: statusFilter.value || undefined, 
-      nucleoId: selectNucleo.value ? String(selectNucleo.value) : undefined,  
+      nucleoId: selectNucleo.value ? String(selectNucleo.value) : undefined,
+      fecha: dateFilter.value || undefined, 
     });
     
     if (result.error) {
@@ -962,7 +1069,7 @@ const handleFilterByValue = (filter: string, value: any) => {
 };
 
 // Watch para resetear página al filtrar
-watch([searchTerm, statusFilter, selectNucleo], () => {
+watch([searchTerm, statusFilter, selectNucleo, dateFilter], () => {
   currentPage.value = 1;
 });
 </script>

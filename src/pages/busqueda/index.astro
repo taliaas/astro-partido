@@ -4,43 +4,128 @@ import CoreService from "../../services/CoreService";
 import RootLayout from "../../layouts/RootLayout.astro";
 import Busqueda from "../../components/filters/Busqueda.vue";
 import SolrService from "../../services/SolrService";
+import { API_URL } from "astro:env/client";
 
 const session = (await getSession(Astro.request)) as any;
 
-// Constantes de roles
-const ADMIN_ROLE_ID = 1;
-const COMITE_MEMBER_ROLE_ID = 6;
+const ADMIN_ROLE_ID = 1; 
+const COMITE_MEMBER_ROLE_ID = 4; 
 
 // Interfaz para el usuario actual
 interface CurrentUser {
+  userId: number;
   roleId: number;
-  coreId: number;
+  coreId?: string;  
   name: string;
 }
 
-// Obtener información del usuario actual desde la sesión
 let currentUser: CurrentUser | null = null;
 if (session?.user) {
+  const userId = session.user.id;
+  
+  const possibleRoleId = 
+    session.user.role?.id || 
+    session.user.roleId;
+  
+  const possibleCoreId = 
+    session.user.core?.id || 
+    session.user.coreId || 
+    session.user.militant?.core?.id ||
+    session.user.militant?.coreId;
+  
   currentUser = {
-    roleId: session.user.role?.id || session.user.roleId,
-    coreId: session.user.core?.id || session.user.coreId,
+    userId: userId,
+    roleId: possibleRoleId,
+    coreId: possibleCoreId,
     name: session.user.name,
   };
 }
 
+// Función para determinar si el usuario tiene acceso total
+function hasFullAccess(user: CurrentUser | null): boolean {
+  if (!user) return false;
+  return user.roleId === ADMIN_ROLE_ID || user.roleId === COMITE_MEMBER_ROLE_ID;
+}
+
+// Función para obtener el coreId del usuario mediante su militant
+async function getUserCoreIdFromMilitant(userId: number): Promise<string | null> {
+  if (!userId) {
+    return null;
+  }
+
+  try {
+    const apiUrl = API_URL || 'http://localhost:3000';
+    const response = await fetch(`${apiUrl}/militant/user/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${session.jwt}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const militant = await response.json();
+
+    if (militant?.core?.id) {
+      return militant.core.id;
+    }
+
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
 // Función para obtener el core del usuario
 async function getUserCoreName(): Promise<string | null> {
-  if (!currentUser) return null;
-
-  const coreService = new CoreService();
-  try {
-    const allCores = await coreService.getAllCore(session.jwt);
-    const userCore = allCores.find((c: any) => c.id === currentUser!.coreId);
-    return userCore?.name || null;
-  } catch (e) {
-    console.warn("Error obteniendo cores, usando sesión:", e);
-    return session?.user?.core?.name || null;
+  if (!currentUser) {
+    return null;
   }
+
+  // Si ya tenemos el coreId, usarlo
+  if (currentUser.coreId) {
+    const coreService = new CoreService();
+    try {
+      const allCores = await coreService.getAllCore(session.jwt);
+      const userCore = allCores.find((c: any) => c.id === currentUser!.coreId);
+      return userCore?.name || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Si no tenemos coreId pero tenemos userId, obtenerlo del militant
+  if (currentUser.userId) {
+    const coreId = await getUserCoreIdFromMilitant(currentUser.userId);
+    
+    if (coreId) {
+      // Actualizar el coreId en currentUser
+      currentUser.coreId = coreId;
+      
+      // Ahora obtener el nombre del core
+      const coreService = new CoreService();
+      try {
+        const allCores = await coreService.getAllCore(session.jwt);
+        const userCore = allCores.find((c: any) => c.id === coreId);
+        return userCore?.name || null;
+      } catch (e) {
+        return null;
+      }
+    }
+  }
+  
+  // intentar desde la sesión directamente
+  if (session?.user?.militant?.core?.name) {
+    return session.user.militant.core.name;
+  }
+  
+  if (session?.user?.core?.name) {
+    return session.user.core.name;
+  }
+  
+  return null;
 }
 
 // --- Obtener parámetros de búsqueda ---
@@ -49,6 +134,7 @@ let searchParams = Astro.url.searchParams;
 
 // Obtener el nombre del núcleo del usuario UNA VEZ
 const userCoreName = await getUserCoreName();
+const userHasFullAccess = hasFullAccess(currentUser);
 
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
@@ -56,41 +142,21 @@ if (Astro.request.method === "POST") {
     Array.from(formData.entries()).filter((entry) => entry[1]),
   );
 
-  // IMPORTANTE: Aplicar restricción de núcleo si el usuario NO tiene acceso total
-  if (
-    currentUser &&
-    currentUser.roleId !== ADMIN_ROLE_ID &&
-    currentUser.roleId !== COMITE_MEMBER_ROLE_ID &&
-    userCoreName
-  ) {
-    console.log(
-      "[RESTRICCIÓN APLICADA] Usuario sin acceso total, forzando núcleo:",
-      userCoreName,
-    );
+  //Aplicar restricción de núcleo si el usuaario NO tiene acceso total
+  if (!userHasFullAccess && userCoreName) {
     query.core = userCoreName; // Forzar el filtro de núcleo
   }
 
   const params = new URLSearchParams(query);
-  console.log("[DEBUG POST - Query Final]", query);
   return Astro.redirect(`/busqueda?${params.toString()}&page=1&limit=10`);
 } else {
   query = Object.fromEntries(searchParams.entries());
 
-  // IMPORTANTE: También aplicar restricción en GET
-  if (
-    currentUser &&
-    currentUser.roleId !== ADMIN_ROLE_ID &&
-    currentUser.roleId !== COMITE_MEMBER_ROLE_ID &&
-    userCoreName
-  ) {
-    console.log(
-      "[RESTRICCIÓN APLICADA GET] Usuario sin acceso total, forzando núcleo:",
-      userCoreName,
-    );
+  // También aplicar restricción en GET 
+  if (!userHasFullAccess && userCoreName) {
+    // SIEMPRE forzar el core, incluso si viene en la URL
     query.core = userCoreName;
   }
-
-  console.log("[DEBUG GET - Query Final]", query);
 }
 
 const limit = Number(searchParams.get("limit")) || 10;
@@ -100,10 +166,7 @@ const page = Math.max(Number(searchParams.get("page")) || 1, 1);
 function hasUserAppliedFilters(query: any): boolean {
   // Para usuarios con acceso restringido, el core se aplica automáticamente
   // así que lo excluimos de la verificación de filtros del usuario
-  const isRestrictedUser =
-    currentUser &&
-    currentUser.roleId !== ADMIN_ROLE_ID &&
-    currentUser.roleId !== COMITE_MEMBER_ROLE_ID;
+  const isRestrictedUser = !userHasFullAccess;
 
   const keysToCheck = Object.keys(query).filter((key) => {
     // Excluir siempre page y limit
@@ -130,11 +193,7 @@ function getSearchTerm(query: any): string {
   if (query.name?.trim()) terms.push(query.name.trim());
 
   // Solo mostrar el núcleo en el término de búsqueda si el usuario tiene acceso total
-  if (
-    currentUser &&
-    (currentUser.roleId === ADMIN_ROLE_ID ||
-      currentUser.roleId === COMITE_MEMBER_ROLE_ID)
-  ) {
+  if (userHasFullAccess) {
     if (query.core?.trim()) terms.push(query.core.trim());
   }
 
@@ -156,16 +215,33 @@ async function getActas() {
     docs: [],
     numFound: 0,
     total: 0,
+    totalPages: 0,
+    currentPage: page,
     searchTerm: "",
   };
 }
 
 async function getActasByQuery() {
   const service = new SolrService();
-  console.log("[GET ACTAS BY QUERY] Query enviado a Solr:", query);
   const actasData = await service.queryMinutes(query, page, limit, "AND");
+  
+  // FILTRADO POST-QUERY: Si el usuario NO tiene acceso total, filtrar por núcleo
+  let filteredDocs = actasData.docs || [];
+  
+  if (!userHasFullAccess && userCoreName) {
+    // Filtrar solo las actas que pertenecen al núcleo del usuario
+    filteredDocs = filteredDocs.filter((acta: any) => {
+      const actaCore = acta.core?.trim();
+      return actaCore === userCoreName;
+    });
+  }
+  
   return {
-    ...actasData,
+    docs: filteredDocs,
+    numFound: filteredDocs.length,
+    total: filteredDocs.length,
+    totalPages: Math.ceil(filteredDocs.length / limit),
+    currentPage: page,
     searchTerm: getSearchTerm(query),
   };
 }
@@ -176,9 +252,7 @@ async function getCore() {
     const allCores = await service.getAllCore(session.jwt);
     return allCores;
   } catch (e) {
-    console.error("Error al cargar todos los nucleos", e);
     if (session?.user?.core) {
-      console.log("Usando core del usuario desde sesión");
       return [session.user.core];
     }
     return [];
@@ -195,8 +269,7 @@ const actas = {
   docs: actasResult.docs || [],
   numFound: actasResult.numFound || 0,
   total: actasResult.total || 0,
-  totalPages:
-    actasResult.totalPages || Math.ceil((actasResult.numFound || 0) / limit),
+  totalPages: actasResult.totalPages || Math.ceil((actasResult.numFound || 0) / limit),
   currentPage: actasResult.currentPage || page,
 };
 
@@ -216,20 +289,9 @@ if (cores.length === 0 && session?.user?.core) {
 // Serializar cores para pasarlo a Vue
 const serializedCores = JSON.parse(JSON.stringify(cores));
 
-// Debug completo
-console.log("=== DEBUG COMPLETO ===");
-console.log("Usuario:", currentUser);
-console.log("Núcleo del usuario:", userCoreName);
-console.log(
-  "Tiene acceso total:",
-  currentUser &&
-    (currentUser.roleId === ADMIN_ROLE_ID ||
-      currentUser.roleId === COMITE_MEMBER_ROLE_ID),
-);
-console.log("Tiene filtros activos:", hasActiveFilters);
-console.log("Query final enviado:", query);
-console.log("Actas encontradas:", actas.numFound);
-console.log("======================");
+// Calcular si debe mostrar el filtro de núcleo
+// Solo Admin (roleId=1) y Comité CUJAE (roleId=6) pueden ver y usar el filtro
+const showCoreFilter = Boolean(userHasFullAccess);
 ---
 
 <RootLayout>
@@ -241,6 +303,7 @@ console.log("======================");
     searchTerm={searchTerm}
     currentUser={currentUser}
     hasActiveFilters={hasActiveFilters}
+    showCoreFilter={showCoreFilter}
     client:load
   />
 </RootLayout>
